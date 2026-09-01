@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contagion"
+version = "0.1.0"
+description = "An epidemiology of prompt-injection propagation in LLM agent networks"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+ml = [
+    "transformers>=4.44",
+    "accelerate>=0.34",
+]
+api = ["openai>=1.30"]
+analysis = ["pandas>=2.2", "numpy>=1.26", "scipy>=1.13", "matplotlib>=3.9"]
+dev = ["pytest>=8.2"]
+
+[project.scripts]
+contagion-run = "contagion.benchmark.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["contagion*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
