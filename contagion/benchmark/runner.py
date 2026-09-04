@@ -127,6 +127,11 @@ def write_report(results: Dict, out: Path) -> Path:
     lines.append(f"Ngày tạo: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     lines.append("")
 
+    def _num(d, k):
+        # .get(k, 0) không đủ khi key tồn tại với value None (vd n=0 → ci_low=None)
+        v = d.get(k, 0)
+        return 0.0 if v is None else (v if isinstance(v, int) else float(v))
+
     # Config
     lines.append("## 1. Cấu hình (Config)")
     lines.append("")
@@ -155,31 +160,31 @@ def write_report(results: Dict, out: Path) -> Path:
     surv = metrics.get("survival", {})
     overall = surv.get("overall", {})
     lines.append(
-        f"| per-hop survival `s` (overall) | {overall.get('mean', 0):.4f} | "
-        f"{overall.get('std', 0):.4f} | {overall.get('n', 0)} | "
-        f"[{overall.get('ci_low', 0):.4f}, {overall.get('ci_high', 0):.4f}] |"
+        f"| per-hop survival `s` (overall) | {_num(overall, 'mean'):.4f} | "
+        f"{_num(overall, 'std'):.4f} | {_num(overall, 'n'):.0f} | "
+        f"[{_num(overall, 'ci_low'):.4f}, {_num(overall, 'ci_high'):.4f}] |"
     )
     for key, m in surv.items():
         if key == "overall":
             continue
         lines.append(
-            f"| `s` ({key}) | {m.get('mean', 0):.4f} | {m.get('std', 0):.4f} | "
-            f"{m.get('n', 0)} | [{m.get('ci_low', 0):.4f}, {m.get('ci_high', 0):.4f}] |"
+            f"| `s` ({key}) | {_num(m, 'mean'):.4f} | {_num(m, 'std'):.4f} | "
+            f"{_num(m, 'n'):.0f} | [{_num(m, 'ci_low'):.4f}, {_num(m, 'ci_high'):.4f}] |"
         )
     e2e = metrics.get("end_to_end", {})
     r0 = metrics.get("r0", {})
     pr = metrics.get("propagation_rate", {})
     lines.append(
-        f"| end-to-end `P_E2E` | {e2e.get('mean', 0):.4f} | {e2e.get('std', 0):.4f} | "
-        f"{e2e.get('n', 0)} | [{e2e.get('ci_low', 0):.4f}, {e2e.get('ci_high', 0):.4f}] |"
+        f"| end-to-end `P_E2E` | {_num(e2e, 'mean'):.4f} | {_num(e2e, 'std'):.4f} | "
+        f"{_num(e2e, 'n'):.0f} | [{_num(e2e, 'ci_low'):.4f}, {_num(e2e, 'ci_high'):.4f}] |"
     )
     lines.append(
-        f"| reproduction `R0` | {r0.get('mean', 0):.4f} | {r0.get('std', 0):.4f} | "
-        f"{r0.get('n', 0)} | [{r0.get('ci_low', 0):.4f}, {r0.get('ci_high', 0):.4f}] |"
+        f"| reproduction `R0` | {_num(r0, 'mean'):.4f} | {_num(r0, 'std'):.4f} | "
+        f"{_num(r0, 'n'):.0f} | [{_num(r0, 'ci_low'):.4f}, {_num(r0, 'ci_high'):.4f}] |"
     )
     lines.append(
-        f"| propagation rate | {pr.get('mean', 0):.4f} | {pr.get('std', 0):.4f} | "
-        f"{pr.get('n', 0)} | [{pr.get('ci_low', 0):.4f}, {pr.get('ci_high', 0):.4f}] |"
+        f"| propagation rate | {_num(pr, 'mean'):.4f} | {_num(pr, 'std'):.4f} | "
+        f"{_num(pr, 'n'):.0f} | [{_num(pr, 'ci_low'):.4f}, {_num(pr, 'ci_high'):.4f}] |"
     )
     lines.append("")
 
@@ -200,16 +205,16 @@ def write_report(results: Dict, out: Path) -> Path:
     lines.append("## 4. Diễn giải")
     lines.append("")
     lines.append(
-        f"- `s = {overall.get('mean', 0):.2f}` → payload {100 * overall.get('mean', 0):.0f}% "
+        f"- `s = {_num(overall, 'mean'):.2f}` → payload {100 * _num(overall, 'mean'):.0f}% "
         "sống sót qua mỗi hop."
     )
     lines.append(
-        f"- `R0 = {r0.get('mean', 0):.2f}` → "
-        + ("**supercritical** (R0 ≥ 1): lây lan duy trì/bùng nổ." if r0.get("mean", 0) >= 1 else "**subcritical** (R0 < 1): lây lan suy giảm.")
+        f"- `R0 = {_num(r0, 'mean'):.2f}` → "
+        + ("**supercritical** (R0 ≥ 1): lây lan duy trì/bùng nổ." if _num(r0, "mean") >= 1 else "**subcritical** (R0 < 1): lây lan suy giảm.")
     )
     lines.append(
-        f"- `P_E2E = {e2e.get('mean', 0):.2f}` → injection tới được agent cuối "
-        f"trong {100 * e2e.get('mean', 0):.0f}% các trial."
+        f"- `P_E2E = {_num(e2e, 'mean'):.2f}` → injection tới được agent cuối "
+        f"trong {100 * _num(e2e, 'mean'):.0f}% các trial."
     )
 
     report_path = out.parent / f"{out.name}.md"
