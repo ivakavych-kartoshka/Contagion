@@ -76,7 +76,9 @@ def sanitize(self, untrusted):
 - Tham số `retention` (mặc định 0.3) biểu diễn xác suất ý đồ tấn công **sống sót**
   sau paraphrase (mô hình hóa mức độ hiệu quả).
 - Trong mock: `paraphrase` được mô phỏng bằng cách **bỏ marker** khỏi content
-  (nội dung mất "chìa khóa" → response không còn marker → không bị đánh giá compromise).
+  (nội dung mất "chìa khóa") → response của agent không còn marker → ASV = 0 và
+  MR = 0 (so với `hijacked_output()`) → không bị đánh giá compromised theo
+  threshold rule ASV/MR (metric.md §1/§4).
 - Với LLM thật: đây sẽ là một lời gọi `llm.paraphrase(content)` thực sự.
 
 ---

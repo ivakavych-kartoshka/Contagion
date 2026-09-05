@@ -87,8 +87,11 @@ class Edge:
 **Mỗi Edge = MỘT hop.** Trong benchmark:
 
 - Nếu `src` bị compromise, message qua edge này có thể infect `dst` với xác suất `s`.
-- Mỗi edge sẽ tạo ra ít nhất một `HopOutcome` trong mỗi trial
-  (để ước lượng `s`).
+- Mỗi edge được đo riêng bằng **controlled per-edge protocol** (metric.md §1):
+  `run_per_edge_protocol()` ép C_src = 1 rồi judge dst qua `per_edge_trials` lần
+  (→ `EdgeTrial`); `ŝ_edge = k/N`.
+- Trong **natural runs**, edge chỉ sinh `HopOutcome` khi một message agent→agent
+  thực sự được xử lý (metric.md §2).
 
 ---
 
@@ -177,13 +180,14 @@ def _chain(n):
 
 - Mỗi agent (trừ cuối) có `out_degree = 1`.
 - Là topology **đơn giản nhất**, dùng làm baseline.
-- Xác suất đi từ đầu đến cuối chuỗi:
+- Xác suất đi từ đầu đến cuối chuỗi (lý thuyết, giả định Markov):
 
 ```
-P_E2E = ∏_{i=0}^{n-2} s_i
+P_E2E = ∏_{i=0}^{n-2} s_i      (metric.md §2: ASR trên chain)
 ```
 
-Ví dụ mock (s ≈ 1.0): `P_E2E = 1.0` → injection đi hết chuỗi.
+Empirical ASR được đo trên các natural run (entry compromised by construction).
+Ví dụ mock (s ≈ 1.0): `ASR ≈ 1.0` → injection đi hết chuỗi.
 
 ---
 
@@ -239,11 +243,17 @@ R0 lý thuyết ≈ 2 × s
 
 ## 12. Mối liên hệ với R0 / epidemic threshold
 
-| Topology | out_degree | R0 (lý thuyết) | Ngưỡng epidemic |
+| Topology | out_degree (điển hình) | R0 lý thuyết | Ngưỡng epidemic |
 |---|---|---|---|
 | Chain | 1 | `1 × s` | `s = 1` là biên (không bùng nổ) |
 | Tree | 2 | `2 × s` | `s = 0.5` → nếu `s > 0.5` thì `R0 > 1` |
 | Star | 1 (mặc định tại leaves) | phụ thuộc entry point | — |
+
+> Lưu ý: `R0` lý thuyết = `d × s` với `d` là *average out-degree* trên toàn mạng
+> (metric.md §3.3 / §5). Trên mạng **hữu hạn**, node biên (out-degree 0) làm
+> `d = #edges / #nodes < branching` — vd chain n agents có `d = (n-1)/n`. Benchmark
+> báo `R̂0` kèm consistency check `d · s̄` (xem `benchmark/runner.py` →
+> `r0_ds_check`), đúng khuyến nghị metric.md §5.
 
 Điều này cho phép benchmark trả lời **RQ2**: topology ảnh hưởng thế nào đến khả
 năng lan truyền, và **vị trí nào khuếch đại** (super-spreader).
@@ -252,7 +262,12 @@ năng lan truyền, và **vị trí nào khuếch đại** (super-spreader).
 
 ## 13. Cách dùng trong Runner
 
-Trong `runner/engine.py`, `Runner.run_trial()`:
+Trong `runner/engine.py`:
+
+- **Natural runs** (`Runner.run_trial()`): entry compromised by construction rồi
+  `Runner._forward()` gửi response của compromised agent tới `graph.successors(aid)`.
+- **Controlled per-edge protocol** (`Runner.run_per_edge_protocol()`): với mỗi
+  `edge` của graph, ép C_src=1 và judge dst qua `per_edge_trials` lần (metric.md §1).
 
 ```python
 graph = build_graph(config.topology, config.num_agents, seed=...)
@@ -263,7 +278,7 @@ for dst in graph.successors(aid):           # compromised → gửi tới succes
 ```
 
 → Graph đóng vai trò: **xác định ai gửi cho ai** (edge = hop), và **out_degree**
-của từng agent quyết định phạm vi lan truyền khi compromised.
+của từng agent quyết định phạm vi lan truyền khi compromised (đóng góp vào `R0`).
 
 ---
 
