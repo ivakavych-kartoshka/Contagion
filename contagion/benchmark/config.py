@@ -41,6 +41,8 @@ def load_config(path: Path) -> ContagionConfig:
         tau_asv=float(data.get("tau_asv", 0.8)),
         tau_mr=float(data.get("tau_mr", 1.0)),
         per_edge_trials=int(data.get("per_edge_trials", 30)),
+        measure_utility=bool(data.get("measure_utility", False)),
+        utility_trials=data.get("utility_trials"),
         extra=data.get("extra", {}),
     )
 

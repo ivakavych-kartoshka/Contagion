@@ -43,7 +43,7 @@ from ..runner.engine import Runner
 def run_benchmark(config: ContagionConfig) -> Dict:
     """Run one configuration and return a structured result with all metrics.
 
-    Executes BOTH protocols required by docs/metric.md:
+    Executes the protocols required by docs/metric.md:
 
     - *natural end-to-end runs* (:meth:`Runner.run`) → ASR, R0, propagation rate
       (metric.md §2, §5): entry is compromised by construction (C_0 = 1) and
@@ -51,22 +51,55 @@ def run_benchmark(config: ContagionConfig) -> Dict:
     - *controlled per-edge trials* (:meth:`Runner.run_per_edge_protocol`) →
       per-edge survival ``s`` (metric.md §1): each trial forces C_src = 1 by
       direct injection, feeds the compromised output to the receiver and judges
-      it with the ASV/MR threshold rule.
+      it with the ASV/MR threshold rule;
+    - *utility pipeline* (:meth:`Runner.run_utility_protocol`, khi
+      ``config.measure_utility``) → U_clean / U_attack / Delta_U / retention
+      (metric.md §7).
 
-    The two protocols are deliberately independent so that the comparison
-    ``ASR ~ prod(s_i)`` is a valid empirical test of the Markov assumption.
+    The propagation protocols are deliberately independent so that the
+    comparison ``ASR ~ prod(s_i)`` is a valid empirical test of the Markov
+    assumption.
     """
     runner = Runner(config)
     try:
         paths = runner.run()
         edge_trials = runner.run_per_edge_protocol()
+        utility = None
+        if config.measure_utility:
+            utility = _run_utility(config, runner)
     finally:
         runner.close()
+    metrics = summarize(paths, edge_trials, config)
+    if utility is not None:
+        metrics["utility"] = utility["metrics"]
     return {
-        "metrics": summarize(paths, edge_trials, config),
+        "metrics": metrics,
         "paths": paths,
         "edge_trials": edge_trials,
+        "utility": utility,
         "config": asdict(config) if config is not None else None,
+    }
+
+
+def _run_utility(config: ContagionConfig, runner: Runner) -> Dict:
+    """Paired clean/attack pipeline runs → §7 utility metrics."""
+    from ..metrics.utility import build_target_task, result_to_dict, utility_under_attack
+
+    clean_paths = runner.run_utility_protocol(attack=False)
+    attack_paths = runner.run_utility_protocol(attack=True)
+    task = build_target_task(
+        marker="INJECTED_PAYLOAD",
+        reference=config.extra.get("target_task_reference"),
+    )
+    res = utility_under_attack(
+        task,
+        clean_outputs=[p.final_output for p in clean_paths],
+        attack_outputs=[p.final_output for p in attack_paths],
+    )
+    return {
+        "clean_paths": clean_paths,
+        "attack_paths": attack_paths,
+        "metrics": result_to_dict(res),
     }
 
 
@@ -155,9 +188,15 @@ def save_results(
     tag: Optional[str] = None,
     write_logs: bool = True,
 ) -> Path:
-    """Persist a summarized run (and optional raw per-hop logs) as JSON/CSV.
+    """Persist a summarized run (and optional raw logs) as JSON/CSV/JSONL.
 
-    Returns the directory the artifacts were written into.
+    Writes:
+    - ``summary.json`` — metrics (incl. utility khi đo) + config;
+    - ``hops.csv`` — per-hop propagation log (natural runs);
+    - ``agent_logs.jsonl`` — cross-metric per-agent-instance log (metric.md
+      "Cross-Metric Logging Requirements") từ natural runs + utility pipeline
+      (khi ``measure_utility``), mỗi dòng một JSON;
+    - ``report.md`` — report Markdown đọc được.
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -172,8 +211,34 @@ def save_results(
     )
     if write_logs:
         _write_hop_logs(paths=results.get("paths", []), out=base / "hops.csv")
+        _write_agent_logs(results, base / "agent_logs.jsonl")
     write_report(results, base / "report")
     return base
+
+
+def _collect_agent_logs(results: Dict) -> List[Dict]:
+    """Gom agent-instance logs từ mọi nguồn (natural + utility clean/attack)."""
+    rows: List[Dict] = []
+    mode = "propagation"
+    for p in results.get("paths", []):
+        for lg in p.agent_logs:
+            rows.append({"mode": mode, **asdict(lg)})
+    util = results.get("utility")
+    if util:
+        for mode, key in (("utility_clean", "clean_paths"), ("utility_attack", "attack_paths")):
+            for p in util.get(key, []):
+                for lg in p.agent_logs:
+                    rows.append({"mode": mode, **asdict(lg)})
+    return rows
+
+
+def _write_agent_logs(results: Dict, out: Path) -> None:
+    rows = _collect_agent_logs(results)
+    if not rows:
+        return
+    with open(out, "w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False, cls=NumpyEncoder) + "\n")
 
 
 def _write_hop_logs(paths: List[PropagationPath], out: Path) -> None:
@@ -289,6 +354,21 @@ def write_report(results: Dict, out: Path) -> Path:
         )
         lines.append("")
 
+    # Utility Under Attack (metric.md §7)
+    ut = metrics.get("utility")
+    if ut:
+        ret = ut.get("retention")
+        ret_txt = "n/a (U_clean=0)" if ret is None else f"{ret:.4f}"
+        lines.append("| Utility (§7) | giá trị |")
+        lines.append("|---|---|")
+        lines.append(f"| U_clean | {ut.get('u_clean'):.4f} |")
+        lines.append(f"| U_attack | {ut.get('u_attack'):.4f} |")
+        lines.append(f"| Delta_U = U_clean − U_attack | {ut.get('delta_u'):.4f} |")
+        lines.append(f"| Utility retention = U_attack / U_clean | {ret_txt} |")
+        lines.append(f"| n_clean / n_attack | {ut.get('n_clean')} / {ut.get('n_attack')} |")
+        lines.append(f"| target task family | `{ut.get('task')}` |")
+        lines.append("")
+
     # Hop log (first few trials)
     lines.append("## 3. Hop log (ví dụ 5 trial đầu)")
     lines.append("")
@@ -301,6 +381,22 @@ def write_report(results: Dict, out: Path) -> Path:
                 f"{'✔' if h.src_compromised else '✘'} | {'✔' if h.dst_compromised else '✘'} |"
             )
     lines.append("")
+
+    # Agent-instance log (cross-metric logging, first few rows)
+    logs = _collect_agent_logs(results)
+    if logs:
+        lines.append("## 3b. Agent-instance log (cross-metric; 3 dòng đầu)")
+        lines.append("")
+        lines.append("| mode | trial | agent | role | step | asv | mr | C |")
+        lines.append("|---|---|---|---|---|---|---|---|")
+        for lg in logs[:3]:
+            lines.append(
+                f"| {lg.get('mode')} | {lg.get('trial_id')} | {lg.get('agent_id')} | "
+                f"{lg.get('role')} | {lg.get('step')} | {lg.get('asv')} | {lg.get('mr')} | "
+                f"{'✔' if lg.get('compromised') else '✘'} |"
+            )
+        lines.append(f"  (đầy đủ: `agent_logs.jsonl`, {len(logs)} rows)")
+        lines.append("")
 
     # Interpretation
     lines.append("## 4. Diễn giải")

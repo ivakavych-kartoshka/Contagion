@@ -21,18 +21,25 @@ ContagionConfig
    ▼
    Runner (engine.py)
    ├── run()                   → List[PropagationPath]   (natural runs)
-   └── run_per_edge_protocol() → List[EdgeTrial]         (controlled per-edge)
+   ├── run_per_edge_protocol() → List[EdgeTrial]         (controlled per-edge)
+   └── run_utility_protocol()  → clean/attack pipeline   (metric.md §7, khi measure_utility)
    ▼
 summarize(paths, edge_trials, config)
    → metrics dict: survival (s per edge), asr, r0, r0_ds_check,
-                   propagation_rate, n_trials, n_per_edge_trials
+                   propagation_rate, hops_to_compromise, markov_check,
+                   utility (§7), n_trials, n_per_edge_trials
    │  save_results()
    ▼
 experiments/results/<tag>/
-   ├── summary.json   (metrics + config)
-   ├── hops.csv       (raw per-hop logs của natural runs)
-   └── report.md      (report Markdown đọc được)
+   ├── summary.json     (metrics + config)
+   ├── hops.csv         (raw per-hop logs của natural runs)
+   ├── agent_logs.jsonl (cross-metric log: role, input, output, ASV/MR/M_t, C)
+   └── report.md        (report Markdown đọc được)
 ```
+
+Khi `measure_utility=True`, `run_benchmark()` chạy thêm **pipeline workflow**
+(clean & attack, `metrics/utility.py`) và đưa kết quả vào `metrics["utility"]`
+(U_clean / U_attack / Delta_U / retention — metric.md §7).
 
 ---
 
@@ -56,7 +63,8 @@ def load_config(path: Path) -> ContagionConfig:
   ```
   topology, num_agents, trials, entry_agent, attack, re_injection, defense,
   content_freedom, max_hops, seed, model_id,
-  tau_asv, tau_mr, per_edge_trials,          ← mới (metric.md §1 ngưỡng + N per edge)
+  tau_asv, tau_mr, per_edge_trials,          ← metric.md §1 ngưỡng + N per edge
+  measure_utility, utility_trials,           ← metric.md §7 (utility pipeline)
   extra
   ```
 - Khi thiếu key dùng default của `ContagionConfig`.

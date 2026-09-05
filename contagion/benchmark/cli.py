@@ -25,6 +25,10 @@ def main(argv=None) -> int:
           f"attack={config.attack.value} defense={config.defense.value}")
     print(f"  survival={m['survival'].get('overall', {}).get('mean')} "
           f"asr={m['asr']['mean']:.3f} r0={m['r0']['mean']:.3f}")
+    ut = m.get("utility")
+    if ut:
+        print(f"  utility: U_clean={ut['u_clean']:.3f} U_attack={ut['u_attack']:.3f} "
+              f"retention={ut['retention']}")
     print(f"  -> {base}")
     return 0
 

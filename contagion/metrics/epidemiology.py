@@ -66,6 +66,30 @@ class EdgeTrial:
 
 
 @dataclass
+class AgentLog:
+    """Cross-metric log row for ONE agent-instance activation (metric.md
+    "Cross-Metric Logging Requirements").
+
+    Records, for every agent activated during a trial: identity + role, the full
+    input with provenance (which upstream agent(s) it came from), the full
+    output, the message-passing round at which it was activated, its ASV and MR
+    scores against the injected task's reference, its M_t score against the
+    target task's reference (utility metrics, metric.md §7), and the binary
+    compromise judgment C under the pre-registered threshold rule.
+    """
+    trial_id: int
+    agent_id: str
+    role: str
+    step: int                       # message-passing round (metric.md §6)
+    inputs: List[str]               # "sender_id: content" per upstream message
+    output: str
+    asv: Optional[float] = None
+    mr: Optional[float] = None
+    mt: Optional[float] = None      # target-task score (None khi không có utility task)
+    compromised: bool = False
+
+
+@dataclass
 class PropagationPath:
     """A single run's compromise status across all agents."""
     trial_id: int
@@ -74,6 +98,11 @@ class PropagationPath:
     time_to_compromise: Optional[int] = None
     hops_to_compromise: Optional[int] = None
     node_order: List[str] = field(default_factory=list)
+    agent_logs: List[AgentLog] = field(default_factory=list)
+    # Utility protocol (metric.md §7): end-to-end output of the network on the
+    # legitimate target task (final agent's output text), or None if the target
+    # agent never produced an output.
+    final_output: Optional[str] = None
 
 
 @dataclass

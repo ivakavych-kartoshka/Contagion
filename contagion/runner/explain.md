@@ -37,6 +37,8 @@ giả định Markov hợp lệ.
 | `Runner._build_attack()` | Tạo injection strategy (static/adaptive) |
 | `Runner._compromised_output()` | Sinh compromised output của agent (ép C=1) |
 | `Runner._forward()` | Forward response xuống successors theo ReInjectionPolicy |
+| `Runner.run_utility_protocol()` | Pipeline workflow clean/attack cho §7 (all-forward) |
+| `Runner._run_workflow_trial()` | Một workflow trial (utility) — mọi agent luôn forward |
 | `Runner.assessor` | `TaskAssessor` (ASV/MR) để judge compromise (§1 rule) |
 | `run_experiment()` | Hàm tiện ích: chạy N natural runs từ config |
 
@@ -301,9 +303,11 @@ def run_per_edge_protocol(self) -> List[EdgeTrial]:
 | **Propagation rate** | natural `paths` | `propagation_rate()` |
 | **Hops-to-compromise** | natural `paths` (§6) | `hops_to_compromise()` (dùng `HopOutcome.step` = round) |
 | **Markov check** | paths + edge_trials (§2) | `markov_test()` (ASR vs ∏ŝᵢ; chỉ chain) |
+| **Utility (§7)** | utility clean/attack paths | `metrics/utility.py::utility_under_attack()` |
 
 → chi tiết xem `metrics/explain.md`. Benchmark layer (`benchmark/runner.py`) chạy
-cả `run()` lẫn `run_per_edge_protocol()` rồi gộp metrics.
+`run()`, `run_per_edge_protocol()`, và (nếu `measure_utility`) utility protocol
+rồi gộp metrics.
 
 ---
 
@@ -315,13 +319,25 @@ ContagionConfig
      ▼
 Runner(config)
      ├── run()  (N natural runs, theo round) → paths (ASR, R0, hops, prop-rate)
-     └── run_per_edge_protocol()             → edge_trials (s per edge)
+     ├── run_per_edge_protocol()             → edge_trials (s per edge)
+     └── run_utility_protocol() (nếu measure_utility)
+         ├── attack=False → clean pipeline (U_clean)
+         └── attack=True  → attack pipeline (U_attack)     → metrics.utility
      ▼
 summarize(paths, edge_trials, config)
      ▼
 metrics: survival (s, CI Wilson), asr, r0 (+r0_ds_check), hops_to_compromise,
-         markov_check, propagation_rate, n_trials
+         markov_check, utility (§7), propagation_rate, n_trials
 ```
+
+### Utility protocol (metric.md §7) khác natural propagation thế nào?
+
+- **Natural propagation** (`run_trial`): chỉ **compromised** agents forward —
+  mô hình pure-propagation đo s/ASR/R0.
+- **Utility workflow** (`_run_workflow_trial`): MỌI agent đã xử lý đều forward
+  output của mình (deployment thật vẫn chạy legitimate task); compromise chỉ làm
+  output bị nhiễm payload → M_t(final output) đo utility giảm. Đây là 2 chế độ
+  mô phỏng khác nhau, dùng cho 2 loại câu hỏi khác nhau.
 
 ---
 

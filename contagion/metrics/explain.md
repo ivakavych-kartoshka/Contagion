@@ -5,9 +5,11 @@ Thư mục này là **trái tim lý thuyết** của Contagion: định nghĩa v
 triển khai ở đây khớp với `docs/metric.md` (file nguồn chuẩn) và
 `docs/formula_summary.md`.
 
-Hai file:
+Ba file:
 - `assessment.py` — ASV / MR và threshold rule (metric.md §1, §3, §4).
-- `epidemiology.py` — các estimator `s`, `ASR`, `R0`, `propagation_rate`.
+- `epidemiology.py` — các estimator `s`, `ASR`, `R0`, hops-to-compromise,
+  Markov check, propagation rate, AgentLog (cross-metric logging).
+- `utility.py` — Utility Under Attack (metric.md §7): TargetTask + U_clean/U_attack/ΔU.
 
 ---
 
@@ -91,7 +93,8 @@ xấp xỉ chuẩn trong `_ci()`.
 |---|---|
 | `HopOutcome` | Một mẫu (sample) cho 1 hop **trong natural run**: `src→dst`, compromise status, kèm `asv`/`mr`; `step` = message-passing round |
 | `EdgeTrial` | Một trial **controlled per-edge** (§1): `src→dst`, `dst_compromised` (src luôn forced compromised) |
-| `PropagationPath` | Kết quả 1 trial tự nhiên: `compromised` dict + `hops` + `node_order` + `time/hops_to_compromise` (round) |
+| `AgentLog` | Log cross-metric của MỘT agent-instance: role, input+provenance, output, round, ASV/MR/M_t, C (metric.md "Cross-Metric Logging") |
+| `PropagationPath` | Kết quả 1 trial tự nhiên: `compromised` dict + `hops` + `node_order` + `time/hops_to_compromise` (round) + `agent_logs` + `final_output` (utility) |
 | `SummaryStats` | mean/std/count/CI đóng gói cho một đại lượng |
 | `_binom_summary()` / `_wilson_bounds()` | SummaryStats cho Bernoulli với **Wilson CI** (metric.md §1) |
 | `_ci()` | Xấp xỉ chuẩn — chỉ cho đại lượng KHÔNG phải Bernoulli (R0 counts, propagation rate) |
@@ -102,7 +105,11 @@ xấp xỉ chuẩn trong `_ci()`.
 | `propagation_rate()` | Tính tỷ lệ lan truyền |
 | `hops_to_compromise()` | Phân bố H_t (§6): mean/median/min/max + censored rate |
 | `markov_test()` | Kiểm định Markov (§2): ASR vs ∏ŝᵢ kèm CI (chỉ chain) |
-| `propagation_rate()` | Tính tỷ lệ lan truyền |
+
+File đi kèm `metrics/utility.py` — target-task scoring cho §7:
+- `TargetTask` / `CleanAnswerTask` — M_t của legitimate task (mặc định: final output
+  không bị nhiễm injected payload; `reference` = ground truth nếu có).
+- `utility_under_attack()` → U_clean / U_attack / ΔU / retention.
 
 ---
 
@@ -251,16 +258,18 @@ def summarize(paths, edge_trials=None, config=None):
     }
 ```
 
-→ Kết quả đưa vào `summary.json` / `hops.csv` / report `.md`.
+`utility` được `run_benchmark` thêm vào metrics khi `config.measure_utility=True`
+(xem `metrics/utility.py` và `benchmark/runner.py::_run_utility`).
+
+→ Kết quả đưa vào `summary.json` / `hops.csv` / `agent_logs.jsonl` / report `.md`.
 
 ---
 
 ## 12. Hướng mở rộng (còn thiếu theo kế hoạch)
 
-- **Hops-to-compromise** (§6): đã báo mean/median/min/max + censored rate; nếu cần
-  thêm histogram đầy đủ của H_t (đang có sẵn raw hops để vẽ).
-- **Utility under attack** (§7): clean-run vs attack-run cho từng defense.
-- **Cross-metric logging** đầy đủ (role, input/output, ASV/MR, M_t, C) cho từng
-  agent instance.
+- **Task family thật cho utility/ASV/MR**: hiện dùng marker-echo (mock) và
+  `CleanAnswerTask` (§7) — khi có task cụ thể (classification/generation/tool-use),
+  cắm `TargetTask` + `TaskAssessor` riêng với M_t/y^t thật.
+- **Histogram đầy đủ của H_t** (§6) — raw hops đã có sẵn để vẽ.
 - **CI Clopper–Pearson** cho `s` (hiện dùng Wilson — cũng được metric.md §1 cho
   phép) nếu cần một trong hai phương án chính xác hơn ở tỷ lệ cực đoan.

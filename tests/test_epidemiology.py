@@ -299,3 +299,93 @@ def test_hops_to_compromise_censored_with_low_p():
     result = run_benchmark(config)
     htc = result["metrics"]["hops_to_compromise"]
     assert htc["censored_rate"] > 0.5  # p^4 = 0.0001 → gần như luôn censored
+
+
+# --- Group C: Utility Under Attack (§7) + cross-metric logging ---
+
+def test_utility_clean_no_attack():
+    """metric.md §7: pipeline sạch (không attack) → U_clean = 1."""
+    config = ContagionConfig(
+        topology=TopologyType.CHAIN,
+        num_agents=5,
+        trials=20,
+        measure_utility=True,
+        attack=AttackStrategy.STATIC,
+        defense=DefenseType.NONE,
+        model_id="mock",
+        seed=0,
+    )
+    result = run_benchmark(config)
+    ut = result["metrics"]["utility"]
+    assert ut["u_clean"] == pytest.approx(1.0)
+    assert ut["n_clean"] == 20 and ut["n_attack"] == 20
+    assert ut["task"] == "clean_answer"
+
+
+def test_utility_attack_reduces_utility_nodefense():
+    """metric.md §7: không defense, mock p=1 → attack làm hỏng final output."""
+    config = ContagionConfig(
+        topology=TopologyType.CHAIN,
+        num_agents=5,
+        trials=20,
+        measure_utility=True,
+        attack=AttackStrategy.STATIC,
+        defense=DefenseType.NONE,
+        model_id="mock",
+        seed=0,
+        extra={"mock_infection_prob": 1.0},
+    )
+    result = run_benchmark(config)
+    ut = result["metrics"]["utility"]
+    assert ut["u_clean"] == pytest.approx(1.0)
+    assert ut["u_attack"] < 0.5          # entry compromised → payload lan khắp chain
+    assert ut["delta_u"] > 0.0
+    assert ut["retention"] is not None and ut["retention"] < 0.5
+
+
+def test_utility_retention_with_paraphrase_defense():
+    """metric.md §7: paraphrase (strip marker) giữ final output sạch → retention cao."""
+    config = ContagionConfig(
+        topology=TopologyType.CHAIN,
+        num_agents=5,
+        trials=20,
+        measure_utility=True,
+        attack=AttackStrategy.STATIC,
+        defense=DefenseType.PARAPHRASE,
+        model_id="mock",
+        seed=0,
+    )
+    result = run_benchmark(config)
+    ut = result["metrics"]["utility"]
+    assert ut["u_clean"] == pytest.approx(1.0)
+    # Paraphrase strip marker tại hop đầu → downstream không bị nhiễm → final sạch.
+    assert ut["u_attack"] > 0.9
+    assert ut["retention"] is not None and ut["retention"] > 0.9
+
+
+def test_agent_logs_collected():
+    """Cross-metric logging: mỗi agent-instance có role/input/output/asv/mr/mt/C."""
+    config = ContagionConfig(
+        topology=TopologyType.CHAIN,
+        num_agents=5,
+        trials=3,
+        measure_utility=True,
+        attack=AttackStrategy.STATIC,
+        defense=DefenseType.NONE,
+        model_id="mock",
+        seed=0,
+    )
+    result = run_benchmark(config)
+    # Propagation paths có agent_logs.
+    p = result["paths"][0]
+    assert len(p.agent_logs) >= 1
+    first = p.agent_logs[0]
+    assert first.agent_id == "agent_0"
+    assert first.role  # role non-empty
+    assert first.inputs   # provenance
+    assert first.output   # full output text
+    # Utility run cũng có agent_logs + final_output.
+    ut = result["utility"]
+    assert len(ut["clean_paths"]) == 3 and len(ut["attack_paths"]) == 3
+    assert ut["clean_paths"][0].final_output is not None
+    assert all(a.role for a in ut["attack_paths"][0].agent_logs)

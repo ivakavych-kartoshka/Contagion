@@ -56,7 +56,7 @@ from ..core import (
 from ..defenses.mechanisms import build_defense
 from ..llm.base import LLMClient, LLMPolicy, SingleModelPolicy, MockLLMClient
 from ..metrics.assessment import CompromiseRule, TaskAssessor, build_assessor
-from ..metrics.epidemiology import EdgeTrial, HopOutcome, PropagationPath
+from ..metrics.epidemiology import AgentLog, EdgeTrial, HopOutcome, PropagationPath
 from ..topology.graph import AgentGraph, build_graph
 
 
@@ -226,6 +226,7 @@ class Runner:
         visited_compromised: Dict[str, bool] = {a: False for a in ordered}
         incoming: Dict[str, List[Message]] = {a: [] for a in ordered}
         hops: List[HopOutcome] = []
+        agent_logs: List[AgentLog] = []
         processed = set()
 
         # === BƯỚC 4: SEED INFECTION (metric.md §2) ===
@@ -233,8 +234,22 @@ class Runner:
         # Output của entry được tạo ở trạng thái compromised (chắc chắn mang
         # payload) và forward xuống downstream; propagation tiếp diễn tự nhiên.
         entry_response = self._compromised_output(agents[entry], strategy)
+        entry_assess = self.assessor.assess(entry_response, agents[entry].client)
         compromised[entry] = True
         visited_compromised[entry] = True
+        agent_logs.append(
+            AgentLog(
+                trial_id=trial_id,
+                agent_id=entry,
+                role=agents[entry].role.value,
+                step=0,
+                inputs=[f"ATTACKER: {strategy.payload.render()}"],
+                output=entry_response,
+                asv=entry_assess.asv,
+                mr=entry_assess.mr,
+                compromised=True,
+            )
+        )
         self._forward(graph, agents, entry, entry_response, strategy, incoming)
 
         # === BƯỚC 5: BFS LOOP theo ROUND (message-passing rounds) ===
@@ -261,6 +276,21 @@ class Runner:
                 is_comp = assess.compromised
                 visited_compromised[aid] = is_comp
                 compromised[aid] = is_comp
+
+                # CROSS-METRIC LOG: mỗi agent-instance được kích hoạt
+                agent_logs.append(
+                    AgentLog(
+                        trial_id=trial_id,
+                        agent_id=aid,
+                        role=agents[aid].role.value,
+                        step=round_no,
+                        inputs=[f"{m.sender_id}: {m.content}" for m in msgs],
+                        output=response,
+                        asv=assess.asv,
+                        mr=assess.mr,
+                        compromised=is_comp,
+                    )
+                )
 
                 # GHI HOP OUTCOME cho từng message agent-agent nhận được
                 # (hop từ ATTACKER→entry không phải hop giữa 2 agent nên không ghi)
@@ -296,6 +326,7 @@ class Runner:
             compromised=compromised,
             hops=hops,
             node_order=list(ordered),
+            agent_logs=agent_logs,
         )
         # metric.md §6: hops-to-compromise = round đầu tiên có compromise
         # (ngoài entry — entry compromised by construction ở round 0).
@@ -412,6 +443,148 @@ class Runner:
     # =========================================================================
     # BATCH RUN: N trials
     # =========================================================================
+
+    # =========================================================================
+    # UTILITY PROTOCOL (metric.md §7): pipeline workflow clean vs attack
+    # =========================================================================
+
+    def run_utility_protocol(self, attack: bool) -> List[PropagationPath]:
+        """Chạy pipeline workflow cho utility (metric.md §7).
+
+        Khác natural propagation protocol (§2): ở đây MỌI agent đã xử lý đều
+        forward output của mình xuống successors (workflow thật — network vẫn
+        hoàn thành legitimate task), compromise chỉ thay đổi NỘI DUNG output.
+
+        - ``attack=False`` (clean): entry nhận target-task input benign, không
+          có injection ở đâu → đo U_clean.
+        - ``attack=True``: entry bị compromised by construction (C_entry = 1)
+          như §2, payload lan trong workflow → đo U_attack.
+
+        Trả về N path với ``final_output`` = output text của agent đích (target)
+        để M_t (utility.py) chấm.
+        """
+        n = self.config.utility_trials or self.config.trials
+        return [self._run_workflow_trial(t, attack=attack) for t in range(n)]
+
+    def _run_workflow_trial(self, trial_id: int, attack: bool) -> PropagationPath:
+        """MỘT workflow trial (all-forward) cho utility protocol."""
+        graph = build_graph(
+            self.config.topology, self.config.num_agents, seed=self.rng.randrange(0, 10**6)
+        )
+        agents = self._build_agents(graph)
+        strategy = self._build_attack()
+        ordered = graph.topological_order()
+        entry = self.config.entry_agent
+        if entry not in ordered:
+            entry = ordered[0]
+
+        compromised: Dict[str, bool] = {a: False for a in ordered}
+        visited_compromised: Dict[str, bool] = {a: False for a in ordered}
+        incoming: Dict[str, List[Message]] = {a: [] for a in ordered}
+        outputs: Dict[str, str] = {}
+        agent_logs: List[AgentLog] = []
+        processed = set()
+        task_text = str(self.config.extra.get("target_task_text", "[legitimate task input]"))
+
+        def _log(aid: str, step: int, msgs: List[Message], response: str,
+                 assess, comp: bool) -> None:
+            agent_logs.append(
+                AgentLog(
+                    trial_id=trial_id,
+                    agent_id=aid,
+                    role=agents[aid].role.value,
+                    step=step,
+                    inputs=[f"{m.sender_id}: {m.content}" for m in msgs],
+                    output=response,
+                    asv=assess.asv,
+                    mr=assess.mr,
+                    compromised=comp,
+                )
+            )
+
+        def _workflow_forward(aid: str, response: str, is_comp: bool) -> None:
+            """Forward trong workflow: agent LUÔN forward output (deployment thật).
+
+            Re-injection policy chỉ áp dụng khi agent thực sự compromised
+            (nội dung output bị hijack); agent benign forward output sạch.
+            """
+            for dst in graph.successors(aid):
+                if is_comp and self.config.re_injection != ReInjectionMode.NONE:
+                    policy = ReInjectionPolicy(self.config.re_injection, strategy)
+                    content = policy.apply(response)
+                else:
+                    content = response
+                incoming[dst].append(Message(sender_id=aid, receiver_id=dst, content=content))
+
+        if attack:
+            # Entry compromised by construction; output mang payload.
+            entry_response = self._compromised_output(agents[entry], strategy)
+            compromised[entry] = True
+            visited_compromised[entry] = True
+            entry_msgs = [Message(sender_id="ATTACKER", receiver_id=entry,
+                                  content=strategy.payload.render(), field="tool_response")]
+            _log(entry, 0, entry_msgs, entry_response,
+                 self.assessor.assess(entry_response, agents[entry].client), True)
+            outputs[entry] = entry_response
+        else:
+            # Clean: entry nhận target-task input benign (không marker).
+            entry_msgs = [Message(sender_id="TASK", receiver_id=entry,
+                                  content=task_text, field="task")]
+            entry_response = agents[entry].steps(entry_msgs)
+            assess = self.assessor.assess(entry_response, agents[entry].client)
+            compromised[entry] = assess.compromised
+            visited_compromised[entry] = assess.compromised
+            _log(entry, 0, entry_msgs, entry_response, assess, assess.compromised)
+            outputs[entry] = entry_response
+
+        # Forward output của entry tới successors (workflow: luôn forward).
+        _workflow_forward(entry, entry_response, compromised[entry])
+
+        max_rounds = self.config.max_hops
+        round_no = 0
+        pending = [a for a in ordered if a != entry]
+        while pending and round_no < max_rounds:
+            batch = [a for a in pending if len(incoming.get(a, [])) > 0]
+            if not batch:
+                break
+            round_no += 1
+            for aid in batch:
+                msgs = incoming.get(aid, [])
+                response = agents[aid].steps(msgs)
+                assess = self.assessor.assess(response, agents[aid].client)
+                is_comp = assess.compromised
+                visited_compromised[aid] = is_comp
+                compromised[aid] = is_comp
+                _log(aid, round_no, msgs, response, assess, is_comp)
+                outputs[aid] = response
+                # Workflow: luôn forward (benign hay compromised).
+                _workflow_forward(aid, response, is_comp)
+                processed.add(aid)
+                pending = [a for a in pending if a not in processed]
+            if not pending:
+                break
+
+        target = self._utility_target(ordered)
+        path = PropagationPath(
+            trial_id=trial_id,
+            compromised=compromised,
+            hops=[],           # utility protocol không ghi hop propagation
+            node_order=list(ordered),
+            agent_logs=agent_logs,
+            final_output=outputs.get(target),
+        )
+        comp_rounds = [lg.step for lg in agent_logs if lg.compromised and lg.step > 0]
+        if comp_rounds:
+            path.time_to_compromise = min(comp_rounds)
+            path.hops_to_compromise = min(comp_rounds)
+        return path
+
+    def _utility_target(self, ordered: List[str]) -> str:
+        """Agent tạo final output của network cho utility (metric.md §7: F(.))."""
+        tg = self.config.extra.get("target_agents")
+        if isinstance(tg, (list, tuple)) and tg:
+            return str(tg[0])
+        return ordered[-1] if ordered else ""
 
     def run(self) -> List[PropagationPath]:
         """Chạy N trials và trả về danh sách PropagationPath.

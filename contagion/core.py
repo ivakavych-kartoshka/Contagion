@@ -120,3 +120,12 @@ class ContagionConfig:
     # practical floor of N >= 30, with N >= 50-100 preferred for headline edges.
     per_edge_trials: int = 30
 
+    # --- Utility Under Attack (docs/metric.md §7) ---
+    # If True, run_benchmark additionally runs PAIRED clean/attack *pipeline*
+    # trials (agents always forward outputs, as in a real deployment) to measure
+    # U_clean, U_attack, Delta_U and utility retention per defense config.
+    # ``utility_trials`` (optional) overrides the number of utility trials;
+    # defaults to ``trials``.
+    measure_utility: bool = False
+    utility_trials: Optional[int] = None
+
