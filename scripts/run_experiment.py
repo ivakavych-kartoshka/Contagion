@@ -40,7 +40,7 @@ def main() -> int:
     print("\n=== Summary ===")
     print(f"  n_trials        : {m['n_trials']}")
     print(f"  per-hop survival: {m['survival']}")
-    print(f"  end-to-end      : {m['end_to_end']['mean']:.4f}")
+    print(f"  ASR (e2e)       : {m['asr']['mean']:.4f}")
     print(f"  R0              : {m['r0']['mean']:.4f}")
     print(f"  propagation rate: {m['propagation_rate']['mean']:.4f}")
     print(f"\nResults written to: {base}")

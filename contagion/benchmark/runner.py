@@ -27,34 +27,149 @@ class NumpyEncoder(json.JSONEncoder):
 
 from ..core import ContagionConfig
 from ..metrics.epidemiology import (
+    EdgeTrial,
     PropagationPath,
-    end_to_end_propagation,
-    per_hop_survival,
+    SummaryStats,
+    attack_success_rate,
+    controlled_per_edge_survival,
+    hops_to_compromise,
+    markov_test,
     propagation_rate,
     reproduction_number,
 )
-from ..runner.engine import run_experiment
+from ..runner.engine import Runner
 
 
 def run_benchmark(config: ContagionConfig) -> Dict:
-    """Run one configuration and return a structured result with all metrics."""
-    paths = run_experiment(config)
+    """Run one configuration and return a structured result with all metrics.
+
+    Executes the protocols required by docs/metric.md:
+
+    - *natural end-to-end runs* (:meth:`Runner.run`) → ASR, R0, propagation rate
+      (metric.md §2, §5): entry is compromised by construction (C_0 = 1) and
+      compromise propagates naturally downstream;
+    - *controlled per-edge trials* (:meth:`Runner.run_per_edge_protocol`) →
+      per-edge survival ``s`` (metric.md §1): each trial forces C_src = 1 by
+      direct injection, feeds the compromised output to the receiver and judges
+      it with the ASV/MR threshold rule;
+    - *utility pipeline* (:meth:`Runner.run_utility_protocol`, khi
+      ``config.measure_utility``) → U_clean / U_attack / Delta_U / retention
+      (metric.md §7).
+
+    The propagation protocols are deliberately independent so that the
+    comparison ``ASR ~ prod(s_i)`` is a valid empirical test of the Markov
+    assumption.
+    """
+    runner = Runner(config)
+    try:
+        paths = runner.run()
+        edge_trials = runner.run_per_edge_protocol()
+        utility = None
+        if config.measure_utility:
+            utility = _run_utility(config, runner)
+    finally:
+        runner.close()
+    metrics = summarize(paths, edge_trials, config)
+    if utility is not None:
+        metrics["utility"] = utility["metrics"]
     return {
-        "metrics": summarize(paths, config),
+        "metrics": metrics,
         "paths": paths,
+        "edge_trials": edge_trials,
+        "utility": utility,
         "config": asdict(config) if config is not None else None,
     }
 
 
-def summarize(paths: List[PropagationPath], config: Optional[ContagionConfig] = None) -> Dict:
-    """Aggregate raw paths into the epidemiological metric table."""
+def _run_utility(config: ContagionConfig, runner: Runner) -> Dict:
+    """Paired clean/attack pipeline runs → §7 utility metrics."""
+    from ..metrics.utility import build_target_task, result_to_dict, utility_under_attack
+
+    clean_paths = runner.run_utility_protocol(attack=False)
+    attack_paths = runner.run_utility_protocol(attack=True)
+    task = build_target_task(
+        marker="INJECTED_PAYLOAD",
+        reference=config.extra.get("target_task_reference"),
+    )
+    res = utility_under_attack(
+        task,
+        clean_outputs=[p.final_output for p in clean_paths],
+        attack_outputs=[p.final_output for p in attack_paths],
+    )
     return {
-        "survival": {k: _stat(s) for k, s in per_hop_survival(paths).items()},
-        "end_to_end": _stat(end_to_end_propagation(paths)),
-        "r0": _stat(reproduction_number(paths)),
-        "propagation_rate": _stat(propagation_rate(paths)),
-        "n_trials": len(paths),
+        "clean_paths": clean_paths,
+        "attack_paths": attack_paths,
+        "metrics": result_to_dict(res),
     }
+
+
+def summarize(
+    paths: List[PropagationPath],
+    edge_trials: Optional[List[EdgeTrial]] = None,
+    config: Optional[ContagionConfig] = None,
+) -> Dict:
+    """Aggregate the two protocols into the epidemiological metric table.
+
+    - ``survival``: per-edge ``s`` estimated from the CONTROLLED per-edge
+      protocol (metric.md §1), where C_src = 1 was forced; overall = pooled.
+    - ``asr``: end-to-end attack success rate measured on the NATURAL runs
+      (metric.md §2): mean of Y^(r) over all completed runs, target = last
+      agent of each path's node order (chain end-to-end semantics).
+    - ``r0``: empirical reproduction number (metric.md §5).
+    - ``r0_ds_check``: metric.md §5 consistency check — d * s_bar (d = mean
+      out-degree over nodes, s_bar = mean per-edge survival) reported
+      alongside ``r0``.
+    - ``propagation_rate``: fraction of agents (excluding entry) compromised.
+    - ``hops_to_compromise``: metric.md §6 — mean/median/min/max hops until
+      the target is compromised, plus the right-censoring rate (trials where
+      the target was never compromised within the horizon).
+    - ``markov_check``: metric.md §2 / theory §2.5 — compares the empirical
+      ASR against prod_i s_hat_i (controlled per-edge); only defined for pure
+      chains (None otherwise).
+    """
+    surv = controlled_per_edge_survival(edge_trials or [])
+    edges = {k for k in surv if k != "overall"}
+    targets = None
+    entry_agent = config.entry_agent if config is not None else "agent_0"
+    if config is not None:
+        tg = config.extra.get("target_agents")
+        if isinstance(tg, (list, tuple)) and tg:
+            targets = tg
+    return {
+        "survival": {k: _stat(s) for k, s in surv.items()},
+        "asr": _stat(attack_success_rate(paths, targets=targets)),
+        "r0": _stat(reproduction_number(paths)),
+        "r0_ds_check": _ds_check(surv, config, edges),
+        "propagation_rate": _stat(propagation_rate(paths)),
+        "hops_to_compromise": hops_to_compromise(paths, targets=targets),
+        "markov_check": markov_test(paths, edge_trials or [], targets=targets, entry_agent=entry_agent),
+        "n_trials": len(paths),
+        "n_per_edge_trials": _per_edge_n(edge_trials),
+    }
+
+
+def _ds_check(
+    surv: Dict[str, SummaryStats],
+    config: Optional[ContagionConfig],
+    edges: set,
+) -> Optional[Dict]:
+    """d * s_bar consistency target for R0 (metric.md §5).
+
+    d = average out-degree over network nodes = |E| / |V| for these topologies;
+    s_bar = mean per-edge survival over measured edges. R0_hat should converge
+    toward d * s_bar when the topology is regular and s homogeneous.
+    """
+    if config is None or not edges:
+        return None
+    s_bar = float(np.mean([surv[e].mean for e in edges]))
+    d = len(edges) / float(config.num_agents)
+    return {"d": d, "s_bar": s_bar, "ds": d * s_bar}
+
+
+def _per_edge_n(edge_trials: Optional[List[EdgeTrial]]) -> int:
+    trials = edge_trials or []
+    keys = {f"{t.src}->{t.dst}" for t in trials}
+    return len(trials) // max(1, len(keys)) if keys else 0
 
 
 def _stat(s) -> Optional[Dict]:
@@ -73,9 +188,15 @@ def save_results(
     tag: Optional[str] = None,
     write_logs: bool = True,
 ) -> Path:
-    """Persist a summarized run (and optional raw per-hop logs) as JSON/CSV.
+    """Persist a summarized run (and optional raw logs) as JSON/CSV/JSONL.
 
-    Returns the directory the artifacts were written into.
+    Writes:
+    - ``summary.json`` — metrics (incl. utility khi đo) + config;
+    - ``hops.csv`` — per-hop propagation log (natural runs);
+    - ``agent_logs.jsonl`` — cross-metric per-agent-instance log (metric.md
+      "Cross-Metric Logging Requirements") từ natural runs + utility pipeline
+      (khi ``measure_utility``), mỗi dòng một JSON;
+    - ``report.md`` — report Markdown đọc được.
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -90,8 +211,34 @@ def save_results(
     )
     if write_logs:
         _write_hop_logs(paths=results.get("paths", []), out=base / "hops.csv")
+        _write_agent_logs(results, base / "agent_logs.jsonl")
     write_report(results, base / "report")
     return base
+
+
+def _collect_agent_logs(results: Dict) -> List[Dict]:
+    """Gom agent-instance logs từ mọi nguồn (natural + utility clean/attack)."""
+    rows: List[Dict] = []
+    mode = "propagation"
+    for p in results.get("paths", []):
+        for lg in p.agent_logs:
+            rows.append({"mode": mode, **asdict(lg)})
+    util = results.get("utility")
+    if util:
+        for mode, key in (("utility_clean", "clean_paths"), ("utility_attack", "attack_paths")):
+            for p in util.get(key, []):
+                for lg in p.agent_logs:
+                    rows.append({"mode": mode, **asdict(lg)})
+    return rows
+
+
+def _write_agent_logs(results: Dict, out: Path) -> None:
+    rows = _collect_agent_logs(results)
+    if not rows:
+        return
+    with open(out, "w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False, cls=NumpyEncoder) + "\n")
 
 
 def _write_hop_logs(paths: List[PropagationPath], out: Path) -> None:
@@ -166,12 +313,12 @@ def write_report(results: Dict, out: Path) -> Path:
             f"| `s` ({key}) | {m.get('mean', 0):.4f} | {m.get('std', 0):.4f} | "
             f"{m.get('n', 0)} | [{m.get('ci_low', 0):.4f}, {m.get('ci_high', 0):.4f}] |"
         )
-    e2e = metrics.get("end_to_end", {})
+    asr = metrics.get("asr", {})
     r0 = metrics.get("r0", {})
     pr = metrics.get("propagation_rate", {})
     lines.append(
-        f"| end-to-end `P_E2E` | {e2e.get('mean', 0):.4f} | {e2e.get('std', 0):.4f} | "
-        f"{e2e.get('n', 0)} | [{e2e.get('ci_low', 0):.4f}, {e2e.get('ci_high', 0):.4f}] |"
+        f"| ASR (end-to-end) | {asr.get('mean', 0):.4f} | {asr.get('std', 0):.4f} | "
+        f"{asr.get('n', 0)} | [{asr.get('ci_low', 0):.4f}, {asr.get('ci_high', 0):.4f}] |"
     )
     lines.append(
         f"| reproduction `R0` | {r0.get('mean', 0):.4f} | {r0.get('std', 0):.4f} | "
@@ -182,6 +329,45 @@ def write_report(results: Dict, out: Path) -> Path:
         f"{pr.get('n', 0)} | [{pr.get('ci_low', 0):.4f}, {pr.get('ci_high', 0):.4f}] |"
     )
     lines.append("")
+
+    # Hops-to-compromise (metric.md §6)
+    htc = metrics.get("hops_to_compromise")
+    if htc and htc.get("n_total"):
+        lines.append("| Metric | giá trị |")
+        lines.append("|---|---|")
+        lines.append(f"| hops-to-compromise mean | {htc.get('mean')} |")
+        lines.append(f"| hops-to-compromise median | {htc.get('median')} |")
+        lines.append(f"| min / max | {htc.get('min')} / {htc.get('max')} |")
+        lines.append(f"| trials target compromised | {htc.get('n_compromised')} / {htc.get('n_total')} |")
+        lines.append(f"| censored (never compromised) rate | {htc.get('censored_rate'):.3f} |")
+        lines.append("")
+
+    # Markov check (metric.md §2)
+    mc = metrics.get("markov_check")
+    if mc:
+        lines.append("| Kiểm định Markov | ASR | prod(s_i) | verdict |")
+        lines.append("|---|---|---|---|")
+        lo, hi = mc.get("product_s_ci") or [None, None]
+        ci_txt = "n/a" if lo is None else f"[{lo:.4f}, {hi:.4f}]"
+        lines.append(
+            f"| ASR vs ∏sᵢ | {mc.get('asr'):.4f} | {mc.get('product_s'):.4f} {ci_txt} | {mc.get('verdict')} |"
+        )
+        lines.append("")
+
+    # Utility Under Attack (metric.md §7)
+    ut = metrics.get("utility")
+    if ut:
+        ret = ut.get("retention")
+        ret_txt = "n/a (U_clean=0)" if ret is None else f"{ret:.4f}"
+        lines.append("| Utility (§7) | giá trị |")
+        lines.append("|---|---|")
+        lines.append(f"| U_clean | {ut.get('u_clean'):.4f} |")
+        lines.append(f"| U_attack | {ut.get('u_attack'):.4f} |")
+        lines.append(f"| Delta_U = U_clean − U_attack | {ut.get('delta_u'):.4f} |")
+        lines.append(f"| Utility retention = U_attack / U_clean | {ret_txt} |")
+        lines.append(f"| n_clean / n_attack | {ut.get('n_clean')} / {ut.get('n_attack')} |")
+        lines.append(f"| target task family | `{ut.get('task')}` |")
+        lines.append("")
 
     # Hop log (first few trials)
     lines.append("## 3. Hop log (ví dụ 5 trial đầu)")
@@ -196,21 +382,47 @@ def write_report(results: Dict, out: Path) -> Path:
             )
     lines.append("")
 
+    # Agent-instance log (cross-metric logging, first few rows)
+    logs = _collect_agent_logs(results)
+    if logs:
+        lines.append("## 3b. Agent-instance log (cross-metric; 3 dòng đầu)")
+        lines.append("")
+        lines.append("| mode | trial | agent | role | step | asv | mr | C |")
+        lines.append("|---|---|---|---|---|---|---|---|")
+        for lg in logs[:3]:
+            lines.append(
+                f"| {lg.get('mode')} | {lg.get('trial_id')} | {lg.get('agent_id')} | "
+                f"{lg.get('role')} | {lg.get('step')} | {lg.get('asv')} | {lg.get('mr')} | "
+                f"{'✔' if lg.get('compromised') else '✘'} |"
+            )
+        lines.append(f"  (đầy đủ: `agent_logs.jsonl`, {len(logs)} rows)")
+        lines.append("")
+
     # Interpretation
     lines.append("## 4. Diễn giải")
     lines.append("")
     lines.append(
         f"- `s = {overall.get('mean', 0):.2f}` → payload {100 * overall.get('mean', 0):.0f}% "
-        "sống sót qua mỗi hop."
+        "sống sót qua mỗi hop (controlled per-edge protocol, metric.md §1; CI Wilson)."
     )
     lines.append(
         f"- `R0 = {r0.get('mean', 0):.2f}` → "
         + ("**supercritical** (R0 ≥ 1): lây lan duy trì/bùng nổ." if r0.get("mean", 0) >= 1 else "**subcritical** (R0 < 1): lây lan suy giảm.")
     )
     lines.append(
-        f"- `P_E2E = {e2e.get('mean', 0):.2f}` → injection tới được agent cuối "
-        f"trong {100 * e2e.get('mean', 0):.0f}% các trial."
+        f"- `ASR = {asr.get('mean', 0):.2f}` → injection tới được agent cuối "
+        f"trong {100 * asr.get('mean', 0):.0f}% các trial end-to-end."
     )
+    lines.append(
+        "- Ghi chú: `s` đo bằng giao thức controlled per-edge (metric.md §1); "
+        "`ASR` đo bằng các run end-to-end độc lập (metric.md §2); "
+        "`CI` của `s` và `ASR` là Wilson score interval (metric.md §1)."
+    )
+    if mc:
+        lines.append(
+            f"- Kiểm định Markov (metric.md §2): ASR = {mc.get('asr'):.4f} vs "
+            f"∏ŝᵢ = {mc.get('product_s'):.4f} → {mc.get('verdict')}."
+        )
 
     report_path = out.parent / f"{out.name}.md"
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

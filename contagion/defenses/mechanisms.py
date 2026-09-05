@@ -99,6 +99,9 @@ class HopIsolationDefense(Defense):
 
     type = DefenseType.HOP_ISOLATION
 
+    def __init__(self, marker: str = "INJECTED_PAYLOAD"):
+        self.marker = marker
+
     def sanitize(self, untrusted: str) -> Tuple[str, bool]:
         return "", self.marker in untrusted
 
