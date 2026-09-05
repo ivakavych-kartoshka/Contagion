@@ -38,6 +38,9 @@ def load_config(path: Path) -> ContagionConfig:
         max_hops=int(data.get("max_hops", 10)),
         seed=data.get("seed"),
         model_id=data.get("model_id", "mock"),
+        tau_asv=float(data.get("tau_asv", 0.8)),
+        tau_mr=float(data.get("tau_mr", 1.0)),
+        per_edge_trials=int(data.get("per_edge_trials", 30)),
         extra=data.get("extra", {}),
     )
 

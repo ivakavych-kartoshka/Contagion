@@ -24,7 +24,7 @@ def main(argv=None) -> int:
     print(f"[done] topology={config.topology.value} n={config.num_agents} "
           f"attack={config.attack.value} defense={config.defense.value}")
     print(f"  survival={m['survival'].get('overall', {}).get('mean')} "
-          f"e2e={m['end_to_end']['mean']:.3f} r0={m['r0']['mean']:.3f}")
+          f"asr={m['asr']['mean']:.3f} r0={m['r0']['mean']:.3f}")
     print(f"  -> {base}")
     return 0
 

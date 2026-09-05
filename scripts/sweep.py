@@ -75,14 +75,14 @@ def main() -> int:
         rows.append({
             **meta,
             "survival_overall": m["survival"].get("overall", {}).get("mean"),
-            "end_to_end": m["end_to_end"]["mean"],
+            "asr": m["asr"]["mean"],
             "r0": m["r0"]["mean"],
             "propagation_rate": m["propagation_rate"]["mean"],
             "n_trials": m["n_trials"],
         })
 
     cols = ["label", "topology", "n", "attack", "defense",
-            "survival_overall", "end_to_end", "r0", "propagation_rate", "n_trials"]
+            "survival_overall", "asr", "r0", "propagation_rate", "n_trials"]
     with open(args.out / "matrix.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
