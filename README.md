@@ -36,7 +36,7 @@ Mỗi **communication hop** giữa hai agent là một *trust boundary*.
 
 | Đại lượng | Ký hiệu | Định nghĩa |
 |---|---|---|
-| Per-hop survival rate | `s` | `P(C_{i+1}=1 \| C_i=1)` — đo bằng **controlled per-edge protocol** (ép C_src=1, judge dst bằng ASV/MR rule, metric.md §1) |
+| Per-hop survival rate | `s` | `P(C_i=1 \| C_{i-1}=1)` với hop `i` nối `agent_{i-1} → agent_i` — đo bằng **controlled per-edge protocol** (ép C_src=1, judge dst bằng ASV/MR rule, metric.md §1) |
 | End-to-end ASR | `ASR` | xác suất target bị compromised cuối run — đo bằng **natural runs** (entry compromised by construction, metric.md §2) |
 | Reproduction number | `R0` | `mean(Z_i)` over compromised instances, `Z_i` = #downstream compromised trong 1 hop (metric.md §5), kèm consistency check `d·s̄` |
 
@@ -44,8 +44,9 @@ Với `R0 < 1`: *subcritical* (xu hướng lan truyền giảm); `R0 > 1`: *supe
 Hai giao thức đo `s` và `ASR` được tách độc lập để so sánh `ASR ~ ∏ s_i` là kiểm
 định hợp lệ cho giả định Markov (metric.md §2).
 
-Input của agent `i+1` phụ thuộc vào output của agent `i` sau khi bị compromise
-(`x_{i+1} ⊇ out(i)`). Chính cross-hop composition này tạo nên super-spreader structure,
+Input của một agent phụ thuộc vào output của agent ngay trước nó trên cùng một
+hop sau khi agent đó bị compromise (`x_{next} ⊇ out(prev)` — formalism Liu-Gong).
+Chính cross-hop composition này tạo nên super-spreader structure,
 epidemic threshold và propagation dynamics.
 
 ---
