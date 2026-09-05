@@ -68,15 +68,20 @@ class TaskAssessor(abc.ABC):
 
 | Đại lượng | Công thức (metric.md) | Đo từ giao thức |
 |---|---|---|
-| **`s`** — per-hop survival | `P(C_{i+1}=1 \| C_i=1)` | controlled per-edge (§1) |
+| **`s`** — per-hop survival | `P(C_i=1 \| C_{i-1}=1)` (hop-indexed, metric.md §1) | controlled per-edge (§1) |
 | **`ASR`** — attack success rate | empirical `mean_r Y^(r)`, Y = target compromised | natural runs (§2) |
 | **`R0`** — reproduction number | `(1/|I|) Σ_{i∈I} Z_i`, `Z_i` = #downstream compromised trong 1 hop | natural runs (§5) |
 | **`d·s̄`** — consistency check | `d` = mean out-degree, `s̄` = mean per-edge `s` | báo kèm `R0` (§5) |
 | **propagation rate** | `#compromised(trừ entry) / #agents(trừ entry)` | natural runs (diagnostic) |
+| **hops-to-compromise** | mean/median H_t (condition H_t < ∞) + censored rate | natural runs (§6) |
+| **Markov check** | so `ASR` với `∏ ŝ_i` kèm CI | natural runs vs controlled (§2) |
 
 **Nguyên tắc quan trọng:** mọi đại lượng đều được báo kèm **std + count** (và
-95% CI xấp xỉ chuẩn trong `_ci`) — không bao giờ chỉ báo point estimate, vì
-stochasticity và context/memory effects của LLM có thể phá vỡ giả định Markovian.
+CI) — không bao giờ chỉ báo point estimate, vì stochasticity và context/memory
+effects của LLM có thể phá vỡ giả định Markovian. CI của các đại lượng Bernoulli
+(`s` per edge, `ASR`) là **Wilson score interval** (metric.md §1); các đại lượng
+không phải Bernoulli (`R0` theo Z counts, propagation rate per-trial) vẫn dùng
+xấp xỉ chuẩn trong `_ci()`.
 
 ---
 
@@ -84,15 +89,19 @@ stochasticity và context/memory effects của LLM có thể phá vỡ giả đ�
 
 | Thành phần | Mô tả |
 |---|---|
-| `HopOutcome` | Một mẫu (sample) cho 1 hop **trong natural run**: `src→dst`, compromise status, kèm `asv`/`mr` |
+| `HopOutcome` | Một mẫu (sample) cho 1 hop **trong natural run**: `src→dst`, compromise status, kèm `asv`/`mr`; `step` = message-passing round |
 | `EdgeTrial` | Một trial **controlled per-edge** (§1): `src→dst`, `dst_compromised` (src luôn forced compromised) |
-| `PropagationPath` | Kết quả 1 trial tự nhiên: `compromised` dict + `hops` + `node_order` |
+| `PropagationPath` | Kết quả 1 trial tự nhiên: `compromised` dict + `hops` + `node_order` + `time/hops_to_compromise` (round) |
 | `SummaryStats` | mean/std/count/CI đóng gói cho một đại lượng |
-| `_ci()` | Hàm tính CI (hiện dùng xấp xỉ chuẩn; CI Wilson/CP là hướng mở rộng) |
-| `controlled_per_edge_survival()` | Tính `s` per edge từ `List[EdgeTrial]` |
+| `_binom_summary()` / `_wilson_bounds()` | SummaryStats cho Bernoulli với **Wilson CI** (metric.md §1) |
+| `_ci()` | Xấp xỉ chuẩn — chỉ cho đại lượng KHÔNG phải Bernoulli (R0 counts, propagation rate) |
+| `controlled_per_edge_survival()` | Tính `s` per edge từ `List[EdgeTrial]` (Wilson CI) |
 | `per_hop_survival()` | Tính `s` per edge từ **natural logs** (diagnostic, KHÔNG phải estimator chính §1) |
-| `attack_success_rate()` | Tính `ASR` từ natural runs (§2) |
+| `attack_success_rate()` | Tính `ASR` từ natural runs (§2, Wilson CI) |
 | `reproduction_number()` | Ước lượng `R0` (§5) |
+| `propagation_rate()` | Tính tỷ lệ lan truyền |
+| `hops_to_compromise()` | Phân bố H_t (§6): mean/median/min/max + censored rate |
+| `markov_test()` | Kiểm định Markov (§2): ASR vs ∏ŝᵢ kèm CI (chỉ chain) |
 | `propagation_rate()` | Tính tỷ lệ lan truyền |
 
 ---
@@ -115,6 +124,8 @@ class HopOutcome:
 
 - Được sinh trong `runner/engine.py::run_trial()` khi một **agent→agent** message
   được xử lý (hop ATTACKER→entry không phải hop giữa 2 agent nên không ghi).
+- `step` = **message-passing round** (engine xử lý theo round, không phải theo
+  thứ tự agent) — dùng cho hops-to-compromise (metric.md §6).
 - `asv`/`mr` lưu lại để phục vụ log chi tiết (cross-metric logging).
 
 ---
@@ -148,6 +159,8 @@ def controlled_per_edge_survival(edge_trials) -> Dict[str, SummaryStats]:
 ```
 
 - `ŝ_edge = k/N` đúng metric.md §1 (`N·ŝ ~ Binomial(N, s)`).
+- CI của mỗi edge là **Wilson score interval** qua `_binom_summary()` (metric.md §1
+  yêu cầu Wilson hoặc Clopper–Pearson, không dùng Wald/normal approximation).
 - Trả về `s` cho **từng edge** + `overall` (pooled — xem như diagnostic tổng hợp).
 
 ---
@@ -226,13 +239,15 @@ Trong `benchmark/runner.py`:
 def summarize(paths, edge_trials=None, config=None):
     surv = controlled_per_edge_survival(edge_trials or [])
     return {
-        "survival":         {k: _stat(s) for k, s in surv.items()},   # controlled (§1)
-        "asr":              _stat(attack_success_rate(paths)),        # natural (§2)
-        "r0":               _stat(reproduction_number(paths)),        # natural (§5)
-        "r0_ds_check":      _ds_check(surv, config, edges),           # §5 consistency
-        "propagation_rate": _stat(propagation_rate(paths)),
-        "n_trials":         len(paths),
-        "n_per_edge_trials": _per_edge_n(edge_trials),
+        "survival":           {k: _stat(s) for k, s in surv.items()},  # controlled (§1, Wilson CI)
+        "asr":                _stat(attack_success_rate(paths)),       # natural (§2, Wilson CI)
+        "r0":                 _stat(reproduction_number(paths)),       # natural (§5)
+        "r0_ds_check":        _ds_check(surv, config, edges),          # §5 consistency
+        "propagation_rate":   _stat(propagation_rate(paths)),
+        "hops_to_compromise": hops_to_compromise(paths, targets),      # §6
+        "markov_check":       markov_test(paths, edge_trials, targets),# §2 (None nếu không chain)
+        "n_trials":           len(paths),
+        "n_per_edge_trials":  _per_edge_n(edge_trials),
     }
 ```
 
@@ -242,13 +257,10 @@ def summarize(paths, edge_trials=None, config=None):
 
 ## 12. Hướng mở rộng (còn thiếu theo kế hoạch)
 
-- **CI chính xác** cho `s`: hiện `_ci()` dùng xấp xỉ chuẩn; metric.md §1 yêu cầu
-  Wilson hoặc Clopper–Pearson cho Binomial (Group B).
-- Kiểm định **Markov assumption** tự động: so `ASR` (natural) với `∏ ŝ_i`
-  (controlled) kèm CI cho tích (delta method / bootstrap) — metric.md §2.
-- **Hops-to-compromise** (§6) đúng nghĩa *message-passing round* (hiện trường
-  `time_to_compromise` trong engine chỉ là index trong ordered) + báo
-  mean/median & right-censoring rate.
+- **Hops-to-compromise** (§6): đã báo mean/median/min/max + censored rate; nếu cần
+  thêm histogram đầy đủ của H_t (đang có sẵn raw hops để vẽ).
 - **Utility under attack** (§7): clean-run vs attack-run cho từng defense.
 - **Cross-metric logging** đầy đủ (role, input/output, ASV/MR, M_t, C) cho từng
   agent instance.
+- **CI Clopper–Pearson** cho `s` (hiện dùng Wilson — cũng được metric.md §1 cho
+  phép) nếu cần một trong hai phương án chính xác hơn ở tỷ lệ cực đoan.

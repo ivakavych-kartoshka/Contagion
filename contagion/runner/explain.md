@@ -148,19 +148,28 @@ chúng vượt qua ASV/MR threshold rule một cách tự nhiên.
 > mọi agent khác → ASR đo lẫn xác suất entry fail). Giờ entry compromise là điều
 > kiện của định nghĩa ASR (§2), không nằm trong phép đo.
 
-### 7.2. BFS LOOP
+### 7.2. BFS LOOP — theo MESSAGE-PASSING ROUND
+
+Vòng lặp chạy theo **round** (metric.md §6): mỗi while-iteration = một round.
+Toàn bộ agents đã có message ở ĐẦU round được xử lý cùng lúc và ghi cùng
+`step = round`; message forward trong round này chỉ được xử lý ở round kế tiếp.
+→ `HopOutcome.step` và `hops_to_compromise` phản ánh đúng số round, không phải
+thứ tự xử lý từng agent (bug của code cũ).
 
 ```python
-while pending and step < max_hops:
+round_no = 0
+pending = [a for a in ordered if a != entry]
+while pending and round_no < max_hops:
     batch = [a for a in pending if len(incoming.get(a, [])) > 0]
     if not batch:
         break                                # không còn message → dừng
+    round_no += 1
     for aid in batch:
         msgs = incoming.get(aid, [])
         response = agents[aid].steps(msgs)          # (1) agent thực thi 1 hop
         assess = self.assessor.assess(response, agents[aid].client)  # (2) judge
         is_comp = assess.compromised
-        # (3) ghi HopOutcome cho mỗi message agent-agent (kèm asv/mr)
+        # (3) ghi HopOutcome(step=round_no) cho mỗi message agent-agent
         # (4) nếu compromised → self._forward(...)
 ```
 
@@ -223,6 +232,10 @@ path = PropagationPath(trial_id=trial_id,
                        compromised=compromised,
                        hops=hops,
                        node_order=list(ordered))
+# time/hops_to_compromise = round đầu tiên có dst compromised (metric.md §6)
+comp_rounds = [h.step for h in hops if h.dst_compromised]
+if comp_rounds:
+    path.hops_to_compromise = min(comp_rounds)
 ```
 
 → Trả về một `PropagationPath` hoàn chỉnh cho trial này. `node_order` được lưu để
@@ -282,10 +295,12 @@ def run_per_edge_protocol(self) -> List[EdgeTrial]:
 
 | Metric | Nguồn | Cách tính |
 |---|---|---|
-| **Per-hop survival `s`** | `edge_trials` (controlled §1) | `controlled_per_edge_survival()` |
-| **ASR** | natural `paths` (§2) | `attack_success_rate()` |
-| **R0** | natural `paths` (§5) | `reproduction_number()` |
+| **Per-hop survival `s`** | `edge_trials` (controlled §1) | `controlled_per_edge_survival()` (CI Wilson) |
+| **ASR** | natural `paths` (§2) | `attack_success_rate()` (CI Wilson) |
+| **R0** | natural `paths` (§5) | `reproduction_number()` (+ `r0_ds_check`) |
 | **Propagation rate** | natural `paths` | `propagation_rate()` |
+| **Hops-to-compromise** | natural `paths` (§6) | `hops_to_compromise()` (dùng `HopOutcome.step` = round) |
+| **Markov check** | paths + edge_trials (§2) | `markov_test()` (ASR vs ∏ŝᵢ; chỉ chain) |
 
 → chi tiết xem `metrics/explain.md`. Benchmark layer (`benchmark/runner.py`) chạy
 cả `run()` lẫn `run_per_edge_protocol()` rồi gộp metrics.
@@ -299,12 +314,13 @@ ContagionConfig
      │  benchmark.runner.run_benchmark(config)
      ▼
 Runner(config)
-     ├── run()  (N natural runs)        → paths (ASR, R0, prop-rate)
-     └── run_per_edge_protocol()        → edge_trials (s per edge)
+     ├── run()  (N natural runs, theo round) → paths (ASR, R0, hops, prop-rate)
+     └── run_per_edge_protocol()             → edge_trials (s per edge)
      ▼
 summarize(paths, edge_trials, config)
      ▼
-metrics: survival, asr, r0 (+r0_ds_check), propagation_rate, n_trials
+metrics: survival (s, CI Wilson), asr, r0 (+r0_ds_check), hops_to_compromise,
+         markov_check, propagation_rate, n_trials
 ```
 
 ---

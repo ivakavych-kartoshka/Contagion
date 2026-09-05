@@ -32,6 +32,8 @@ from ..metrics.epidemiology import (
     SummaryStats,
     attack_success_rate,
     controlled_per_edge_survival,
+    hops_to_compromise,
+    markov_test,
     propagation_rate,
     reproduction_number,
 )
@@ -85,10 +87,17 @@ def summarize(
       out-degree over nodes, s_bar = mean per-edge survival) reported
       alongside ``r0``.
     - ``propagation_rate``: fraction of agents (excluding entry) compromised.
+    - ``hops_to_compromise``: metric.md §6 — mean/median/min/max hops until
+      the target is compromised, plus the right-censoring rate (trials where
+      the target was never compromised within the horizon).
+    - ``markov_check``: metric.md §2 / theory §2.5 — compares the empirical
+      ASR against prod_i s_hat_i (controlled per-edge); only defined for pure
+      chains (None otherwise).
     """
     surv = controlled_per_edge_survival(edge_trials or [])
     edges = {k for k in surv if k != "overall"}
     targets = None
+    entry_agent = config.entry_agent if config is not None else "agent_0"
     if config is not None:
         tg = config.extra.get("target_agents")
         if isinstance(tg, (list, tuple)) and tg:
@@ -99,6 +108,8 @@ def summarize(
         "r0": _stat(reproduction_number(paths)),
         "r0_ds_check": _ds_check(surv, config, edges),
         "propagation_rate": _stat(propagation_rate(paths)),
+        "hops_to_compromise": hops_to_compromise(paths, targets=targets),
+        "markov_check": markov_test(paths, edge_trials or [], targets=targets, entry_agent=entry_agent),
         "n_trials": len(paths),
         "n_per_edge_trials": _per_edge_n(edge_trials),
     }
@@ -254,6 +265,30 @@ def write_report(results: Dict, out: Path) -> Path:
     )
     lines.append("")
 
+    # Hops-to-compromise (metric.md §6)
+    htc = metrics.get("hops_to_compromise")
+    if htc and htc.get("n_total"):
+        lines.append("| Metric | giá trị |")
+        lines.append("|---|---|")
+        lines.append(f"| hops-to-compromise mean | {htc.get('mean')} |")
+        lines.append(f"| hops-to-compromise median | {htc.get('median')} |")
+        lines.append(f"| min / max | {htc.get('min')} / {htc.get('max')} |")
+        lines.append(f"| trials target compromised | {htc.get('n_compromised')} / {htc.get('n_total')} |")
+        lines.append(f"| censored (never compromised) rate | {htc.get('censored_rate'):.3f} |")
+        lines.append("")
+
+    # Markov check (metric.md §2)
+    mc = metrics.get("markov_check")
+    if mc:
+        lines.append("| Kiểm định Markov | ASR | prod(s_i) | verdict |")
+        lines.append("|---|---|---|---|")
+        lo, hi = mc.get("product_s_ci") or [None, None]
+        ci_txt = "n/a" if lo is None else f"[{lo:.4f}, {hi:.4f}]"
+        lines.append(
+            f"| ASR vs ∏sᵢ | {mc.get('asr'):.4f} | {mc.get('product_s'):.4f} {ci_txt} | {mc.get('verdict')} |"
+        )
+        lines.append("")
+
     # Hop log (first few trials)
     lines.append("## 3. Hop log (ví dụ 5 trial đầu)")
     lines.append("")
@@ -272,7 +307,7 @@ def write_report(results: Dict, out: Path) -> Path:
     lines.append("")
     lines.append(
         f"- `s = {overall.get('mean', 0):.2f}` → payload {100 * overall.get('mean', 0):.0f}% "
-        "sống sót qua mỗi hop (controlled per-edge protocol, metric.md §1)."
+        "sống sót qua mỗi hop (controlled per-edge protocol, metric.md §1; CI Wilson)."
     )
     lines.append(
         f"- `R0 = {r0.get('mean', 0):.2f}` → "
@@ -284,9 +319,14 @@ def write_report(results: Dict, out: Path) -> Path:
     )
     lines.append(
         "- Ghi chú: `s` đo bằng giao thức controlled per-edge (metric.md §1); "
-        "`ASR` đo bằng các run end-to-end độc lập (metric.md §2). So sánh "
-        "`ASR` với tích các `s_i` là kiểm định giả định Markov (chưa tự động)."
+        "`ASR` đo bằng các run end-to-end độc lập (metric.md §2); "
+        "`CI` của `s` và `ASR` là Wilson score interval (metric.md §1)."
     )
+    if mc:
+        lines.append(
+            f"- Kiểm định Markov (metric.md §2): ASR = {mc.get('asr'):.4f} vs "
+            f"∏ŝᵢ = {mc.get('product_s'):.4f} → {mc.get('verdict')}."
+        )
 
     report_path = out.parent / f"{out.name}.md"
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
