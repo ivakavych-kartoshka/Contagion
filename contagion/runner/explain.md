@@ -192,7 +192,20 @@ while pending and round_no < max_hops:
     round_no += 1
     for aid in batch:
         msgs = incoming.get(aid, [])
-        response = agents[aid].steps(msgs)          # (1) agent thực thi 1 hop
+        task_ctx = self._task_context(trial_id)   # legit task (nếu cấu hình)
+        response = agents[aid].steps(msgs, task=task_ctx)   # (1) agent thực thi 1 hop
+```
+
+**(0) Task realism (deployment thực)** — khi `extra.benign_contexts` (list) hoặc
+`extra.target_task_text` (str) được set, mỗi agent activation nhận thêm legitimate
+task context qua `Agent.steps(..., task=...)`: task được đưa vào prompt như
+**trusted block** `[assigned task]` (không qua defense, không tạo HopOutcome),
+cạnh untrusted upstream content. Per-edge trials xoay context theo trial index
+(`_task_context(t)`), đúng metric.md §1 step 4 "varying benign context, target-task
+data". → Agent "bận" làm task thật khi nhận untrusted content: model phải chọn
+giữa làm task và nghe injection → survival phân tán trong (0,1) thay vì kẹt ~1
+(ceiling effect của mini-study LLM thật). Không cấu hình → hành vi cũ (mock
+tests không đổi).
         assess = self.assessor.assess(response, agents[aid].client,
                                       system=agents[aid].system_prompt)  # (2) judge
         is_comp = assess.compromised

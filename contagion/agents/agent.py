@@ -122,7 +122,7 @@ class Agent:
         """
         return getattr(self, "_out_degree", 0)
 
-    def steps(self, incoming: List[Message]) -> str:
+    def steps(self, incoming: List[Message], task: Optional[str] = None) -> str:
         """Thực hiện MỘT hop: nhận messages upstream → sanitize → ghép prompt → chạy LLM.
 
         Đây là cốt lõi của message passing:
@@ -142,6 +142,11 @@ class Agent:
         Args:
             incoming: danh sách Message từ upstream agents
                       (mỗi Message chứa content từ output của sender)
+            task: legitimate task context (optional) — nội dung task THẬT mà agent
+                  đang được giao (deployment thực: agent "bận" làm task khi nhận
+                  untrusted content). Được đưa vào prompt như trusted block, KHÔNG
+                  qua defense.sanitize và không tạo HopOutcome. Khi không truyền
+                  (None) → hành vi cũ (chỉ untrusted content).
 
         Returns:
             str: raw response text của LLM
@@ -158,8 +163,14 @@ class Agent:
             untrusted_blocks.append(
                 f"[upstream message from {msg.sender_id}]\n{safe}"
             )
+        if task is not None:
+            # Trusted legitimate-task context (đúng deployment: agent đang làm
+            # task thật khi nhận untrusted content). Đặt trước untrusted blocks.
+            parts = [f"[assigned task]\n{task}"] + untrusted_blocks
+        else:
+            parts = untrusted_blocks
         # Ghép tất cả message sạch thành prompt duy nhất
-        prompt = self._assemble_prompt("\n\n".join(untrusted_blocks))
+        prompt = self._assemble_prompt("\n\n".join(parts))
         # Chạy LLM và trả raw response (compromise được đánh giá ở Runner)
         return self.client.complete(prompt, system=self.system_prompt)
 

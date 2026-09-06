@@ -169,6 +169,26 @@ class Runner:
         return self._clients[model_id]
 
     # =========================================================================
+    # BENIGN TASK CONTEXT (task realism, docs/metric.md §1: varying benign context)
+    # =========================================================================
+
+    def _task_context(self, idx: int) -> Optional[str]:
+        """Legitimate task text cho activation thứ ``idx`` (trial/per-edge trial).
+
+        Đọc từ config:
+          - ``extra.benign_contexts`` (list) → xoay vòng theo ``idx`` — đúng docs
+            §1: per-edge trials vary benign context giữa các trial;
+          - ``extra.target_task_text`` (str) → dùng cố định.
+        Trả None khi không cấu hình → hành vi cũ (chỉ untrusted content) — mock
+        tests không set nên không đổi.
+        """
+        ctxs = self.config.extra.get("benign_contexts")
+        if isinstance(ctxs, (list, tuple)) and ctxs:
+            return str(ctxs[idx % len(ctxs)])
+        t = self.config.extra.get("target_task_text")
+        return str(t) if t else None
+
+    # =========================================================================
     # ATTACK SETUP
     # =========================================================================
 
@@ -286,8 +306,11 @@ class Runner:
             round_no += 1
             for aid in batch:
                 msgs = incoming.get(aid, [])
+                # Benign task context (deployment thực: agent bận làm legit task
+                # khi nhận untrusted content) — xoay theo trial (docs §1).
+                task_ctx = self._task_context(trial_id)
                 # === CORE: Agent steps() ===
-                response = agents[aid].steps(msgs)
+                response = agents[aid].steps(msgs, task=task_ctx)
                 # === COMPROMISE ASSESSMENT (metric.md §1 threshold rule) ===
                 assess = self.assessor.assess(
                     response, agents[aid].client, system=agents[aid].system_prompt
@@ -297,13 +320,16 @@ class Runner:
                 compromised[aid] = is_comp
 
                 # CROSS-METRIC LOG: mỗi agent-instance được kích hoạt
+                _log_inputs = [f"{m.sender_id}: {m.content}" for m in msgs]
+                if task_ctx is not None:
+                    _log_inputs.insert(0, f"TASK: {task_ctx}")
                 agent_logs.append(
                     AgentLog(
                         trial_id=trial_id,
                         agent_id=aid,
                         role=agents[aid].role.value,
                         step=round_no,
-                        inputs=[f"{m.sender_id}: {m.content}" for m in msgs],
+                        inputs=_log_inputs,
                         output=response,
                         asv=assess.asv,
                         mr=assess.mr,
@@ -441,7 +467,9 @@ class Runner:
                     content=compromised_content,
                     field="tool_response",
                 )
-                response = dst_agent.steps([msg])
+                # Vary benign context per trial (docs metric.md §1 step 4).
+                task_ctx = self._task_context(t)
+                response = dst_agent.steps([msg], task=task_ctx)
                 assess = self.assessor.assess(
                     response, dst_agent.client, system=dst_agent.system_prompt
                 )

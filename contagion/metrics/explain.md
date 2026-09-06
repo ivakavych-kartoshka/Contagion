@@ -117,7 +117,7 @@ xấp xỉ chuẩn trong `_ci()`.
 | `reproduction_number()` | Ước lượng `R0` (§5) |
 | `propagation_rate()` | Tính tỷ lệ lan truyền |
 | `hops_to_compromise()` | Phân bố H_t (§6): mean/median/min/max + censored rate |
-| `markov_test()` | Kiểm định Markov (§2): ASR vs ∏ŝᵢ kèm CI (chỉ chain) |
+| `markov_test()` | Kiểm định Markov (§2): ASR vs ∏ŝᵢ kèm CI (chỉ chain). CI của product: delta-method trên log(ŝ) khi ŝ ở interior; **fallback bootstrap (2000 reps, percentile)** khi ŝ ở biên 0/1 (delta-method không dùng được) — `product_s_ci_method` cho biết phương pháp. |
 
 File đi kèm `metrics/utility.py` — target-task scoring cho §7:
 - `TargetTask` / `CleanAnswerTask` — M_t của legitimate task (mặc định: final output

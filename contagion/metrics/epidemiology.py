@@ -402,6 +402,30 @@ def markov_test(
     lo, hi = None, None
     if np.all(s_means > 0) and se_log > 0:
         lo, hi = float(product * np.exp(-1.96 * se_log)), float(product * np.exp(1.96 * se_log))
+    ci_method = "delta-method(log)"
+    if lo is None:
+        # s_hat nằm ở biên (0 hoặc 1) → delta-method trên log không dùng được.
+        # Fallback: bootstrap percentile CI của product từ chính per-edge trials
+        # (docs metric.md §2: "delta method OR a bootstrap over the s_hat's").
+        # Resample mỗi edge độc lập từ N quan sát Bernoulli của nó, lấy product
+        # của means → phân vị 2.5%/97.5%.
+        raw = {e: [1.0 if t.dst_compromised else 0.0
+                   for t in edge_trials if f"{t.src}->{t.dst}" == e]
+               for e in chain_edges}
+        n_boot = 2000
+        rng = np.random.default_rng(20240607)
+        boots = np.empty(n_boot, dtype=float)
+        for b in range(n_boot):
+            p = 1.0
+            for e in chain_edges:
+                vals = np.asarray(raw[e], dtype=float)
+                if vals.size == 0:
+                    p = 0.0
+                    break
+                p *= float(vals[rng.integers(0, vals.size, size=vals.size)].mean())
+            boots[b] = p
+        lo, hi = float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))
+        ci_method = "bootstrap(2000)"
 
     asr = attack_success_rate(paths, targets=targets)
 
@@ -421,6 +445,7 @@ def markov_test(
         "asr_ci": [asr.ci_low, asr.ci_high],
         "product_s": product,
         "product_s_ci": [lo, hi],
+        "product_s_ci_method": ci_method,
         "n_edges": len(chain_edges),
         "verdict": verdict,
     }
