@@ -5,11 +5,14 @@ Thư mục này là **trái tim lý thuyết** của Contagion: định nghĩa v
 triển khai ở đây khớp với `docs/metric.md` (file nguồn chuẩn) và
 `docs/formula_summary.md`.
 
-Ba file:
+Ba file chính + module validation:
 - `assessment.py` — ASV / MR và threshold rule (metric.md §1, §3, §4).
 - `epidemiology.py` — các estimator `s`, `ASR`, `R0`, hops-to-compromise,
   Markov check, propagation rate, AgentLog (cross-metric logging).
 - `utility.py` — Utility Under Attack (metric.md §7): TargetTask + U_clean/U_attack/ΔU.
+- `validation.py` (Phase-2) — synthetic method validation: kiểm chứng estimator
+  trên dữ liệu có ground-truth biết trước (Wilson coverage, Markov size/power,
+  R0 vs d·s̄ calibration). Driver: `scripts/validate_methods.py` → report.
 
 ---
 
@@ -278,3 +281,32 @@ def summarize(paths, edge_trials=None, config=None):
 - **Histogram đầy đủ của H_t** (§6) — raw hops đã có sẵn để vẽ.
 - **CI Clopper–Pearson** cho `s` (hiện dùng Wilson — cũng được metric.md §1 cho
   phép) nếu cần một trong hai phương án chính xác hơn ở tỷ lệ cực đoan.
+
+---
+
+## 13. Phase-2: Synthetic method validation (`validation.py`)
+
+Trước khi tin tưởng bất kỳ con số nào đo trên LLM thật, ta phải chứng minh các
+estimator hoạt động đúng khi ground-truth **biết trước**. `validation.py` sinh dữ
+liệu tổng hợp *engine-consistent* (cùng shape `PropagationPath`/`EdgeTrial` như
+engine xuất) rồi đo:
+
+| Kiểm chứng | Sinh dữ liệu | Kỳ vọng |
+|---|---|---|
+| **Wilson coverage** (ŝ, ASR) | `synthetic_edge_trials`, Binomial(n,p) biết p | CI 95% chứa p trong ~95% replicate |
+| **Markov size** | `markov_paths` — Markov bậc 1 thật (mỗi hop Bernoulli(s) độc lập) | `markov_test` reject hiếm (≤ ~α; quy tắc CI-overlap bảo thủ) |
+| **Markov power** | `supermarkov_paths` — latent regime mỗi trial (s_lo/s_hi) → ASR_true > ∏s̄ (Jensen) | `markov_test` flag "super-Markov" với xác suất → 1 khi tăng trials |
+| **R0 vs d·s̄** | engine natural runs (mock, s đồng nhất = p) | chain/tree: R0 → d·s̄ khi p → 1; star fan-in lệch cấu trúc |
+
+Phát hiện chính (xem `experiments/results/validation/report.md`, chạy lại bằng
+`python scripts/validate_methods.py`):
+
+- Coverage ~0.92–0.97 quanh 0.95 khắp grid → Wilson đúng nominal level. N=30
+  (floor §1) cho half-width ~0.2–0.33 tại p≈0.5: đủ so sánh tương đối; claim
+  tuyệt đối cần N≈385 (half-width 0.05) hoặc ≈1068 (0.03).
+- Markov size ~0.3–1% → verdict rule bảo thủ (không false-alarm); report phải
+  nói rõ "CI-overlap, conservative", không gán mức 5%.
+- Markov power: latent gap 0.4/0.9 → 0.66 (trials=100) → 0.99 (300): dùng
+  trials ≥ 200–300 để bắt super-/sub-Markov cỡ trung bình.
+- R0 ≈ d·s̄ chỉ trong vùng bão hoà (p → 1) trên topology đều; star fan-in lệch
+  cấu trúc (center out-degree 0) — diễn giải riêng, không gán bằng.
