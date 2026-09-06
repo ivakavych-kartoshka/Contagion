@@ -40,6 +40,39 @@ from ..metrics.epidemiology import (
 from ..runner.engine import Runner
 
 
+def estimate_llm_calls(config: ContagionConfig) -> Dict:
+    """Ước lượng số LLM calls cho một config (trước khi gọi backend thật).
+
+    Trả về {natural, per_edge, utility, direct_reference, total_max}, là chặn
+    TRÊN (upper bound): con số thực phụ thuộc vào propagation (agent chỉ gọi
+    model khi nhận message; entry compromised luôn gọi). Dùng cho dry-run để
+    ước lượng cost khi chạy LLM thật.
+    """
+    from ..topology.graph import build_graph
+
+    g = build_graph(config.topology, config.num_agents)
+    n_edges = len(g.edges)
+    n_agents = config.num_agents
+
+    # Natural runs: mỗi agent nhiều nhất 1 response/trial (entry + downstream).
+    natural = config.trials * n_agents
+    # Controlled per-edge: 1 compromised-output call mỗi edge + N trial mỗi edge.
+    per_edge = n_edges * (1 + config.per_edge_trials)
+    # Utility pipeline: clean + attack, mỗi cái ≤ n_agents call/trial.
+    ut = config.utility_trials or config.trials
+    utility = (2 * ut * n_agents) if config.measure_utility else 0
+    # MR y^direct: cache theo (client, system) — upper bound = số lần assess.
+    direct_reference = natural + (n_edges * 1) + utility
+    total = natural + per_edge + utility + direct_reference
+    return {
+        "natural": natural,
+        "per_edge": per_edge,
+        "utility": utility,
+        "direct_reference": direct_reference,
+        "total_max": total,
+    }
+
+
 def run_benchmark(config: ContagionConfig) -> Dict:
     """Run one configuration and return a structured result with all metrics.
 
@@ -56,10 +89,23 @@ def run_benchmark(config: ContagionConfig) -> Dict:
       ``config.measure_utility``) → U_clean / U_attack / Delta_U / retention
       (metric.md §7).
 
+    Nếu ``config.dry_run=True``: KHÔNG gọi backend (mock hay thật); trả
+    ``call_estimate`` (số LLM calls ước lượng) để kiểm soát cost trước khi
+    chạy LLM thật.
+
     The propagation protocols are deliberately independent so that the
     comparison ``ASR ~ prod(s_i)`` is a valid empirical test of the Markov
     assumption.
     """
+    if config.dry_run:
+        return {
+            "metrics": {},
+            "paths": [],
+            "edge_trials": [],
+            "utility": None,
+            "call_estimate": estimate_llm_calls(config),
+            "config": asdict(config) if config is not None else None,
+        }
     runner = Runner(config)
     try:
         paths = runner.run()
@@ -88,7 +134,7 @@ def _run_utility(config: ContagionConfig, runner: Runner) -> Dict:
     clean_paths = runner.run_utility_protocol(attack=False)
     attack_paths = runner.run_utility_protocol(attack=True)
     task = build_target_task(
-        marker="INJECTED_PAYLOAD",
+        marker=config.marker,
         reference=config.extra.get("target_task_reference"),
     )
     res = utility_under_attack(

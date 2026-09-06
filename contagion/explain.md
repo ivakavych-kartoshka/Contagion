@@ -120,6 +120,10 @@ class ContagionConfig:
     # --- Utility Under Attack (metric.md §7) ---
     measure_utility: bool             = False # bật pipeline clean/attack đo U_clean/U_attack
     utility_trials : Optional[int]    = None  # số utility trials (mặc định = trials)
+    # --- Real-LLM backend & injected-task family (Phase-1) ---
+    provider       : str              = "mock"  # "mock" | "openai" (backend LLM)
+    marker         : str              = "INJECTED_PAYLOAD"  # secret token injected task
+    dry_run        : bool             = False   # true → ước lượng calls, không gọi backend
 ```
 
 Đây là **cấu hình một lần chạy** — tương ứng với 1 ô trong experiment matrix:
@@ -134,13 +138,16 @@ class ContagionConfig:
 | `re_injection` | none/independent/colluding | lan truyền chủ động |
 | `defense` | none/paraphrase/delimiter/... | phòng vệ (ablation) |
 | `content_freedom` | free_text/structured | ablation kỹ thuật field |
-| `model_id` | mock / tên model | backend LLM |
+| `model_id` | mock / tên model | tên model trên backend (`model_id` cũ = tên; từ Phase-1 backend chọn theo `provider`) |
 | `tau_asv` | 0–1 (mặc định 0.8) | ngưỡng ASV — pre-registered per task family (metric.md §1) |
 | `tau_mr` | 0–1 (mặc định 1.0 = exact) | ngưỡng MR — exact-match cho task có ground truth rõ |
 | `per_edge_trials` | ≥ 30 | N trial mỗi cạnh cho giao thức controlled (§1) |
 | `measure_utility` | bool (mặc định False) | bật utility pipeline (§7): chạy thêm clean & attack runs → `metrics["utility"]` |
 | `utility_trials` | int/None | số trial cho utility (mặc định = `trials`) |
-| `extra` | dict | tham số phụ (mock_infection_prob, malicious_goal, target_agents, target_task_text, target_task_reference...) |
+| `provider` | "mock"/"openai" (mặc định mock) | backend LLM: mock (deterministic) hay OpenAI-compatible thật (Phase-1) |
+| `marker` | str (mặc định "INJECTED_PAYLOAD") | secret token của injected task family (leak-string exact) — client/assessor/attack cùng dùng |
+| `dry_run` | bool (mặc định False) | true → `run_benchmark` trả `call_estimate` (số LLM calls ước lượng) mà không tạo backend |
+| `extra` | dict | tham số phụ (mock_infection_prob, malicious_goal, target_agents, target_task_text, target_task_reference; khi provider=openai: base_url, api_key, temperature, max_tokens, force_retries...) |
 
 ---
 

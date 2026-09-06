@@ -3,7 +3,8 @@
 Thư mục này định nghĩa **giao diện LLM chung** để benchmark có thể hoán đổi backend
 một cách liền mạch, không đổi phần còn lại của pipeline.
 
-File duy nhất: `base.py`.
+File chính: `base.py` (interface + mock), `factory.py` (chọn backend theo config),
+`openai_compat.py` (backend OpenAI-compatible, Phase-1).
 
 ---
 
@@ -14,9 +15,9 @@ backend khác nhau:
 
 | Backend | Dùng khi nào |
 |---|---|
-| **Mock** (deterministic + stochastic có kiểm soát) | test, CI, phát triển pipeline, tạo survival-rate có kiểm soát |
-| **transformers / vLLM** (local) | model open-source chạy local (Qwen, Llama, Mistral) — chi phí ~0 |
-| **OpenAI / Anthropic API** | dự phòng khi cần |
+| **Mock** (deterministic + stochastic có kiểm soát) | test, CI, phát triển pipeline, tạo survival-rate có kiểm soát (mặc định) |
+| **OpenAI-compatible** (`provider: "openai"`) | mọi endpoint `/chat/completions` OpenAI-compatible: OpenAI API, vLLM, Ollama, LM Studio, DeepSeek... (Phase-1) |
+| **transformers / vLLM / Anthropic** (riêng) | hướng mở rộng — implement thêm `LLMClient` con |
 
 Để làm được điều đó, tất cả backend chia sẻ **một interface**:
 `LLMClient.complete(prompt, system, force_infected) -> str`. Engine (`runner/`)
@@ -145,19 +146,18 @@ BACKEND_REGISTRY: dict = {"mock": make_mock_client}
 Trong `runner/engine.py`:
 
 ```python
-# __init__:
-self.policy = policy or SingleModelPolicy(config.model_id)
-self.client = client or MockLLMClient()
+# __init__: build backend theo config.provider (mock | openai | ...)
+self.client = client or build_client(config)
 
 # _client_for(model_id): cache 1 client per model_id
 if model_id not in self._clients:
-    if self.config.model_id == "mock":
+    if self.config.provider == "mock":
         prob = self.config.extra.get("mock_infection_prob", 1.0)
-        self._clients[model_id] = MockLLMClient(marker="INJECTED_PAYLOAD",
+        self._clients[model_id] = MockLLMClient(marker=self.config.marker,
                                                 infection_prob=prob,
                                                 seed=self.config.seed)
     else:
-        self._clients[model_id] = self.client
+        self._clients[model_id] = self.client   # backend thật dùng chung 1 client
 ```
 
 Trong `Agent.steps()` (`agents/agent.py`):
@@ -169,25 +169,76 @@ return self.client.complete(prompt, system=self.system_prompt)
 Trong judge (`metrics/assessment.py` — `MarkerEchoAssessor`):
 
 ```python
-mr = 1.0 if response == client.hijacked_output() else 0.0   # so với y^direct
+if isinstance(client, MockLLMClient):
+    direct = client.hijacked_output()        # deterministic, không tốn call
+else:
+    # LLM thật: y^direct = complete(instruction, system) — cache (client, system)
+    ...
+mr = 1.0 if response == direct else 0.0     # so với y^direct (metric.md §4)
 ```
 
 ---
 
-## 7. Hướng mở rộng (backend thật)
+## 7. `factory.py` — chọn backend theo config
 
-Để thêm LLM thật, tạo một `LLMClient` con (vd `HuggingFaceLLMClient`,
-`OpenAILLMClient`, `OllamaLLMClient`) implement `complete()` + `close()`, rồi
-đăng ký vào `BACKEND_REGISTRY` và xử lý trong `Runner._client_for()`.
-Lưu ý: chế độ `force_infected` (ép compromised) với LLM thật cần một protocol
-riêng (direct instruction) — chưa triển khai.
+```python
+def build_client(config, model_id=None) -> LLMClient:
+    mid = model_id or config.model_id
+    if config.provider == "mock":
+        return MockLLMClient(marker=config.marker,
+                             benign_reply=config.extra.get("mock_benign_reply", ...),
+                             infection_prob=float(config.extra.get("mock_infection_prob", 1.0)),
+                             seed=config.seed)
+    if config.provider == "openai":
+        return OpenAICompatClient(model=mid,
+                                  base_url=config.extra.get("base_url"),
+                                  api_key=config.extra.get("api_key"),
+                                  temperature=float(config.extra.get("temperature", 0.0)),
+                                  max_tokens=int(config.extra.get("max_tokens", 512)))
+    raise ValueError(f"Unsupported LLM provider '{config.provider}' (mock | openai)")
+```
+
+- **Marker** được đọc từ `config.marker` (không hardcode) → injected task family
+  cấu hình được secret token.
+- `Runner.__init__` chỉ gọi `build_client` khi người dùng không tự truyền `client`
+  (hữu ích cho test: inject client giả mà không cần cài `openai`).
 
 ---
 
-## 8. Tóm tắt
+## 8. `openai_compat.py` — OpenAI-compatible backend (Phase-1)
+
+```python
+class OpenAICompatClient(LLMClient):
+    def __init__(self, model, base_url=None, api_key=None,
+                 temperature=0.0, max_tokens=512, timeout=120.0):
+        if openai is None:      # lazy import: chỉ lỗi khi THỰC SỰ dùng
+            raise ImportError("... cài: pip install openai")
+        self._client = openai.OpenAI(base_url=..., api_key=..., timeout=...)
+
+    def complete(self, prompt, system=None, force_infected=False) -> str:
+        # force_infected KHÔNG có nghĩa với LLM thật → bỏ qua (ghi chú).
+        messages = ([{"role": "system", "content": system}] if system else []) \
+                   + [{"role": "user", "content": prompt}]
+        resp = self._client.chat.completions.create(...)
+        return resp.choices[0].message.content or ""
+```
+
+- Gọi được **bất kỳ** endpoint OpenAI-compatible nào (`base_url` từ
+  `extra.base_url`); thiếu `api_key` → đọc `OPENAI_API_KEY` (mặc định `"EMPTY"`
+  cho local server vLLM/Ollama).
+- **Lazy import `openai`**: import module-level trong `try/except`; chỉ raise
+  `ImportError` khi *construct* client → dry-run / mock / test nhẹ không cần
+  package `openai`.
+- `force_infected=True` bị bỏ qua: LLM thật không thể bị "ép"; runner thay bằng
+  direct-instruction sampling (xem `runner/explain.md` §8).
+
+---
+
+## 9. Tóm tắt
 
 - `LLMPolicy` → chọn model theo role (heterogeneous).
 - `LLMClient` → contract duy nhất: `complete(prompt, system, force_infected) -> str`.
 - `MockLLMClient` → relay Bernoulli theo `infection_prob` (đã wire), có `seed`,
   hỗ trợ `force_infected` + `hijacked_output()` cho MR.
-- `BACKEND_REGISTRY` → cắm rời backend theo tên.
+- `factory.build_client` → chọn backend theo `config.provider` (mock | openai).
+- `OpenAICompatClient` → backend OpenAI-compatible thật (lazy import `openai`).

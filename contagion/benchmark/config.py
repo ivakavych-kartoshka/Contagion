@@ -43,6 +43,9 @@ def load_config(path: Path) -> ContagionConfig:
         per_edge_trials=int(data.get("per_edge_trials", 30)),
         measure_utility=bool(data.get("measure_utility", False)),
         utility_trials=data.get("utility_trials"),
+        provider=data.get("provider", "mock"),
+        marker=data.get("marker", "INJECTED_PAYLOAD"),
+        dry_run=bool(data.get("dry_run", False)),
         extra=data.get("extra", {}),
     )
 

@@ -129,3 +129,18 @@ class ContagionConfig:
     measure_utility: bool = False
     utility_trials: Optional[int] = None
 
+    # --- Real-LLM backend & injected-task family (docs/metric.md §1-§4) ---
+    # provider: "mock" (default) hoặc tên registry backend thật (vd "openai").
+    # Khi provider != "mock", model_id = tên model thật; marker = chuỗi "secret"
+    # mà injected task yêu cầu agent leak (vd "LEAK-TOKEN-42") — dùng cho judge
+    # ASV/MR deterministic thay vì marker mặc định INJECTED_PAYLOAD.
+    provider: str = "mock"
+    marker: str = "INJECTED_PAYLOAD"
+    # Các tham số backend thật (đọc tiếp từ config.extra khi cần):
+    #   base_url, api_key, temperature, max_tokens, direct_reference_cache
+
+    # --- Dry-run (ước lượng cost trước khi gọi LLM thật) ---
+    # Nếu True, run_benchmark KHÔNG gọi backend; chỉ trả call_estimate
+    # (số LLM calls cần thiết) để ước lượng chi phí trước khi chạy thật.
+    dry_run: bool = False
+
