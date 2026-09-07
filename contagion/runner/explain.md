@@ -91,7 +91,10 @@ class Runner:
 ```python
 for aid in graph.nodes:
     role    = graph.roles[aid]                      # role từ topology
-    defense = build_defense(self.config.defense)    # defense từ config
+    # defense từ config — truyền marker THẬT (bug đã sửa): nếu bỏ qua marker,
+    # Paraphrase/Delimiter/Detection/HopIsolation giữ default INJECTED_PAYLOAD
+    # → NO-OP khi config dùng marker khác (vd LEAK-TOKEN-7F3A2C).
+    defense = build_defense(self.config.defense, marker=self.config.marker)
     model_id = self.policy.model_for_role(role)
     agents[aid] = make_agent(aid, role, defense, self._client_for(model_id),
                              model_id=model_id,

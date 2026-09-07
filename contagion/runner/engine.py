@@ -130,8 +130,13 @@ class Runner:
         agents: Dict[str, Agent] = {}
         for aid in graph.nodes:
             role = graph.roles[aid]
-            # build_defense(DefenseType.PARAPHRASE) → ParaphraseDefense instance
-            defense = build_defense(self.config.defense)
+            # build_defense(DefenseType.PARAPHRASE) → ParaphraseDefense instance.
+            # Truyền marker THẬT từ config: các defense (Paraphrase/Delimiter/
+            # Detection/HopIsolation) dùng marker để phát hiện untrusted content.
+            # Không truyền → chúng giữ default "INJECTED_PAYLOAD" và trở thành
+            # NO-OP khi config dùng marker khác (vd LEAK-TOKEN-7F3A2C) — bug đã
+            # sửa: defense phải nhận đúng marker của injected task.
+            defense = build_defense(self.config.defense, marker=self.config.marker)
             model_id = self.policy.model_for_role(role)
             agents[aid] = make_agent(
                 aid,
