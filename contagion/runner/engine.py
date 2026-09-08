@@ -147,7 +147,14 @@ class Runner:
             # sửa: defense phải nhận đúng marker của injected task.
             target_b = self.config.extra.get("target_b")
             def_marker = str(target_b) if target_b else self.config.marker
-            defense = build_defense(self.config.defense, marker=def_marker)
+            # defense_kind: "redact" (deterministic DLP — E18) | "paraphrase"
+            # (mặc định, semantic LLM-paraphrase khi real backend).
+            d_kind = self.config.extra.get("defense_kind", "paraphrase")
+            if self.config.defense == DefenseType.PARAPHRASE:
+                defense = build_defense(self.config.defense, marker=def_marker,
+                                        kind=d_kind)
+            else:
+                defense = build_defense(self.config.defense, marker=def_marker)
             model_id = self.policy.model_for_role(role)
             client = self._client_for(model_id)
             # Paraphrase ngữ nghĩa (Task Family B, 5a): cấp LLM thật cho defense
