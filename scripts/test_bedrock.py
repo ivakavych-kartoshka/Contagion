@@ -20,6 +20,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+# Console Windows mặc định cp1252 → in "✓" / tiếng Việt sẽ crash. Ép UTF-8.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 from contagion.llm.envfile import load_dotenv  # noqa: E402
 
 load_dotenv()  # đọc key từ file .env (nếu có)

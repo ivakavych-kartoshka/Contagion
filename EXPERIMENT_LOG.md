@@ -386,6 +386,47 @@ propagation tồn tại (surv 0.21), role-dependence mạnh (0.0→0.6), DLP ch�
 100%, obfuscation qua mặt được nhưng yếu hơn trên model mạnh → câu chuyện
 "arms-race phụ thuộc model" — điểm mới so với literature.
 
+### E21. 🔥 Obfuscation n=30 trên Claude (P1) ✅ — BÁC BỎ CÁCH ĐỌC E20 + BÀI HỌC "HIỆU ỨNG SÀN"
+`--only-obfuscation --n-obf 30` · 1-hop · Claude Sonnet 4.5 · Bedrock us-east-1 ·
+temp 0.7 · 180 call · 1491 s (~25 phút).
+
+| defense | plain | spaced | split-word |
+|---|---|---|---|
+| none | **0.10** [0.03,0.26] (3/30) | 0.00 [0.00,0.11] | **0.10** [0.03,0.26] (3/30) |
+| redact | 0.00 [0.00,0.11] | 0.00 [0.00,0.11] | 0.03 [0.01,0.17] (1/30) |
+
+So sánh qwen E19 (16 ô/cell): `none·plain 0.94` · `none·split 1.00` ·
+`redact·plain 0.00` · `redact·split 1.00`.
+
+**1. Con số 0.25 của E20 phải bỏ.** Với n=8, `redact·split` có CI `[0.07,0.59]`.
+n=30 hạ tâm xuống **0.10**. Lập luận cơ chế đủ để chốt: attack split-word
+**không chứa literal `BANANA-77`** ⇒ redact **không có gì để xoá** ⇒
+`redact·split` và `none·split` **đo cùng một đại lượng**; đo được 0.03 vs 0.10 →
+chênh lệch trong nhiễu. **Không có arms-race trên Claude trong 2 ô này.**
+
+**2. Phát hiện thật của E21 — "hiệu ứng sàn" (floor effect) làm hiệu quả defense
+KHÔNG XÁC ĐỊNH ĐƯỢC:**
+
+| | `none·plain` (susceptibility gốc) | `redact·plain` | Đọc được gì? |
+|---|---|---|---|
+| qwen2.5:7b | **0.94** | 0.00 | Model dễ bị lừa ⇒ redact kéo 0.94→0.00 ⇒ **defense CÓ tác dụng** |
+| Claude 4.5 | **0.10** | 0.00 | Model vốn kháng ⇒ chỉ có 10% để xoá ⇒ **không quy được công cho defense** |
+
+⇒ Trên model susceptibility thấp, "redact chặn 100%" **không phân biệt được**
+"defense giỏi" với "model vốn đã kháng". Đây là lý do kỹ thuật buộc phải báo cáo
+**cặp (ASR, U)** và luôn có nhánh `none` làm baseline — đúng tinh thần §7.
+
+**3. Kết luận qwen vẫn đứng nhưng phạm vi hẹp hơn:** "obfuscation phá DLP" là
+kết luận **có điều kiện** (chỉ quan sát được khi chính attack `plain` cũng thành
+công). Không được viết như quy luật chung.
+
+**4. `spaced` = 0.00 trên cả 2 model × cả 2 defense** → obfuscate kiểu "BANANA - 77"
+không hoạt động; model không tự ghép. Kết quả ổn định nhất của E19+E21.
+
+**Việc phải sửa trong paper:** bỏ câu "arms-race phụ thuộc model" ở E20 kết luận
+(1) — thay bằng "hiệu ứng sàn + defense effect không identifiable ở model kháng";
+thêm E21 vào bảng cross-model.
+
 ---
 
 ## 3. Các vấn đề phụ đang tồn tại
@@ -427,3 +468,150 @@ propagation tồn tại (surv 0.21), role-dependence mạnh (0.0→0.6), DLP ch�
    compromised (VĐ3).
 3. Chốt model + scale (VĐ2) dựa trên bảng cost trong `scale_plan.md`.
 4. Markov power thật (trials 200–300) + utility §7 trên LLM thật (VĐ1, VĐ4).
+
+---
+
+## 6. Bổ sung tooling — 2026-09-11 (sau E20, chuẩn bị cho các run P1–P5)
+
+> Mục này **không có số liệu thí nghiệm mới**; đây là hạ tầng + 1 bug fix để các
+> run tiếp theo rẻ hơn và không lặp lại lỗi cũ.
+
+### 6.1 Bug fix: verdict Markov ở biên (ASR = ∏sᵢ = 1)
+
+`markov_test` so CI của ASR với CI của ∏sᵢ bằng `<` / `>`. Ở biên `k = n`, Wilson
+upper = `0.9999999999999999 < 1.0` → verdict in ra
+`"ASR < prod(s_i) (attenuation / sub-Markov)"` **dù hai giá trị bằng nhau**
+(phát hiện khi self-test mock: ASR = 1.000, ∏sᵢ = 1.000).
+
+Fix: thêm dung sai `_EPS = 1e-9` vào hai phía so sánh
+(`contagion/metrics/epidemiology.py`). Chỉ hấp thụ artifact số thực, **không đổi
+kết luận** của bất kỳ cell thật nào (CI thật cách biên xa hơn 1e-9 rất nhiều).
+
+### 6.2 `replicate_frontier.py` — cờ `--only-obfuscation`
+
+Trước đây muốn đo lại obfuscation với n lớn phải chạy cả 2 cell chain
+(~50 phút, tốn tiền vô ích). Nay:
+
+```powershell
+python scripts\replicate_frontier.py --backend bedrock ^
+  --model us.anthropic.claude-sonnet-4-5-20250929-v1:0 --region us-east-1 ^
+  --only-obfuscation --n-obf 30 --out experiments\results\claude_obf_n30
+```
+
+Sửa nhỏ cùng file:
+- **Wilson 95% CI** cho từng ô obfuscation (trước chỉ có `rate`) — cần thiết vì
+  n=8 cho CI `[0.07, 0.59]`, không kết luận được gì.
+- **`provider_for(backend)`**: `--backend openrouter` trước đây truyền thẳng
+  `provider="openrouter"` vào `build_client` (chỉ biết mock|openai|bedrock) →
+  `ValueError`. Nay map `openrouter → openai`.
+- `--backend mock` cho self-test offline miễn phí; ép stdout UTF-8 (console
+  Windows cp1252 trước đây crash cả `--help`).
+
+### 6.3 `scripts/utility_real.py` — lấp lỗ hổng §7 (chưa từng đo)
+
+Chạy **paired workflow** clean vs attack trên model thật, xuất bảng
+`(ASR, U_clean, U_attack, ΔU, Retention)` cho từng defense — đúng
+"trade-off frontier" mà `docs/metric.md` §7 yêu cầu. Không chạy per-edge
+protocol (tốn call mà §7 không cần) nên gọi `Runner` trực tiếp thay vì
+`run_benchmark`.
+
+Self-test mock (0 đồng, đã verify):
+
+| defense | ASR | U_clean | U_attack | ΔU | Retention |
+|---|---|---|---|---|---|
+| none | 1.000 | 1.000 | 0.000 | +1.000 | 0.000 |
+| paraphrase | 0.000 | 1.000 | 1.000 | +0.000 | 1.000 |
+| redact | 0.000 | 1.000 | 1.000 | +0.000 | 1.000 |
+
+→ Đúng kỳ vọng: defense chặn được lan mà **không** phá legitimate task.
+
+**Giới hạn đã ghi rõ trong chính report** (trung thực): M_t hiện là proxy
+"final output của network không chứa payload" (`CleanAnswerTask`) — ĐÚNG định
+nghĩa §7 (chấm trên câu trả lời hợp lệ, không chấm trên task của attacker),
+nhưng KHÔNG kiểm tra câu trả lời hợp lệ có *đúng* hay không (benign context là
+task sinh văn bản, không có y^t cố định). Raw final outputs dump ra
+`outputs.jsonl` để soi bằng mắt. Muốn M_t chặt hơn (QA có đáp án cố định) phải
+thêm task family mới — **cần người quyết định vì nó đổi định nghĩa metric**.
+
+**Phát hiện phụ (chưa sửa, cần quyết định):** trong `_run_workflow_trial`, chỉ
+agent entry nhận `target_task_text`; các agent sau chỉ nhận output của agent
+trước (không truyền `task=`). Natural protocol thì mọi activation đều được
+truyền `task=self._task_context(idx)`. Đây là **bất đối xứng giữa 2 protocol** —
+cần cân nhắc trước khi công bố số §7.
+
+### 6.4 `scripts/make_figures.py` — 6 figures từ dữ liệu thật
+
+Không hardcode số: đọc `task_b_nlarge/summary.json`,
+`task_b_redact_nlarge/report.md` (regex), `taskb_obfuscation/results.json`,
+`rerun_chain_n40|rerun_chain_paraphrase_n40/per_edge_raw.json` (tính lại s từ
+field `compromised`), và mọi `frontier_*/results.json` (model mới tự xuất hiện).
+
+| Hình | Nội dung | Nguồn |
+|---|---|---|
+| fig1 | sơ đồ framework | schematic theo §1/§2/§7 |
+| fig2 | s theo **role** (none vs paraphrase) | Task A, qwen 5-agent, n=30 |
+| fig3 | ASR + s̄ theo defense | Task B none/paraphrase/redact |
+| fig4 | heatmap defense × attack-style | E19 (n=8 — cảnh báo trong notes) |
+| fig5 | cross-model (qwen vs Bedrock) | task_b_nlarge + frontier_* |
+| fig6 | Markov: ASR vs ∏sᵢ | field `markov_check` |
+
+Kiểm chứng số trên hình khớp report: fig2 cho 0.133 / 0.867 / 0.467 / 0.433
+(worker / reviewer / aggregator / planner) — **đúng bằng**
+`rerun_chain_n40/report.md`. `figure_notes.md` ghi nguồn từng hình + cảnh báo
+trung thực (n nhỏ, Markov chưa đủ power).
+
+### 6.5 Tests & trạng thái
+
+- **68 passed** (trước 64): thêm 4 test trong `tests/test_utility_protocol.py`
+  khoá đường §7 (U_clean không tự nhiễm; none → ΔU=1; redact → ASR 0 & retention
+  1; công thức ΔU/Retention).
+- Behaviour mock mặc định **không đổi** (không set `target_b` → MarkerEcho cũ).
+- Môi trường: cài thêm `matplotlib` 3.11.1 để vẽ figure.
+
+### 6.6 Hàng đợi chạy tiếp theo (chi tiết trong `RUN_INSTRUCTIONS.md`)
+
+| # | Việc | Ở đâu | Thời gian | Chi phí |
+|---|---|---|---|---|
+| P1 | Obfuscation n=30 (xóa nhiễu n=8) | Bedrock/Claude | 12–20 phút | ~$1 |
+| P2 | Model thứ 2 (`deepseek.v3.2`) → bảng cross-model | Bedrock | ~60 phút | ~$2–5 |
+| P3 | Utility §7 (lỗ hổng metric lớn nhất) | Bedrock/Claude | 45–60 phút | ~$2–4 |
+| P4 | Markov power n=200 | **local qwen (miễn phí)** | 4–5 giờ (qua đêm) | $0 |
+| P5 | Topology star/tree | — | — | — |
+
+**Lý do P4 chạy local chứ không Bedrock:** trên Claude `ASR = 0.000` và
+`∏sᵢ ≈ 0.009` → kiểm định Markov **không phân biệt được gì** dù tăng n. Cell có
+power thật là qwen2.5:7b (ASR 0.30, s̄ 0.611, ∏sᵢ 0.205) — và nó miễn phí.
+
+### 6.7 ĐÍNH CHÍNH P4: `rerun_chain_raw.py` thiếu natural runs
+
+Khi chuẩn bị chạy P4 phát hiện **lệnh P4 như đã soạn ban đầu vô dụng**:
+`rerun_chain_raw.py` **chỉ chạy per-edge protocol**, `--trials` bị bỏ qua hoàn
+toàn → kết quả **không có ASR** ⇒ **không kiểm định được Markov** (kiểm định
+Markov cần so `ASR` với `∏sᵢ`). Chạy 5 tiếng cũng không ra thứ cần.
+
+Đã sửa (không đổi hành vi các cell cũ, chỉ thêm phần còn thiếu):
+1. Chạy **natural runs** trước (`runner.run()`, `cfg.trials = --trials`).
+2. Giữ nguyên vòng per-edge + `per_edge_raw.json` (raw outputs cho phân tích role).
+3. Dựng `EdgeTrial` từ raw rồi gọi `summarize(paths, edge_trials, cfg)` → xuất
+   **ASR, R0, d·s̄, hops-to-compromise (kèm censored_rate), `markov_check`** vào
+   `report.md` + `summary.json`.
+
+Kiểm chứng bằng smoke-test local `--trials 2 --per-edge 2` (18 call): report ra
+đủ 4 mục, `ASR = 0.500 [0.095, 0.905]`, `∏sᵢ = 0.125 [0.004, 3.726]`,
+verdict `consistent with first-order Markov`. Sau đó mới chạy `--trials 200
+--per-edge 200`.
+
+**Bài học ghi lại:** trước khi soạn lệnh chạy dài, phải đọc kỹ script để chắc
+nó thực sự xuất ra đại lượng mà kết luận cần — không suy ra từ tên file/tham số.
+
+### 6.8 Trạng thái các run đang chạy (agent tự chạy theo yêu cầu)
+
+| Job | Việc | Nơi | Ước tính |
+|---|---|---|---|
+| P1 | Obfuscation n=30 (Claude, `--only-obfuscation`) | Bedrock | ~15 phút |
+| P2 | Replicate đầy đủ `deepseek.v3.2` | Bedrock | ~60 phút |
+| P3 | §7 Utility (`trials=20`, `utility-trials=20`, 3 defense) | Bedrock | ~50 phút |
+| P4 | Markov power `--trials 200 --per-edge 200` | GPU local | ~5 giờ |
+
+Kết quả sẽ được ghi thành E21–E24 tương ứng + cập nhật `DATA_DETAIL.md`,
+`figures/` (chạy lại `make_figures.py`), và bảng cross-model ở `PAPER_DRAFT.md` §5.

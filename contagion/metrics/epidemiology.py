@@ -430,11 +430,15 @@ def markov_test(
     asr = attack_success_rate(paths, targets=targets)
 
     # Rough two-sided check: does the ASR Wilson CI overlap the product CI?
+    # ``_EPS``: Wilson bounds saturate at ~1-1e-16 when k == n, so at the
+    # boundary (ASR == prod(s_i) == 1) a strict ``<`` would report a spurious
+    # "attenuation" verdict. The tolerance absorbs that float artifact only.
+    _EPS = 1e-9
     if asr.ci_low is None or hi is None:
         verdict = "insufficient data"
-    elif asr.ci_high < lo:
+    elif asr.ci_high < lo - _EPS:
         verdict = "ASR < prod(s_i) (attenuation / sub-Markov)"
-    elif asr.ci_low > hi:
+    elif asr.ci_low > hi + _EPS:
         verdict = "ASR > prod(s_i) (reinforcement / super-Markov)"
     else:
         verdict = "consistent with first-order Markov"

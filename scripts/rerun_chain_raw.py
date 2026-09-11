@@ -25,7 +25,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from contagion.core import ContagionConfig, DefenseType, TopologyType
+# Console Windows mặc định cp1252 → in "s̄"/tiếng Việt sẽ crash. Ép UTF-8.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+from contagion.core import ContagionConfig, DefenseType, TopologyType  # noqa: E402
 from contagion.metrics.assessment import marker_bigram_containment
 from contagion.runner.engine import Runner
 
@@ -73,6 +80,16 @@ def main() -> int:
 
     per_edge_raw: list = []
     t0 = time.time()
+
+    # (1) NATURAL runs (metric.md §2/§5/§6) — BẮT BUỘC cho ASR + Markov test.
+    #     Trước đây script chỉ chạy per-edge → không có ASR → dù tăng n lên 200
+    #     vẫn KHÔNG kiểm định được Markov (cần so ASR với ∏sᵢ).
+    print(f"natural runs: {args.trials} trials ...", flush=True)
+    paths = runner.run()
+    print(f"  natural done ({time.time()-t0:.0f}s)", flush=True)
+
+    # (2) PER-EDGE controlled protocol (metric.md §1) — giữ raw outputs để
+    #     phân tích role-dependence.
     for e in graph.edges:
         src_agent, dst_agent = agents[e.src], agents[e.dst]
         compromised_content = runner._compromised_output(src_agent, strategy)
@@ -121,11 +138,57 @@ def main() -> int:
         lines.append(f"  content: {r['compromised_content'][:80]!r}")
         lines.append(f"  output : {r['output'].replace(chr(10),' ')[:160]!r}")
 
+    # ---- Tổng hợp: ASR (§2), R0 (§5), Markov check (§2 theory) ----
+    from contagion.benchmark.runner import summarize
+    from contagion.metrics.epidemiology import EdgeTrial
+    edge_trials = [
+        EdgeTrial(src=r["src"], dst=r["dst"], trial=r["trial"],
+                  dst_compromised=bool(r["compromised"]),
+                  asv=r["asv"], mr=r["mr"])
+        for r in per_edge_raw
+    ]
+    metrics = summarize(paths, edge_trials, cfg)
+    asr = metrics["asr"]
+    surv = metrics["survival"].get("overall", {})
+    r0 = metrics["r0"]
+    ds = metrics["r0_ds_check"] or {}
+    mk = metrics["markov_check"] or {}
+    hc = metrics["hops_to_compromise"] or {}
+
+    lines += ["", "## End-to-end (natural runs, metric.md §2/§5/§6)", "",
+              f"- n_trials = {metrics['n_trials']}",
+              f"- **ASR = {asr['mean']:.3f} "
+              f"[{asr['ci_low']:.3f}, {asr['ci_high']:.3f}]**",
+              f"- survival pooled s̄ = {surv.get('mean', float('nan')):.3f} "
+              f"[{surv.get('ci_low', float('nan')):.3f}, "
+              f"{surv.get('ci_high', float('nan')):.3f}]",
+              f"- R0 = {r0['mean']:.3f} [{r0['ci_low']:.3f}, "
+              f"{r0['ci_high']:.3f}]  ·  d·s̄ = {ds.get('ds', float('nan')):.3f}",
+              f"- hops-to-compromise: mean={hc.get('mean')}, "
+              f"median={hc.get('median')}, "
+              f"n_compromised={hc.get('n_compromised')}/{hc.get('n_total')}, "
+              f"censored_rate={hc.get('censored_rate')}",
+              "",
+              "## Markov check (điểm mấu chốt của run này)", ""]
+    if mk:
+        lines += [f"- ASR = {mk['asr']:.3f} [{mk['asr_ci'][0]:.3f}, {mk['asr_ci'][1]:.3f}]",
+                  f"- ∏sᵢ = {mk['product_s']:.3f} "
+                  f"[{mk['product_s_ci'][0]:.3f}, {mk['product_s_ci'][1]:.3f}] "
+                  f"({mk.get('product_s_ci_method')})",
+                  f"- **verdict: {mk['verdict']}**"]
+    else:
+        lines.append("- (không tính được: topology/entry không khớp chain)")
+
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "report.md").write_text("\n".join(lines), encoding="utf-8")
     (args.out / "per_edge_raw.json").write_text(
         json.dumps(per_edge_raw, indent=2, ensure_ascii=False), encoding="utf-8")
+    (args.out / "summary.json").write_text(
+        json.dumps(metrics, indent=2, ensure_ascii=False, default=str),
+        encoding="utf-8")
     runner.close()
+    print(f"  ASR={asr['mean']:.3f} s̄={surv.get('mean', float('nan')):.3f} "
+          f"verdict={mk.get('verdict')}", flush=True)
     print(f"[done] -> {args.out / 'report.md'} ({time.time()-t0:.0f}s)")
     return 0
 

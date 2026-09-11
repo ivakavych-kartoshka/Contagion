@@ -183,12 +183,18 @@ qua mặt được nhưng phụ thuộc model** (qwen 100% vs Claude 25%).
 
 ## 6. Figures dự kiến
 
-1. Framework pipeline (agent hop + judge + protocols).
-2. Survival per-edge theo role (bar + CI) — chain none vs paraphrase.
-3. Task B survival/ASR theo defense (none/paraphrase/redact).
-4. Defense arms-race heatmap: defense × attack-style (E19).
-5. (Nếu chạy thêm) Markov ASR vs ∏ŝ với CI ở n lớn.
-6. (Nếu chạy thêm) Star/tree để cho thấy topology ảnh hưởng.
+> **Đã vẽ được (2026-09-11)** bằng `python scripts\make_figures.py` → PNG trong
+> `experiments/results/figures/` (nguồn từng hình + cảnh báo: `figure_notes.md`).
+
+1. Framework pipeline (agent hop + judge + protocols). → `fig1_framework.png`
+2. Survival per-edge theo role (bar + CI) — chain none vs paraphrase. → `fig2_per_role_survival.png`
+3. Task B survival/ASR theo defense (none/paraphrase/redact). → `fig3_taskb_defenses.png`
+4. Defense arms-race heatmap: defense × attack-style (E19). → `fig4_obfuscation_heatmap.png`
+   (⚠️ n=8 → CI rộng; chờ P1 `--n-obf 30`)
+5. Cross-model: qwen2.5:7b vs frontier (Bedrock). → `fig5_cross_model.png`
+6. Markov ASR vs ∏ŝ với CI. → `fig6_markov.png` (⚠️ n=40 chưa đủ power → P4)
+7. (Chưa có) Star/tree để cho thấy topology ảnh hưởng → cần P5.
+8. (Chưa có) §7 trade-off plot (ASR vs Retention) → cần P3 `utility_real.py`.
 
 ---
 
