@@ -1,0 +1,170 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{10}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[{Anonymous}(2026a)]%
+        {CII2026}
+\bibfield{author}{\bibinfo{person}{{Anonymous}}.}
+  \bibinfo{year}{2026}\natexlab{a}.
+\newblock \showarticletitle{Cascading Instruction Influence in Hierarchical
+  Multi-Agent {LLM} Systems}.
+\newblock \bibinfo{journal}{\emph{SOIC}} (\bibinfo{year}{2026}).
+\newblock
+\shownote{TODO verify exact title, authors, volume, pages (URL seen:
+  iapress.org/index.php/soic/article/view/3574)}.
+\newblock
+
+
+\bibitem[{Anonymous}(2026b)]%
+        {SwarmMarkov2026}
+\bibfield{author}{\bibinfo{person}{{Anonymous}}.}
+  \bibinfo{year}{2026}\natexlab{b}.
+\newblock \showarticletitle{Cross-Layer Contagion in Multi-Agent Swarms: A
+  Multiplex {Markov} Model}.
+\newblock \bibinfo{journal}{\emph{Cybersecurity}} (\bibinfo{year}{2026}).
+\newblock
+\shownote{TODO verify exact title, authors, volume, article number (DOI
+  10.1186/s42400-026-00628-w)}.
+\newblock
+
+
+\bibitem[Cemri et~al\mbox{.}(2025)]%
+        {Cemri2025MAST}
+\bibfield{author}{\bibinfo{person}{Mert Cemri} {et~al\mbox{.}}}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Why Do Multi-Agent {LLM} Systems Fail?}
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{Reports inter-agent misalignment (FC2) as 32.3\% of multi-agent
+  failures. TODO verify full author list}.
+\newblock
+\showeprint[arxiv]{2503.13657}~[cs.AI]
+
+
+\bibitem[Debenedetti et~al\mbox{.}(2024)]%
+        {Debenedetti2024AgentDojo}
+\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti} {et~al\mbox{.}}}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{{AgentDojo}: A Dynamic Environment to Evaluate Prompt
+  Injection Attacks and Defenses for {LLM} Agents}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{TODO verify full author list and venue}.
+\newblock
+\showeprint[arxiv]{2406.13352}~[cs.CR]
+
+
+\bibitem[Greshake et~al\mbox{.}(2023)]%
+        {Greshake2023}
+\bibfield{author}{\bibinfo{person}{Kai Greshake} {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Not What You've Signed Up For: Compromising
+  Real-World {LLM}-Integrated Applications with Indirect Prompt Injection}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{TODO verify full author list and venue}.
+\newblock
+\showeprint[arxiv]{2302.12173}~[cs.CR]
+
+
+\bibitem[Hong et~al\mbox{.}(2023)]%
+        {Hong2023MetaGPT}
+\bibfield{author}{\bibinfo{person}{Sirui Hong} {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{{MetaGPT}: Meta Programming for a Multi-Agent
+  Collaborative Framework}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{TODO verify full author list}.
+\newblock
+\showeprint[arxiv]{2308.00352}~[cs.AI]
+
+
+\bibitem[Liu et~al\mbox{.}(2023)]%
+        {LiuGong2023}
+\bibfield{author}{\bibinfo{person}{Yi Liu} {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Prompt Injection Attack Against {LLM}-Integrated
+  Applications}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{Source of the ASV / MR metrics and the compositional injection
+  formalism we extend. TODO verify full author list}.
+\newblock
+\showeprint[arxiv]{2310.12815}~[cs.CR]
+
+
+\bibitem[Wu et~al\mbox{.}(2023)]%
+        {Wu2023AutoGen}
+\bibfield{author}{\bibinfo{person}{Qingyun Wu} {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{{AutoGen}: Enabling Next-Gen {LLM} Applications via
+  Multi-Agent Conversation}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{TODO verify full author list and venue}.
+\newblock
+\showeprint[arxiv]{2308.08155}~[cs.AI]
+
+
+\bibitem[Zhan et~al\mbox{.}(2024)]%
+        {Zhan2024InjecAgent}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan} {et~al\mbox{.}}}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{{InjecAgent}: Benchmarking Indirect Prompt Injections
+  in Tool-Integrated Large Language Model Agents}.
+\newblock \bibinfo{howpublished}{Findings of ACL 2024}.
+\newblock
+\shownote{TODO verify pages / full author list}.
+\newblock
+\showeprint[arxiv]{2403.02691}~[cs.CR]
+
+
+\bibitem[Zhan et~al\mbox{.}(2025)]%
+        {Zhan2025Adaptive}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan} {et~al\mbox{.}}}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Adaptive Attacks Break Defenses Against Indirect
+  Prompt Injection Attacks on {LLM} Agents}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\shownote{TODO verify full author list and venue}.
+\newblock
+\showeprint[arxiv]{2503.00061}~[cs.CR]
+
+
+\end{thebibliography}

@@ -712,6 +712,34 @@ thiện, vẫn mất 10% utility). Cùng kết luận với DeepSeek nhưng qua 
 (b) `frontier_deepseek_iso` (để có hàng đối chứng isolation: DeepSeek *chuyển được*
 vs Llama *không*); (c) topology star/tree; (d) sensitivity.
 
+### E30. 🎯 Đối chứng 2 model: transportability **ĐÚNG** ở DeepSeek, **SAI** ở Llama
+
+Sau khi có key mới, chạy `frontier_deepseek_iso` (chain n=4, trials=40,
+per_edge=30, `--fresh-artifact`). Bảng `experiments/results/isolation_validity/report.md`:
+
+| Model | `∏s`^cách ly | `∏s`^trong chuỗi | ASR | Δ | p | tỉ lệ từng cạnh |
+|---|---|---|---|---|---|---|
+| **DeepSeek V3.2** | 0.409 | **0.400** | 0.400 | **−0.009** | **0.930** | 0.90× / 0.99× / 1.10× |
+| **Llama 3.3 70B** | 0.233 | **0.850** | 0.850 | **+0.617** | **<0.001** | 1.00× / **3.75×** / 0.97× |
+
+**Ba kết luận:**
+
+1. **`∏ s_i^nat = ASR` đúng CHÍNH XÁC trên cả hai model** (0.400 = 0.400;
+   0.850 = 0.850) ⇒ đẳng thức E27 được xác nhận độc lập trên LLM thật, không chỉ
+   trên mock.
+2. **Transportability KHÔNG phải chuyện "đúng hay sai" chung** mà **phụ thuộc
+   model và cạnh**: DeepSeek chuyển được (mọi tỉ lệ trong 0.90–1.10), Llama sai
+   3.75× ở **một** cạnh (hai cạnh còn lại đúng).
+3. ⇒ Phát biểu đúng cho paper mạnh hơn cả "Markov luôn đúng" lẫn "Markov sai":
+   **isolated per-hop estimate là một đại lượng KHÔNG bảo toàn qua bối cảnh, và
+   việc nó có bảo toàn hay không chỉ biết được bằng cách đo.**
+
+**Thêm bằng chứng về độ biến thiên ở n=40:** cùng cell DeepSeek chạy 3 lần cho
+ASR = 0.475 / 0.375 / 0.400 và per-edge rất khác nhau ở lần chạy cố định
+(0.967/1.000/0.833 so với 0.700/0.733/0.833 và 0.667/0.800/0.767). Đây là lý do
+paper phải báo **MDE** chứ không chỉ verdict — và đã thêm chú thích này vào
+Table 1 của bản thảo.
+
 ---
 
 ## 3. Các vấn đề phụ đang tồn tại
