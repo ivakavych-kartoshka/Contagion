@@ -427,6 +427,291 @@ không hoạt động; model không tự ghép. Kết quả ổn định nhất 
 (1) — thay bằng "hiệu ứng sàn + defense effect không identifiable ở model kháng";
 thêm E21 vào bảng cross-model.
 
+### E22. 🔥🔥 REPLICATE TRÊN DeepSeek V3.2 (P2) — CELL ĐẦU TIÊN BÁC BỎ MARKOV
+`deepseek.v3.2` · Bedrock us-east-1 · chain n=4 · trials=40 · per_edge=30 ·
+temp 0.7 · judge ASV-only 0.9 · 3 cell hết 2696 s (~45 phút).
+
+| Chỉ số | qwen2.5:7b | Claude 4.5 | **DeepSeek V3.2** |
+|---|---|---|---|
+| ASR (chain none) | 0.300 | 0.000 | **0.475** [0.329, 0.625] |
+| Survival (chain none) | 0.611 | 0.211 | **0.933** [0.862, 0.969] |
+| Per-edge (none) | 0.40/0.73/0.70¹ | 0.00/0.60/0.03 | **0.967/1.000/0.833** |
+| + REDACT ASR | 0.000 | 0.000 | **0.000** |
+| + REDACT survival | 0.000 | 0.000 | **0.000** |
+| Markov verdict | consistent | consistent | **ASR < ∏sᵢ (sub-Markov)** |
+
+¹ qwen per-edge trên Task B: 0.400/0.733/0.700.
+
+**1. 🎯 Cell ĐẦU TIÊN kiểm định Markov BÁC BỎ H0** — đây là kết quả quan trọng
+nhất của phiên:
+
+> ### ⛔ RÚT LẠI (E26, 2026-09-11) — kết luận dưới đây là SAI
+> Chạy lại cùng cell với `--fresh-artifact` (sửa lỗi ở E25) cho:
+> per-edge **0.700 / 0.733 / 0.833** → `∏sᵢ = 0.428`, `ASR = 0.375`,
+> `Δ = −0.053 [−0.266, +0.156]`, **p = 0.630** → **KHÔNG bác bỏ**.
+> Tức "bác bỏ Markov" của E22 là **GIẢ**, sinh ra bởi việc per-edge protocol giữ
+> artifact cố định: 2 artifact được rút cho cạnh 0→1 và 1→2 tình cờ "dễ"
+> (0.967 và 1.000) làm `∏sᵢ` bị thổi lên 0.806, trong khi tỉ lệ biên thật chỉ
+> ~0.70–0.73. **Đây là ví dụ giáo khoa về việc một con số ấn tượng (p=0.003) có
+> thể là artifact của thiết kế đo.** Phần dưới giữ nguyên để làm dấu vết.
+
+- `ASR = 0.475 [0.329, 0.625]` vs `∏sᵢ = 0.806 [0.675, 0.961]` → **hai CI KHÔNG
+  chồng nhau** → verdict `ASR < prod(s_i) (attenuation / sub-Markov)`.
+- Nghĩa là: giả định "các hop độc lập, ASR = tích các s" **sai** ở cell này;
+  propagation thực tế **thấp hơn** tích per-hop. Đây chính là thứ framework được
+  thiết kế để phát hiện, và nó biến bài từ "đo lại hiện tượng đã biết" thành
+  "đo và **bác bỏ một giả định đang được dùng phổ biến**".
+- ⚠️ **Cách diễn giải phải cẩn thận (đã ghi vào Limitations):** trong per-edge
+  protocol, ``compromised_content`` của src được tính **một lần rồi giữ cố định**
+  cho mọi trial; trong natural runs, nội dung compromised **tiến hoá** qua từng
+  hop (agent sau có thể làm loãng payload). Vậy một phần của attenuation là do
+  **pha loãng nội dung**, không chỉ do phụ thuộc xác suất. Kết luận an toàn:
+  *"first-order Markov với s_i không đổi KHÔNG mô tả được chuỗi; độ lệch có cấu
+  trúc và dự đoán được (giảm dần), không phải nhiễu."*
+
+**2. Thứ tự susceptibility ĐẢO NGƯỢC kỳ vọng "model mạnh thì kháng tốt hơn":**
+`DeepSeek V3.2 (0.475) > qwen2.5:7b (0.300) > Claude 4.5 (0.000)`.
+DeepSeek là model **mạnh nhất trong 3 model về năng lực tổng quát** nhưng **dễ bị
+injection nhất**. ⇒ susceptibility là thuộc tính của **họ model / cách alignment**,
+KHÔNG suy ra được từ capability. Đây là lập luận mạnh nhất cho sự cần thiết của
+một benchmark đo trực tiếp.
+
+**3. 🎯 Obfuscation PHÁ DLP trên DeepSeek — arms-race ĐƯỢC tái lập trên frontier
+model (n=8, cần n=30 để chốt):**
+
+| defense | plain | spaced | split-word |
+|---|---|---|---|
+| none | 1.00 (8/8) | 0.75 (6/8) | 1.00 (8/8) |
+| redact | **0.00 (0/8)** | **0.88 (7/8)** | **1.00 (8/8)** |
+
+Cùng lúc đó trên Claude (E21, n=30): `none·plain 0.10` → `redact·plain 0.00`,
+`spaced 0.00`, `split 0.03–0.10`.
+
+**Đây là mảnh ghép hoàn chỉnh cho câu chuyện "hiệu ứng sàn":**
+| Model | `none·plain` (đầu vào khả dụng) | `redact·plain` | `redact·split` | Đọc được gì |
+|---|---|---|---|---|
+| Claude 4.5 | 0.10 | 0.00 | 0.03 | Không có gì để bảo vệ → **không kết luận được** về DLP |
+| qwen2.5:7b | 0.94 | 0.00 | 1.00 | DLP chặn literal, obfuscation qua mặt |
+| **DeepSeek V3.2** | **1.00** | **0.00** | **1.00** | **DLP chặn literal 100%, obfuscation qua mặt 100%** |
+
+⇒ Kết luận "obfuscation phá DLP" **đứng vững trên frontier model** (DeepSeek) —
+điều kiện là model phải đủ susceptible để **có cái mà bảo vệ**. Phát biểu đúng cho
+paper: *"hiệu quả của DLP phụ thuộc vào headroom susceptibility; đo defense mà
+không có baseline no-defense là không identifiable."*
+
+**4. `spaced` KHÁC HẲN giữa các model:** DeepSeek 0.75–0.88, qwen 0.00, Claude 0.00.
+⇒ "BANANA - 77" chỉ được model tự ghép khi model đủ "hăng" với instruction; đây là
+chi tiết model-dependent **có thật** (không phải nhiễu) vì cả 3 model đều có
+baseline no-defense tương ứng (1.00 / 0.94 / 0.10).
+
+### E23. 🔥🔥 Llama 3.3 70B (Bedrock) — BÁC BỎ MARKOV THEO HƯỚNG NGƯỢC LẠI
+`us.meta.llama3-3-70b-instruct-v1:0` (⚠️ bắt buộc tiền tố `us.` — id không tiền
+tố báo `ValidationException ... on-demand isn't supported`) · chain n=4 ·
+trials=40 · per_edge=30 · temp 0.7 · `--only-chain-none` · **579 s (~10 phút)**.
+
+| Chỉ số | Giá trị |
+|---|---|
+| ASR | **0.800** [0.652, 0.895] — cao nhất trong 5 model |
+| Survival | 0.722 [0.622, 0.804] |
+| Per-edge | **1.000 / 0.167 / 1.000** |
+| R0 vs d·s̄ | 0.726 vs 0.542 |
+| Markov hình thức | Δ = **+0.633** [+0.433, +0.792], **p = 0.0001** → **reject: super-Markov** |
+
+⇒ **Vi phạm Markov thứ hai, độc lập, và NGƯỢC HƯỚNG** với DeepSeek (sub-Markov).
+Nếu cả hai đứng vững thì kết luận rất mạnh: mô hình tích không chỉ "hơi lệch" mà
+**không đáng tin về mặt định tính**, và dấu của sai số phụ thuộc model.
+
+⚠️ **NHƯNG** — xem E25: `ASR = 0.800` với `∏sᵢ = 0.167` là **bất khả thi về logic**
+nếu các cạnh thật sự độc lập, và chữ ký này khớp chính xác với một lỗi thiết kế
+trong phép đo per-edge. **Chưa được dùng làm claim cho tới khi chạy lại với
+`--fresh-artifact`.**
+
+### E24. Nova Pro (Bedrock) — model kháng tốt thứ hai
+`amazon.nova-pro-v1:0` (không cần tiền tố) · chain n=4 · trials=40 · per_edge=30 ·
+`--only-chain-none` · 657 s.
+
+| Chỉ số | Giá trị |
+|---|---|
+| ASR | 0.075 [0.026, 0.199] |
+| Survival | 0.178 [0.112, 0.269] |
+| Per-edge | 0.233 / **0.000** / 0.300 |
+| Markov hình thức | Δ = +0.075 [+0.000, +0.175], p = 0.0858, MDE 0.116 → consistent |
+
+⚠️ Đọc cẩn thận: `∏sᵢ = 0` **vì cạnh giữa có s = 0 chính xác** ⇒ phép so chỉ còn
+là "ASR > 0" ⇒ **ít thông tin**, không phải bằng chứng ủng hộ Markov. Đã thêm
+cảnh báo này vào `scripts/markov_formal_all.py`.
+
+**Bảng cross-model 5 model (chain·none, Task B, trials=40):**
+
+| Model | ASR | s̄ | per-edge | Markov |
+|---|---|---|---|---|
+| **Llama 3.3 70B** | **0.800** | 0.722 | 1.000/0.167/1.000 | reject: super-Markov (p=0.0001) ⚠️ |
+| **DeepSeek V3.2** | 0.475 | 0.933 | 0.967/1.000/0.833 | reject: sub-Markov (p=0.0030) |
+| qwen2.5:7b | 0.300 | 0.611 | 0.400/0.733/0.700 | consistent (MDE 0.26 — yếu) |
+| **Nova Pro** | 0.075 | 0.178 | 0.233/0.000/0.300 | consistent (∏sᵢ=0 — yếu) |
+| Claude Sonnet 4.5 | 0.000 | 0.211 | 0.000/0.600/0.033 | degenerate (vô nghĩa) |
+
+⇒ **4 kết cục định tính khác nhau trên 5 model** — chính là luận điểm "phải đo,
+không suy từ capability". Và thứ tự susceptibility hoàn toàn không theo năng lực.
+
+### E25. 🐛 LỖ HỔNG PHƯƠNG PHÁP trong per-edge protocol (phát hiện nhờ E23)
+
+**Triệu chứng:** Llama cho `per-edge = 1.000 / 0.167 / 1.000` (⇒ `∏sᵢ = 0.167`)
+nhưng `ASR = 0.800`. Nếu các hop độc lập thì chuỗi chỉ tới đích được 16.7% số lần;
+đo được 80% ⇒ **phép đo per-edge không thể đúng**.
+
+**Nguyên nhân (đọc code):** `Runner.run_per_edge_protocol` tính
+`compromised_content` của agent nguồn **MỘT LẦN** rồi dùng lại cho cả 30 trial
+(`engine.py:521`). Nên `s_hat` của mỗi cạnh phụ thuộc vào **một mẫu artifact duy
+nhất**. Hệ quả:
+- mẫu artifact **khó** hơn trung bình → `s_hat` thấp giả tạo → `∏sᵢ` thấp giả tạo
+  → **ASR > ∏sᵢ (super-Markov GIẢ)** ← chữ ký của Llama;
+- mẫu artifact **dễ** hơn trung bình → `∏sᵢ` cao giả tạo → **ASR < ∏sᵢ
+  (sub-Markov GIẢ)** ← chữ ký của DeepSeek.
+
+⇒ **CẢ HAI** vi phạm Markov quan sát được (E22 và E23, ngược hướng nhau) đều có
+thể do lỗi thiết kế này sinh ra. Không được công bố claim Markov trước khi sửa.
+
+**Đã sửa:** thêm `extra.per_edge_fresh_artifact` → rút artifact **MỚI mỗi trial**,
+để `s_hat` ước lượng **xác suất biên** trên phân phối artifact — đúng đại lượng mà
+mô hình tích cần. Mặc định `False` để **mọi số cũ tái lập được**; các cell dùng cho
+claim Markov phải chạy với `--fresh-artifact`. Đã áp cho cả
+`scripts/replicate_frontier.py` và `scripts/rerun_chain_raw.py`. Tests: 76 passed.
+
+**Việc phải làm:** rerun Llama + DeepSeek với `--fresh-artifact` (đang chạy), rồi
+qwen; đối chiếu hai chế độ và báo cáo **cả hai** trong paper (chế độ "artifact cố
+định" như một ablation cho thấy độ nhạy của kết luận Markov với thiết kế protocol).
+
+**Bài học ghi lại:** một con số *bất khả thi về logic* (ASR > max khả thi của ∏sᵢ)
+là tín hiệu mạnh nhất để nghi ngờ chính phép đo — chứ không phải để ăn mừng phát
+hiện mới.
+
+### E26. 🎯 Kết quả fresh-artifact: bác bỏ của DeepSeek BIẾN MẤT, của Llama THÌ KHÔNG
+
+Cùng cấu hình (chain n=4, trials=40, per_edge=30, temp 0.7), chỉ đổi artifact
+per-edge từ CỐ ĐỊNH sang MỚI-MỖI-TRIAL:
+
+| Model | chế độ | per-edge | ∏sᵢ | ASR | Δ | p | verdict |
+|---|---|---|---|---|---|---|---|
+| **DeepSeek V3.2** | cố định (E22) | 0.967/1.000/0.833 | 0.806 | 0.475 | −0.331 | **0.0030** | bác bỏ (sub-Markov) |
+| **DeepSeek V3.2** | **fresh** | 0.700/0.733/0.833 | 0.428 | 0.375 | −0.053 | **0.630** | **consistent** |
+| **Llama 3.3 70B** | cố định (E23) | 1.000/0.167/1.000 | 0.167 | 0.800 | +0.633 | 0.0001 | bác bỏ (super-Markov) |
+| **Llama 3.3 70B** | **fresh** | 1.000/0.300/1.000 | 0.300 | 0.925 | +0.625 | <0.001 | **bác bỏ (super-Markov)** ✅ vẫn đứng |
+
+**Hai kết luận:**
+
+1. **Claim Markov của E22 (DeepSeek) PHẢI RÚT LẠI.** Per-edge estimate rất nhạy
+   với artifact: `0.967 → 0.700` và `1.000 → 0.733` chỉ do đổi cách rút artifact.
+   ⇒ Các cell cũ dùng artifact cố định (E17, E20, E22, E23 cố định) **không dùng
+   được** cho claim Markov; chỉ dùng cho ASR/per-edge *mô tả*.
+
+2. **Vi phạm của Llama ĐỨNG VỮNG qua cả hai chế độ** (Δ +0.633 → +0.625, p<0.001)
+   ⇒ đây là hiệu ứng THẬT, không phải artifact đo. Trên Llama: `∏s^controlled =
+   0.300` nhưng `ASR = 0.925` ⇒ **phép đo cách ly đánh giá thấp lan truyền ~3×**.
+
+### E27. 🧠 ĐẲNG THỨC `ASR = ∏ s_i` — phát biểu lại câu hỏi "Markov" cho đúng
+
+Trong chain, compromise chỉ lan từ node trước ⇒ `C_i = 1 ⟹ C_{i-1} = 1` ⇒
+
+```
+ASR = P(C_k = 1) = ∏_i P(C_i = 1 | C_{i-1} = 1) = ∏_i s_i^nat     ← ĐẲNG THỨC
+```
+
+**Vậy `ASR = ∏sᵢ` KHÔNG phải giả định Markov** — nó đúng theo định nghĩa *miễn là*
+`s_i` đo **trong chính quá trình lan truyền** (`s_i^nat`, từ natural runs, đã
+thêm vào `summarize` dưới key `survival_natural`). Đã khoá bằng test:
+`tests/test_markov_formal.py::test_natural_product_is_an_identity_not_an_assumption`
+(assert `∏s^nat == ASR` tới 1e-12 trên 300 trial mock).
+
+**Cách phát biểu ĐÚNG của câu hỏi mà literature gọi là "Markov":**
+
+```
+s_i^controlled   ?=   s_i^nat
+```
+
+tức **ước lượng per-hop đo trong điều kiện CÁCH LY có chuyển được sang bối cảnh
+trong chuỗi hay không**. Đây chính là giả định mà mọi benchmark **single-agent**
+(InjecAgent và tương tự) đang ngầm dùng khi compose kết quả để dự đoán pipeline.
+
+⇒ Đóng góp được nâng cấp: không còn là "chúng tôi thấy ASR lệch khỏi tích" (yếu,
+và dễ là artifact — như chính E22 đã chứng minh), mà là **"tính hợp lệ của phép đo
+cách ly là một giả định có thể KIỂM TRA, và nó thất bại theo cách phụ thuộc
+model"**. Script: `scripts/isolation_validity.py`.
+
+### E28. 🎯 §7 Utility trên DeepSeek — defense "bị chi phối" lộ ra
+
+Lần đầu §7 chạy trên model mà attack THẬT SỰ thành công (DeepSeek, ASR 0.45) —
+đúng như dự đoán ở E26/§2: trên Claude §7 vô nghĩa vì ASR = 0.
+
+`utility_real.py` · `deepseek.v3.2` · trials=20 · utility_trials=20 · temp 0.7 ·
+mỗi defense ~1020–1040 s:
+
+| defense | ASR (natural) | U_clean | U_attack | ΔU | **Retention** |
+|---|---|---|---|---|---|
+| none | 0.450 [0.258, 0.658] | 1.000 | 0.600 | +0.400 | **0.600** |
+| paraphrase | 0.450 [0.258, 0.658] | 1.000 | 0.400 | +0.600 | **0.400** |
+| **redact** | **0.000** [0.000, 0.161] | 1.000 | **1.000** | **+0.000** | **1.000** |
+
+**Ba kết luận (đây là "trade-off frontier" mà metric §7 sinh ra để đo):**
+
+1. **`redact` là defense TỐT THẬT trên DeepSeek**: ASR 0.450 → **0.000** *và*
+   retention **1.000** ⇒ chặn lan **không mất gì** về utility. (Đối chiếu với E22/
+   E19: redact bị obfuscation split qua mặt 100% ⇒ tốt với attack literal, yếu với
+   attack biến hình — hai kết luận không mâu thuẫn, chúng đo hai thứ khác nhau.)
+2. **`paraphrase` bị CHI PHỐI HOÀN TOÀN (strictly dominated)**: cùng ASR 0.450
+   (không giảm lan chút nào) nhưng retention 0.400 < 0.600 của `none` ⇒
+   **tệ hơn cả việc KHÔNG làm gì**. Đây là loại phát hiện mà nếu chỉ báo ASR/R0 sẽ
+   **không bao giờ thấy** — defense trông "có làm gì đó" mà thực ra chỉ gây hại.
+3. **Claude (P3, đang chạy)**: `none` ΔU 0.000, `paraphrase` ΔU 0.100 ⇒ trên model
+   kháng tốt, paraphrase là **thuần chi phí** (không lợi ích vì ASR đã 0, vẫn mất
+   10% utility). Cùng kết luận với DeepSeek, qua hai cơ chế khác nhau.
+
+⇒ Khuyến nghị cho paper: **báo cáo (ASR, ΔU) theo cặp cho mọi defense**, và không
+triển khai defense kiểu viết-lại-ngữ-nghĩa: trên cả hai model nó hoặc bị chi phối,
+hoặc chỉ tốn utility.
+
+### E29. ⛔ Bedrock API key HẾT HIỆU LỰC giữa phiên + cứu dữ liệu bằng raw outputs
+
+**Sự cố:** trong lúc chạy `frontier_deepseek_iso` (pwsh-13) và ô `redact` của
+`utility_claude` (pwsh-3), Bedrock trả
+`AccessDeniedException: Authentication failed: Please make sure your API Key is valid.`
+Kiểm tra lại bằng `scripts/test_bedrock.py` → **cả `ListFoundationModels` cũng bị
+từ chối**, mọi region đều fail ⇒ **key hỏng/hết hạn ở mức tài khoản**, không phải
+lỗi tạm thời của một model. (Loại key `bedrock-api-key-...` theo ghi chú có thời
+hạn ~30 ngày — cần nhờ giảng viên cấp key mới.)
+
+**Thiệt hại & cứu được:**
+
+| Job | Trạng thái | Xử lý |
+|---|---|---|
+| `utility_deepseek` (pwsh-6) | ✅ xong trước khi key hỏng | nguyên vẹn |
+| `utility_claude` (pwsh-3) | chết ở ô `redact`; `none` + `paraphrase` đã chạy xong nhưng **report/results chưa được ghi** | ✅ **cứu bằng `scripts/utility_from_outputs.py`** (đọc `outputs.jsonl` ghi tăng dần) |
+| `frontier_deepseek_iso` (pwsh-13) | chết ở per-edge, chưa ghi gì | ❌ phải chạy lại khi có key |
+| `power_n200` (P4, local) | 🟢 **không bị ảnh hưởng** (Ollama, không dùng Bedrock) | đang chạy |
+
+**Số §7 Claude cứu được** (khớp chính xác với log job, tái lập từ raw outputs):
+
+| defense | U_clean | U_attack | ΔU | Retention |
+|---|---|---|---|---|
+| none | 1.000 | 1.000 | +0.000 | 1.000 |
+| paraphrase | 1.000 | 0.900 | +0.100 | 0.900 |
+| redact | — | — | — | chưa chạy |
+
+⇒ Trên Claude: `paraphrase` **thuần chi phí** (ASR đã 0.000 nên không có gì để cải
+thiện, vẫn mất 10% utility). Cùng kết luận với DeepSeek nhưng qua cơ chế khác
+(ở DeepSeek nó bị `none` chi phối; ở Claude nó chỉ tốn mà không lợi).
+
+**Hai cải tiến rút ra (đã làm):**
+1. `scripts/utility_real.py` nay **ghi `results.json` tăng dần sau MỖI defense**
+   (kèm `partial: true`, `completed_defenses`) + `outputs.jsonl` vốn đã ghi tăng
+   dần ⇒ job chết giữa chừng không còn mất trắng.
+2. Thêm `scripts/utility_from_outputs.py`: **chấm lại toàn bộ §7 từ raw outputs mà
+   không cần gọi LLM** — vừa là lưới an toàn, vừa là bằng chứng tái lập cho paper.
+
+**Việc còn lại khi có key mới:** (a) `utility_claude` ô `redact`;
+(b) `frontier_deepseek_iso` (để có hàng đối chứng isolation: DeepSeek *chuyển được*
+vs Llama *không*); (c) topology star/tree; (d) sensitivity.
+
 ---
 
 ## 3. Các vấn đề phụ đang tồn tại
@@ -615,3 +900,90 @@ nó thực sự xuất ra đại lượng mà kết luận cần — không suy 
 
 Kết quả sẽ được ghi thành E21–E24 tương ứng + cập nhật `DATA_DETAIL.md`,
 `figures/` (chạy lại `make_figures.py`), và bảng cross-model ở `PAPER_DRAFT.md` §5.
+
+---
+
+## 7. Gói độ chặt phương pháp — 2026-09-11 (đã được duyệt: "cả 3")
+
+> Ba thứ reviewer A* (nhánh ML benchmark) gần như chắc chắn hỏi. Code xong trước,
+> chưa tốn API.
+
+### 7.1 Kiểm định Markov HÌNH THỨC (`markov_test_formal`)
+
+`markov_test` cũ chỉ hỏi "hai CI 95% có chồng nhau không": thô, bảo thủ, **không
+p-value và không cho biết cỡ mẫu đủ bác bỏ sai lệch lớn cỡ nào**. Đã thêm:
+
+- `markov_test_formal(paths, edge_trials, ...)` và
+  `markov_test_formal_from_counts(asr_k, asr_n, [(edge, k, n)], ...)` — bản thứ
+  hai áp dụng được cho **dữ liệu đã công bố dạng k/n** (không cần chạy lại LLM).
+- Bootstrap độc lập trên hai protocol (natural runs cho ASR, per-edge cho từng
+  sᵢ) → **CI percentile + p-value hai phía cho H0: Δ = ASR − ∏sᵢ = 0**.
+- **MDE** = sai lệch nhỏ nhất phát hiện được ở cỡ mẫu hiện tại:
+  `MDE = (z_{1−α/2} + z_power) · sd(Δ_boot)`.
+- **Cờ `degenerate`**: khi ASR và ∏sᵢ cùng ở biên (0 hoặc 1) ⇒ sd(Δ) = 0 ⇒ kiểm
+  định VÔ NGHĨA. Trước đây luật cũ sẽ in "consistent" — nay nói thẳng.
+
+**Hiệu chuẩn (mục 3b–3d của `experiments/results/validation/report.md`)**, chạy
+trên dữ liệu tổng hợp có ground truth:
+
+| n_agents | s | true ASR | n | n_rep | bias (σ) | size @ α=0.05 | median p | MDE |
+|---|---|---|---|---|---|---|---|---|
+| 5 | 0.6 | 0.1296 | 120 | 60 | −0.10 | 0.083 | 0.477 | 0.099 |
+| 5 | 0.7 | 0.2401 | 400 | 60 | +0.05 | 0.067 | 0.560 | 0.074 |
+| 5 | 0.9 | 0.6561 | 400 | 60 | +0.08 | 0.083 | 0.409 | 0.090 |
+
+- **Không lệch hệ thống** (|bias| ≤ 0.10σ).
+- **Size tương thích nominal 5%** (MC se của chính ước lượng size = ±2.8 điểm %).
+- **Power cao hơn quy tắc CI-chồng-nhau**: 0.750 vs 0.625 (trials=75) → 1.000 vs
+  0.975 (150).
+- **Cỡ mẫu cho MDE mục tiêu 0.10**: n=100 → MDE 0.142; **n=200 → 0.100**;
+  n=400 → 0.071. ⇒ P4 (trials=200) đủ để tuyên bố "loại trừ |Δ| > 0.10".
+
+### 7.2 Bảng Markov hình thức cho MỌI cell chain (`scripts/markov_formal_all.py`)
+
+Đây sẽ là **bảng kết quả cốt lõi của paper** (nguồn: `experiments/results/markov_formal/table.md`):
+
+| cell | n trial | ASR | ∏sᵢ | Δ | Δ 95% CI | p | MDE | verdict |
+|---|---|---|---|---|---|---|---|---|
+| qwen2.5:7b · none | 40 | 0.300 | 0.205 | +0.095 | [−0.088, +0.280] | 0.317 | 0.262 | consistent (chỉ loại trừ \|Δ\|>0.26 — yếu) |
+| qwen2.5:7b · paraphrase | 40 | 0.275 | 0.247 | +0.028 | [−0.160, +0.215] | 0.778 | 0.267 | consistent (yếu) |
+| **deepseek.v3.2 · none** | 40 | 0.475 | 0.806 | **−0.331** | **[−0.538, −0.116]** | **0.0030** | 0.299 | **BÁC BỎ H0: sub-Markov** |
+| claude-4.5 · none | 40 | 0.000 | 0.000 | 0.000 | [0, 0] | 1.000 | 0.000 | **degenerate — không có thông tin** |
+
+⇒ Hai kết luận quan trọng:
+1. **DeepSeek bác bỏ Markov bậc 1 với p = 0.003** — đây là đóng góp phương pháp,
+   không chỉ là đo lại hiện tượng.
+2. Cell qwen có MDE 0.26 ⇒ "consistent" ở n=40 **không có giá trị kết luận**
+   (đúng như dự đoán; đây chính là lý do P4 chạy n=200).
+3. Cell Claude bị gắn cờ **degenerate** (ASR = ∏sᵢ = 0) ⇒ không được báo cáo như
+   "ủng hộ Markov".
+
+### 7.3 Topology star/tree (`replicate_frontier.py --topology`)
+
+- Thêm `--topology chain|star|tree`, `--num-agents`, `--entry` (mặc định tự chọn
+  theo topology qua `validation.config_entry`: star → entry là một LEAF).
+- **Bug ngữ nghĩa đã sửa**: engine mặc định target = "agent cuối trong node_order"
+  — chỉ đúng cho chain. Với star, agent cuối là một LEAF (không có downstream)
+  ⇒ **ASR luôn = 0 một cách vô nghĩa**. Thêm `topology.graph.default_targets()`:
+  star → center `agent_0`; tree → leaf sâu nhất `agent_{n-1}`; chain → không đổi
+  (nên **mọi kết quả chain đã chạy vẫn so sánh được**).
+- Kiểm chứng mock: star (n=4) ASR 1.0 với target=center, 3 cạnh fan-in; tree (n=7)
+  6 cạnh, `R0 = 0.857 = d·s̄` đúng như validation dự đoán khi s→1; chain không đổi.
+
+### 7.4 Sensitivity & overdispersion (`scripts/sensitivity.py`)
+
+Trả lời hai câu hỏi mà CI Wilson giả định sẵn (và có thể SAI với LLM):
+- **φ (dispersion factor)** = Var(quan sát giữa các lần lặp)/Var(nhị thức),
+  kèm CI bootstrap trên số lần lặp. φ > 1 ⇒ **CI Wilson hẹp giả tạo**, phải nới ≈ √φ.
+- **χ² đồng nhất theo benign context** (gom trial theo `trial % len(CTX)`) — phát
+  hiện trial không i.i.d. theo prompt.
+
+Self-test offline (mock, `--mock-infection-prob 0.5`, 16 lần lặp) cho
+φ = 0.88 / 0.95 / 1.05 (CI đều chứa 1) và χ² p = 0.11–0.90 ⇒ **đúng như kỳ vọng
+trên dữ liệu i.i.d.** — tức công cụ đã được kiểm chứng trước khi dùng.
+
+### 7.5 Tests
+
+**76 passed** (trước 68). Thêm `tests/test_markov_formal.py` (8 test: size, power
+vs CI-overlap, MDE giảm theo n, biên degenerate, cell degenerate thực tế, off-chain)
+và giữ nguyên toàn bộ hành vi mock mặc định.

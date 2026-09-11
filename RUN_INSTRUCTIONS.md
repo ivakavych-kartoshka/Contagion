@@ -1,5 +1,23 @@
 # HÀNG ĐỢI CHẠY THÍ NGHIỆM — Amazon Bedrock (bản 2026-09-11)
 
+> ## ⛔ ĐANG BỊ CHẶN: Bedrock API key đã hết hiệu lực
+> Lúc chạy P3/P3b, Bedrock trả
+> `AccessDeniedException: Authentication failed: Please make sure your API Key is valid.`
+> — kiểm tra lại thì **cả `ListFoundationModels` cũng bị từ chối ở mọi region**,
+> tức key hỏng ở mức tài khoản (loại key này có thời hạn ~30 ngày).
+>
+> **Cần bạn làm:** nhờ giảng viên cấp **key mới**, rồi dán vào `.env`:
+> ```powershell
+> notepad E:\NCKH\Contagion\.env     # sửa dòng AWS_BEARER_TOKEN_BEDROCK=...
+> python scripts\test_bedrock.py      # phải thấy ✓ kết nối OK + danh sách model
+> ```
+> Sau đó báo tôi — tôi chạy tiếp đúng phần còn thiếu:
+> (a) ô `redact` của `utility_claude`; (b) `frontier_deepseek_iso`;
+> (c) topology star/tree; (d) sensitivity. Chi tiết ở `EXPERIMENT_LOG.md` §E29.
+>
+> ✅ **P4 (Markov power n=200) chạy local bằng Ollama nên KHÔNG bị ảnh hưởng** —
+> vẫn đang chạy bình thường.
+>
 > **TRẠNG THÁI: agent đang tự chạy P1–P4** (bạn yêu cầu "chạy cho tôi luôn").
 > Các lệnh dưới đây vẫn giữ nguyên để bạn chạy lại/kiểm chứng bất cứ lúc nào.
 > Kết quả sẽ được tổng hợp vào `EXPERIMENT_LOG.md` (E21+) + `DATA_DETAIL.md`.

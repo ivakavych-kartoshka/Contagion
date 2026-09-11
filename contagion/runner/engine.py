@@ -515,13 +515,32 @@ class Runner:
         strategy = self._build_attack()
 
         trials: List[EdgeTrial] = []
+        # ``extra.per_edge_fresh_artifact``: rút output compromised MỚI cho mỗi
+        # trial thay vì tính MỘT LẦN rồi dùng lại.
+        #
+        # Vì sao quan trọng (phát hiện ở E23 — Llama 3.3 70B): cách cũ giữ artifact
+        # CỐ ĐỊNH, nên s_hat của cạnh phụ thuộc vào MỘT mẫu output duy nhất. Nếu
+        # mẫu đó "khó" hơn mức trung bình thì s_hat bị ĐÁNH GIẢM; nếu "dễ" hơn thì
+        # bị THỔI LÊN. Vì tích ∏sᵢ dùng chính các s_hat này, sai số theo một hướng
+        # sẽ tạo ra vi phạm Markov GIẢ: artifact khó ⇒ ∏sᵢ thấp giả tạo ⇒ ASR >
+        # ∏sᵢ (super-Markov giả); artifact dễ ⇒ ∏sᵢ cao giả tạo ⇒ ASR < ∏sᵢ
+        # (sub-Markov giả). Tức **cả hai** hướng bất thường đều có thể do thiết kế
+        # này sinh ra. Bật cờ ⇒ s_hat ước lượng xác suất BIÊN (trung bình trên
+        # phân phối artifact) — đúng đại lượng mà mô hình tích cần.
+        fresh_artifact = bool(
+            self.config.extra.get("per_edge_fresh_artifact", False))
         for e in graph.edges:
             src_agent = agents[e.src]
             dst_agent = agents[e.dst]
-            # Output compromised của src — KHÔNG đổi qua các trial (đảm bảo
-            # C_src=1), chỉ dst ngẫu nhiên hoá (mock: rng theo infection_prob).
-            compromised_content = self._compromised_output(src_agent, strategy)
+            fixed_content = (None if fresh_artifact
+                             else self._compromised_output(src_agent, strategy))
             for t in range(self.config.per_edge_trials):
+                # C_src = 1 bảo đảm bằng cách ép agent nguồn sinh output chứa
+                # payload (mỗi trial một mẫu mới nếu bật fresh_artifact).
+                compromised_content = (
+                    self._compromised_output(src_agent, strategy)
+                    if fresh_artifact else fixed_content
+                )
                 msg = Message(
                     sender_id=e.src,
                     receiver_id=e.dst,

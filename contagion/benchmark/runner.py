@@ -34,6 +34,8 @@ from ..metrics.epidemiology import (
     controlled_per_edge_survival,
     hops_to_compromise,
     markov_test,
+    markov_test_formal,
+    per_hop_survival,
     propagation_rate,
     reproduction_number,
 )
@@ -183,12 +185,30 @@ def summarize(
             targets = tg
     return {
         "survival": {k: _stat(s) for k, s in surv.items()},
+        # Per-hop survival đo TRỰC TIẾP trên natural runs: s_i^nat =
+        # P(C_i = 1 | C_{i-1} = 1) trong chính quá trình lan truyền thật.
+        #
+        # Vì trong chain C_i = 1 ⟹ C_{i-1} = 1, ta có ĐẲNG THỨC
+        #     ASR = ∏_i s_i^nat
+        # (không phải giả định!). Do đó "kiểm định Markov" có ý nghĩa thực chất
+        # KHÔNG phải là kiểm tra đẳng thức đó, mà là kiểm tra xem **ước lượng
+        # cách ly** s_i^controlled (per-edge protocol, artifact chuẩn hoá) có
+        # chuyển được sang bối cảnh trong chuỗi hay không:
+        #     s_i^controlled  ==  s_i^nat  ?
+        # Xem scripts/isolation_validity.py.
+        "survival_natural": {k: _stat(s) for k, s in per_hop_survival(paths).items()},
         "asr": _stat(attack_success_rate(paths, targets=targets)),
         "r0": _stat(reproduction_number(paths)),
         "r0_ds_check": _ds_check(surv, config, edges),
         "propagation_rate": _stat(propagation_rate(paths)),
         "hops_to_compromise": hops_to_compromise(paths, targets=targets),
         "markov_check": markov_test(paths, edge_trials or [], targets=targets, entry_agent=entry_agent),
+        # Kiểm định hình thức (p-value + MDE) — xem epidemiology.markov_test_formal:
+        # "consistent" của markov_check là quy tắc CI-chồng-nhau thô; key này cho
+        # p-value bootstrap và sai lệch nhỏ nhất phát hiện được ở cỡ mẫu hiện tại.
+        "markov_test_formal": markov_test_formal(
+            paths, edge_trials or [], targets=targets, entry_agent=entry_agent
+        ),
         "n_trials": len(paths),
         "n_per_edge_trials": _per_edge_n(edge_trials),
     }

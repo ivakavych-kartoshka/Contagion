@@ -53,6 +53,9 @@ def main() -> int:
     ap.add_argument("--trials", type=int, default=40)
     ap.add_argument("--per-edge", type=int, default=30)
     ap.add_argument("--defense", default="none", choices=["none", "paraphrase"])
+    ap.add_argument("--fresh-artifact", action="store_true",
+                    help="rút output compromised MỚI mỗi per-edge trial "
+                         "(khuyến nghị cho cell kiểm định Markov — xem E23)")
     ap.add_argument("--out", type=Path, default=Path("experiments/results/rerun_chain_n40"))
     args = ap.parse_args()
 
@@ -90,11 +93,20 @@ def main() -> int:
 
     # (2) PER-EDGE controlled protocol (metric.md §1) — giữ raw outputs để
     #     phân tích role-dependence.
+    #     ``--fresh-artifact`` (khuyến nghị khi dùng kết quả để KIỂM ĐỊNH MARKOV):
+    #     rút output compromised MỚI mỗi trial thay vì cố định một mẫu — xem
+    #     ghi chú dài trong contagion/runner/engine.py (E23: giữ artifact cố định
+    #     có thể tạo vi phạm Markov GIẢ ở cả hai hướng).
     for e in graph.edges:
         src_agent, dst_agent = agents[e.src], agents[e.dst]
-        compromised_content = runner._compromised_output(src_agent, strategy)
+        fixed_content = (None if args.fresh_artifact
+                         else runner._compromised_output(src_agent, strategy))
         for t in range(args.per_edge):
             from contagion.core import Message
+            compromised_content = (
+                runner._compromised_output(src_agent, strategy)
+                if args.fresh_artifact else fixed_content
+            )
             msg = Message(sender_id=e.src, receiver_id=e.dst,
                           content=compromised_content, field="tool_response")
             task_ctx = runner._task_context(t)

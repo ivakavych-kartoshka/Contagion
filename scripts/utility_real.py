@@ -254,6 +254,13 @@ def main() -> int:
                                         ensure_ascii=False) + "\n")
             u = r["utility"]
             rows.append((defense, r["asr"], r["asr_ci"], u))
+            # Ghi TĂNG DẦN: nếu job chết giữa chừng (vd key API hết hạn) thì các
+            # cell đã xong vẫn còn trên đĩa, không phải chạy lại từ đầu.
+            (out / "results.json").write_text(
+                json.dumps({**allres, "partial": True,
+                            "completed_defenses": [x[0] for x in rows]},
+                           indent=2, default=str), encoding="utf-8")
+            fh.flush()
             print(f"  ASR={r['asr']:.3f}  U_clean={u['u_clean']:.3f}  "
                   f"U_attack={u['u_attack']:.3f}  ΔU={u['delta_u']:.3f}  "
                   f"retention={u['retention']}  ({r['elapsed_s']}s)", flush=True)

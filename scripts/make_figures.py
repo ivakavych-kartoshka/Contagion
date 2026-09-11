@@ -45,6 +45,33 @@ NOTES: list[str] = []
 SKIP_DIR_PREFIXES = ("smoke", "_", "mini", "test")
 
 
+def short_model(model: str, maxlen: int = 26) -> str:
+    """Rút gọn model id Bedrock cho nhãn hình.
+
+    Vì sao cần: ``split(".")[-1]`` phá tên kiểu ``deepseek.v3.2`` → chỉ còn "2".
+    Quy tắc: bỏ tiền tố region (``us.``/``eu.``/``apac.``), tách ``vendor.rest``;
+    nếu ``rest`` ngắn (≤ 8 ký tự) thì ghép ``vendor-rest`` (→ ``deepseek-v3.2``),
+    nếu dài thì bỏ phần ngày/version (→ ``us.anthropic.claude-sonnet-4-5-20250929-v1:0``
+    thành ``claude-sonnet-4-5``).
+    """
+    m = str(model)
+    for prefix in ("us-gov.", "us.", "eu.", "apac."):
+        if m.startswith(prefix):
+            m = m[len(prefix):]
+            break
+    vendor, _, rest = m.partition(".")
+    if not rest:
+        return m[:maxlen]
+    if rest[:1].isdigit():
+        # Tag kiểu Ollama "qwen2.5:7b" (vendor="qwen2", rest="5:7b") — giữ nguyên.
+        return m[:maxlen]
+    if len(rest) <= 8:
+        return f"{vendor}-{rest}"[:maxlen]
+    tidy = re.sub(r"-(20\d{6})(-v\d+(:\d+)?)?$", "", rest)
+    tidy = re.sub(r"-v\d+(:\d+)?$", "", tidy)
+    return (tidy or rest)[:maxlen]
+
+
 def wilson(k: int, n: int):
     from contagion.metrics.epidemiology import _wilson_bounds
     if n <= 0:
@@ -411,7 +438,7 @@ def _obf_sources() -> list:
             NOTES.append(f"- ⚠️ bỏ qua obfuscation của `{p.parent.name}`: "
                          "schema không nhận dạng được (thiếu k/rate/n).")
             continue
-        model = str(blk.get("model", p.parent.name)).split(".")[-1][:26]
+        model = short_model(blk.get("model", p.parent.name))
         n_obf = blk.get("n_obf") or next(iter(pairs.values()))[1]
         label = f"{model} · n={n_obf}"
         sources.append((label, pairs))
@@ -493,7 +520,7 @@ def fig5_cross_model(out: Path) -> None:
         if not cn:
             continue
         model = blk.get("model", slug)
-        pretty = model.split(".")[-1][:26] if "." in model else model[:26]
+        pretty = short_model(model)
         rows.append((f"{pretty}\n(Bedrock)", 
                      {"mean": cn.get("asr"), "ci_low": (cn.get("asr_ci") or [0, 1])[0],
                       "ci_high": (cn.get("asr_ci") or [0, 1])[1]},
@@ -564,7 +591,7 @@ def fig6_markov(out: Path) -> None:
     for slug, blk in load_frontier().items():
         mk = (blk.get("chain_none") or {}).get("markov")
         if isinstance(mk, dict):
-            model = blk.get("model", slug).split(".")[-1][:20]
+            model = short_model(blk.get("model", slug), 20)
             cells.append((f"{model} · none", mk))
     if not cells:
         NOTES.append("- ⚠️ bỏ `fig6_markov.png`: không có markov_check")
@@ -619,7 +646,7 @@ def fig7_utility_tradeoff(out: Path) -> None:
     colors = {"none": "#c0504d", "paraphrase": "#4f81bd", "redact": "#2f6b3a"}
     for slug, blk in data.items():
         cells = blk.get("cells") or {}
-        model = str(blk.get("model", slug)).split(".")[-1][:22]
+        model = short_model(blk.get("model", slug), 22)
         for defense, cell in cells.items():
             u = cell.get("utility") or {}
             if u.get("retention") is None:

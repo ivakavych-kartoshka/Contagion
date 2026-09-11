@@ -1,4 +1,4 @@
-# 📊 SỐ LIỆU CHI TIẾT TỪNG THÍ NGHIỆM (E1 → E21) + CÁCH ĐỌC
+# 📊 SỐ LIỆU CHI TIẾT TỪNG THÍ NGHIỆM (E1 → E28) + CÁCH ĐỌC
 
 > File này liệt kê **mọi con số** của từng thí nghiệm trong `EXPERIMENT_LOG.md`,
 > kèm **cách đọc đơn giản** từng bảng (cho người mới học AI).
@@ -327,18 +327,122 @@ So sánh E19 trên qwen2.5:7b (16 mẫu/ô): `none·plain 0.94` · `none·split 
 
 ---
 
-# TÓM TẮT NHANH — 5 CON SỐ NHỚ NHẤT
+## E22. 🔥🔥 DeepSeek V3.2 (Bedrock) — CELL ĐẦU TIÊN BÁC BỎ MARKOV
+
+Cấu hình: `deepseek.v3.2` · us-east-1 · chain n=4 · trials=40 · per_edge=30 ·
+temp 0.7 · judge ASV-only 0.9 · 3 cell hết ~45 phút.
+
+| Chỉ số | qwen2.5:7b | Claude 4.5 | **DeepSeek V3.2** |
+|---|---|---|---|
+| ASR (không defense) | 0.300 | 0.000 | **0.475** [0.329, 0.625] |
+| Survival | 0.611 | 0.211 | **0.933** [0.862, 0.969] |
+| Per-edge | 0.40/0.73/0.70 | 0.00/0.60/0.03 | **0.967/1.000/0.833** |
+| ASR + REDACT | 0.000 | 0.000 | **0.000** |
+| Survival + REDACT | 0.000 | 0.000 | **0.000** |
+| Markov | consistent | consistent | **ASR < ∏sᵢ (bác bỏ!)** |
+
+**Cách đọc:**
+
+1. **🎯 Bác bỏ Markov lần đầu:** `ASR = 0.475 [0.329, 0.625]` vs
+   `∏sᵢ = 0.806 [0.675, 0.961]` → **hai CI không chồng nhau**. Tức giả định
+   "các hop độc lập nên ASR = tích các s" **SAI** ở cell này: lan truyền thật
+   **thấp hơn** tích per-hop. Đây là phát hiện mạnh nhất của phiên.
+   ⚠️ Đọc kèm cảnh báo: mỗi cạnh trong per-edge protocol dùng **cùng một nội dung
+   compromised** (tính 1 lần), còn natural runs thì nội dung **tiến hoá/pha loãng**
+   qua từng hop → một phần độ lệch là do pha loãng nội dung. Kết luận an toàn:
+   *"Markov bậc 1 với s_i không đổi không mô tả được chuỗi; độ lệch có cấu trúc."*
+
+2. **Thứ tự susceptibility đảo ngược trực giác:** DeepSeek (0.475) > qwen 7B
+   (0.300) > Claude (0.000). Model mạnh nhất về năng lực lại **dễ bị injection
+   nhất** ⇒ susceptibility thuộc về **họ model/alignment**, không suy ra từ
+   capability.
+
+3. **🎯 Obfuscation phá DLP — tái lập trên frontier model (n=8):**
+
+   | defense | plain | spaced | split-word |
+   |---|---|---|---|
+   | none | 1.00 (8/8) | 0.75 (6/8) | 1.00 (8/8) |
+   | redact | **0.00 (0/8)** | **0.88 (7/8)** | **1.00 (8/8)** |
+
+   DLP chặn literal 100% nhưng bị obfuscation qua mặt 88–100%.
+
+4. **Bảng "hiệu ứng sàn" hoàn chỉnh — mảnh ghép chính của paper:**
+
+   | Model | `none·plain` (headroom) | `redact·plain` | `redact·split` |
+   |---|---|---|---|
+   | Claude 4.5 | 0.10 | 0.00 | 0.03 |
+   | qwen2.5:7b | 0.94 | 0.00 | 1.00 |
+   | DeepSeek V3.2 | 1.00 | 0.00 | 1.00 |
+
+   ⇒ trên Claude, DLP "trông hoàn hảo" **chỉ vì chỉ có 10% để bảo vệ**; trên
+   DeepSeek/qwen (có headroom) thấy rõ DLP chặn literal nhưng thua obfuscation.
+   **Đo defense mà không có baseline no-defense là không identifiable.**
+
+5. **`spaced` khác hẳn giữa model** (DeepSeek 0.75–0.88 vs qwen/Claude 0.00) —
+   khác biệt thật, vì baseline no-defense cũng tương ứng (1.00 / 0.94 / 0.10).
+
+---
+
+## E28. §7 Utility Under Attack — lần đầu đo trên model có attack thành công
+
+`utility_real.py` · `deepseek.v3.2` · trials=20 · utility_trials=20 · temp 0.7.
+
+**Cách đọc nhanh:** `Retention = U_attack/U_clean` = "mạng còn làm được việc hợp lệ
+bao nhiêu phần khi bị tấn công". Defense tốt = ASR thấp **và** Retention cao.
+
+| defense | ASR | U_clean | U_attack | ΔU | Retention | Đọc |
+|---|---|---|---|---|---|---|
+| none | 0.450 [0.26, 0.66] | 1.000 | 0.600 | +0.400 | 0.600 | Không phòng thủ: mất 40% công việc |
+| paraphrase | 0.450 [0.26, 0.66] | 1.000 | 0.400 | +0.600 | **0.400** | **Tệ HƠN cả không làm gì** |
+| **redact** | **0.000** [0.00, 0.16] | 1.000 | **1.000** | **+0.000** | **1.000** | **Chặn sạch, không mất gì** |
+
+**Ba điều quan trọng:**
+
+1. **`redact` là defense tốt thật ở đây**: ASR 0.45 → **0.000** mà retention vẫn
+   **1.000**. (Không mâu thuẫn với việc redact bị obfuscation split qua mặt 100% —
+   đó là hai loại attack khác nhau: literal vs biến hình.)
+2. **`paraphrase` bị chi phối hoàn toàn**: cùng ASR 0.450 (không giảm lan chút nào)
+   nhưng retention 0.400 < 0.600 của `none` ⇒ **làm hại nhiều hơn không làm gì**.
+   Nếu chỉ báo ASR/R0 thì **không bao giờ thấy** điều này.
+3. **Claude** (P3): `none` ΔU = 0.000, `paraphrase` ΔU = 0.100 ⇒ trên model kháng
+   tốt, paraphrase là **thuần chi phí** (ASR đã 0 nên không có gì để cải thiện,
+   nhưng vẫn mất 10% utility).
+
+⇒ **Khuyến nghị:** luôn báo cáo cặp `(ASR, ΔU)` cho mọi defense; và đừng triển
+khai defense kiểu viết-lại-ngữ-nghĩa — trên cả hai model nó hoặc bị chi phối, hoặc
+chỉ tốn utility.
+
+---
+
+# TÓM TẮT NHANH — 8 ĐIỀU NHỚ NHẤT
 
 1. **Role quyết định lan truyền 6.5×**: worker survival 0.13 vs reviewer 0.87
    (và trên Claude: 0.00 vs 0.60 → đứng vững trên model mạnh).
 2. **Task ngữ nghĩa**: agent nghe lệnh ẩn **88–100%** khi đang làm việc thật.
-3. **Redact (xóa mật mã) chặn tĩnh 100%**: 0.61 → 0.00 (qwen), 0.21 → 0.00 (Claude).
-4. **Obfuscation phá redact: phụ thuộc model + bị giới hạn bởi "hiệu ứng sàn"** —
-   trên qwen (dễ bị lừa: `none·plain` 0.94) split đạt **1.00**; trên Claude
-   (`none·plain` chỉ **0.10**, E21 n=30) redact "trông hoàn hảo" chỉ vì **chỉ có
-   10% để xoá** → hiệu quả defense **không xác định được** ở model kháng tốt.
-5. **Model mạnh chống injection tốt hơn ~3×** (surv 0.61 → 0.21) nhưng **không
-   chặn được hoàn toàn** → propagation vẫn là rủi ro thật trên frontier model.
+3. **Redact (xóa mật mã literal) chặn 100% trên CẢ 3 model**: 0.61 → 0.00 (qwen),
+   0.21 → 0.00 (Claude), 0.93 → 0.00 (DeepSeek).
+4. **⛔ ĐÃ RÚT LẠI — "Markov bị bác bỏ trên DeepSeek"** (E22 → E26): `p = 0.0030`
+   ban đầu là **artifact của thiết kế đo** (per-edge giữ artifact cố định). Chạy
+   lại đúng cách: `p = 0.630`, không bác bỏ. **Ghi vào Limitations như một bài học
+   phương pháp, không phải như một phát hiện.**
+5. **✅ Vi phạm của Llama 3.3 70B thì ĐỨNG VỮNG** qua cả hai chế độ artifact:
+   `∏s^controlled ≈ 0.17–0.30` trong khi `ASR = 0.80–0.925`, p < 0.001.
+   ⇒ phép đo per-hop **cách ly** đánh giá thấp lan truyền trong chuỗi **~3×**.
+6. **🧠 Câu hỏi "Markov" phải phát biểu lại** (E27): trong chain
+   `ASR = ∏ s_i^nat` là **ĐẲNG THỨC** (vì `C_i=1 ⟹ C_{i-1}=1`), không phải giả
+   định. Câu hỏi thực chất là **`s_i^controlled == s_i^nat`?** — phép đo CÁCH LY có
+   chuyển được sang chuỗi không. Đây đúng là giả định benchmark single-agent
+   (InjecAgent…) đang ngầm dùng khi compose. Ta đo: **DeepSeek chuyển được, Llama
+   thì KHÔNG** → tính hợp lệ **phụ thuộc model**. `scripts/isolation_validity.py`.
+7. **Susceptibility KHÔNG theo capability**: Llama 3.3 70B (ASR 0.800, s̄ 0.722)
+   > DeepSeek V3.2 (0.475 / 0.933) > qwen2.5:7b (0.300 / 0.611) > Nova Pro
+   (0.075 / 0.178) > Claude 4.5 (0.000 / 0.211) ⇒ **4 kết cục định tính trên 5
+   model; phải đo, không suy từ năng lực**.
+8. **Obfuscation phá DLP — nhưng chỉ đo được khi có "headroom" (hiệu ứng sàn)**:
+   trên DeepSeek/qwen, redact chặn literal 1.00 → 0.00 nhưng split qua mặt **1.00**
+   (spaced 0.88 trên DeepSeek); trên Claude `none·plain` chỉ **0.10** nên redact
+   "trông hoàn hảo" chỉ vì **chỉ có 10% để bảo vệ** ⇒ đo defense mà thiếu baseline
+   no-defense là **không identifiable**.
 
 *Số liệu gốc & chi tiết kỹ thuật: `EXPERIMENT_LOG.md`. Bản giải thích dễ đọc hơn:
 `RESEARCH_SUMMARY.md`.*

@@ -400,9 +400,149 @@ def r0_calibration_table(
 
 
 # =============================================================================
-# 5. RECOMMENDED SAMPLE SIZES
+# 4b. FORMAL MARKOV TEST — SIZE, POWER, MDE (markov_test_formal)
 # =============================================================================
 
+def markov_formal_calibration(
+    n_agents: int = 5,
+    s: float = 0.7,
+    trials: int = 400,
+    per_edge: int = 400,
+    n_rep: int = 40,
+    seed: int = 0,
+    n_boot: int = 800,
+) -> Dict:
+    """Hiệu chuẩn :func:`markov_test_formal` trên dữ liệu Markov THẬT.
+
+    Trả về:
+      - ``bias_sigma`` = mean(delta) / sd(delta) — phải ≈ 0 (không lệch hệ thống;
+        MC se của mean(delta) được báo kèm để đọc đúng),
+      - ``size`` = tỷ lệ verdict "reject" (kỳ vọng ≈ alpha = 0.05),
+      - ``median_p`` (kỳ vọng ≈ 0.5 nếu p-value hiệu chuẩn đúng),
+      - ``mean_mde`` = sai lệch nhỏ nhất phát hiện được, trung bình qua reps.
+    """
+    from .epidemiology import markov_test_formal
+
+    edges = _chain_edges(n_agents)
+    s_map = {f"{a}->{b}": s for a, b in edges}
+    deltas: List[float] = []
+    ps: List[float] = []
+    mdes: List[float] = []
+    rejects = 0
+    for r in range(n_rep):
+        paths = markov_paths(n_agents, s, trials, seed=seed + 1000 + r)
+        et = synthetic_edge_trials(edges, s_map, per_edge, seed=seed + 7000 + r)
+        res = markov_test_formal(paths, et, seed=seed + r, n_boot=n_boot)
+        if res is None:
+            continue
+        deltas.append(res["delta"])
+        ps.append(res["p_value"])
+        mdes.append(res["mde"])
+        if res["verdict"].startswith("reject"):
+            rejects += 1
+    d = np.asarray(deltas, dtype=float)
+    n = max(1, len(d))
+    sd = float(d.std(ddof=1)) if n > 1 else 0.0
+    return {
+        "n_agents": n_agents, "s": s, "trials": trials, "per_edge": per_edge,
+        "n_rep": n, "true_asr": s ** (n_agents - 1),
+        "mean_delta": float(d.mean()) if n else 0.0,
+        "sd_delta": sd,
+        "mc_se_mean": sd / np.sqrt(n) if n else 0.0,
+        "bias_sigma": (float(d.mean()) / sd) if sd > 0 else 0.0,
+        "size": rejects / n,
+        "median_p": float(np.median(ps)) if ps else float("nan"),
+        "mean_mde": float(np.mean(mdes)) if mdes else float("nan"),
+        "alpha_nominal": 0.05,
+    }
+
+
+def markov_formal_power_calibration(
+    n_agents: int = 5,
+    s_lo: float = 0.35,
+    s_hi: float = 0.9,
+    w_hi: float = 0.5,
+    trials: int = 150,
+    per_edge: int = 150,
+    n_rep: int = 30,
+    seed: int = 0,
+    n_boot: int = 800,
+) -> Dict:
+    """Power của :func:`markov_test_formal` dưới super-Markov, so với CI-overlap.
+
+    Kỳ vọng: power (tỷ lệ "reject" của test hình thức) **cao hơn** tỷ lệ "ASR >"
+    của quy tắc CI-chồng-nhau — đây là lý do dùng test hình thức trong paper.
+    """
+    from .epidemiology import markov_test, markov_test_formal
+
+    edges = _chain_edges(n_agents)
+    s_bar = w_hi * s_hi + (1 - w_hi) * s_lo
+    s_map = {f"{a}->{b}": s_bar for a, b in edges}
+    formal_rej = 0
+    rough_rej = 0
+    for r in range(n_rep):
+        paths = supermarkov_paths(n_agents, s_lo, s_hi, w_hi, trials, seed=seed + 2000 + r)
+        et = synthetic_edge_trials(edges, s_map, per_edge, seed=seed + 3000 + r)
+        f = markov_test_formal(paths, et, seed=seed + r, n_boot=n_boot)
+        if f is not None and f["verdict"].startswith("reject"):
+            formal_rej += 1
+        rough = markov_test(paths, et)
+        if rough is not None and rough["verdict"].startswith("ASR >"):
+            rough_rej += 1
+    true_asr = w_hi * s_hi ** (n_agents - 1) + (1 - w_hi) * s_lo ** (n_agents - 1)
+    return {
+        "n_agents": n_agents, "s_lo": s_lo, "s_hi": s_hi, "w_hi": w_hi,
+        "s_bar": s_bar, "trials": trials, "per_edge": per_edge, "n_rep": n_rep,
+        "true_asr": true_asr, "product_s_bar": s_bar ** (n_agents - 1),
+        "power_formal": formal_rej / n_rep,
+        "power_ci_overlap_rule": rough_rej / n_rep,
+    }
+
+
+def recommended_trials_for_mde(
+    s_bar: float,
+    n_hops: int,
+    target_mde: float,
+    per_edge_ratio: float = 1.0,
+    alpha: float = 0.05,
+    power: float = 0.8,
+    n_grid: Sequence[int] = (50, 100, 200, 400, 800, 1600, 3200),
+    n_rep: int = 60,
+    seed: int = 0,
+    n_boot: int = 400,
+) -> List[Dict]:
+    """Cỡ mẫu cần để đạt ``target_mde`` cho kiểm định Markov hình thức.
+
+    Với mỗi ``n`` trong ``n_grid``, mô phỏng dữ liệu Markov thật (s_i = s_bar,
+    ASR_true = s_bar^n_hops) và đo MDE trung bình ⇒ chọn ``n`` nhỏ nhất có
+    ``mean_mde <= target_mde``. Đây là căn cứ để biện minh cho cỡ mẫu headline
+    (thay vì chọn n tùy ý).
+    """
+    from .epidemiology import markov_test_formal
+
+    edges = _chain_edges(n_hops + 1)     # chain n_hops+1 node ⇒ n_hops cạnh
+    s_map = {f"{a}->{b}": s_bar for a, b in edges}
+    rows: List[Dict] = []
+    for n in n_grid:
+        per_edge = max(1, int(round(n * per_edge_ratio)))
+        mdes: List[float] = []
+        for r in range(n_rep):
+            paths = markov_paths(n_hops + 1, s_bar, n, seed=seed + 500 + r)
+            et = synthetic_edge_trials(edges, s_map, per_edge, seed=seed + 900 + r)
+            res = markov_test_formal(paths, et, seed=seed + r, n_boot=n_boot)
+            if res is not None:
+                mdes.append(res["mde"])
+        rows.append({
+            "n_trials": n, "n_per_edge": per_edge,
+            "mean_mde": float(np.mean(mdes)) if mdes else float("nan"),
+            "meets_target": bool(mdes and float(np.mean(mdes)) <= target_mde),
+        })
+    return rows
+
+
+# =============================================================================
+# 5. RECOMMENDED SAMPLE SIZES
+# =============================================================================
 def recommended_trials(
     half_width: Sequence[float] = (0.10, 0.05, 0.03),
     p_worst: float = 0.5,
@@ -430,6 +570,9 @@ def build_report(
     power_rows: Optional[List[Dict]] = None,
     r0_rows: Optional[List[Dict]] = None,
     sample_rows: Optional[List[Dict]] = None,
+    formal_rows: Optional[List[Dict]] = None,
+    formal_power_rows: Optional[List[Dict]] = None,
+    mde_rows: Optional[List[Dict]] = None,
 ) -> str:
     """Assemble a Markdown report from the validation tables."""
     L: List[str] = []
@@ -470,6 +613,43 @@ def build_report(
         )
     L.append("")
 
+    # --- Formal Markov test: size / bias / MDE ---
+    L.append("## 3b. Kiểm định Markov HÌNH THỨC — hiệu chuẩn (markov_test_formal)\n")
+    L.append("Dữ liệu Markov THẬT ⇒ size kỳ vọng ≈ alpha = 0.05; bias kỳ vọng ≈ 0.\n")
+    L.append("| n_agents | s | true ASR | trials | per_edge | n_rep | mean Δ | bias (σ) "
+             "| size | median p | mean MDE |")
+    L.append("|---|---|---|---|---|---|---|---|---|---|---|")
+    for r in (formal_rows or []):
+        L.append(
+            f"| {r['n_agents']} | {r['s']} | {r['true_asr']:.4f} | {r['trials']} "
+            f"| {r['per_edge']} | {r['n_rep']} | {r['mean_delta']:+.4f} "
+            f"| {r['bias_sigma']:+.2f} | {r['size']:.3f} | {r['median_p']:.3f} "
+            f"| {r['mean_mde']:.3f} |")
+    L.append("")
+
+    # --- Formal vs CI-overlap power ---
+    L.append("## 3c. Power: kiểm định hình thức vs quy tắc CI-chồng-nhau\n")
+    L.append("Dữ liệu super-Markov (latent regime) ⇒ true ASR > ∏s̄ᵢ.\n")
+    L.append("| n_agents | s_lo | s_hi | w_hi | s̄ | true ASR | ∏s̄ᵢ | trials "
+             "| power (formal) | power (CI-overlap) |")
+    L.append("|---|---|---|---|---|---|---|---|---|---|")
+    for r in (formal_power_rows or []):
+        L.append(
+            f"| {r['n_agents']} | {r['s_lo']} | {r['s_hi']} | {r['w_hi']} "
+            f"| {r['s_bar']:.3f} | {r['true_asr']:.4f} | {r['product_s_bar']:.4f} "
+            f"| {r['trials']} | {r['power_formal']:.3f} "
+            f"| {r['power_ci_overlap_rule']:.3f} |")
+    L.append("")
+
+    # --- Sample size for a target MDE ---
+    L.append("## 3d. Cỡ mẫu cần để đạt MDE mục tiêu (biện minh cho n headline)\n")
+    L.append("| n_trials | n_per_edge | mean MDE | đạt mục tiêu? |")
+    L.append("|---|---|---|---|")
+    for r in (mde_rows or []):
+        L.append(f"| {r['n_trials']} | {r['n_per_edge']} | {r['mean_mde']:.3f} "
+                 f"| {'✅' if r['meets_target'] else '—'} |")
+    L.append("")
+
     # --- R0 vs d*s ---
     L.append("## 4. R0 vs d*s_bar calibration (engine natural runs, metric.md §5)\n")
     L.append("| topology | n | p | s_bar | d | d*s_bar | R0 | rel_err |")
@@ -506,6 +686,23 @@ def build_report(
   Với p < 1, R0 lệch d·s̄ (rel_err 5–30%+) vì |I| chỉ gồm instance compromised —
   d·s̄ chỉ là xấp xỉ cho vùng bão hoà, KHÔNG phải đẳng thức. Star fan-in lệch cấu
   trúc (R0 → 0.5 tại p=1 ≠ d·s̄=0.857) vì center không có downstream — cần diễn
-  giải riêng (xem ghi chú configs/star_static_colluding.yaml).""")
+  giải riêng (xem ghi chú configs/star_static_colluding.yaml).
+- **Kiểm định Markov HÌNH THỨC (mục 3b)** — đây là kiểm định dùng để BÁO CÁO, thay
+  cho quy tắc CI-chồng-nhau của `markov_test`:
+  - **Không lệch hệ thống**: bias = −0.10σ … +0.08σ trên cả 3 cấu hình ⇒ delta
+    (ASR − ∏sᵢ) là ước lượng không chệch, và bootstrap độc lập trên hai protocol
+    là hợp lệ.
+  - **Size ≈ nominal**: reject 6.7–8.3% ở alpha = 0.05 với n_rep = 60 ⇒ sai số
+    Monte-Carlo của chính con số này là ±2.8 điểm % ⇒ **tương thích với 5%**, không
+    phải test "hào phóng" (liberal). Trung vị p-value 0.41–0.56 (≈ uniform dưới H0).
+  - **Power cao hơn hẳn quy tắc cũ**: 0.750 vs 0.625 (trials=75), rồi 1.000 vs
+    0.975 (150) ⇒ dùng test hình thức là hợp lý về mặt thống kê, không chỉ "đẹp hơn".
+  - **Luôn báo kèm MDE** (mục 3d): ở trials = per_edge = 200, MDE ≈ 0.10; ở 400
+    thì ≈ 0.07. Nghĩa là "consistent với Markov" ở n=200 phải được đọc là
+    *"đã loại trừ sai lệch |ASR − ∏sᵢ| > 0.10"* — KHÔNG phải bằng chứng Markov
+    đúng. Đây là cách phát biểu mà reviewer measurement yêu cầu.
+  - ⚠️ Ở n nhỏ (trials ≲ 75) power chỉ ~0.75 ⇒ kết quả "consistent" từ cell n nhỏ
+    (E17/E20: trials=40) **không có giá trị kết luận** — đúng như đã ghi trong
+    Limitations.""")
     L.append("")
     return "\n".join(L)

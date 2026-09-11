@@ -25,7 +25,7 @@ first-order Markov assumption (metric.md §2 "Relationship with s_i").
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Optional, Sequence
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -367,25 +367,12 @@ def markov_test(
     edge trials are available, when the topology is not a chain along node_order
     (no single ordered product exists), or when the entry is not on that chain.
     """
-    if not paths or not edge_trials:
+    resolved = _resolve_chain(paths, edge_trials, entry_agent)
+    if resolved is None:
+        # Không phải chain thuần từ entry (vd star/tree fan-in) → công thức tích
+        # trên chain không áp dụng được.
         return None
-
-    # Chain ordering: node_order must encode an ordered chain of length >= 2.
-    order = paths[0].node_order
-    if not order or len(order) < 2:
-        return None
-    if entry_agent not in order:
-        return None
-
-    # Per-edge survival means from the controlled protocol.
-    surv = controlled_per_edge_survival(edge_trials)
-    start = order.index(entry_agent)
-    chain_edges = [f"{order[i]}->{order[i+1]}" for i in range(start, len(order) - 1)]
-    missing = [e for e in chain_edges if e not in surv]
-    if missing:
-        # Not a pure chain over this node ordering (e.g. star/tree fan-in), so
-        # the chain product formula does not apply.
-        return None
+    chain_edges, surv = resolved
 
     s_means = np.array([surv[e].mean for e in chain_edges], dtype=float)
     s_stds = np.array([surv[e].std for e in chain_edges], dtype=float)
@@ -453,3 +440,204 @@ def markov_test(
         "n_edges": len(chain_edges),
         "verdict": verdict,
     }
+
+
+def _resolve_chain(
+    paths: List[PropagationPath],
+    edge_trials: List[EdgeTrial],
+    entry_agent: str,
+) -> Optional[Tuple[List[str], Dict[str, SummaryStats]]]:
+    """Chain edges từ ``entry_agent`` tới cuối ``node_order`` + survival table.
+
+    Trả ``None`` khi: không có dữ liệu, ``node_order`` không phải chain ≥ 2 node,
+    entry không nằm trong order, hoặc thiếu edge trial cho một cạnh trên chain
+    (tức topology không phải chain thuần từ entry — ví dụ star/tree fan-in).
+    Dùng chung cho :func:`markov_test` và :func:`markov_test_formal`.
+    """
+    if not paths or not edge_trials:
+        return None
+    order = paths[0].node_order
+    if not order or len(order) < 2 or entry_agent not in order:
+        return None
+    surv = controlled_per_edge_survival(edge_trials)
+    start = order.index(entry_agent)
+    chain_edges = [f"{order[i]}->{order[i + 1]}" for i in range(start, len(order) - 1)]
+    if any(e not in surv for e in chain_edges):
+        return None
+    return chain_edges, surv
+
+
+def markov_test_formal(
+    paths: List[PropagationPath],
+    edge_trials: List[EdgeTrial],
+    targets: Optional[Iterable[str]] = None,
+    entry_agent: str = "agent_0",
+    n_boot: int = 4000,
+    seed: int = 0,
+    alpha: float = 0.05,
+    power: float = 0.8,
+) -> Optional[Dict]:
+    """Kiểm định HÌNH THỨC cho H0: ``ASR = prod_i s_i`` (Markov bậc 1).
+
+    Vì sao cần, bên cạnh :func:`markov_test`: hàm kia chỉ hỏi "hai CI 95% có
+    chồng nhau không" — một quy tắc *thô và bảo thủ*, không cho p-value, và
+    không cho biết **cỡ mẫu hiện tại đủ để bác bỏ sai lệch lớn cỡ nào**. Với một
+    bài measurement, "consistent" mà không có MDE là phát biểu rỗng (không bác
+    bỏ được ≠ bằng chứng ủng hộ).
+
+    Cách làm: ASR (natural runs) và ``s_i`` (controlled per-edge protocol) được
+    đo bằng **hai thí nghiệm ĐỘC LẬP**, nên ``delta = ASR - prod(s_i)`` có
+    phương sai bằng **tổng** hai phương sai và bootstrap độc lập trên cả hai
+    nguồn là hợp lệ:
+
+      1. resample ``n_trials`` quan sát Bernoulli của natural runs (ASR),
+      2. resample độc lập ``n_per_edge`` quan sát cho TỪNG cạnh rồi lấy tích,
+      3. ``delta_b = ASR_b - prod(s_b)`` → CI percentile + p hai phía.
+
+    Trả về (None nếu không phải chain từ ``entry_agent``):
+      - ``delta``, ``delta_ci``, ``p_value`` (H0: delta = 0),
+      - ``mde`` = |delta| nhỏ nhất phát hiện được với ``power`` ở cỡ mẫu hiện tại
+        (``(z_{1-alpha/2} + z_power) * sd(delta_b)``),
+      - ``verdict`` = "reject (sub-Markov)" / "reject (super-Markov)" /
+        "consistent within ±MDE: <mde>",
+      - ``n_trials``, ``n_per_edge`` để báo cáo cùng.
+
+    Lưu ý diễn giải: "consistent" nghĩa là *không bác bỏ được H0 ở cỡ mẫu này,
+    với sai lệch nhỏ hơn ``mde`` bị loại trừ* — KHÔNG phải bằng chứng rằng
+    Markov đúng.
+    """
+    resolved = _resolve_chain(paths, edge_trials, entry_agent)
+    if resolved is None:
+        return None
+    chain_edges, surv = resolved
+
+    tgt = list(targets) if targets is not None else [paths[0].node_order[-1]]
+    asr_k = sum(1 for p in paths if all(p.compromised.get(t, False) for t in tgt))
+    asr_n = len(paths)
+    edge_counts = []
+    for e in chain_edges:
+        vals = [t for t in edge_trials if f"{t.src}->{t.dst}" == e]
+        if not vals:
+            return None
+        edge_counts.append((e, sum(1 for t in vals if t.dst_compromised), len(vals)))
+
+    out = markov_test_formal_from_counts(
+        asr_k, asr_n, edge_counts, alpha=alpha, power=power,
+        n_boot=n_boot, seed=seed,
+    )
+    if out is not None:
+        out["asr_engine_mean"] = attack_success_rate(paths, targets=targets).mean
+    return out
+
+
+def markov_test_formal_from_counts(
+    asr_k: int,
+    asr_n: int,
+    edge_counts: Sequence[Tuple[str, int, int]],
+    alpha: float = 0.05,
+    power: float = 0.8,
+    n_boot: int = 4000,
+    seed: int = 0,
+) -> Optional[Dict]:
+    """Bản "từ counts" của :func:`markov_test_formal`.
+
+    Nhận thẳng ``(k, n)`` Bernoulli của ASR và của từng cạnh trên chain:
+    ``edge_counts = [(edge_label, k_i, n_i), ...]`` theo đúng thứ tự chain.
+
+    Nhờ vậy áp dụng được kiểm định hình thức cho **dữ liệu đã công bố dạng
+    k/n** (báo cáo cũ, bảng trong paper, hay bản ghi của model khác) mà không
+    cần chạy lại — và vẫn cho p-value + MDE như bản gốc.
+    """
+    if asr_n <= 0 or not edge_counts or any(n <= 0 for _, _, n in edge_counts):
+        return None
+    if n_boot < 200:
+        raise ValueError("n_boot quá nhỏ để CI percentile có nghĩa (>= 200)")
+
+    asr_vals = np.array([1.0] * int(asr_k) + [0.0] * int(asr_n - asr_k), dtype=float)
+    edge_vals = {}
+    for label, k, n in edge_counts:
+        edge_vals[label] = np.array([1.0] * int(k) + [0.0] * int(n - k), dtype=float)
+
+    n_trials = int(asr_vals.size)
+    asr_point = float(asr_vals.mean())
+    s_point = {e: float(v.mean()) for e, v in edge_vals.items()}
+    prod_point = float(np.prod([s_point[e] for e, _, _ in edge_counts]))
+    delta = asr_point - prod_point
+
+    rng = np.random.default_rng(seed)
+    deltas = np.empty(n_boot, dtype=float)
+    for b in range(n_boot):
+        a = float(asr_vals[rng.integers(0, n_trials, size=n_trials)].mean())
+        prod_b = 1.0
+        for e, _, _ in edge_counts:
+            v = edge_vals[e]
+            prod_b *= float(v[rng.integers(0, v.size, size=v.size)].mean())
+        deltas[b] = a - prod_b
+
+    lo, hi = (float(np.percentile(deltas, 100 * alpha / 2)),
+              float(np.percentile(deltas, 100 * (1 - alpha / 2))))
+    p_two = 2.0 * min(float(np.mean(deltas <= 0.0)), float(np.mean(deltas >= 0.0)))
+    p_two = min(1.0, max(p_two, 1.0 / (n_boot + 1)))
+
+    sd = float(np.std(deltas, ddof=1))
+    mde = (float(_norm_ppf(1 - alpha / 2)) + float(_norm_ppf(power))) * sd
+
+    if lo > 0:
+        verdict = "reject H0: ASR > prod(s_i) (reinforcement / super-Markov)"
+    elif hi < 0:
+        verdict = "reject H0: ASR < prod(s_i) (attenuation / sub-Markov)"
+    elif mde <= 0:
+        # sd(delta) = 0: mọi replicate bootstrap cho cùng một giá trị. Xảy ra khi
+        # ASR và ∏sᵢ cùng nằm ở biên (0 hoặc 1) — điển hình là cell mà chuỗi
+        # KHÔNG BAO GIỜ tới đích nên ASR = 0 và ∏sᵢ = 0. Kiểm định khi đó là
+        # VÔ NGHĨA; phải nói thẳng thay vì in "consistent".
+        verdict = ("degenerate: ASR = prod(s_i) tại biên và sd(delta) = 0 "
+                   "→ KHÔNG có thông tin, không kiểm định được")
+    else:
+        verdict = f"consistent with first-order Markov within +/-{mde:.3f} (MDE)"
+
+    return {
+        "chain_edges": [e for e, _, _ in edge_counts],
+        "asr": asr_point,
+        "asr_k": int(asr_k),
+        "asr_n": int(asr_n),
+        "per_edge": {e: (k / n) for e, k, n in edge_counts},
+        "per_edge_counts": {e: [int(k), int(n)] for e, k, n in edge_counts},
+        "product_s": prod_point,
+        "delta": delta,
+        "delta_ci": [lo, hi],
+        "p_value": p_two,
+        "mde": mde,
+        "alpha": alpha,
+        "power": power,
+        "n_trials": n_trials,
+        "n_boot": n_boot,
+        "verdict": verdict,
+    }
+
+
+def _norm_ppf(q: float) -> float:
+    """Inverse standard-normal CDF (Acklam's rational approximation, |err|<1e-9)."""
+    if not 0.0 < q < 1.0:
+        raise ValueError("q phải thuộc (0, 1)")
+    a = (-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02,
+         1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00)
+    b = (-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02,
+         6.680131188771972e+01, -1.328068155288572e+01)
+    c = (-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00,
+         -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00)
+    d = (7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00,
+         3.754408661907416e+00)
+    p_low, p_high = 0.02425, 1 - 0.02425
+    if q < p_low:
+        t = np.sqrt(-2 * np.log(q))
+        return float(((((c[0] * t + c[1]) * t + c[2]) * t + c[3]) * t + c[4]) * t + c[5]) / \
+            float((((d[0] * t + d[1]) * t + d[2]) * t + d[3]) * t + 1)
+    if q > p_high:
+        t = np.sqrt(-2 * np.log(1 - q))
+        return -float(((((c[0] * t + c[1]) * t + c[2]) * t + c[3]) * t + c[4]) * t + c[5]) / \
+            float((((d[0] * t + d[1]) * t + d[2]) * t + d[3]) * t + 1)
+    t = q - 0.5
+    r = t * t
+    return float(((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * t / \
+        float(((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)

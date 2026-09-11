@@ -1,5 +1,11 @@
 # PAPER DRAFT — Cấu trúc & nội dung dự kiến
 
+> ⚠️ **File này là KẾ HOẠCH (tiếng Việt).** Văn bản paper thật (tiếng Anh —
+> ngôn ngữ nộp hội nghị) nằm ở **`PAPER_TEXT.md`**: đã có §1 Introduction,
+> §2 Related Work, §3 Method, §4 Validation, khung §5 Results, §8 Limitations.
+> Quy ước trích dẫn trong file đó: `§N` = mục của paper, `metric §N` = mục của
+> `docs/metric.md`.
+
 > Draft để bạn đọc và quyết định (model/topology/cells cần chạy tiếp). Mọi con số
 > trong đây là kết quả THẬT từ E10–E19 (qwen2.5:7b local). Chưa phải văn bản
 > hoàn chỉnh — đây là khung + dữ liệu chính.
