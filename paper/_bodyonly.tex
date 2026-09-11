@@ -70,7 +70,7 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 
 %%% Use this command to specify the title of your paper.
 
-\title[Contagion: Prompt-Injection Propagation in LLM Agent Networks]{Contagion: Measuring and Testing Prompt-Injection Propagation in LLM Agent Networks}
+\title[Per-Hop Survival in LLM Agent Networks Does Not Compose]{Contagion: Per-Hop Survival in LLM Agent Networks Does Not Compose}
 
 %%% Provide names, affiliations, and email addresses for all authors.
 %%% (Hidden in `anonymous' mode -- TODO: fill in real author info for camera-ready.)
@@ -85,30 +85,36 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 %%% Use this environment to specify a short abstract for your paper.
 
 \begin{abstract}
-Indirect prompt injection hijacks a single LLM agent that reads untrusted text,
-and deployed agent organisations route such text from agent to agent, so a
-compromise can travel. Existing benchmarks measure one agent over one hop and
-therefore cannot express whether a compromise survives a hand-off, how far it
-spreads, or which positions amplify it. We present \emph{Contagion}, a
-measurement framework for injection propagation in LLM agent networks built on
-two deliberately independent protocols: a \emph{controlled per-edge} protocol
-that forces a sender to be compromised and estimates the conditional survival
-$s_i = \Pr[C_i{=}1 \mid C_{i-1}{=}1]$, and a \emph{natural-run} protocol that
-measures end-to-end attack success and $R_0$. We make three contributions.
-First, in a chain, $C_i{=}1 \Rightarrow C_{i-1}{=}1$, so $\mathrm{ASR} = \prod_i
-s_i^{\mathrm{nat}}$ is an \emph{identity}, not a modelling assumption; the
-substantive question is whether the per-hop rate estimated \emph{in isolation}
-transports to the in-chain regime, $s_i^{\mathrm{ctrl}} \stackrel{?}{=}
-s_i^{\mathrm{nat}}$. Second, measuring five models we find per-hop survival is
-strongly role-dependent (0.13 vs 0.87 across receiver roles) and that
-transportability \emph{fails} in both directions: on one frontier model an edge
-that survives 0.233 in isolation survives 0.875 in the chain (3.75$\times$). We
-report a formerly significant transportability failure that proved to be an
-artefact of our own protocol and was removed by drawing a fresh payload per
-trial. Third, we show that a defence's efficacy is \emph{unidentifiable} without
-a matched no-defence baseline: a deterministic redaction defence looks perfect on
-a model that resists the attack unaided (single-hop compromise 0.10) and is
-trivially bypassed on a model that does not (1.00).
+Deployed LLM agents are organisations: a planner decomposes a task, workers
+execute, a reviewer checks, an aggregator merges. Every hand-off is a trust
+boundary, and an injection that hijacks one agent becomes the next agent's
+untrusted input. Existing prompt-injection benchmarks measure one agent over one
+hop, so they cannot say whether a compromise survives a hand-off, how far it
+travels, or where to intervene. We present \emph{Contagion}, a measurement
+framework for propagation in LLM agent networks built on two deliberately
+independent protocols: a \emph{controlled per-edge} protocol estimating the
+conditional survival $s_i = \Pr[C_i{=}1 \mid C_{i-1}{=}1]$, and a \emph{natural-run}
+protocol measuring end-to-end success and the reproduction number $R_0$. Four
+results follow. \textbf{(i)} In a chain, $C_i{=}1 \Rightarrow C_{i-1}{=}1$, so
+$\mathrm{ASR} = \prod_i s_i^{\mathrm{nat}}$ is an \emph{identity}, not a modelling
+assumption; the substantive question is whether the per-hop rate measured
+\emph{in isolation} transports to the in-chain regime. \textbf{(ii)} It does not,
+and its error compounds with distance: across chains and trees the relative error
+of isolated measurement rises from $8\%$ at one hop to $82\%$ at six, with a sign
+that is model- and topology-dependent. We trace the mechanism to payload
+\emph{form}: the same target survives at $0.067$ arriving as a bare assertion and
+$0.967$ embedded in a work product, under the same receivers and judge.
+\textbf{(iii)} The standard epidemic-threshold criterion is vacuous for agent
+networks---the mean-offspring matrix of any acyclic interaction graph is strictly
+triangular, so $\rho(M) = 0$ identically and $R_0 < 1$ cannot certify safety; we
+measure $R_0 < 1$ alongside end-to-end success of $0.45$--$0.73$, and show that
+placement is decided by graph structure rather than by per-hop survival.
+\textbf{(iv)} Defence efficacy is unidentifiable without a matched no-defence
+baseline: one redaction defence is either essential or irrelevant depending only
+on the model's unprotected susceptibility ($1.00$ versus $0.10$). We report
+role-conditioned per-hop survival for five models from four families, and we
+report one of our own initially significant findings that proved to be a
+protocol artefact.
 \end{abstract}
 
 %%% Use this command to specify a few keywords describing your work.
@@ -177,19 +183,14 @@ The prevailing summary is an end-to-end attack success rate: run the network,
 check whether the final target was compromised, report a fraction. This number is
 real but lossy in three ways that we demonstrate empirically rather than assume.
 
-\emph{(a) It hides where failure happens.} In a five-agent chain under a
-homogeneous attack we measure per-hop survival ranging from $0.133$ for a worker
-receiver to $0.867$ for a reviewer receiver---a $6.5\times$ spread within one
-model and one attack. An end-to-end rate reports one number where the mechanism
-is role-dependent.
+\emph{(a) It hides where failure happens.} In a five-agent chain we measure per-hop
+survival from $0.133$ (worker receiver) to $0.867$ (reviewer)---a $6.5\times$ spread
+within one model and one attack---while on a frontier model end-to-end ASR is
+$0.000$ notwithstanding per-hop survival of $0.211$ with a single informative edge
+at $0.600$. ``The attack failed'' and ``the attack failed at one specific edge'' are
+different engineering findings, and only the per-hop view distinguishes them.
 
-\emph{(b) It can be zero for two very different reasons.} On one frontier model we
-measure end-to-end $\mathrm{ASR} = 0.000$ while per-hop survival is $0.211$ with a
-single informative edge at $0.600$. ``The attack failed'' and ``the attack failed
-at one specific edge'' are different engineering findings, and only the per-hop
-view distinguishes them.
-
-\emph{(c) It is not comparable across models without a no-defence baseline.} We
+\emph{(b) It is not comparable across models without a no-defence baseline.} We
 measure single-hop compromise on a resistant frontier model at $0.10$ with
 \emph{no defence at all}. A defence that drives $0.10 \to 0.00$ therefore ``looks
 perfect'' while having removed almost nothing: the model was already resistant. On
@@ -200,37 +201,45 @@ conclusions about efficacy, because base susceptibility differs.} We call this t
 \emph{floor effect} and argue it is a first-class threat to validity for any
 defence evaluation in this area.
 
-\paragraph{What we build.} We present a measurement framework for injection
-propagation in LLM agent networks with three design commitments.
+\paragraph{What we build.} The framework rests on three design commitments: we
+measure per-hop survival $s_i$ with a \emph{controlled per-edge} protocol (force the
+source's output to be compromised, feed it to the receiver, judge the receiver) and
+end-to-end ASR with an \emph{independent natural-run} protocol; we make the injected
+task semantically competitive with the agent's legitimate assignment rather than a
+marker echo, because a metric whose success criterion is ``re-emit a secret string''
+saturates at $1.0$ and cannot rank defences; and we report resolution rather than
+point estimates, with Wilson intervals, a bootstrap test carrying a stated minimum
+detectable effect, and estimators validated on synthetic data of known ground truth.
+
+\paragraph{Findings, stated as prescriptions.} Using this framework on five models
+from four families we reach four conclusions, each of which changes what a
+practitioner should do.
 
 \begin{enumerate}
-\item \textbf{Separate the per-hop question from the end-to-end question.} We
-define per-hop survival $s_i$ and measure it with a \emph{controlled per-edge}
-protocol---force the source agent's output to be compromised, feed it to the
-receiver, judge the receiver. End-to-end ASR and $R_0$ are measured on an
-\emph{independent natural-run} protocol.
-\item \textbf{Make the injected task semantically competitive, not a marker echo.}
-A task family whose success criterion is ``re-emit a secret string'' saturates:
-models that follow the injected instruction at all do so near $1.0$, and a
-saturated metric cannot rank defences. We introduce a task family in which the
-injected content is an instruction competing with the agent's legitimate
-assignment, placing per-hop survival in the interior of $(0,1)$ on real models.
-\item \textbf{Report resolution, not just point estimates.} Every proportion
-carries a Wilson interval; the propagation test is a bootstrap test with a stated
-\emph{minimum detectable effect} at the sample size used; and estimator behaviour
-is validated on synthetic data with known ground truth before being applied to
-model output.
+\item \textbf{Do not compose isolated injection results into pipeline
+predictions.} Per-hop survival measured in isolation does not transport to the
+in-chain regime, and its error \emph{grows with distance}: the relative error rises
+from $8\%$ at one hop to $82\%$ at six (Section~\ref{sec:depth}). A single-hop
+benchmark number is not a pipeline parameter.
+\item \textbf{Report per-hop survival conditioned on the receiving role, together
+with ASR and legitimate-task retention, and always include the no-defence
+baseline.} Per-hop survival varies $6.5\times$ across receiver roles within one
+model and attack (Section~\ref{sec:results}), and a defence's efficacy is otherwise
+unidentifiable (the floor effect, Section~\ref{sec:defence}).
+\item \textbf{Do not use $R_0 < 1$ as a safety criterion for a feed-forward agent
+network.} The spectral threshold is identically satisfied on any acyclic graph, and
+we measure $R_0 < 1$ alongside end-to-end success of $0.45$--$0.73$
+(Section~\ref{sec:threshold}). Reach and reproduction are distinct risks.
+\item \textbf{Treat defence placement as a structural question.} Only nodes on an
+entry--target path matter, and among those all are equally effective, so placement
+is decided by the graph and by instrumentation cost---not by measured per-hop
+survival (Section~\ref{sec:threshold}).
 \end{enumerate}
 
-\paragraph{Findings.} Using this framework on five models from four families we
-find that per-hop survival is strongly role-dependent; that the per-hop rate
-measured \emph{in isolation} does not transport to the in-chain regime, failing by
-$3.75\times$ on one frontier model while holding on another; that a deterministic
-redaction defence blocks literal attacks completely yet is bypassed by ordinary
-natural-language obfuscation exactly when the no-defence baseline shows there is
-something to defend; and that one of our own initially significant findings was a
-measurement artefact, which we report together with the protocol change that
-removed it.
+We also report one of our own initially significant results that proved to be an
+artefact of the controlled protocol, and the change that removed it
+(Section~\ref{sec:ablation}); in a measurement study the protocol is part of the
+result.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -262,25 +271,35 @@ shows the phenomenon is real and deployment-relevant, but an aggregate rate does
 not decompose into per-hop conditional survival, does not say which hand-off
 fails, and does not test whether per-hop rates compose.
 
-\paragraph{Contagion models for agent networks.}
-The epidemiological framing we use is standard and has been applied to agent
-swarms in theory, e.g.\ a multiplex Markov contagion model validated by
-emulation~\cite{SwarmMarkov2026}. Our contribution is the missing empirical half:
-rather than \emph{assuming} a Markov propagation model and deriving consequences,
-we \emph{estimate} per-hop survival from model behaviour and then \emph{test} the
-composition assumption, reporting the effect size and the smallest deviation our
-sample could have detected.
-
 \paragraph{Defences.}
 Adaptive attacks against single-agent injection defences break eight defences at
 $>50\%$ ASR, including paraphrasing, using token-level
-optimisation~\cite{Zhan2025Adaptive}. Our negative result on semantic
-paraphrasing inside a chain is consistent with that finding and serves as a sanity
-check on our pipeline. We differ in threat model: our attacker does not run
-white-box token optimisation but uses \emph{natural-language structural
-obfuscation} (splitting or spacing a literal target) that any user of a tool could
-produce, and we ask whether a defence deployed today survives propagation of an
-ordinary-looking instruction.
+optimisation~\cite{Zhan2025Adaptive}; our negative result on semantic paraphrasing
+inside a chain is consistent with that finding. We differ in threat model: our
+attacker uses \emph{natural-language structural obfuscation} (splitting or spacing
+a literal target) that any user of a tool could produce, rather than white-box
+token optimisation.
+
+\paragraph{Contagion and thresholds in networks.}
+Treating propagation as contagion over a graph is classical. Threshold models of
+collective behaviour make an individual's adoption a function of how many
+neighbours have already adopted, and show that global cascades depend on the joint
+distribution of degrees and thresholds rather than on mean behaviour
+alone~\cite{Granovetter1978,Watts2002}. Epidemic models on networks supply the
+complementary criterion: spread is subcritical when the spectral radius of the
+next-generation matrix falls below one, and this threshold can vanish on
+heavy-tailed topologies~\cite{PastorSatorras2001}. This machinery is the natural
+lens for an agent network, and it is the lens the recent theory work on multiplex
+Markov contagion in agent swarms adopts~\cite{SwarmMarkov2026}. Our results
+sharpen where the analogy fails for LLM agent networks: the spectral criterion is
+\emph{identically} satisfied on any acyclic interaction graph
+(Section~\ref{sec:threshold}), so it cannot discriminate; the empirical
+reproduction number can be below one while reachability remains high; and the
+per-hop rates such an analysis consumes are not transportable from isolated
+measurement, so the classical pipeline of estimating edge parameters and composing
+them is exactly what our depth result (Section~\ref{sec:depth}) shows to be
+unreliable. We therefore keep the network-contagion framing but report which of
+its standard instruments transfer and which do not.
 
 \paragraph{Gap.} No prior work, to our knowledge, provides all of: conditional
 per-hop survival measured with a controlled protocol; end-to-end ASR measured with
@@ -452,12 +471,13 @@ hypothesis testable on \emph{any} acyclic topology, not only chains
 
 Now consider the branching-process criterion that the contagion framing suggests:
 spread is subcritical when the spectral radius of the mean-offspring matrix $M$,
-with $M_{uv} = s_{u\to v}$, satisfies $\rho(M) < 1$. For a feed-forward network
-this criterion is \emph{vacuous}. Ordering nodes topologically makes $M$ strictly
-triangular, so every eigenvalue is zero and $\rho(M) = 0 < 1$ \emph{identically},
-whatever the per-hop survivals are; no measurement of $s$ can falsify it. The
-criterion becomes informative only when the interaction graph contains cycles, or
-when generations rather than nodes are counted.
+with $M_{uv} = s_{u\to v}$, satisfies $\rho(M) < 1$~\cite{PastorSatorras2001}. For
+a feed-forward network this criterion is \emph{vacuous}. Ordering nodes
+topologically makes $M$ strictly triangular, so every eigenvalue is zero and
+$\rho(M) = 0 < 1$ \emph{identically}, whatever the per-hop survivals are; no
+measurement of $s$ can falsify it. The criterion becomes informative only when the
+interaction graph contains cycles, or when generations rather than nodes are
+counted.
 
 The empirical reproduction number is not a substitute. We measure $R_0 = 0.821$
 on the seven-agent chain with $\mathrm{ASR} = 0.450$, and $R_0 = 0.420$ on the
@@ -729,6 +749,7 @@ the in-chain rate ($0.947$), so the self-validation check passes on two of three
 edges and we do not treat the third as a clean comparison.
 
 \subsection{Defence: redaction blocks literal attacks, and the bypass depends on headroom}
+\label{sec:defence}
 
 Redaction removes the literal target and drives chain survival to $0.000$ on all
 three models where we measured it. The obfuscation arm (Table~\ref{tab:obf},
@@ -923,32 +944,30 @@ merely adequate.
 
 \subsection{Estimator validation}
 
-On synthetic data with known ground truth: Wilson intervals attain nominal
-coverage across the grid; the conservative CI-overlap rule rejects at
-$0.3$--$1.0\%$ under true composition, i.e.\ essentially no false alarms, but is
-low-powered. Our bootstrap test shows no systematic bias ($|\mathrm{bias}| \le
-0.10\sigma$), size $0.067$--$0.083$ at $\alpha = 0.05$ with 60 replications
-(Monte-Carlo standard error $\pm 0.028$, i.e.\ consistent with nominal), and
-higher power than the CI-overlap rule ($0.750$ vs $0.625$ at 75 trials; $1.000$ vs
-$0.975$ at 150). Resolution: to detect a deviation of $0.10$ at power $0.8$
-requires $n \approx 200$; at our default $n = 40$ only deviations above $0.26$ are
-excluded, so we do not read a ``no deviation'' verdict at $n = 40$ as evidence. We
-label such cells explicitly, including one cell where $\mathrm{ASR} = \prod_i
-\hat s_i = 0$ makes the test uninformative rather than supportive.
+On synthetic data with known ground truth, Wilson intervals attain nominal
+coverage, and our bootstrap test shows no systematic bias ($|\mathrm{bias}| \le
+0.10\sigma$) with size $0.067$--$0.083$ at $\alpha = 0.05$ over 60 replications
+(Monte-Carlo standard error $\pm 0.028$, consistent with nominal) and higher power
+than a conservative CI-overlap rule ($0.750$ vs $0.625$ at 75 trials). Its
+resolution matters for reading our own tables: detecting a deviation of $0.10$ at
+power $0.8$ requires $n \approx 200$, so at our default $n = 40$ only deviations
+above $0.26$ are excluded---we do not treat a null verdict at $n = 40$ as evidence,
+and we label the one cell where $\mathrm{ASR} = \prod_i \hat s_i = 0$ makes the
+test uninformative rather than supportive.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{Report three numbers, not one.} Our results support a concrete
-reporting recommendation for this literature: publish per-hop survival
-(conditioned on receiving role), end-to-end ASR, and legitimate-task retention
-together, and always include a no-defence baseline in the same cell. Each of the
-three failures we report---the role-averaging that hides a $6.5\times$ spread, the
-transportability gap that a single-hop benchmark cannot see, and the floor effect
-that makes a defence's efficacy unidentifiable---is invisible if only one number
-is reported.
+\paragraph{What the four prescriptions cost to adopt.} The recommendations of
+Section~1 are cheap: a no-defence baseline and a per-role breakdown require no new
+machinery, only a change in what is reported, and the depth-scaling result says
+that a pipeline's propagation cannot be read off a single-hop number at all. The
+one genuinely new instrument we propose is Eq.~\eqref{eq:percolation}, which
+computes reachability from edge rates in one pass and reproduces every measured ASR
+in this paper when fed in-chain rates---so a benchmark that records its per-hop
+surveys can predict pipeline behaviour without re-running the pipeline.
 
 \paragraph{Isolated attack success is not a composable unit.} The immediate
 implication of Sections~\ref{sec:transport} and~\ref{sec:depth} is a bound on how
