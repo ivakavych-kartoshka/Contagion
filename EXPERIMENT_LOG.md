@@ -742,6 +742,95 @@ Table 1 của bản thảo.
 
 ---
 
+## 8. Lý thuyết: ngưỡng lan truyền & vị trí harden (tính từ s đã đo, 0 API)
+
+> Thực hiện bằng `scripts/threshold_analysis.py` — **không chạy LLM**. Báo cáo:
+> `experiments/results/threshold_analysis/report.md`. Đã đưa vào paper §3.8 + §5.7.
+
+### 8.1 Mô hình percolation cho DAG
+
+Với giả định các cạnh độc lập, xác suất target bị compromise = xác suất tồn tại
+một đường đi "sống" từ entry, tính bằng một lượt theo thứ tự topo:
+
+```
+Pr[v] = 1 - Π_{u→v} (1 - s_{u→v} · Pr[u]),     Pr[entry] = 1
+```
+
+**Trên chain, công thức này thu về đúng `∏ sᵢ`** ⇒ đẳng thức của paper (E27) chỉ là
+**trường hợp riêng** của một mô hình tổng quát, không phải tính chất riêng của
+chain. Nhờ vậy **kiểm định giả định độc lập tổng quát hoá được ra ngoài chain**.
+
+### 8.2 ⛔ `ρ(M) < 1` là tiêu chí RỖNG với MỌI mạng feed-forward
+
+`idea.md` gọi đây là *"proof obligation"*. Câu trả lời (định lượng, phủ định):
+
+Với `M[u][v] = s_{u→v}`, sắp node theo thứ tự topo thì **M là ma trận tam giác
+ngặt** ⇒ mọi eigenvalue = 0 ⇒ **`ρ(M) = 0 < 1` LUÔN ĐÚNG**, bất kể `s` bằng bao
+nhiêu. Không phép đo `s` nào có thể bác bỏ tiêu chí này. Nó chỉ có nội dung khi
+đồ thị **có chu trình**, hoặc khi đếm theo *thế hệ* thay vì theo *node*.
+
+Và `R₀` thực nghiệm **không thay thế được**:
+
+| topology | `R₀` đo được | ASR | |
+|---|---|---|---|
+| chain n=7 | **0.821 < 1** | **0.450** | "subcritical" mà vẫn lan 45% |
+| star n=7 | **0.420 < 1** | **0.725** | "subcritical" mà tới đích 72% |
+
+Lý do: `R₀` lấy trung bình reproduction trên các instance bị compromise và **im
+lặng về reachability**. Ở star, tấn công thường thành công ở hop duy nhất quan
+trọng, nhưng center nó tới được **không có successor** nên đóng góp 0 vào `R₀`.
+⇒ **Reach và reproduction là hai rủi ro khác nhau, có thể ngược chiều.**
+
+### 8.3 Hệ quả cho defense placement: do CẤU TRÚC ĐƯỜNG ĐI quyết định, không do `s`
+
+Trên mạng feed-forward, một node **chỉ ảnh hưởng được** nếu nó nằm trên **đường đi
+từ entry tới target**; và trong số các node đó, harden node nào cũng hiệu quả như
+nhau. Tính trên `s` đã đo:
+
+| topology | node harden | ASR_pred sau harden | Δ |
+|---|---|---|---|
+| chain n=7 | `agent_1`…`agent_5` (cả 5, đều trên đường đi) | **0.000** | **−0.450** |
+| star n=7 | các leaf không phải entry (ngoài đường đi) | 0.667 (không đổi) | −0.058 |
+| **tree n=7** | **`agent_2`** (trên đường đi 0→2→6) | **0.000** | **−0.800** |
+| **tree n=7** | **`agent_1`** (out-degree **bằng nhau = 2**, nhưng **nhánh khác**) | 1.000 (không đổi) | +0.200 |
+
+⇒ **Tree là bằng chứng sắc nhất**: hai node có **cùng out-degree = 2** nhưng một
+node trên đường đi thì vô hiệu hoá được hoàn toàn, node kia thì **không làm gì cả**.
+
+**Kết luận đúng:** tối ưu vị trí harden là **câu hỏi cấu trúc** (tính các đường
+entry→target, chọn node rẻ nhất trong số đó), **không phải câu hỏi thống kê** —
+`s` chỉ quyết định *có nên deploy defense hay không*, không quyết định *đặt ở đâu*.
+Điều này đổi khi mạng có **đường dự phòng**.
+
+**Điều này sửa lời khuyên trước của tôi** ("làm defense-placement study"): chạy
+7×380 call chỉ để ra bảng mà mọi hàng trên cùng một đường đi giống nhau — và câu
+trả lời đúng suy ra được **miễn phí từ cấu trúc đồ thị**.
+
+### 8.4 🎯 Sai số của phép đo cách ly: ĐỘ LỚN tăng theo độ sâu, DẤU thì không cố định
+
+| cell | số hop | `∏s^cách ly` | ASR | `ASR/∏s` | **sai số tương đối** | dấu |
+|---|---|---|---|---|---|---|
+| star n=7 | 1 | 0.667 | 0.725 | 0.92× | **8%** | đánh giá thấp |
+| **tree n=7** | **2** | **1.000** | **0.800** | **1.25×** | **25%** | **đánh giá CAO** |
+| chain n=4 | 3 | 0.233 | 0.850 | 0.27× | **73%** | đánh giá thấp |
+| chain n=7 | 6 | 0.080 | 0.450 | 0.18× | **82%** | đánh giá thấp |
+
+Kiểm chứng mô hình: `Pr` percolation tính trên `s^natural` cho **đúng** ASR đo được
+ở **cả ba** topology (0.450 / 0.725 / 0.800, lệch ±0.000); tính trên `s^controlled`
+lệch −0.370 / −0.058 / **+0.200**.
+
+⇒ **Phát biểu đúng (đã sửa):** không phải "cách ly đánh giá thấp lan truyền", mà
+là **độ lớn sai số tăng theo số hop (8% → 25% → 73% → 82%) trong khi dấu của nó
+phụ thuộc model và topology**. Tree là cell chứng minh điều đó: hai cạnh trên
+đường đi tới target đều đo được `s = 1.000` cách ly nhưng chỉ 0.800 trong chuỗi →
+cách ly **lạc quan** ở đây.
+
+**Bài học:** con số tree buộc tôi **hạ mức claim** từ "luôn đánh giá thấp" xuống
+"độ lớn tăng theo độ sâu, dấu không cố định" — yếu hơn về tu từ nhưng **đúng**, và
+vẫn giữ được kết luận cốt lõi (phép đo cách ly không bảo toàn, sai số tích luỹ).
+
+---
+
 ## 3. Các vấn đề phụ đang tồn tại
 
 1. **Markov check vô nghĩa ở n nhỏ**: Phase-2 yêu cầu trials 200–300 cho power;

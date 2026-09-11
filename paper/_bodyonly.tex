@@ -242,7 +242,7 @@ InjecAgent~\cite{Zhan2024InjecAgent} builds 1{,}054 test cases across 30 LLMs an
 reports an attack success rate of 24\% for a ReAct GPT-4 agent, with the
 \emph{content-freedom} of the injected field dominating vulnerability.
 AgentDojo~\cite{Debenedetti2024AgentDojo} provides a dynamic evaluation
-environment for one agent over one hop. Liu and Gong~\cite{LiuGong2024} formalise
+environment for one agent over one hop. Liu and Gong~\cite{LiuGong2023} formalise
 injection as $\tilde{x} = \mathcal{A}(x_{\mathrm{target}}, s_{\mathrm{inj}},
 x_{\mathrm{inj}})$ and introduce the ASV/MR metrics we reuse. All of these
 terminate at one hop: they cannot express whether a compromise survives transfer.
@@ -340,7 +340,7 @@ of $(0,1)$ on real models.
 \subsection{Compromise judgment}
 
 An activation is judged compromised by a deterministic, non-LLM rule following
-Liu and Gong~\cite{LiuGong2024}: $C = \ind[\mathrm{ASV} \ge \tau_{\mathrm{asv}}
+Liu and Gong~\cite{LiuGong2023}: $C = \ind[\mathrm{ASV} \ge \tau_{\mathrm{asv}}
 \ \lor\ \mathrm{MR} \ge \tau_{\mathrm{mr}}]$, where ASV is the fraction of target
 bigrams present in the output and MR is a similarity against the reference
 hijacked output. For family B we use the ASV branch only ($\tau_{\mathrm{asv}} =
@@ -1050,11 +1050,5 @@ ablation of Section~\ref{sec:ablation}.
 %%% The next two lines define, first, the bibliography style to be
 %%% applied, and, second, the bibliography file to be used.
 
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{refs}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

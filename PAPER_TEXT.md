@@ -1,3 +1,11 @@
+# Contagion — Paper Text (English draft)
+
+> ⛔ **FILE NÀY ĐÃ LỖI THỜI — nguồn chuẩn bây giờ là `paper/contagion_aamas2027.tex`.**
+> Bản `.tex` là bản nộp AAMAS-2027, đã biên dịch được (8 trang, 0 lỗi), có đủ
+> §1–§8, và đã được cập nhật với các kết quả mới nhất (transportability 2 model,
+> content-form 14×, percolation + ngưỡng `ρ(M)`, sai số theo độ sâu, topology).
+> Giữ file này chỉ để tra cứu lịch sử cách hành văn; **đừng sửa ở đây nữa**.
+
 # Contagion — Paper Text (English draft, §1 / §2 / §3 / §4)
 
 > **Trạng thái:** bản nháp thật (tiếng Anh — ngôn ngữ nộp hội nghị), viết theo

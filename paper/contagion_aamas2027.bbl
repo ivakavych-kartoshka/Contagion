@@ -36,30 +36,17 @@
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
 
-\bibitem[{Anonymous}(2026a)]%
+\bibitem[Abdellah and Aziz(2026)]%
         {CII2026}
-\bibfield{author}{\bibinfo{person}{{Anonymous}}.}
-  \bibinfo{year}{2026}\natexlab{a}.
-\newblock \showarticletitle{Cascading Instruction Influence in Hierarchical
-  Multi-Agent {LLM} Systems}.
-\newblock \bibinfo{journal}{\emph{SOIC}} (\bibinfo{year}{2026}).
+\bibfield{author}{\bibinfo{person}{Mohamed Refaat~Mohamed Abdellah} {and}
+  \bibinfo{person}{Alber~S. Aziz}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Cascading Instruction Influence: Indirect Prompt
+  Injection in Hierarchical Multi-Agent Systems}.
+\newblock \bibinfo{journal}{\emph{Statistics, Optimization \& Information
+  Computing}} \bibinfo{volume}{15}, \bibinfo{number}{6} (\bibinfo{year}{2026}),
+  \bibinfo{pages}{5445--5458}.
 \newblock
-\shownote{TODO verify exact title, authors, volume, pages (URL seen:
-  iapress.org/index.php/soic/article/view/3574)}.
-\newblock
-
-
-\bibitem[{Anonymous}(2026b)]%
-        {SwarmMarkov2026}
-\bibfield{author}{\bibinfo{person}{{Anonymous}}.}
-  \bibinfo{year}{2026}\natexlab{b}.
-\newblock \showarticletitle{Cross-Layer Contagion in Multi-Agent Swarms: A
-  Multiplex {Markov} Model}.
-\newblock \bibinfo{journal}{\emph{Cybersecurity}} (\bibinfo{year}{2026}).
-\newblock
-\shownote{TODO verify exact title, authors, volume, article number (DOI
-  10.1186/s42400-026-00628-w)}.
-\newblock
+\href{https://doi.org/10.19139/soic-2310-5070-3574}{doi:\nolinkurl{10.19139/soic-2310-5070-3574}}
 
 
 \bibitem[Cemri et~al\mbox{.}(2025)]%
@@ -68,9 +55,6 @@
   \bibinfo{year}{2025}\natexlab{}.
 \newblock \bibinfo{title}{Why Do Multi-Agent {LLM} Systems Fail?}
 \newblock \bibinfo{howpublished}{arXiv preprint}.
-\newblock
-\shownote{Reports inter-agent misalignment (FC2) as 32.3\% of multi-agent
-  failures. TODO verify full author list}.
 \newblock
 \showeprint[arxiv]{2503.13657}~[cs.AI]
 
@@ -83,8 +67,6 @@
   Injection Attacks and Defenses for {LLM} Agents}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
 \newblock
-\shownote{TODO verify full author list and venue}.
-\newblock
 \showeprint[arxiv]{2406.13352}~[cs.CR]
 
 
@@ -95,8 +77,6 @@
 \newblock \bibinfo{title}{Not What You've Signed Up For: Compromising
   Real-World {LLM}-Integrated Applications with Indirect Prompt Injection}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
-\newblock
-\shownote{TODO verify full author list and venue}.
 \newblock
 \showeprint[arxiv]{2302.12173}~[cs.CR]
 
@@ -109,23 +89,30 @@
   Collaborative Framework}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
 \newblock
-\shownote{TODO verify full author list}.
-\newblock
 \showeprint[arxiv]{2308.00352}~[cs.AI]
 
 
-\bibitem[Liu et~al\mbox{.}(2023)]%
-        {LiuGong2023}
-\bibfield{author}{\bibinfo{person}{Yi Liu} {et~al\mbox{.}}}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \bibinfo{title}{Prompt Injection Attack Against {LLM}-Integrated
-  Applications}.
-\newblock \bibinfo{howpublished}{arXiv preprint}.
+\bibitem[Le et~al\mbox{.}(2026)]%
+        {SwarmMarkov2026}
+\bibfield{author}{\bibinfo{person}{Tran~Duc Le}, \bibinfo{person}{Truong~Duy
+  Dinh}, \bibinfo{person}{Thi Le~Quyen Nguyen}, {and}
+  \bibinfo{person}{Cong~Danh Nguyen}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Cross-layer contagion of prompt injections in
+  multi-agent swarms: a multiplex microscopic {Markov} chain approach}.
+\newblock \bibinfo{journal}{\emph{Cybersecurity}} (\bibinfo{year}{2026}).
 \newblock
-\shownote{Source of the ASV / MR metrics and the compositional injection
-  formalism we extend. TODO verify full author list}.
+\href{https://doi.org/10.1186/s42400-026-00628-w}{doi:\nolinkurl{10.1186/s42400-026-00628-w}}
+
+
+\bibitem[Liu et~al\mbox{.}(2024)]%
+        {LiuGong2024}
+\bibfield{author}{\bibinfo{person}{Yupei Liu}, \bibinfo{person}{Yuqi Jia},
+  \bibinfo{person}{Runpeng Geng}, \bibinfo{person}{Jinyuan Jia}, {and}
+  \bibinfo{person}{Neil~Zhenqiang Gong}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Formalizing and Benchmarking Prompt Injection
+  Attacks and Defenses}. In \bibinfo{booktitle}{\emph{33rd USENIX Security
+  Symposium (USENIX Security 24)}}. \bibinfo{publisher}{USENIX Association}.
 \newblock
-\showeprint[arxiv]{2310.12815}~[cs.CR]
 
 
 \bibitem[Wu et~al\mbox{.}(2023)]%
@@ -136,8 +123,6 @@
   Multi-Agent Conversation}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
 \newblock
-\shownote{TODO verify full author list and venue}.
-\newblock
 \showeprint[arxiv]{2308.08155}~[cs.AI]
 
 
@@ -145,11 +130,10 @@
         {Zhan2024InjecAgent}
 \bibfield{author}{\bibinfo{person}{Qiusi Zhan} {et~al\mbox{.}}}
   \bibinfo{year}{2024}\natexlab{}.
-\newblock \bibinfo{title}{{InjecAgent}: Benchmarking Indirect Prompt Injections
-  in Tool-Integrated Large Language Model Agents}.
-\newblock \bibinfo{howpublished}{Findings of ACL 2024}.
-\newblock
-\shownote{TODO verify pages / full author list}.
+\newblock \showarticletitle{{InjecAgent}: Benchmarking Indirect Prompt
+  Injections in Tool-Integrated Large Language Model Agents}. In
+  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: ACL 2024}}.
 \newblock
 \showeprint[arxiv]{2403.02691}~[cs.CR]
 
@@ -161,8 +145,6 @@
 \newblock \bibinfo{title}{Adaptive Attacks Break Defenses Against Indirect
   Prompt Injection Attacks on {LLM} Agents}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
-\newblock
-\shownote{TODO verify full author list and venue}.
 \newblock
 \showeprint[arxiv]{2503.00061}~[cs.CR]
 
