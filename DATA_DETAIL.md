@@ -248,12 +248,41 @@ vì nó "giữ fact" (giữ luôn mật mã). Khác kết quả 1-hop E16 → do
 
 ---
 
-# TÓM TẮT NHANH — 4 CON SỐ NHỚ NHẤT
+## E20. 🔥 REPLICATE TRÊN CLAUDE SONNET 4.5 (Bedrock) — model frontier
 
-1. **Role quyết định lan truyền 6.5×**: worker survival 0.13 vs reviewer 0.87.
+Cấu hình: `us.anthropic.claude-sonnet-4-5-20250929-v1:0` · chain n=4 · trials=40 ·
+per_edge=30 · temp 0.7 · (~64 phút)
+
+| Chỉ số | qwen2.5:7b (local) | **Claude Sonnet 4.5** |
+|---|---|---|
+| Survival (không defense) | 0.611 [0.51, 0.71] | **0.211 [0.14, 0.31]** |
+| ASR | 0.300 | **0.000** [0, 0.088] |
+| Survival + REDACT | 0.000 | **0.000** |
+| Per-edge (none) | 0.13 / 0.87 / 0.47 / 0.43 | **0.00 / 0.60 / 0.03** |
+| Obfusc. split × redact | **1.00** | **0.25** |
+
+**Cách đọc:**
+- **Hiện tượng ĐỨNG trên model frontier**: propagation vẫn xảy ra (surv 0.21, CI
+  không chứa 0), role-dependence vẫn mạnh (0.00 vs 0.60).
+- Claude **chống injection tốt hơn ~3×** (0.21 vs 0.61) và **ASR = 0** (chuỗi
+  không tới đích) — kết quả hợp lý: model mạnh được huấn luyện an toàn tốt hơn.
+- **DLP redact chặn tĩnh 100% trên cả 2 model** → defense rất ổn định.
+- **Phát hiện mới**: obfuscation split CHỈ đạt 0.25 trên Claude (vs 1.00 trên
+  qwen) → Claude hiếm khi tự ráp "BANANA and 77" → **arms-race phụ thuộc model**.
+- Lưu ý: `none·split = 0.00` vs `redact·split = 0.25` với n=8 là **nhiễu** (redact
+  không tác động lên content split) — cần n>30 mới kết luận chắc.
+
+---
+
+# TÓM TẮT NHANH — 5 CON SỐ NHỚ NHẤT
+
+1. **Role quyết định lan truyền 6.5×**: worker survival 0.13 vs reviewer 0.87
+   (và trên Claude: 0.00 vs 0.60 → đứng vững trên model mạnh).
 2. **Task ngữ nghĩa**: agent nghe lệnh ẩn **88–100%** khi đang làm việc thật.
-3. **Redact (xóa mật mã) chặn tĩnh 100%**: survival 0.61 → 0.00.
-4. **Chia mảnh qua mặt redact 100%**: cat-and-mouse có cấu trúc, đo được.
+3. **Redact (xóa mật mã) chặn tĩnh 100%**: 0.61 → 0.00 (qwen), 0.21 → 0.00 (Claude).
+4. **Chia mảnh qua mặt redact**: 100% trên qwen, **chỉ 25% trên Claude** → phụ thuộc model.
+5. **Model mạnh chống injection tốt hơn ~3×** (surv 0.61 → 0.21) nhưng **không
+   chặn được hoàn toàn** → propagation vẫn là rủi ro thật trên frontier model.
 
 *Số liệu gốc & chi tiết kỹ thuật: `EXPERIMENT_LOG.md`. Bản giải thích dễ đọc hơn:
 `RESEARCH_SUMMARY.md`.*

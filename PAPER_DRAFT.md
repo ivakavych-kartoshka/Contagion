@@ -134,9 +134,24 @@ emulation — không phải đo empirical per-hop trên LLM thật.
 
 ---
 
-## 5. Kết quả chính (số thật, qwen2.5:7b)
+## 5. Kết quả chính (số thật)
 
-### 5.1 RQ1 — survival theo role (E10, chain n=5, defense none, per-edge n=30)
+### 5.0 🔥 SO SÁNH CHÉO MODEL (E20 — quyết định độ tin cậy của paper)
+
+| Chỉ số (Task B chain, trials=40, per_edge=30) | qwen2.5:7b (local) | **Claude Sonnet 4.5 (Bedrock)** |
+|---|---|---|
+| Survival (không defense) | 0.611 [0.51, 0.71] | **0.211 [0.14, 0.31]** |
+| ASR | 0.300 | **0.000** [0, 0.088] |
+| Survival + REDACT DLP | 0.000 | **0.000** |
+| Per-edge (none) | 0.13 / 0.87 / 0.47 / 0.43 | **0.00 / 0.60 / 0.03** |
+| Obfusc. split × redact | **1.00** | **0.25** |
+
+→ **Hiện tượng cốt lõi đứng trên CẢ HAI model** (propagation, role-dependence,
+DLP chặn tĩnh 100%). Khác biệt: **model mạnh chống injection ~3× tốt hơn** và
+**obfuscation kém hiệu quả hơn nhiều** (0.25 vs 1.00) → phát hiện "arms-race phụ
+thuộc model" — điểm mới.
+
+### 5.1 RQ1 — survival theo role (E10, qwen2.5:7b, chain n=5, per-edge n=30)
 | edge | dst role | s | 95% CI |
 |---|---|---|---|
 | agent_0→agent_1 | worker | 0.133 | [0.053, 0.297] |
@@ -144,22 +159,25 @@ emulation — không phải đo empirical per-hop trên LLM thật.
 | agent_2→agent_3 | aggregator | 0.467 | [0.302, 0.639] |
 | agent_3→agent_4 | planner | 0.433 | [0.274, 0.608] |
 
-→ **Role-dependence mạnh (6.5× giữa worker/reviewer).**
+→ **Role-dependence mạnh (6.5× giữa worker/reviewer).** Trên Claude (E20) cũng
+vậy: 0.00 → 0.60 → 0.03 → role-dependence không phải artifact của model nhỏ.
 
 ### 5.2 RQ2 — Markov (E17, Task B chain n=4, n=40)
 - none: ASR 0.300 [0.181,0.454]; ∏ŝ = 0.205 [0.118,0.356] → "consistent"
 - paraphrase: ASR 0.275; ∏ŝ = 0.247 → "consistent"
+- Claude none: ASR 0.000; ∏ŝ = 0.000 → "consistent" (surv quá thấp)
 → Chưa đủ power (n=40); cần n=200–300 để phân biệt deviation (Phase-2).
 
-### 5.3 RQ1 (Task B semantic) + RQ3 — defense (E17/E18/E19)
-| Cấu hình | ASR / survival |
-|---|---|
-| Task B none (E17) | ASR 0.300 · surv 0.611 |
-| + paraphrase semantic (E17) | ASR 0.275 · surv 0.644 |
-| + **redact DLP** (E18) | ASR **0.000** · surv **0.000** |
-| arms-race 1-hop (E19): redact × plain/spaced/split | 0.00 / 0.00 / **1.00** |
+### 5.3 RQ3 — defense (E17/E18/E19/E20)
+| Cấu hình | qwen2.5:7b | Claude Sonnet 4.5 |
+|---|---|---|
+| Task B none | ASR 0.300 · surv 0.611 | ASR 0.000 · surv 0.211 |
+| + paraphrase semantic | ASR 0.275 · surv 0.644 | (chưa đo) |
+| + **redact DLP** | ASR 0.000 · surv **0.000** | ASR 0.000 · surv **0.000** |
+| arms-race: redact × plain/spaced/split | 0.00 / 0.00 / **1.00** | 0.00 / 0.00 / **0.25** |
 
-→ Bảng "Defense arms-race" (cat-and-mouse): tĩnh→chặn; split→qua mặt.
+→ **DLP chặn attack tĩnh 100% trên cả 2 model** (ổn định); **obfuscation split
+qua mặt được nhưng phụ thuộc model** (qwen 100% vs Claude 25%).
 
 ---
 

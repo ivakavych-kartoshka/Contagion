@@ -1,7 +1,8 @@
 """LLM client factory — chọn backend từ :class:`ContagionConfig`.
 
-provider == "mock"   → MockLLMClient (deterministic; giữ nguyên hành vi hiện tại)
-provider == "openai" → OpenAICompatClient (OpenAI-compatible endpoint)
+provider == "mock"    → MockLLMClient (deterministic; giữ nguyên hành vi hiện tại)
+provider == "openai"  → OpenAICompatClient (OpenAI-compatible endpoint)
+provider == "bedrock" → BedrockClient (Amazon Bedrock Converse API, boto3)
 
 Marker / secret token được đọc từ ``config.marker`` (không hardcode) để injected
 task family có thể cấu hình (vd leak-string với secret khác nhau).
@@ -26,6 +27,16 @@ def build_client(config: ContagionConfig, model_id: Optional[str] = None) -> LLM
             infection_prob=float(config.extra.get("mock_infection_prob", 1.0)),
             seed=config.seed,
         )
+    if config.provider == "bedrock":
+        from .bedrock import BedrockClient
+
+        return BedrockClient(
+            model=mid,
+            region=str(config.extra.get("region", "us-east-1")),
+            temperature=float(config.extra.get("temperature", 0.0)),
+            max_tokens=int(config.extra.get("max_tokens", 512)),
+            bearer_token=config.extra.get("api_key"),
+        )
     if config.provider == "openai":
         return OpenAICompatClient(
             model=mid,
@@ -35,5 +46,5 @@ def build_client(config: ContagionConfig, model_id: Optional[str] = None) -> LLM
             max_tokens=int(config.extra.get("max_tokens", 512)),
         )
     raise ValueError(
-        f"Unsupported LLM provider '{config.provider}' (mock | openai)"
+        f"Unsupported LLM provider '{config.provider}' (mock | openai | bedrock)"
     )

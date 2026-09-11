@@ -1,62 +1,96 @@
-# HƯỚNG DẪN CHẠY THỰC NGHIỆM LLM THẬT (tự chạy, tiết kiệm API)
+# HƯỚNG DẪN TỐI ƯU — Replicate trên DeepSeek-V3 (qua OpenRouter)
 
-> Tôi (agent) không tự chạy các job LLM dài nữa để khỏi tốn thời gian query.
-> Bạn chạy các lệnh dưới đây trên máy (môi trường đã có sẵn: Ollama + qwen2.5:7b
-> + package). Khi xong, gửi tôi file report/đường dẫn — tôi phân tích tiếp.
->
-> **Kiểm tra Ollama đang chạy trước:** `curl http://localhost:11434/api/tags`
-> (thấy qwen2.5:7b là OK). Nếu không, mở Ollama app hoặc chạy
-> `"C:\Users\ASUS\AppData\Local\Programs\Ollama\ollama.exe" serve`.
+> Đây là **cách tốt nhất** để de-risk bài báo với model frontier, tiết kiệm tối đa:
+> ~$3–8, 3 lệnh chạy, ~30–45 phút tổng. Không cần hiểu code — làm theo từng bước.
 
 ---
 
-## ✅ VIỆC CẦN CHẠY BÂY GIỜ: E19 — obfuscation × redact defense (Task B)
+## Bước 0 — Kiểm tra máy còn chạy được
 
-**Trạng thái:** E18 đã xong (bạn gửi kết quả — redact chặn triệt để, survival=0).
-Giờ đo **arms-race**: attacker obfuscate value (spaced "BANANA - 77" / split-word)
-có qua mặt được literal redact không?
-
-**Thời gian:** ~15–25 phút (12 ô nhỏ, n=8/ô).
-
-**Lệnh chạy:**
+Mở PowerShell, gõ:
 ```powershell
 cd E:\NCKH\Contagion
-python scripts\e19_obfuscation_taskb.py --n 8
+python -c "import contagion; print('OK')"
 ```
-
-**Kết quả:** `experiments/results/taskb_obfuscation/report.md` + `results.json`
-
-**Cách đọc nhanh (in ngay trên màn hình):**
-| defense | style | kỳ vọng |
-|---|---|---|
-| none | plain | cao (≈0.9) |
-| redact | plain | ≈ 0.0 (xác nhận E18) |
-| redact | spaced / split-word | **> 0 = obfuscation qua mặt redact** (arms-race thật) |
-
-Sau khi xong, gửi tôi nội dung `report.md`.
+Nếu in `OK` → tiếp tục. (Nếu lỗi, báo tôi.)
 
 ---
 
-## (Đã xong) E18 — redaction deterministic
+## Bước 1 — Tạo OpenRouter + nạp credit + lấy key (1 lần, ~5 phút)
+
+1. Vào https://openrouter.ai → **Sign Up** (đăng ký bằng Google/GitHub/email).
+2. Vào **Settings → Keys** (hoặc https://openrouter.ai/settings/keys) → **Create Key**.
+3. Nạp credit: **Settings → Credits → Add Credits** — nạp **$10** là đủ (bước này
+   ~$3–8, còn dư cho Markov power sau).
+4. Copy key dạng `sk-or-...` (chỉ hiện 1 lần — lưu ngay).
+
+**Kiểm tra model DeepSeek tồn tại** (lấy đúng tên để điền — quan trọng):
 ```powershell
-python scripts\e18_redact_chain.py --trials 40 --per-edge 30
+curl https://openrouter.ai/api/v1/models
 ```
-Kết quả đã nhận: survival = 0.000 (chặn triệt để attack tĩnh).
+Tìm dòng có `deepseek` — lấy chuỗi dạng `deepseek/deepseek-chat-v3` hoặc
+`deepseek/deepseek-chat-v3-0324`... (tên chính xác có thể khác theo thời điểm —
+**lấy đúng cái bạn thấy**). Nếu không thấy DeepSeek, vào
+https://openrouter.ai/models tìm "DeepSeek".
 
 ---
 
-## (Tùy chọn, sau E18) Các việc tiếp theo có thể chạy
+## Bước 2 — Đặt key vào máy (1 lệnh, mỗi lần mở PowerShell mới)
 
-Chưa chạy vội — chờ kết quả E18 rồi tôi sẽ chỉ định việc kế tiếp + lệnh chạy.
-Hai ứng viên dự kiến:
-1. **Task B sweep topology** (chain×star×tree, n=40/cell, ~4–6h) — dataset
-   attack-side chính thức.
-2. Hoặc **tách 2 loại compromise** (nếu E18 cho thấy metric gộp) — cần đổi code,
-   tôi sẽ code xong rồi mới đưa lệnh chạy.
+```powershell
+$env:OPENROUTER_API_KEY="sk-or-...THAY_KEY_CUA_BAN..."
+```
+(Có thể đặt cố định: `[Environment]::SetEnvironmentVariable("OPENROUTER_API_KEY","sk-or-...","User")`
+rồi mở lại PowerShell.)
 
 ---
 
-## Ghi chú
-- Không sửa file code trừ khi tôi báo (mọi thứ đã được chuẩn bị sẵn: 64 tests pass).
-- Nếu muốn chạy nhanh hơn: giảm `--trials 30` (CI rộng hơn chút, ~1 giờ).
-- Muốn chạy qua đêm nhiều cell: chờ tôi đưa script sweep sau E18.
+## Bước 3 — Chạy replicate (3 lệnh, tổng ~30–45 phút)
+
+**Lệnh 1 — toàn bộ bước de-risk** (Task B none + redact + obfuscation):
+```powershell
+python scripts\replicate_frontier.py --model deepseek/deepseek-chat-v3
+```
+
+> Nếu bạn chỉ muốn chạy 1 phần:
+> - Chỉ chain defenses (none + redact): thêm `--only-chain-defenses`
+> - Chỉ obfuscation: thêm `--only-judge-calib`? KHÔNG — xem ghi chú dưới.
+> (Script mặc định chạy đủ 3 mục; 2 cờ kia để chạy lẻ khi cần.)
+
+**Kết quả nằm tại:** `experiments/results/frontier_deepseek-deepseek-chat-v3/report.md`
+
+---
+
+## Bước 4 — Gửi tôi kết quả
+
+Sau khi chạy xong, gửi tôi **nội dung file report.md** (hoặc đường dẫn). Tôi sẽ
+phân tích:
+- Hiện tượng propagation (chain none) còn đứng không trên DeepSeek?
+- Redact còn chặn 100% không?
+- Obfuscation split còn qua mặt / spaced còn fail không?
+→ Rồi quyết định: viết bài hướng measurement (nếu đứng) hay xoay claim.
+
+---
+
+## Bảng chi phí ước tính
+
+| Mục | Calls ước tính | Chi phí DeepSeek (~$0.27/M in, $1.10/M out) |
+|---|---|---|
+| Chain none (trials=40) | ~250–400 | ~$0.5–1 |
+| Chain redact | ~250–400 | ~$0.5–1 |
+| Obfuscation (24 ô × 8) | ~200 | ~$0.5 |
+| Judge calib (nếu chạy thêm) | ~150 | ~$0.3 |
+| **Tổng** | | **~$2–4** |
+
+---
+
+## ⚠️ Nếu gặp lỗi
+- `401 Unauthorized` → key sai / chưa nạp credit → kiểm tra Bước 1–2.
+- `404 model not found` → tên model sai → kiểm tra lại Bước 1 (curl models).
+- Lỗi khác → copy nguyên dòng lỗi gửi tôi.
+
+---
+
+## Sau khi có kết quả tốt (tùy chọn, ~$5–10 thêm)
+- Markov power n=200–300 cho chain none (1 cell) — tôi soạn lệnh riêng.
+- Star/tree mỗi loại 1 cell.
