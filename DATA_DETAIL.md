@@ -456,6 +456,42 @@ chuyển được cho model đó không. Một chain dài, một lần chạy, �
 
 ---
 
+## E32. Quy tắc thiết kế cho mô hình CÓ vòng + phép kiểm hai chiều trên 2 model
+
+`scripts/cyclic_design_rule.py` (0 API) + `scripts/cyclic_probe.py` trên qwen2.5:7b
+(local, 0 đồng).
+
+**Công thức (đã kiểm bằng số tới 4,4e-16 trên 320 cấu hình ngẫu nhiên):**
+với manager gửi cho $w$ worker và mỗi worker báo cáo ngược lại,
+
+    ρ(M) = sqrt( Σ_j a_j·c_j )   với MỌI w
+    vượt ngưỡng  ⇔  Σ_j a_j·c_j > 1
+    đối xứng (a_j=c_j=s):  w·s² > 1
+
+Nếu **không** có báo cáo ngược ($c_j = 0$) thì $\rho = 0$ **bất kể** cạnh mạnh cỡ nào
+(s = 0.5, 0.9, 0.99 đều cho ρ = 0) — đây là định lý §3.8 nhìn từ hướng khác.
+
+**Bảng thiết kế:** s = 0.5 → cần **5** worker; 0.6 → 3; 0.7 → 3; 0.8 → 2; 0.9 → 2.
+
+**Phép kiểm hai chiều — cả hai dự đoán đều đúng:**
+
+| model | Σ a_j·c_j | ρ | dự đoán | đo được |
+|---|---|---|---|---|
+| Llama 3.3 70B | 1.800 | **1.342** | bền | manager **0.725** [0.572, 0.839]; vòng 5 m 0.700, w 0.925/0.975 → giữ nguyên ✓ |
+| qwen2.5:7b | 0.578 | **0.760** | tắt dần | manager **0.775** [0.625, 0.877] → vòng 5 **0.650**; w dừng 0.475/0.525 ✓ |
+
+Động lực học qwen theo round (tỉ lệ hiện đang compromised): m 1.000 → 1.000 → 0.775 →
+0.775 → **0.650**.
+
+**Hai điều phải nói kèm cho trung thực:**
+
+1. Mới **5 vòng** ⇒ đủ phân biệt "yếu dần" với "bão hoà", **chưa** đủ chứng minh tắt hẳn.
+   Không được viết "extinction".
+2. Metric `p_alive_last` là **tích luỹ** nên bằng 1.000 ở **cả hai** model ⇒ **không**
+   dùng làm bằng chứng endemic. Bằng chứng là cột `rates` theo từng round.
+
+---
+
 # TÓM TẮT NHANH — 8 ĐIỀU NHỚ NHẤT
 
 1. **Role quyết định lan truyền 6.5×**: worker survival 0.13 vs reviewer 0.87

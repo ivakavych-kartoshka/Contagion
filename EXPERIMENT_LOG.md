@@ -1159,7 +1159,56 @@ Chạy 8 seed × 20 trial/cạnh, **một** temperature, để χ² không bị 
 - Hệ quả cho cách đọc bảng: các rate là **trung bình trên các context**, không phải
   thuộc tính của riêng cạnh.
 
-### 9.3 Việc biên tập kéo theo (để đạt 8 trang)
+### 9.3 Quy tắc thiết kế từ mô hình có vòng (`scripts/cyclic_design_rule.py`)
+
+Biến kết quả cyclic từ "một hiện tượng đơn lẻ" thành **tiêu chí dùng được**. Với
+manager gửi cho $w$ worker và mỗi worker báo cáo ngược lại:
+
+    M[m→w_j] = a_j ,  M[w_j→m] = c_j ,  các ô khác = 0
+    đa thức đặc trưng  =  λ^(w−1) · (λ² − Σ_j a_j·c_j)
+    ⇒  ρ(M) = sqrt( Σ_j a_j·c_j )   với MỌI w
+
+**Đã kiểm bằng số** trên 320 cấu hình ngẫu nhiên (w = 1..8 × 40 lần): sai số tuyệt
+đối lớn nhất giữa `ρ` đo từ eigenvalues và `sqrt(Σ a·c)` là **4,4e-16** ⇒ là đẳng
+thức, không phải xấp xỉ.
+
+Ba hệ quả:
+
+1. **Mạng không vòng là trường hợp riêng**: đặt mọi $c_j = 0$ ⇒ $\rho = 0$ **bất kể
+   cạnh mạnh cỡ nào** (s = 0.5, 0.9, 0.99 đều cho ρ = 0 khi không có báo cáo ngược).
+   Đây là định lý ở §3.8 nhìn từ hướng khác.
+2. **Tiêu chí vượt ngưỡng**: $\sum_j a_j c_j > 1$; đối xứng ($a_j=c_j=s$) thì
+   $w\,s^2 > 1$. Bảng: s = 0.5 cần **5** worker, 0.6 → 3, 0.7 → 3, 0.8 → 2, 0.9 → 2,
+   1.0 → 2.
+3. **Hai dự đoán NGƯỢC NHAU trên hai model đã đo** — đây là phép thử mà một tiêu chí
+   phải vượt qua mới đáng dùng, và **cả hai đều đã được thực nghiệm xác nhận**:
+
+| model | Σ a_j·c_j | ρ (có vòng) | ρ (feed-forward) | dự đoán | KẾT QUẢ ĐO |
+|---|---|---|---|---|---|
+| Llama 3.3 70B | 1.800 | **1.342** | 0.000 | vượt ngưỡng → bền | manager tái nhiễm **0.725** [0.572, 0.839]; vòng 5: m **0.700**, w 0.925/0.975 → **giữ nguyên** ✓ |
+| qwen2.5:7b | 0.578 | **0.760** | 0.000 | dưới ngưỡng → tắt dần | manager tái nhiễm **0.775** [0.625, 0.877] → vòng 5 còn **0.650**; worker dừng ở 0.475/0.525, **không** bão hoà ✓ |
+
+- qwen (`experiments/results/cyclic_qwen`, job `pwsh-26`, local, 0 đồng):
+  `s_isolated` = m→w1 0.467, m→w2 0.333, w1→m 0.667, w2→m 0.800.
+  Động lực học theo round (tỉ lệ *hiện đang* compromised): m 1.000 → 1.000 → 0.775 →
+  0.775 → **0.650** (giảm đơn điệu về cuối), w1 0 → 0.475 → … → 0.475,
+  w2 0 → 0.525 → … → 0.525 (dừng, không bão hoà).
+- **Giới hạn đã ghi vào bài**: mới 5 vòng ⇒ đủ phân biệt "yếu dần" với "bão hoà",
+  **chưa** đủ chứng minh tắt hẳn. Không được nói "extinction".
+- **Lưu ý kỹ thuật về cách đọc `rates`** (đọc `cyclic_probe.recurrent_runs`): worker chỉ
+  được cập nhật ở round chẵn *nếu* manager đã compromised ở round lẻ trước đó và có gửi
+  báo cáo; nếu không, trạng thái worker **giữ nguyên** từ round trước. Vì vậy cột worker
+  đứng yên ở qwen là hệ quả của việc manager rơi khỏi trạng thái compromised, không phải
+  lỗi. Metric `p_alive_last` là **tích luỹ** ("từng có agent compromised tới round cuối")
+  nên bằng 1.000 ở **cả hai** model — **không** dùng nó làm bằng chứng endemic; bằng
+  chứng endemic là cột `rates` theo round.
+
+Ý nghĩa cho bài báo: điểm yếu lớn nhất của bài là "chẩn đoán mà không có gì xây
+dựng". Quy tắc này trả lời được câu hỏi thiết kế: *manager nên có bao nhiêu worker
+báo cáo ngược thì hệ bắt đầu tự duy trì lây nhiễm*. Đã đưa vào §5.8 kèm
+`tab:cyclic` (viết lại thành bảng 2 model × 2 cách đọc).
+
+### 9.4 Việc biên tập kéo theo (để đạt 8 trang)
 
 - Bảng `tab:depth` **viết lại** thành bảng 3 model (range/mean/ρ/slope), bỏ cột
   "reading" (gây overfull 33.9pt — đã kiểm lại = 0 overfull).

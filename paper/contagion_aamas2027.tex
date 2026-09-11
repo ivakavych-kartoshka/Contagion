@@ -305,12 +305,11 @@ unreliable. We therefore keep the network-contagion framing but report which of
 its standard instruments transfer and which do not.
 
 \paragraph{Gap.} No prior work, to our knowledge, provides all of: conditional
-per-hop survival measured with a controlled protocol; end-to-end ASR measured with
-an independent natural-run protocol; a test of whether the isolated estimate
-transports to the in-chain regime, reported with resolution; per-hop rates
-conditioned on the receiving agent's role; and the legitimate-task cost reported
-alongside. Each clause corresponds to a measurement we show changes the
-conclusion.
+per-hop survival under a controlled protocol; end-to-end ASR under an independent
+natural-run protocol; a test of whether the isolated estimate transports to the
+in-chain regime; per-hop rates conditioned on the receiving agent's role; and the
+legitimate-task cost reported alongside. Each clause corresponds to a measurement we
+show changes the conclusion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -887,10 +886,8 @@ re-packaged.
 
 Evaluated on in-chain rates, Eq.~\eqref{eq:percolation} reproduces the measured ASR
 exactly in all three topologies; on isolated rates it deviates by $-0.370$, $-0.058$
-and $+0.200$. The star and the tree are thus independent checks in which the
-independence assumption approximately holds, while the chain cells are where it
-fails---consistent with the view that what breaks independence is not the network
-but the repeated re-packaging of the payload along it.
+and $+0.200$. What breaks independence is therefore not the network but the repeated
+re-packaging of the payload along it.
 
 \subsection{Recurrence makes the threshold non-vacuous}
 \label{sec:cyclic}
@@ -898,48 +895,62 @@ but the repeated re-packaging of the payload along it.
 Section~\ref{sec:threshold} proved the threshold criterion vacuous for acyclic
 graphs and observed that it becomes informative only when the interaction graph
 contains a cycle. We test that second half on a pattern real frameworks use: a
-manager broadcasting to two workers that report back.
+manager broadcasting to workers that report back.
 
-With these per-hop survivals, the eigenvalue equation for
-$M = \left(\begin{smallmatrix}0&a&b\\ c&0&0\\ d&0&0\end{smallmatrix}\right)$
-gives $\lambda^2 = ac + bd$, hence
-$\rho = \sqrt{a\,c + b\,d} = \sqrt{1.000{\times}0.867 + 1.000{\times}0.933} =
-1.342$. The \emph{same} survivals read as a feed-forward network
-($m\!\to\!w_1$, $m\!\to\!w_2$ only) give $\rho = 0$ by triangularity. The threshold
-verdict therefore flips from vacuously subcritical to supercritical on the presence
-of two feedback edges, with every $s$ held fixed (Table~\ref{tab:cyclic}).
+For a manager with $w$ reporting workers, the infection matrix has
+$M[m\!\to\! w_j] = a_j$ and $M[w_j\!\to\! m] = c_j$, and its characteristic
+polynomial is $\lambda^{w-1}(\lambda^2 - \sum_j a_j c_j)$. Hence
+\begin{equation}
+  \rho(M) = \sqrt{\textstyle\sum_j a_j\,c_j}
+  \label{eq:cyclicrho}
+\end{equation}
+for every $w$ (checked numerically against the eigenvalues to machine precision on
+$320$ random configurations). Two consequences follow. A feed-forward reading sets
+every $c_j = 0$, so $\rho = 0$ however strong the edges are---the vacuity of
+Section~\ref{sec:threshold} again, now with the feedback edges removed. And the
+system is supercritical exactly when $\sum_j a_j c_j > 1$; for symmetric edges
+$a_j = c_j = s$ this is $w\,s^2 > 1$. That is a \emph{design rule} rather than a
+diagnostic: at $s = 0.5$ a manager needs five reporting workers to sustain an
+endemic injection, at $s = 0.7$ three, at $s = 0.9$ two.
+
+Applied to measured survivals, Eq.~\eqref{eq:cyclicrho} makes two \emph{opposite}
+predictions, which is the test a criterion has to pass to be worth using
+(Table~\ref{tab:cyclic}). On Llama the sum is $1.800$, so the loop should be
+supercritical; on qwen2.5:7b it is $0.578$, so the same loop should decay.
 
 \begin{table}[t]
 \small
-\caption{The same agents and the same per-hop survivals, read two ways. Feedback
-turns a vacuous criterion into a binding one.}
+\caption{One criterion, two models, two opposite predictions. $\sum_j a_jc_j$ uses
+the measured per-hop survivals of the same three-agent recurrent pattern; the
+feed-forward column is the same survivals with the two feedback edges removed.}
 \label{tab:cyclic}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-\textit{reading} & \textit{edges} & \textit{$\rho(M)$} & \textit{verdict} \\
+\textit{model} & \textit{$\sum_j a_jc_j$} & \textit{$\rho$ rec.}
+& \textit{$\rho$ fwd.} & \textit{prediction} \\
 \midrule
-feed-forward   & 2 & 0.000 & subcritical (vacuous) \\
-with feedback  & 4 & \textbf{1.342} & \textbf{supercritical} \\
+Llama 3.3 70B & $1.800$ & $\mathbf{1.342}$ & $0.000$ & supercritical \\
+qwen2.5:7b    & $0.578$ & $0.760$ & $0.000$ & subcritical \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The empirical consequence matches the prediction. The feed-forward reading of the
-same agents terminates at the workers (both compromised in $1.000$ of runs); that
-is the whole of its propagation. In the recurrent run the manager---the agent that
-sent the payload---is re-compromised by its own workers' reports in
-$0.725$ $[0.572, 0.839]$ of runs, and the payload does not die out: at round five
-the manager is still compromised in $0.700$ of runs and some agent in
-$1.000$ $[0.912, 1.000]$, with the workers near saturation. The system settles into
-an endemic state rather than decaying, which is what $\rho > 1$ predicts.
+The measured dynamics follow. On Llama the feed-forward reading terminates at the
+workers; in the recurrent run the manager---the agent that sent the payload---is
+re-compromised by its own workers' reports in $0.725$ $[0.572, 0.839]$ of runs and
+does not die out: at round five it is still compromised in $0.700$ of runs with the
+workers near saturation ($0.925$, $0.975$), the endemic behaviour $\rho > 1$
+predicts. On qwen the same loop decays instead: the manager's re-compromise rate
+falls from $0.775$ $[0.625, 0.877]$ at its first exposure to reports to $0.650$ by
+round five, and the workers plateau at $0.475$ and $0.525$ rather than saturating.
+One criterion, two opposite predictions, both borne out.
 
 Two caveats. First, $\rho$ is computed from \emph{isolated} survivals, i.e.\ through
 exactly the pipeline that Sections~\ref{sec:transport}--\ref{sec:depth} show to be
-unreliable; the verdict survives because it is not marginal---it needs only
-$ac + bd > 1$ and the measured value is $1.80$, so it tolerates substantial error in
-the edge estimates. Second, this is a single three-agent pattern at one temperature:
-a demonstration that recurrence makes the criterion non-vacuous, not a survey of
-cyclic structures.
+unreliable; the verdicts survive because neither is marginal---they need only
+$\sum_j a_jc_j$ on either side of $1$, against measured $1.80$ and $0.58$. Second, we
+study a single recurrent pattern at one temperature and only five rounds: enough to
+separate monotone decay from saturation, not enough to demonstrate extinction.
 
 \subsection{Utility under attack}
 \label{sec:utility}

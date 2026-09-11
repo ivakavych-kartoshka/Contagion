@@ -161,7 +161,10 @@ python scripts\threshold_analysis.py        # percolation, ρ(M), placement
 python scripts\isolation_validity.py        # s^controlled vs s^natural
 python scripts\utility_from_outputs.py      # chấm lại §7 từ raw output
 python scripts\depth_trend.py --dirs depth_curve_llama depth_curve_qwen depth_curve_deepseek
+python scripts\cyclic_design_rule.py        # quy tắc thiết kế ρ = sqrt(Σ a_j·c_j) (0 API)
 python scripts\audit_numbers.py --md        # → AUDIT_TABLE.md ở gốc repo (number audit)
+python scripts\check_results_complete.py    # mọi thư mục kết quả có hoàn chỉnh không
+python scripts\utility_from_outputs.py      # chấm lại §7 từ raw output (0 LLM call)
 python scripts\check_paper.py paper\contagion_aamas2027.tex --bib paper\refs.bib
 python scripts\check_figures.py             # 6 phép kiểm tra hình (0 API)
 ```

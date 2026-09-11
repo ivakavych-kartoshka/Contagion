@@ -28,17 +28,29 @@ Nguồn chân lý về con số là `paper/contagion_aamas2027.tex` + `experimen
 | Tài liệu tái lập | Có | `REPRODUCE.md` (từng bảng ↔ lệnh ↔ chi phí ↔ 6 cảnh báo trung thực) |
 | **Number audit** (số trong bài ↔ `results.json`) | **Đã chạy** | `python scripts\audit_numbers.py --md` → `AUDIT_TABLE.md`. Đã phát hiện và sửa 2 chỗ thiếu chính xác: χ² p = **0.0014** (không phải 0.001), và φ của cạnh yếu là **0.58** [0.12, 1.00] (không phải "≤1.00 trên cả ba cạnh") |
 
-## 2. Ba job nền đã xong (đã tích hợp vào bài)
+## 2. Các job đã xong — đã tích hợp hết vào bài
 
 | Job | Kết quả | Đã vào bài ở đâu |
 |---|---|---|
 | `pwsh-21` Llama n=15 | ρ = **+0.77**, dốc **+6.8 pp/hop**, sai số 0–92%, chain **chết ở depth 11** (4 điểm bị loại) | §5.7 + `tab:depth` |
-| `pwsh-23` qwen2.5:7b n=7 (local, free) | ρ = **+1.00**, dốc **+11.8 pp/hop**, sai số **31→89% đơn điệu** | §5.7 + `tab:depth` — bằng chứng "error compounds" sạch nhất của bài |
-| `pwsh-25` sensitivity temp 0.7 | φ ≤ **1.00** (i.i.d. được ủng hộ) nhưng χ² = **13.40**, df=2, **p = 0.001** trên cạnh yếu (18/56 vs 3/56 vs 13/48) | §5.10 — nêu thẳng rằng rate phụ thuộc *context công việc hợp lệ*, không phải thuộc tính của cạnh |
+| `pwsh-23` qwen2.5:7b n=7 (local, free) | ρ = **+1.00**, dốc **+11.8 pp/hop**, sai số **31→89% đơn điệu** | §5.7 + `tab:depth` |
+| `pwsh-25` sensitivity temp 0.7 | φ ≤ **1.00** (i.i.d. được ủng hộ) nhưng χ² = **13.40**, df=2, **p = 0.0014** trên cạnh yếu | §5.10 |
+| `pwsh-26` cyclic qwen2.5:7b (local, free) | ρ = **0.760** (dưới ngưỡng) → manager tái nhiễm **0.775** rồi **giảm còn 0.650** ở vòng 5; worker dừng ở 0.475/0.525, **không** bão hoà | §5.8 + `tab:cyclic` |
+
+**Việc (1) — quy tắc thiết kế — đã xong và đã vào bài.** `scripts/cyclic_design_rule.py`
+kiểm $\rho(M)=\sqrt{\sum_j a_jc_j}$ trên 320 cấu hình ngẫu nhiên: sai số lớn nhất
+**4,4e-16**. §5.8 nay có công thức tổng quát, quy tắc vượt ngưỡng
+$\sum_j a_jc_j>1$ (đối xứng $w\,s^2>1$: ở $s=0{,}5$ cần 5 worker, $0{,}7$ cần 3,
+$0{,}9$ cần 2), và `tab:cyclic` viết lại thành **2 model × 2 cách đọc**.
+
+**Kết quả đáng giá nhất của vòng này:** cùng một công thức đưa ra **hai dự đoán ngược
+nhau** trên hai model, và **cả hai đều đúng** (Llama giữ nguyên, qwen yếu dần). Một
+tiêu chí dám dự đoán cả hai chiều là tiêu chí có năng lực phân biệt — đây là thứ trả
+lời trực tiếp điểm yếu "chẩn đoán mà không có gì xây dựng".
 
 Hệ quả: abstract + gợi ý #1 ở §1 **đã được viết lại** cho khớp (trước đó chỉ nói
 được đường cong của Llama; nay dùng thống kê xu hướng của cả ba model, ρ từ +1.00
-xuống −0.07). Đây là thay đổi làm bài **mạnh hơn**, không phải chỉ để vừa trang.
+xuống −0.07).
 
 ## 3. Việc còn lại của bạn (chặn việc nộp)
 
@@ -59,6 +71,15 @@ xuống −0.07). Đây là thay đổi làm bài **mạnh hơn**, không phải
 n=200 cho cạnh yếu, obfuscation trên model mới). Cần key mới từ AWS console.
 Key cũ `94fb22d672` vẫn nằm plaintext trong `~/.cline/data/secrets.json` và
 `providers.json` — **đừng dán key mới vào Cline**.
+
+**Không mất kết quả nào.** Kiểm bằng `python scripts\check_results_complete.py`:
+mọi thư mục kết quả nuôi bảng/hình của bài đều hoàn chỉnh (parse được, không ô
+`None`, có `report.md`). Thư mục Bedrock sửa cuối **11/09 11:06 → 16:54**, tức
+**tất cả đã ghi xong trước khi key chết**; hai job còn chạy lúc đó (`pwsh-21`
+Llama n=15 lúc 16:51, `pwsh-25` sensitivity lúc 16:54) đều kết thúc `exit 0`.
+Đặc biệt: 2 dòng Claude của bảng utility **không** có `results.json` mà chỉ có
+`outputs.jsonl` — chấm lại bằng `python scripts\utility_from_outputs.py` (0 LLM
+call) cho **đúng** số trong bài (ΔU = +0.000 / +0.100, retention 1.000 / 0.900).
 
 Việc **không cần key** vẫn làm được: model local qua ollama (`qwen2.5:7b`,
 `qwen2.5:3b` — miễn phí), và mọi phân tích lại từ kết quả đã có.
@@ -93,9 +114,10 @@ Select-String -Path contagion_aamas2027.log -Pattern 'undefined'
 
 ## 6. Con số định vị (nói thật, không tô hồng)
 
-- Xác suất được nhận ước lượng: **~33–38%** cho AAMAS main track (mặt bằng ≈ 23–25%).
-  Mức tăng so với trước nhờ: kết quả cyclic (§5.8), đường cong 3 model có thống kê
-  xu hướng (§5.7), và việc báo cáo thẳng χ² bác bỏ i.i.d. (§5.10).
+- Xác suất được nhận ước lượng: **~35–40%** cho AAMAS main track (mặt bằng ≈ 23–25%).
+  Mức tăng so với trước nhờ: quy tắc thiết kế + phép kiểm hai chiều đều đúng (§5.8),
+  đường cong 3 model có thống kê xu hướng (§5.7), và báo cáo thẳng χ² bác bỏ i.i.d.
+  (§5.10).
 - Trừ nếu bị đọc là "measurement study thuần": rủi ro **~15%** — đã giảm bằng cách
   đóng gói đóng góp (định lý ρ(M)=0, chẩn đoán độ dốc, kết quả cyclic).
 - Điểm yếu **không giấu**: `M_t` là proxy, `n = 30–40` ở phần lớn ô, chưa có
