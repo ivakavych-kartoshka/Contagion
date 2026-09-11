@@ -757,18 +757,18 @@ Fig.~\ref{fig:obf}) shows why this is a weaker statement than it appears. On the
 model with a high no-defence baseline, redaction takes the plain attack from
 $1.00$ to $0.00$ while the split attack remains at $1.00$ and the spaced attack at
 $0.88$: the defence works on the literal channel and is bypassed by ordinary
-obfuscation. On the resistant frontier model the plain attack only succeeds $0.10$
-of the time with no defence at all, so redaction's apparent perfection is
-explained by the absence of anything to defend. The two cells are the same code
-and the same defence; only the headroom differs.
+obfuscation. On the resistant frontier model the plain attack succeeds only $0.10$
+of the time with no defence at all, so redaction's apparent perfection is explained
+by the absence of anything to defend. The same code and the same defence give
+opposite verdicts; only the headroom differs.
 
-Semantic paraphrase is worse than useless in our cells. On the model where the
+Semantic paraphrase is worse than useless in our cells: on the model where the
 attack succeeds it leaves $\mathrm{ASR}$ unchanged ($0.450 \to 0.450$) while
-reducing utility retention from $0.600$ to $0.400$: it is \emph{strictly dominated}
-by doing nothing. On the resistant model, where $\mathrm{ASR}$ is already $0.000$,
-it still costs $0.100$ of utility. This is consistent with
-prior single-agent findings that paraphrasing is breakable~\cite{Zhan2025Adaptive}
-and it is only visible because utility is reported jointly with propagation.
+reducing utility retention from $0.600$ to $0.400$, so it is \emph{strictly
+dominated} by doing nothing, and on the resistant model it still costs $0.100$ of
+utility where $\mathrm{ASR}$ is already $0.000$. This is consistent with prior
+single-agent findings that paraphrasing is breakable~\cite{Zhan2025Adaptive}, and
+it is visible only because utility is reported jointly with propagation.
 
 \begin{table}[t]
 \caption{Single-hop compromise rate by defence and attack form.
@@ -862,7 +862,7 @@ $\prod_i \scite{i} = 0.080$ against $\mathrm{ASR} = 0.450$, a $5.6\times$
 under-estimate, with two of the six edges off by factors of $3.2$ and $2.9$---the
 opposite of the behaviour one would want from a composable per-hop quantity.
 
-\subsection{The isolation error compounds with depth}
+\subsection{The shape of the depth profile is a diagnostic}
 \label{sec:depth}
 
 \begin{table}[t]
@@ -870,8 +870,7 @@ opposite of the behaviour one would want from a composable per-hop quantity.
 of how many hops separate the target from the entry (Llama 3.3 70B,
 fresh-artefact protocol). \emph{ratio} is
 $\mathrm{ASR} / \prod_i \scite{i}$; \emph{rel.\ err.} is
-$|\prod_i \scite{i} - \mathrm{ASR}| / \mathrm{ASR}$. The sign of the error is not
-fixed, but its magnitude rises monotonically with the number of hops.}
+$|\prod_i \scite{i} - \mathrm{ASR}| / \mathrm{ASR}$.}
 \label{tab:depth}
 \begin{tabular}{lccccc}
 \toprule
@@ -886,24 +885,34 @@ chain n=7 & 6 & 0.080 & 0.450 & $0.18\times$ & $82\%$ \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:depth} generalises Section~\ref{sec:transport} in two ways. It
-extends the comparison beyond chains---the star's single hop is exactly the regime
-that single-agent benchmarks inhabit, and there the isolated estimate is accurate
-to $8\%$---and it shows that the magnitude of the error rises with the number of
-hops the payload must survive, from $8\%$ at one hop to $82\%$ at six.
+Table~\ref{tab:depth} gives the depth profile for Llama 3.3 70B: the magnitude of
+the error rises with the number of hops the payload must survive, from $8\%$ at one
+hop to $82\%$ at six. Repeating the measurement on DeepSeek V3.2 over a seven-hop
+chain produces a different shape. Errors at depths $1\ldots7$ are $17$, $35$, $7$,
+$30$, $14$, $10$ and $32\%$---a mean of $21\%$ with \emph{no} trend, fluctuating as
+the product of seven edge estimates accumulates sampling noise rather than bias.
 
-The tree cell also disciplines the claim: the error does not have a fixed sign. On
-the tree the isolated estimate is \emph{optimistic}, predicting certain compromise
-($\prod_i \scite{i} = 1.000$) where the measured rate is $0.800$, and the two
-edges on the target's path are exactly the ones whose isolated survival
-($1.000$) exceeds their in-chain survival ($0.800$). So the defensible statement
-is not that isolated measurement under-estimates spread, but that
-\emph{its error grows with deployment depth while its direction is
-model- and topology-dependent}. An isolated measurement is therefore not merely
-biased: its bias is a function of the deployment's depth, which is not recoverable
-from the measurement itself. The trend is consistent with the content-form
-mechanism of Section~\ref{sec:contentform}, since every hop is an opportunity for
-the payload to be re-packaged.
+The two shapes are not a contradiction but a consequence of what
+Section~\ref{sec:transport} measures directly. Whether the error compounds is
+determined by whether the per-edge isolated rate transports at all. Where it
+transports---as for DeepSeek, whose isolated product matches its measured ASR to
+$2.2\%$---composing edge estimates introduces no systematic error, and the profile
+is flat. Where it fails on one edge---as for Llama, whose middle edge is
+under-estimated by $3.75\times$---that error enters every product containing the
+edge and compounds with depth. The depth profile is therefore a cheap diagnostic:
+one long chain, one run, and its slope indicates whether isolated per-hop rates
+compose for that model at all.
+
+The tree cell adds a second constraint: the error's \emph{sign} is not fixed. On
+the tree the isolated estimate is optimistic, predicting certain compromise
+($\prod_i \scite{i} = 1.000$) where the measured rate is $0.800$, and the two edges
+on the target's path are exactly the ones whose isolated survival exceeds their
+in-chain survival. So the defensible statement is neither that isolated measurement
+under-estimates spread nor that its error grows universally, but that
+\emph{the profile's slope diagnoses transportability while its direction remains
+model- and topology-dependent}. The mechanism is the content-form effect of
+Section~\ref{sec:contentform}: every hop is an opportunity for the payload to be
+re-packaged.
 
 Evaluated on the in-chain rates, Eq.~\eqref{eq:percolation} reproduces the measured
 ASR exactly in all three topologies ($0.450$, $0.725$ and $0.800$), as it must;
@@ -912,6 +921,54 @@ star and the tree are thus independent checks in which the independence assumpti
 approximately holds, while the chain cells are where it fails---consistent with the
 view that what breaks independence is not the network but the repeated
 re-packaging of the payload along it.
+
+\subsection{Recurrence makes the threshold non-vacuous}
+\label{sec:cyclic}
+
+Section~\ref{sec:threshold} proved the threshold criterion vacuous for acyclic
+graphs and observed that it becomes informative only when the interaction graph
+contains a cycle. We test that second half on a pattern real frameworks use: a
+manager broadcasting to two workers that report back.
+
+With these per-hop survivals, the eigenvalue equation for
+$M = \left(\begin{smallmatrix}0&a&b\\ c&0&0\\ d&0&0\end{smallmatrix}\right)$
+gives $\lambda^2 = ac + bd$, hence
+$\rho = \sqrt{a\,c + b\,d} = \sqrt{1.000{\times}0.867 + 1.000{\times}0.933} =
+1.342$. The \emph{same} survivals read as a feed-forward network
+($m\!\to\!w_1$, $m\!\to\!w_2$ only) give $\rho = 0$ by triangularity. The threshold
+verdict therefore flips from vacuously subcritical to supercritical on the presence
+of two feedback edges, with every $s$ held fixed (Table~\ref{tab:cyclic}).
+
+\begin{table}[t]
+\caption{The same agents and the same per-hop survivals, read two ways. Feedback
+turns a vacuous criterion into a binding one.}
+\label{tab:cyclic}
+\begin{tabular}{lccc}
+\toprule
+\textit{reading} & \textit{edges} & \textit{$\rho(M)$} & \textit{verdict} \\
+\midrule
+feed-forward   & 2 & 0.000 & subcritical (vacuous) \\
+with feedback  & 4 & \textbf{1.342} & \textbf{supercritical} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The empirical consequence matches the prediction. The feed-forward reading of the
+same agents terminates at the workers (both compromised in $1.000$ of runs); that
+is the whole of its propagation. In the recurrent run the manager---the agent that
+sent the payload---is re-compromised by its own workers' reports in
+$0.725$ $[0.572, 0.839]$ of runs, and the payload does not die out: at round five
+the manager is still compromised in $0.700$ of runs and some agent in
+$1.000$ $[0.912, 1.000]$, with the workers near saturation. The system settles into
+an endemic state rather than decaying, which is what $\rho > 1$ predicts.
+
+Two caveats. First, $\rho$ is computed from \emph{isolated} survivals, i.e.\ through
+exactly the pipeline that Sections~\ref{sec:transport}--\ref{sec:depth} show to be
+unreliable; the verdict survives because it is not marginal---it needs only
+$ac + bd > 1$, and the measured value is $1.80$, so the conclusion tolerates
+substantial error in the edge estimates. Second, this is a single three-agent
+pattern at one temperature: we report it as a demonstration that recurrence makes
+the criterion non-vacuous, not as a survey of cyclic structures.
 
 \subsection{Utility under attack}
 \label{sec:utility}

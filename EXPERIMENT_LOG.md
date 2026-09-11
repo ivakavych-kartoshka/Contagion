@@ -1104,3 +1104,71 @@ trên dữ liệu i.i.d.** — tức công cụ đã được kiểm chứng tr�
 **76 passed** (trước 68). Thêm `tests/test_markov_formal.py` (8 test: size, power
 vs CI-overlap, MDE giảm theo n, biên degenerate, cell degenerate thực tế, off-chain)
 và giữ nguyên toàn bộ hành vi mock mặc định.
+
+---
+
+## 9. Vòng chạy cuối: đường cong chiều sâu 3 model + χ² sạch theo temperature
+
+Ba job nền hoàn tất (đều exit 0). Đây là các số **đang có trong bài** (§5.7, §5.10).
+
+### 9.1 E30 — Đường cong chiều sâu trên ba model (`scripts/depth_curve.py`)
+
+Một chain dài cho `n−1` điểm chiều sâu. **Bắt buộc `--fresh-artifact`** cho claim
+compositional. Thống kê hình dạng do `scripts/depth_trend.py` tính (Spearman hạng
+giữa depth và sai số tương đối + độ dốc OLS), loại các điểm degenerate
+(`P(C_i=1) = 0` ⇒ sai số không xác định) và **nói rõ đã loại bao nhiêu**.
+
+| model | chain | điểm dùng | bỏ | sai số min–max | mean | Spearman ρ | dốc (pp/hop) |
+|---|---|---|---|---|---|---|---|
+| qwen2.5:7b (local, free) | n=7 | 6 | 0 | 31–89% | 66% | **+1.00** | **+11.8** |
+| Llama 3.3 70B (Bedrock) | n=15 | 10 | 4 | 0–92% | 66% | **+0.77** | **+6.8** |
+| DeepSeek V3.2 (Bedrock) | n=8 | 7 | 0 | 7–35% | 21% | **−0.07** | **+0.1** |
+
+- qwen: sai số tăng **đơn điệu** theo từng hop (31, 48, 67, 70, 88, 89%).
+  Đây là bằng chứng "error compounds" sạch nhất của bài, và nó **miễn phí**
+  (chạy local), nên không phụ thuộc ngân sách Bedrock.
+- Llama n=15: 0, 66, 65, 56, 53, 85, 85, 80, 79, 92% — tăng nhưng **có bậc**;
+  chain **chết hẳn ở depth 11** nên 4 điểm cuối bị loại (không được gán sai số 100%).
+- DeepSeek: phẳng, đúng như dự đoán từ việc tích cách ly khớp ASR tới 2.2%.
+- **Kết luận dùng trong bài**: độ dốc của đường cong là **chẩn đoán** xem `s` cách ly
+  có "chuyển được" (transport) cho model đó không. Đây là kết quả **cross-model**
+  mạnh nhất của bài và làm mục §5.7 có ba model thay vì hai.
+
+Hệ quả trung thực: abstract + §1 (gợi ý #1) đã được **viết lại** cho khớp — trước đó
+chúng nói "sai số tăng từ 8% ở 1 hop lên 82% ở 6 hop" (chỉ Llama), nay dùng chính
+thống kê xu hướng của cả ba model (ρ từ +1.00 xuống −0.07). Không giữ câu cũ vì nó
+che mất model phẳng.
+
+### 9.2 E31 — χ² theo benign context, chỉ ở temp 0.7 (`scripts/sensitivity.py`)
+
+Chạy 8 seed × 20 trial/cạnh, **một** temperature, để χ² không bị lẫn bởi temperature.
+
+| cạnh | φ (trong temp 0.7) | χ² | df | p | k/n theo context |
+|---|---|---|---|---|---|
+| agent_0→agent_1 | — (bão hoà 20/20) | 0.00 | 2 | 1.000 | 56/56, 56/56, 48/48 |
+| **agent_1→agent_2** | **0.58** [0.12, 1.00] | **13.40** | 2 | **0.001** | **18/56, 3/56, 13/48** |
+| agent_2→agent_3 | — (bão hoà 20/20) | 0.00 | 2 | 1.000 | 56/56, 56/56, 48/48 |
+
+- φ **trong một temperature** ≤ 1.00 ⇒ giả định Bernoulli i.i.d. **được ủng hộ**;
+  φ gộp 2.93 là **sai** vì temperature là yếu tố hệ thống cố ý đổi (đã sửa trong
+  `sensitivity.py`: φ và χ² tách theo temperature).
+- **χ² bác bỏ tính exchangeable trên đúng cạnh yếu** (p = 0.001): xác suất sống sót
+  phụ thuộc **nội dung công việc hợp lệ** mà agent nhận đang làm. Đây không phải lỗi
+  cần giấu — nó **củng cố** luận điểm trung tâm (survival phụ thuộc *form/context*
+  của message), và đã được viết vào §5.10 kèm số cụ thể.
+- Hệ quả cho cách đọc bảng: các rate là **trung bình trên các context**, không phải
+  thuộc tính của riêng cạnh.
+
+### 9.3 Việc biên tập kéo theo (để đạt 8 trang)
+
+- Bảng `tab:depth` **viết lại** thành bảng 3 model (range/mean/ρ/slope), bỏ cột
+  "reading" (gây overfull 33.9pt — đã kiểm lại = 0 overfull).
+- Toàn bộ 8 bảng chuyển sang `\small` (nhất quán, giải phóng chiều cao).
+- Nén §6/§7 (gộp 2 mục Limitations, bỏ 1 đoạn Discussion trùng với §1) để nhường
+  chỗ cho đoạn χ² mới và bảng mới.
+- **Sửa lỗi mâu thuẫn**: Limitations cũ ghi "no topology in our suite contains a
+  cycle" — SAI sau khi §5.8 (cyclic) được thêm; nay ghi đúng là "một instance
+  3 agent, không phải survey".
+- Kết quả: nội dung hết ở **trang 8**, trang 9 chỉ còn References (kiểm bằng cách
+  giải mã PDF: trang 9 chứa "References" nhưng KHÔNG chứa "Conclusion").
+

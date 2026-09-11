@@ -20,6 +20,7 @@ CÁCH DÙNG
 from __future__ import annotations
 
 import hashlib
+import re
 import sys
 import warnings
 from pathlib import Path
@@ -118,15 +119,36 @@ def main() -> int:
 
     print()
     print("=== 6. paper/ vs figures/ (tránh xem bản cũ) ===")
-    for p in sorted(FIGDIR.glob("fig*.png")):
-        q = PAPERDIR / p.name
+    # Chỉ kiểm những file mà .tex THỰC SỰ \includegraphics tới. Nếu kiểm cả
+    # thư mục figures/, các hình không dùng trong bản này sẽ bị báo "paper/ thiếu"
+    # một cách vô nghĩa (báo động giả đã từng làm tưởng PDF còn dùng hình cũ).
+    texfile = PAPERDIR / "contagion_aamas2027.tex"
+    referenced: set = set()
+    if texfile.exists():
+        tex = texfile.read_text(encoding="utf-8", errors="replace")
+        # Bỏ qua logo CC-BY của khối bản quyền mẫu (không có phần mở rộng).
+        referenced = {
+            Path(m).name
+            for m in re.findall(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", tex)
+            if Path(m).suffix.lower() in {".png", ".pdf", ".jpg", ".jpeg", ".eps"}
+        }
+    print(f"   .tex tham chiếu {len(referenced)} hình: {', '.join(sorted(referenced))}")
+    for name in sorted(referenced):
+        p = FIGDIR / name
+        q = PAPERDIR / name
+        if not p.exists():
+            problems.append(f"figures/{name} được \\includegraphics tới nhưng KHÔNG tồn tại")
+            continue
         if not q.exists():
-            problems.append(f"paper/ THIẾU {p.name} (PDF đang dùng bản cũ?)")
+            problems.append(f"paper/ THIẾU {name} (PDF đang dùng bản cũ?)")
             continue
         if hashlib.md5(p.read_bytes()).hexdigest() != hashlib.md5(q.read_bytes()).hexdigest():
-            problems.append(f"paper/{p.name} KHÁC bản mới trong figures/")
+            problems.append(f"paper/{name} KHÁC bản mới trong figures/")
         else:
-            print(f"   OK  {p.name}")
+            print(f"   OK  {name}")
+    for q in sorted(PAPERDIR.glob("*.png")):
+        if q.name not in referenced:
+            problems.append(f"paper/{q.name} KHÔNG còn được .tex tham chiếu (file cũ)")
 
     print()
     if problems:

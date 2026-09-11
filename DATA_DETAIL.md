@@ -414,6 +414,48 @@ chỉ tốn utility.
 
 ---
 
+## E30. Đường cong chiều sâu trên BA model — hình dạng là chẩn đoán
+
+`depth_curve.py` (mỗi chain dài cho `n−1` điểm chiều sâu) + `depth_trend.py`
+(thống kê hình dạng). **Bắt buộc `--fresh-artifact`.**
+
+| model | chain | sai số min–max | mean | Spearman ρ | dốc (pp/hop) | điểm bị loại |
+|---|---|---|---|---|---|---|
+| qwen2.5:7b (local, free) | n=7 | **31–89%** | 66% | **+1.00** | **+11.8** | 0 |
+| Llama 3.3 70B | n=15 | 0–92% | 66% | **+0.77** | **+6.8** | **4** |
+| DeepSeek V3.2 | n=8 | 7–35% | 21% | **−0.07** | **+0.1** | 0 |
+
+- qwen sai số tăng **đơn điệu từng hop**: 31, 48, 67, 70, 88, 89%.
+- Llama: 0, 66, 65, 56, 53, 85, 85, 80, 79, 92% rồi **chain chết ở depth 11**
+  (4 điểm cuối bị loại — KHÔNG gán 100%, vì sai số khi mẫu số = 0 là không xác định).
+- DeepSeek **phẳng**: đúng như dự đoán từ việc tích cách ly khớp ASR tới 2.2%.
+
+⇒ **Kết luận:** độ dốc của đường cong tự nó là **chẩn đoán** xem `s` đo cách ly có
+chuyển được cho model đó không. Một chain dài, một lần chạy, đọc độ dốc là biết.
+Đây là kết quả cross-model mạnh nhất của bài (§5.7).
+
+## E31. φ và χ² TÁCH THEO TEMPERATURE — i.i.d. đúng, nhưng context thì không
+
+`sensitivity.py --temps 0.7 --seeds 1..8 --per-edge 20` (một temperature duy nhất).
+
+| cạnh | φ | χ² | df | p | k/n theo benign context |
+|---|---|---|---|---|---|
+| agent_0→agent_1 | — (bão hoà) | 0.00 | 2 | 1.000 | 56/56, 56/56, 48/48 |
+| **agent_1→agent_2** | **0.58** [0.12, 1.00] | **13.40** | 2 | **0.001** | **18/56, 3/56, 13/48** |
+| agent_2→agent_3 | — (bão hoà) | 0.00 | 2 | 1.000 | 56/56, 56/56, 48/48 |
+
+1. **φ ≤ 1.00 trong một temperature** ⇒ giả định Bernoulli i.i.d. sau CI Wilson
+   **được ủng hộ**. φ gộp ba temperature = **2.93** là con số **SAI** cho mục đích
+   này: nó đo yếu tố hệ thống cố ý đổi, không đo overdispersion.
+2. **χ² bác bỏ exchangeability trên đúng cạnh yếu** (p = 0.001): xác suất sống sót
+   phụ thuộc **nội dung công việc hợp lệ** mà agent nhận đang làm. Không giấu — nó
+   **củng cố** luận điểm trung tâm (survival phụ thuộc *form/context* của message)
+   và đã được viết vào §5.10 kèm số cụ thể.
+3. Hệ quả cách đọc: mọi rate trong bài là **trung bình trên các context**, không
+   phải thuộc tính của riêng một cạnh.
+
+---
+
 # TÓM TẮT NHANH — 8 ĐIỀU NHỚ NHẤT
 
 1. **Role quyết định lan truyền 6.5×**: worker survival 0.13 vs reviewer 0.87

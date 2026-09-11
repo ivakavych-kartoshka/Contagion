@@ -274,11 +274,53 @@ def main() -> int:
             cells.append(f"{k}/{n} = {k/n:.2f}" if n else "—")
         lines.append(f"| {seed} | {temp} | " + " | ".join(cells) + " |")
 
-    lines += ["", "## 2. Dispersion factor φ (overdispersion)", "",
-              "φ = Var(quan sát giữa các lần lặp) / Var(nhị thức p(1−p)/n). "
-              "φ ≈ 1 ⇒ trial i.i.d. như giả định; φ > 1 ⇒ CI phải nới ≈ √φ.", "",
-              "| edge | p (pooled) | Var quan sát | Var nhị thức | φ | φ 95% CI | n_eff |",
-              "|---|---|---|---|---|---|---|"]
+    # ------------------------------------------------------------------
+    # φ PHẢI TÍNH RIÊNG CHO TỪNG TEMPERATURE (sửa 2026-09-11).
+    #
+    # `temperature` là biến CỐ Ý thay đổi giữa các lần lặp — một YẾU TỐ HỆ THỐNG,
+    # không phải nhiễu trong một cấu hình. Gộp nhiều temperature vào một φ làm φ
+    # bị thổi lên và **không còn đo giả định i.i.d.** nữa (đã gặp thật: gộp 3 temp
+    # cho φ = 2.93 tưởng là overdispersion mạnh, nhưng tách ra chỉ 0.57–1.14).
+    # Cùng lý do, χ² theo benign context cũng phải tách theo temperature.
+    # ------------------------------------------------------------------
+    by_temp: dict = {}
+    for seed, temp, rates, ets in per_repeat:
+        by_temp.setdefault(temp, []).append((seed, rates, ets))
+
+    lines += ["", "## 2. Dispersion factor φ — TÁCH THEO TEMPERATURE", "",
+              "φ = Var(quan sát giữa các lần lặp) / Var(nhị thức p(1−p)/n), tính "
+              "trong **một** temperature. φ ≈ 1 ⇒ trial i.i.d.; φ > 1 ⇒ phải nới "
+              "CI ≈ √φ. **Không gộp temperature** — đó là biến hệ thống cố ý đổi.",
+              "",
+              "| edge | temp | n_rep | p (pooled) | φ | φ 95% CI |",
+              "|---|---|---|---|---|---|"]
+    for t in sorted(by_temp):
+        reps_t = by_temp[t]
+        for e in edges:
+            ks = [r.get(e, (0, 0))[0] for _, r, _ in reps_t]
+            ns = [r.get(e, (0, 0))[1] for _, r, _ in reps_t]
+            n_tot = sum(ns)
+            if not n_tot:
+                continue
+            p_pooled = sum(ks) / n_tot
+            vals = [(k / n) if n else None for k, n in zip(ks, ns)]
+            d = dispersion(vals, p_pooled, args.per_edge)
+            phi, ci = d["phi"], d["phi_ci"]
+            results["cells"].setdefault(f"{e[0]}->{e[1]}", {})[
+                f"phi_temp_{t}"] = {"p": p_pooled, "phi": phi, "ci": ci,
+                                    "n_rep": len(vals)}
+            lines.append(
+                f"| {e[0]}→{e[1]} | {t} | {len(vals)} | {p_pooled:.3f} "
+                f"| **{_fmt(phi, 2)}** "
+                f"| [{_fmt(ci[0], 2) if ci else '—'}, "
+                f"{_fmt(ci[1], 2) if ci else '—'}] |")
+
+    lines += ["", "## 2b. (CHỈ ĐỂ THAM CHIẾU — KHÔNG dùng làm kiểm i.i.d.) "
+                  "φ gộp mọi temperature", "",
+              "Gộp temperature đưa **hiệu ứng hệ thống** vào φ ⇒ φ bị thổi lên và "
+              "mất ý nghĩa. Giữ ở đây để thấy rõ sai khác.", "",
+              "| edge | p (pooled) | φ gộp | φ 95% CI |",
+              "|---|---|---|---|"]
     for e in edges:
         ks = [r.get(e, (0, 0))[0] for _, _, r, _ in per_repeat]
         ns = [r.get(e, (0, 0))[1] for _, _, r, _ in per_repeat]
@@ -286,48 +328,51 @@ def main() -> int:
         p_pooled = (sum(ks) / n_tot) if n_tot else 0.0
         reps = [(k / n) if n else None for k, n in zip(ks, ns)]
         d = dispersion(reps, p_pooled, args.per_edge)
-        phi = d["phi"]
-        ci = d["phi_ci"]
-        n_eff = (n_tot / phi) if (phi and phi > 0) else n_tot
-        results["cells"][f"{e[0]}->{e[1]}"] = {
-            "p_pooled": p_pooled, "n_total": n_tot, "phi": phi,
-            "phi_ci": ci, "n_eff": n_eff, "dispersion": d,
-        }
+        phi, ci = d["phi"], d["phi_ci"]
+        results["cells"].setdefault(f"{e[0]}->{e[1]}", {}).update(
+            {"p_pooled": p_pooled, "n_total": n_tot, "phi": phi,
+             "phi_ci": ci, "dispersion": d})
         lines.append(
-            f"| {e[0]}→{e[1]} | {p_pooled:.3f} | {_fmt(d['var_obs'])} "
-            f"| {_fmt(d['var_binom'])} | **{_fmt(phi, 2)}** "
+            f"| {e[0]}→{e[1]} | {p_pooled:.3f} | {_fmt(phi, 2)} "
             f"| [{_fmt(ci[0], 2) if ci else '—'}, "
-            f"{_fmt(ci[1], 2) if ci else '—'}] | {n_eff:.0f} |")
+            f"{_fmt(ci[1], 2) if ci else '—'}] |")
 
-    lines += ["", "## 3. Đồng nhất theo benign context (χ²)", "",
+    lines += ["", "## 3. Đồng nhất theo benign context (χ²) — tách theo temperature", "",
               "Gom trial theo `trial % len(benign_contexts)`: p nhỏ ⇒ tỷ lệ KHÁC "
               "nhau giữa các prompt ⇒ trial không i.i.d. theo prompt.", "",
-              "| edge | χ² | df | p | k/n theo từng context |",
-              "|---|---|---|---|---|"]
-    for e in edges:
-        pool = [t for _, _, _, ets in per_repeat for t in ets
-                if (t.src, t.dst) == e]
-        counts = per_context_counts(pool, e, len(CTX))
-        ch = chi2_homogeneity(counts)
-        cell = results["cells"].setdefault(f"{e[0]}->{e[1]}", {})
-        cell["context_chi2"] = ch
-        cell["context_counts"] = counts
-        detail = ", ".join(f"{k}/{n}" for k, n in counts)
-        p_txt = "—" if ch["p"] is None else f"{ch['p']:.3f}"
-        chi_txt = "—" if ch["chi2"] is None else f"{ch['chi2']:.2f}"
-        lines.append(f"| {e[0]}→{e[1]} | {chi_txt} | {ch['df']} | {p_txt} | {detail} |")
+              "| edge | temp | χ² | df | p | k/n theo từng context |",
+              "|---|---|---|---|---|---|"]
+    for t in sorted(by_temp):
+        ets_all = [x for _, _, ets in by_temp[t] for x in ets]
+        for e in edges:
+            pool = [x for x in ets_all if (x.src, x.dst) == e]
+            counts = per_context_counts(pool, e, len(CTX))
+            ch = chi2_homogeneity(counts)
+            cell = results["cells"].setdefault(f"{e[0]}->{e[1]}", {})
+            cell.setdefault("context_chi2", {})[str(t)] = ch
+            cell.setdefault("context_counts", {})[str(t)] = counts
+            detail = ", ".join(f"{k}/{n}" for k, n in counts)
+            p_txt = "—" if ch["p"] is None else f"{ch['p']:.3f}"
+            chi_txt = "—" if ch["chi2"] is None else f"{ch['chi2']:.2f}"
+            lines.append(f"| {e[0]}→{e[1]} | {t} | {chi_txt} | {ch['df']} "
+                         f"| {p_txt} | {detail} |")
 
-    worst = max((results["cells"][f"{a}->{b}"]["phi"] or 1.0
-                 for a, b in edges), default=1.0)
+    # φ dùng để kết luận là φ TRONG một temperature
+    worst = 1.0
+    for e in edges:
+        for t in sorted(by_temp):
+            v = results["cells"][f"{e[0]}->{e[1]}"].get(f"phi_temp_{t}") or {}
+            if v.get("phi"):
+                worst = max(worst, v["phi"])
     lines += ["", "## 4. Khuyến nghị cho phần Limitations / Method", "",
-              f"- φ lớn nhất quan sát được = **{worst:.2f}** ⇒ nếu φ > 1.3, "
-              "CI Wilson trong bài nên được nới rộng ≈ √φ lần khi báo cáo, "
-              "hoặc dùng CI cluster-bootstrap theo lần lặp.",
-              "- φ ≈ 1 ⇒ giả định Bernoulli i.i.d. **được ủng hộ**, "
-              "CI Wilson là hợp lệ (đây là kết quả tích cực cho bài).",
-              "- Lưu ý trung thực: φ ước lượng từ ít lần lặp (R = "
-              f"{len(combos)}) nên CI rất rộng; φ chỉ dùng để phát hiện "
-              "overdispersion MẠNH, không để tinh chỉnh nhỏ.", ""]
+              f"- φ **trong một temperature** lớn nhất = **{worst:.2f}**."
+              + ("  ⇒ ≈ 1: giả định Bernoulli i.i.d. **được ủng hộ**, CI Wilson "
+                 "hợp lệ (kết quả tích cực cho bài)." if worst <= 1.3 else
+                 "  ⇒ φ > 1.3: phải nới CI ≈ √φ lần hoặc dùng cluster-bootstrap."),
+              "- **Temperature là yếu tố hệ thống**, không phải nhiễu: φ gộp nhiều "
+              "temperature là con số SAI cho kiểm i.i.d. (xem mục 2b).",
+              "- Lưu ý trung thực: φ ước lượng từ ít lần lặp nên CI rộng; φ chỉ "
+              "dùng để phát hiện overdispersion MẠNH.", ""]
 
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "report.md").write_text("\n".join(lines), encoding="utf-8")

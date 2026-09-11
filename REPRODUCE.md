@@ -34,9 +34,10 @@ Nếu `pytest` xanh và `make_figures --strict` báo **0 va chạm**, môi trư�
 | **B4** obfuscation × redaction | `replicate_frontier.py --only-obfuscation --n-obf 30` | ~25 phút |
 | **B5** topology (chain/star/tree n=7) | `replicate_frontier.py --topology {chain,star,tree} --num-agents 7` | ~20 phút/cell |
 | **B6** utility §7 | `utility_real.py` (3 defense × 2 model) | ~35 phút/defense |
-| **B7** depth curve | `depth_curve.py` (3 model) | ~1–2 giờ/model |
+| **B7** depth curve (3 model) | `depth_curve.py`; thống kê hình dạng bằng `depth_trend.py` | ~1–2 giờ/model |
 | **B8** estimator validation | `validate_methods.py` | ~1 phút |
-| **F1–F3** figures | `make_figures.py` | ~1 phút |
+| **χ² / φ theo temperature** | `sensitivity.py --temps 0.7` | ~20 phút/model |
+| **F1–F2** figures (paper dùng 2) | `make_figures.py` | ~1 phút |
 | **Bảng percolation/placement** | `threshold_analysis.py` | 0 (tính từ `s` đã đo) |
 
 ---
@@ -133,6 +134,16 @@ python scripts\sensitivity.py --backend bedrock --model <MODEL> `
   --out experiments\results\sensitivity_<slug>
 ```
 
+Biến thể **dùng cho χ² trong §5.10**: chỉ **một** temperature (φ và χ² phải tính
+*trong* một temperature — gộp temperature làm φ phồng lên vô nghĩa):
+
+```powershell
+python scripts\sensitivity.py --backend bedrock `
+  --model us.meta.llama3-3-70b-instruct-v1:0 --region us-east-1 `
+  --per-edge 20 --seeds 1,2,3,4,5,6,7,8 --temps 0.7 `
+  --out experiments\results\sensitivity_llama_t07
+```
+
 ### 2.8 Kiểm định judge (nếu đổi model hoặc đổi target)
 
 ```powershell
@@ -144,13 +155,20 @@ python scripts\judge_calibration_probe.py --model <local-model> --n 12
 ## 3. Sinh lại toàn bộ bảng/hình từ kết quả đã có (0 API)
 
 ```powershell
-python scripts\make_figures.py --strict     # 3 hình dùng trong paper + kiểm đè chữ
+python scripts\make_figures.py --strict     # hình dùng trong paper + kiểm đè chữ
 python scripts\markov_formal_all.py         # bảng kiểm định composition
 python scripts\threshold_analysis.py        # percolation, ρ(M), placement
 python scripts\isolation_validity.py        # s^controlled vs s^natural
 python scripts\utility_from_outputs.py      # chấm lại §7 từ raw output
-python scripts\check_paper.py paper\contagion_aamas2027.tex
+python scripts\depth_trend.py --dirs depth_curve_llama depth_curve_qwen depth_curve_deepseek
+python scripts\audit_numbers.py --md        # → AUDIT_TABLE.md ở gốc repo (number audit)
+python scripts\check_paper.py paper\contagion_aamas2027.tex --bib paper\refs.bib
+python scripts\check_figures.py             # 6 phép kiểm tra hình (0 API)
 ```
+
+`depth_trend.py` là script sinh **cột ρ và slope** của Table trong §5.7: nó tính
+Spearman hạng giữa depth và sai số tương đối, độ dốc OLS, và **loại tường minh**
+các điểm degenerate (`P(C_i=1)=0` ⇒ sai số không xác định) rồi in ra số điểm bị loại.
 
 ---
 
@@ -163,7 +181,21 @@ $mk = "$env:LOCALAPPDATA\Programs\MiKTeX\miktex\bin\x64"
 & "$mk\bibtex.exe"   contagion_aamas2027
 & "$mk\pdflatex.exe" -interaction=nonstopmode contagion_aamas2027.tex
 & "$mk\pdflatex.exe" -interaction=nonstopmode contagion_aamas2027.tex
-python check_pages.py     # đếm số trang NỘI DUNG (giới hạn 8)
+```
+
+Đếm trang **nội dung** (giới hạn 8; tài liệu tham khảo được thêm trang):
+`paper/check_pages.py` **không tồn tại** — dùng một trong hai cách đã kiểm chứng:
+
+```powershell
+# (a) số trang của một mục bất kỳ, đọc trực tiếp từ .aux:
+Select-String -Path contagion_aamas2027.aux -Pattern 'newlabel\{sec:limits\}'
+# (b) nội dung kết thúc ở trang nào: tạm đặt \label{zzendcontent} ngay TRƯỚC
+#     \bibliographystyle, dựng lại 1 lần, đọc .aux, rồi xoá label đi.
+# (c) trang 9 chỉ được chứa tài liệu tham khảo — giải mã PDF bằng Ghostscript
+#     kèm trong MiKTeX (KHÔNG cần cài thêm gì):
+& "$mk\mgs.exe" -q -dNOPAUSE -dBATCH -dFirstPage=9 -dLastPage=9 `
+  -sDEVICE=txtwrite "-sOutputFile=pg9.txt" contagion_aamas2027.pdf
+Select-String -Path pg9.txt -Pattern 'Conclusion'   # phải KHÔNG khớp
 ```
 
 Cần có trong `paper/`: `aamas.cls`, `by.pdf`/`by.eps`,
@@ -200,3 +232,9 @@ Cần có trong `paper/`: `aamas.cls`, `by.pdf`/`by.eps`,
    dán lặp ở chỗ khác trên máy không.
 4. **`experiments/results/` bị gitignore**: muốn chia sẻ artifact phải copy ra
    ngoài hoặc bỏ dòng ignore.
+5. **Điểm degenerate trong depth curve**: khi `P(C_i=1) = 0` thì sai số tương đối
+   *không xác định* (chia cho 0). `depth_trend.py` **loại** các điểm đó và in ra số
+   điểm bị loại (Llama n=15: bỏ 4 điểm cuối vì chain chết ở depth 11). Nếu gán
+   chúng bằng 100% thì đường cong "đẹp" hơn thực tế — đó là cách tự lừa cần tránh.
+6. **φ phải tính trong MỘT temperature**. Gộp temperature (0.0/0.7/1.0) cho
+   φ = 2.93 — con số đó đo yếu tố hệ thống, không đo overdispersion.

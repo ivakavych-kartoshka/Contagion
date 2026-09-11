@@ -20,8 +20,9 @@
 %    không suy đoán): MetaGPT, AutoGen, AgentDojo, Greshake, MAST.
 %    Danh sách tác giả của TẤT CẢ entry đã lấy đủ từ arXiv API.
 %
-%    TODO duy nhất còn lại: số trang proceedings cho LiuGong2024, Zhan2024InjecAgent,
-%    và volume/article-number cho SwarmMarkov2026.
+%    ĐÃ XONG: số trang proceedings của LiuGong2024 (1831--1847, BibTeX USENIX) và
+%    Zhan2024InjecAgent (10471--10506, BibTeX ACL Anthology); volume 9/issue 1
+%    của SwarmMarkov2026 (OpenAlex + Semantic Scholar). Không còn TODO trong file này.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 @inproceedings{LiuGong2024,
@@ -29,10 +30,13 @@
   author       = {Liu, Yupei and Jia, Yuqi and Geng, Runpeng and Jia, Jinyuan and Gong, Neil Zhenqiang},
   booktitle    = {33rd USENIX Security Symposium (USENIX Security 24)},
   year         = {2024},
-  publisher    = {USENIX Association}
+  pages        = {1831--1847},
+  address      = {Philadelphia, PA},
+  publisher    = {USENIX Association},
+  url          = {https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei}
 }
-% Nguồn của ASV/MR và của formalism mà paper mở rộng. Đã xác minh qua
-% arXiv:2310.12815 (v5). TODO: số trang proceedings.
+% Nguồn của ASV/MR và của formalism mà paper mở rộng. Số trang + địa điểm lấy
+% từ BibTeX chính thức trên usenix.org (bản ghi 299563), không suy đoán.
 
 @inproceedings{StrUQ2025,
   title        = {{StruQ}: Defending Against Prompt Injection with Structured Queries},
@@ -73,14 +77,19 @@
 
 @inproceedings{Zhan2024InjecAgent,
   title        = {{InjecAgent}: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents},
-  author       = {Zhan, Qiusi and others},
+  author       = {Zhan, Qiusi and Liang, Zhixiang and Ying, Zifan and Kang, Daniel},
   booktitle    = {Findings of the Association for Computational Linguistics: ACL 2024},
   year         = {2024},
+  pages        = {10471--10506},
+  address      = {Bangkok, Thailand},
+  publisher    = {Association for Computational Linguistics},
+  doi          = {10.18653/v1/2024.findings-acl.624},
   eprint       = {2403.02691},
   archivePrefix= {arXiv},
   primaryClass = {cs.CR}
 }
-% TODO: chép đủ danh sách tác giả và số trang trong Findings of ACL 2024.
+% Tác giả + số trang lấy từ BibTeX chính thức của ACL Anthology
+% (2024.findings-acl.624), không suy đoán.
 
 @misc{Debenedetti2024AgentDojo,
   title        = {{AgentDojo}: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for {LLM} Agents},
@@ -147,11 +156,14 @@
   title        = {Cross-layer contagion of prompt injections in multi-agent swarms: a multiplex microscopic {Markov} chain approach},
   author       = {Le, Tran Duc and Dinh, Truong Duy and Nguyen, Thi Le Quyen and Nguyen, Cong Danh},
   journal      = {Cybersecurity},
+  volume       = {9},
+  number       = {1},
   year         = {2026},
   doi          = {10.1186/s42400-026-00628-w}
 }
-% Đã xác minh qua Semantic Scholar / DBLP (journals/cybersec/LeDNN26).
-% TODO: volume và article number. Tên tác giả đã chuyển sang ASCII.
+% Đã xác minh: Semantic Scholar + OpenAlex (DBLP journals/cybersec/LeDNN26) cho
+% volume 9, issue 1, 2026. Tạp chí SpringerOpen dùng article number, không có
+% first/last page (OpenAlex trả null) ⇒ không bịa số trang. Tên tác giả đã ASCII hoá.
 %
 % ---------------------------------------------------------------------------
 % Văn liệu nền tảng về lan truyền / ngưỡng dịch tễ trên mạng (network science

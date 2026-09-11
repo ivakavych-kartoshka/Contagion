@@ -136,7 +136,8 @@
   \bibinfo{person}{Cong~Danh Nguyen}.} \bibinfo{year}{2026}\natexlab{}.
 \newblock \showarticletitle{Cross-layer contagion of prompt injections in
   multi-agent swarms: a multiplex microscopic {Markov} chain approach}.
-\newblock \bibinfo{journal}{\emph{Cybersecurity}} (\bibinfo{year}{2026}).
+\newblock \bibinfo{journal}{\emph{Cybersecurity}} \bibinfo{volume}{9},
+  \bibinfo{number}{1} (\bibinfo{year}{2026}).
 \newblock
 \href{https://doi.org/10.1186/s42400-026-00628-w}{doi:\nolinkurl{10.1186/s42400-026-00628-w}}
 
@@ -148,8 +149,13 @@
   \bibinfo{person}{Neil~Zhenqiang Gong}.} \bibinfo{year}{2024}\natexlab{}.
 \newblock \showarticletitle{Formalizing and Benchmarking Prompt Injection
   Attacks and Defenses}. In \bibinfo{booktitle}{\emph{33rd USENIX Security
-  Symposium (USENIX Security 24)}}. \bibinfo{publisher}{USENIX Association}.
+  Symposium (USENIX Security 24)}}. \bibinfo{publisher}{USENIX Association},
+  \bibinfo{address}{Philadelphia, PA}, \bibinfo{pages}{1831--1847}.
 \newblock
+\urldef\tempurl%
+\url{https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Pastor-Satorras and Vespignani(2001)]%
@@ -194,18 +200,6 @@
 \showeprint[arxiv]{2308.08155}~[cs.AI]
 
 
-\bibitem[Zhan et~al\mbox{.}(2024)]%
-        {Zhan2024InjecAgent}
-\bibfield{author}{\bibinfo{person}{Qiusi Zhan} {et~al\mbox{.}}}
-  \bibinfo{year}{2024}\natexlab{}.
-\newblock \showarticletitle{{InjecAgent}: Benchmarking Indirect Prompt
-  Injections in Tool-Integrated Large Language Model Agents}. In
-  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
-  Linguistics: ACL 2024}}.
-\newblock
-\showeprint[arxiv]{2403.02691}~[cs.CR]
-
-
 \bibitem[Zhan et~al\mbox{.}(2025)]%
         {Zhan2025Adaptive}
 \bibfield{author}{\bibinfo{person}{Qiusi Zhan}, \bibinfo{person}{Richard Fang},
@@ -217,6 +211,22 @@
   Linguistics: NAACL 2025}}.
 \newblock
 \showeprint[arxiv]{2503.00061}~[cs.CR]
+
+
+\bibitem[Zhan et~al\mbox{.}(2024)]%
+        {Zhan2024InjecAgent}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan}, \bibinfo{person}{Zhixiang
+  Liang}, \bibinfo{person}{Zifan Ying}, {and} \bibinfo{person}{Daniel Kang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{InjecAgent}: Benchmarking Indirect Prompt
+  Injections in Tool-Integrated Large Language Model Agents}. In
+  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: ACL 2024}}. \bibinfo{publisher}{Association for Computational
+  Linguistics}, \bibinfo{address}{Bangkok, Thailand},
+  \bibinfo{pages}{10471--10506}.
+\newblock
+\showeprint[arxiv]{2403.02691}~[cs.CR]
+\href{https://doi.org/10.18653/v1/2024.findings-acl.624}{doi:\nolinkurl{10.18653/v1/2024.findings-acl.624}}
 
 
 \end{thebibliography}

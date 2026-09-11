@@ -83,13 +83,25 @@
 \newlabel{tab:topo}{{6}{7}{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together}{table.caption.24}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology changes the spread of survival, not just the amount}{7}{subsection.5.6}\protected@file@percent }
 \newlabel{sec:topology}{{5.6}{7}{Topology changes the spread of survival, not just the amount}{subsection.5.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Isolated per-hop measurement versus measured propagation, as a function of how many hops separate the target from the entry (Llama 3.3 70B, fresh-artefact protocol). \emph  {ratio} is $\mathrm  {ASR} / \DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}}$; \emph  {rel.\ err.} is $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - \mathrm  {ASR}| / \mathrm  {ASR}$. The sign of the error is not fixed, but its magnitude rises monotonically with the number of hops.}}{7}{table.caption.25}\protected@file@percent }
-\newlabel{tab:depth}{{7}{7}{Isolated per-hop measurement versus measured propagation, as a function of how many hops separate the target from the entry (Llama 3.3 70B, fresh-artefact protocol). \emph {ratio} is $\mathrm {ASR} / \prod _i \scite {i}$; \emph {rel.\ err.} is $|\prod _i \scite {i} - \mathrm {ASR}| / \mathrm {ASR}$. The sign of the error is not fixed, but its magnitude rises monotonically with the number of hops}{table.caption.25}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The isolation error compounds with depth}{7}{subsection.5.7}\protected@file@percent }
-\newlabel{sec:depth}{{5.7}{7}{The isolation error compounds with depth}{subsection.5.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Utility under attack}{7}{subsection.5.8}\protected@file@percent }
-\newlabel{sec:utility}{{5.8}{7}{Utility under attack}{subsection.5.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Estimator validation}{7}{subsection.5.9}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Isolated per-hop measurement versus measured propagation, as a function of how many hops separate the target from the entry (Llama 3.3 70B, fresh-artefact protocol). \emph  {ratio} is $\mathrm  {ASR} / \DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}}$; \emph  {rel.\ err.} is $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - \mathrm  {ASR}| / \mathrm  {ASR}$.}}{7}{table.caption.25}\protected@file@percent }
+\newlabel{tab:depth}{{7}{7}{Isolated per-hop measurement versus measured propagation, as a function of how many hops separate the target from the entry (Llama 3.3 70B, fresh-artefact protocol). \emph {ratio} is $\mathrm {ASR} / \prod _i \scite {i}$; \emph {rel.\ err.} is $|\prod _i \scite {i} - \mathrm {ASR}| / \mathrm {ASR}$}{table.caption.25}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The shape of the depth profile is a diagnostic}{7}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:depth}{{5.7}{7}{The shape of the depth profile is a diagnostic}{subsection.5.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Recurrence makes the threshold non-vacuous}{7}{subsection.5.8}\protected@file@percent }
+\newlabel{sec:cyclic}{{5.8}{7}{Recurrence makes the threshold non-vacuous}{subsection.5.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces The same agents and the same per-hop survivals, read two ways. Feedback turns a vacuous criterion into a binding one.}}{8}{table.caption.26}\protected@file@percent }
+\newlabel{tab:cyclic}{{8}{8}{The same agents and the same per-hop survivals, read two ways. Feedback turns a vacuous criterion into a binding one}{table.caption.26}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Utility under attack (Section\nonbreakingspace \ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$.}}{8}{table.caption.27}\protected@file@percent }
+\newlabel{tab:utility}{{9}{8}{Utility under attack (Section~\ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$}{table.caption.27}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Utility under attack}{8}{subsection.5.9}\protected@file@percent }
+\newlabel{sec:utility}{{5.9}{8}{Utility under attack}{subsection.5.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Estimator validation}{8}{subsection.5.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{8}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{8}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{What the four prescriptions cost to adopt.}{8}{section*.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Isolated attack success is not a composable unit.}{8}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Defence evaluation needs headroom.}{8}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Placement is a structural question.}{8}{section*.31}\protected@file@percent }
 \citation{StrUQ2025}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
@@ -98,16 +110,8 @@
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Utility under attack (Section\nonbreakingspace \ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$.}}{8}{table.caption.26}\protected@file@percent }
-\newlabel{tab:utility}{{8}{8}{Utility under attack (Section~\ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$}{table.caption.26}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{8}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{6}{8}{Discussion}{section.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{What the four prescriptions cost to adopt.}{8}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Isolated attack success is not a composable unit.}{8}{section*.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defence evaluation needs headroom.}{8}{section*.29}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Placement is a structural question.}{8}{section*.30}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Limitations and Threats to Validity}{8}{section.7}\protected@file@percent }
-\newlabel{sec:limits}{{7}{8}{Limitations and Threats to Validity}{section.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{8}{section.8}\protected@file@percent }
-\newlabel{TotPages}{{8}{8}{}{page.8}{}}
-\gdef \@abspage@last{8}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Limitations and Threats to Validity}{9}{section.7}\protected@file@percent }
+\newlabel{sec:limits}{{7}{9}{Limitations and Threats to Validity}{section.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{9}{section.8}\protected@file@percent }
+\newlabel{TotPages}{{9}{9}{}{page.9}{}}
+\gdef \@abspage@last{9}

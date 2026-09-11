@@ -20,7 +20,6 @@
 \citation{Granovetter1978,Watts2002}
 \citation{PastorSatorras2001}
 \citation{SwarmMarkov2026}
-\citation{Zhan2024InjecAgent}
 \@writefile{toc}{\contentsline {paragraph}{Findings, stated as prescriptions.}{2}{section*.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work and Positioning}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Single-agent indirect injection.}{2}{section*.7}\protected@file@percent }
@@ -30,6 +29,7 @@
 \@writefile{toc}{\contentsline {paragraph}{Gap.}{2}{section*.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Framework: Measuring Propagation}{2}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Network and threat model}{2}{subsection.3.1}\protected@file@percent }
+\citation{Zhan2024InjecAgent}
 \citation{LiuGong2024}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Task families}{3}{subsection.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Compromise judgment}{3}{subsection.3.3}\protected@file@percent }
@@ -69,42 +69,42 @@
 \citation{Zhan2025Adaptive}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Content-form ablation (Llama 3.3 70B, chain n=4; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference between them is attributable to payload form alone. The harness check is the comparison of columns one and two.}}{6}{table.caption.20}\protected@file@percent }
 \newlabel{tab:form}{{4}{6}{Content-form ablation (Llama 3.3 70B, chain n=4; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference between them is attributable to payload form alone. The harness check is the comparison of columns one and two}{table.caption.20}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Content-form ablation. The two replay arms use identical receivers, assignments and judge; only the payload source differs. On the middle edge the in-context form survives at $0.967$ and the canonical form at $0.067$.}}{6}{figure.caption.21}\protected@file@percent }
-\newlabel{fig:form}{{2}{6}{Content-form ablation. The two replay arms use identical receivers, assignments and judge; only the payload source differs. On the middle edge the in-context form survives at $0.967$ and the canonical form at $0.067$}{figure.caption.21}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Why isolation fails: the form of the payload}{6}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:contentform}{{5.4}{6}{Why isolation fails: the form of the payload}{subsection.5.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Single-hop compromise rate by defence and attack form. $n=30$ per cell for Claude Sonnet 4.5, $n=8$ for DeepSeek and $n=16$ for qwen; intervals are wide at $n=8$ and we do not interpret small differences there. \texttt  {none}$\cdot $split and \texttt  {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise.}}{6}{table.caption.22}\protected@file@percent }
-\newlabel{tab:obf}{{5}{6}{Single-hop compromise rate by defence and attack form. $n=30$ per cell for Claude Sonnet 4.5, $n=8$ for DeepSeek and $n=16$ for qwen; intervals are wide at $n=8$ and we do not interpret small differences there. \texttt {none}$\cdot $split and \texttt {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise}{table.caption.22}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Obfuscation versus deterministic redaction, one panel per model. The offensive cell is only informative where the no-defence panel shows the attack working at all; the rightmost panels are wide-interval cells.}}{6}{figure.caption.23}\protected@file@percent }
-\newlabel{fig:obf}{{3}{6}{Obfuscation versus deterministic redaction, one panel per model. The offensive cell is only informative where the no-defence panel shows the attack working at all; the rightmost panels are wide-interval cells}{figure.caption.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Defence: redaction blocks literal attacks, and the bypass depends on headroom}{6}{subsection.5.5}\protected@file@percent }
 \newlabel{sec:defence}{{5.5}{6}{Defence: redaction blocks literal attacks, and the bypass depends on headroom}{subsection.5.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together.}}{7}{table.caption.24}\protected@file@percent }
-\newlabel{tab:topo}{{6}{7}{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together}{table.caption.24}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology changes the spread of survival, not just the amount}{7}{subsection.5.6}\protected@file@percent }
-\newlabel{sec:topology}{{5.6}{7}{Topology changes the spread of survival, not just the amount}{subsection.5.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Isolated per-hop measurement versus measured propagation, as a function of how many hops separate the target from the entry (Llama 3.3 70B, fresh-artefact protocol). \emph  {ratio} is $\mathrm  {ASR} / \DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}}$; \emph  {rel.\ err.} is $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - \mathrm  {ASR}| / \mathrm  {ASR}$. The sign of the error is not fixed, but its magnitude rises monotonically with the number of hops.}}{7}{table.caption.25}\protected@file@percent }
-\newlabel{tab:depth}{{7}{7}{Isolated per-hop measurement versus measured propagation, as a function of how many hops separate the target from the entry (Llama 3.3 70B, fresh-artefact protocol). \emph {ratio} is $\mathrm {ASR} / \prod _i \scite {i}$; \emph {rel.\ err.} is $|\prod _i \scite {i} - \mathrm {ASR}| / \mathrm {ASR}$. The sign of the error is not fixed, but its magnitude rises monotonically with the number of hops}{table.caption.25}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The isolation error compounds with depth}{7}{subsection.5.7}\protected@file@percent }
-\newlabel{sec:depth}{{5.7}{7}{The isolation error compounds with depth}{subsection.5.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Utility under attack}{7}{subsection.5.8}\protected@file@percent }
-\newlabel{sec:utility}{{5.8}{7}{Utility under attack}{subsection.5.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Estimator validation}{7}{subsection.5.9}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Single-hop compromise rate by defence and attack form, one panel per model ($n=30$ per cell for Claude 4.5, $n=8$ for DeepSeek, $n=16$ for qwen; the $n=8$ cells have wide intervals and we do not interpret small differences there). \texttt  {none}$\cdot $split and \texttt  {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise.}}{6}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:obf}{{2}{6}{Single-hop compromise rate by defence and attack form, one panel per model ($n=30$ per cell for Claude 4.5, $n=8$ for DeepSeek, $n=16$ for qwen; the $n=8$ cells have wide intervals and we do not interpret small differences there). \texttt {none}$\cdot $split and \texttt {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology changes the spread of survival, not just the amount}{6}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:topology}{{5.6}{6}{Topology changes the spread of survival, not just the amount}{subsection.5.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together.}}{7}{table.caption.22}\protected@file@percent }
+\newlabel{tab:topo}{{5}{7}{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together}{table.caption.22}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Shape of the depth profile: relative error of the isolated product, $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph  {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph  {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error.}}{7}{table.caption.23}\protected@file@percent }
+\newlabel{tab:depth}{{6}{7}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error}{table.caption.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The shape of the depth profile is a diagnostic}{7}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:depth}{{5.7}{7}{The shape of the depth profile is a diagnostic}{subsection.5.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces The same agents and the same per-hop survivals, read two ways. Feedback turns a vacuous criterion into a binding one.}}{7}{table.caption.24}\protected@file@percent }
+\newlabel{tab:cyclic}{{7}{7}{The same agents and the same per-hop survivals, read two ways. Feedback turns a vacuous criterion into a binding one}{table.caption.24}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Recurrence makes the threshold non-vacuous}{7}{subsection.5.8}\protected@file@percent }
+\newlabel{sec:cyclic}{{5.8}{7}{Recurrence makes the threshold non-vacuous}{subsection.5.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Utility under attack}{7}{subsection.5.9}\protected@file@percent }
+\newlabel{sec:utility}{{5.9}{7}{Utility under attack}{subsection.5.9}{}}
 \citation{StrUQ2025}
 \bibstyle{ACM-Reference-Format}
 \bibdata{refs}
 \bibcite{CII2026}{{1}{2026}{{Abdellah and Aziz}}{{}}}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Utility under attack (Section\nonbreakingspace \ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$.}}{8}{table.caption.26}\protected@file@percent }
-\newlabel{tab:utility}{{8}{8}{Utility under attack (Section~\ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$}{table.caption.26}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Utility under attack (Section\nonbreakingspace \ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$.}}{8}{table.caption.25}\protected@file@percent }
+\newlabel{tab:utility}{{8}{8}{Utility under attack (Section~\ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$}{table.caption.25}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Estimator validation}{8}{subsection.5.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{8}{section.6}\protected@file@percent }
 \newlabel{sec:discussion}{{6}{8}{Discussion}{section.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{What the four prescriptions cost to adopt.}{8}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Isolated attack success is not a composable unit.}{8}{section*.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defence evaluation needs headroom.}{8}{section*.29}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Placement is a structural question.}{8}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What the four prescriptions cost to adopt.}{8}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Defence evaluation needs headroom.}{8}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Placement is a structural question.}{8}{section*.28}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {7}Limitations and Threats to Validity}{8}{section.7}\protected@file@percent }
 \newlabel{sec:limits}{{7}{8}{Limitations and Threats to Validity}{section.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{8}{section.8}\protected@file@percent }
+\newlabel{sec:conclusion}{{8}{8}{Conclusion}{section.8}{}}
 \bibcite{Cemri2025MAST}{{2}{2025}{{Cemri et~al\mbox  {.}}}{{}}}
 \bibcite{StrUQ2025}{{3}{2025}{{Chen et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2024AgentDojo}{{4}{2024}{{Debenedetti et~al\mbox  {.}}}{{}}}
@@ -116,8 +116,8 @@
 \bibcite{PastorSatorras2001}{{10}{2001}{{Pastor-Satorras and Vespignani}}{{}}}
 \bibcite{Watts2002}{{11}{2002}{{Watts}}{{}}}
 \bibcite{Wu2023AutoGen}{{12}{2023}{{Wu et~al\mbox  {.}}}{{}}}
-\bibcite{Zhan2024InjecAgent}{{13}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
-\bibcite{Zhan2025Adaptive}{{14}{2025}{{Zhan et~al\mbox  {.}}}{{}}}
+\bibcite{Zhan2025Adaptive}{{13}{2025}{{Zhan et~al\mbox  {.}}}{{}}}
+\bibcite{Zhan2024InjecAgent}{{14}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{4.185pt}
@@ -125,6 +125,6 @@
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{toc}{\contentsline {section}{References}{9}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{9}{section*.30}\protected@file@percent }
 \newlabel{TotPages}{{9}{9}{}{page.9}{}}
 \gdef \@abspage@last{9}
