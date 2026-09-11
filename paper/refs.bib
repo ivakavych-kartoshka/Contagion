@@ -1,21 +1,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  refs.bib — bibliography cho paper AAMAS-2027 "Contagion"
 %
-%  QUY ƯỚC: mọi ghi chú còn phải kiểm tra nằm ở COMMENT (%) — TUYỆT ĐỐI không
-%  để trong trường `note`, vì `note` ĐƯỢC IN RA trong danh mục tham khảo.
+%  QUY ƯỚC: ghi chú cần kiểm tra nằm ở COMMENT (%) — không để trong `note`,
+%  vì `note` ĐƯỢC IN RA trong danh mục tham khảo.
 %
-%  TRẠNG THÁI XÁC MINH (2026-09-11):
-%  ✅ ĐÃ ĐỐI CHIẾU NGUỒN:
-%     LiuGong2024        — tiêu đề, đủ 5 tác giả, USENIX Security 2024 (arXiv:2310.12815 v5)
-%     CII2026            — tiêu đề, 2 tác giả, SOIC 15(6):5445-5458, DOI 10.19139/soic-2310-5070-3574
-%     SwarmMarkov2026    — tiêu đề, 4 tác giả, Cybersecurity, DOI 10.1186/s42400-026-00628-w
-%     Zhan2024InjecAgent — venue "Findings of ACL 2024" (arXiv:2403.02691)
+%  TRẠNG THÁI XÁC MINH (2026-09-11) — ĐÃ ĐỐI CHIẾU TOÀN BỘ:
+%    Nguồn: trang nhà xuất bản (CII), Semantic Scholar / DBLP (swarm),
+%           arXiv API (id_list) cho 7 entry arXiv, arXiv abs page (Liu-Gong).
 %
-%  ⚠️ CHƯA ĐỐI CHIẾU HẾT (đang ở dạng arXiv preprint, "tác giả đầu + others"):
-%     MetaGPT, AutoGen, AgentDojo, Greshake, MAST, AdaptiveAttacks, StrUQ.
-%     arXiv id + tiêu đề đúng; TÊN ĐẦY ĐỦ các tác giả phía sau và số trang
-%     proceedings cần chép lại trước khi nộp. (Trích arXiv preprint là dạng hợp
-%     lệ, nên đây là việc hoàn thiện chứ không phải lỗi.)
+%    Venue đã xác nhận:
+%      LiuGong2024    USENIX Security 2024
+%      StrUQ2025      USENIX Security 2025   (arXiv comment: "To appear at USENIX Security Symposium 2025")
+%      Zhan2025Adaptive  Findings of NAACL 2025 (arXiv comment: "NAACL 2025 Findings")
+%      Zhan2024InjecAgent Findings of ACL 2024
+%      CII2026        Statistics, Optimization & Information Computing 15(6):5445-5458
+%      SwarmMarkov2026   Cybersecurity
+%
+%    Còn lại ghi dạng arXiv preprint (arXiv KHÔNG nêu venue trong comment nên
+%    không suy đoán): MetaGPT, AutoGen, AgentDojo, Greshake, MAST.
+%    Danh sách tác giả của TẤT CẢ entry đã lấy đủ từ arXiv API.
+%
+%    TODO duy nhất còn lại: số trang proceedings cho LiuGong2024, Zhan2024InjecAgent,
+%    và volume/article-number cho SwarmMarkov2026.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 @inproceedings{LiuGong2024,
@@ -25,30 +31,45 @@
   year         = {2024},
   publisher    = {USENIX Association}
 }
-% Đã xác minh qua arXiv:2310.12815 (v5). TODO: bổ sung số trang proceedings.
-% Đây là nguồn của ASV/MR và của formalism mà paper mở rộng.
+% Nguồn của ASV/MR và của formalism mà paper mở rộng. Đã xác minh qua
+% arXiv:2310.12815 (v5). TODO: số trang proceedings.
+
+@inproceedings{StrUQ2025,
+  title        = {{StruQ}: Defending Against Prompt Injection with Structured Queries},
+  author       = {Chen, Sizhe and Piet, Julien and Sitawarin, Chawin and Wagner, David},
+  booktitle    = {34th USENIX Security Symposium (USENIX Security 25)},
+  year         = {2025},
+  publisher    = {USENIX Association}
+}
+% arXiv:2402.06363, comment ghi "To appear at USENIX Security Symposium 2025".
+% Là họ defense structured-query ta đã implement nhưng CHƯA đánh giá trên model thật.
 
 @misc{Hong2023MetaGPT,
-  title        = {{MetaGPT}: Meta Programming for a Multi-Agent Collaborative Framework},
-  author       = {Hong, Sirui and others},
+  title        = {{MetaGPT}: Meta Programming for A Multi-Agent Collaborative Framework},
+  author       = {Hong, Sirui and Zhuge, Mingchen and Chen, Jiaqi and Zheng, Xiawu and
+                  Cheng, Yuheng and Zhang, Ceyao and Wang, Jinlin and Wang, Zili and
+                  Yau, Steven Ka Shing and Lin, Zijuan and Zhou, Liyang and Ran, Chenyu and
+                  Xiao, Lingfeng and Wu, Chenglin and Schmidhuber, J{\"u}rgen},
   year         = {2023},
   eprint       = {2308.00352},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
   howpublished = {arXiv preprint}
 }
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối (ICLR?).
+% arXiv không nêu venue trong comment ⇒ giữ dạng arXiv preprint, không suy đoán.
 
 @misc{Wu2023AutoGen,
   title        = {{AutoGen}: Enabling Next-Gen {LLM} Applications via Multi-Agent Conversation},
-  author       = {Wu, Qingyun and others},
+  author       = {Wu, Qingyun and Bansal, Gagan and Zhang, Jieyu and Wu, Yiran and
+                  Li, Beibin and Zhu, Erkang and Jiang, Li and Zhang, Xiaoyun and
+                  Zhang, Shaokun and Liu, Jiale and Awadallah, Ahmed Hassan and
+                  White, Ryen W and Burger, Doug and Wang, Chi},
   year         = {2023},
   eprint       = {2308.08155},
   archivePrefix= {arXiv},
   primaryClass = {cs.AI},
   howpublished = {arXiv preprint}
 }
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối (COLM?).
 
 @inproceedings{Zhan2024InjecAgent,
   title        = {{InjecAgent}: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents},
@@ -63,29 +84,32 @@
 
 @misc{Debenedetti2024AgentDojo,
   title        = {{AgentDojo}: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for {LLM} Agents},
-  author       = {Debenedetti, Edoardo and others},
+  author       = {Debenedetti, Edoardo and Zhang, Jie and Balunovi{\'c}, Mislav and
+                  Beurer-Kellner, Luca and Fischer, Marc and Tram{\`e}r, Florian},
   year         = {2024},
   eprint       = {2406.13352},
   archivePrefix= {arXiv},
   primaryClass = {cs.CR},
   howpublished = {arXiv preprint}
 }
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối (NeurIPS D&B 2024?).
 
 @misc{Greshake2023,
-  title        = {Not What You've Signed Up For: Compromising Real-World {LLM}-Integrated Applications with Indirect Prompt Injection},
-  author       = {Greshake, Kai and others},
+  title        = {Not what you've signed up for: Compromising Real-World {LLM}-Integrated Applications with Indirect Prompt Injection},
+  author       = {Greshake, Kai and Abdelnabi, Sahar and Mishra, Shailesh and
+                  Endres, Christoph and Holz, Thorsten and Fritz, Mario},
   year         = {2023},
   eprint       = {2302.12173},
   archivePrefix= {arXiv},
   primaryClass = {cs.CR},
   howpublished = {arXiv preprint}
 }
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối (AISec@CCS 2023?).
 
 @misc{Cemri2025MAST,
   title        = {Why Do Multi-Agent {LLM} Systems Fail?},
-  author       = {Cemri, Mert and others},
+  author       = {Cemri, Mert and Pan, Melissa Z. and Yang, Shuyi and Agrawal, Lakshya A. and
+                  Chopra, Bhavya and Tiwari, Rishabh and Keutzer, Kurt and
+                  Parameswaran, Aditya and Klein, Dan and Ramchandran, Kannan and
+                  Zaharia, Matei and Gonzalez, Joseph E. and Stoica, Ion},
   year         = {2025},
   eprint       = {2503.13657},
   archivePrefix= {arXiv},
@@ -93,18 +117,17 @@
   howpublished = {arXiv preprint}
 }
 % Báo cáo inter-agent misalignment (FC2) chiếm 32.3% các thất bại multi-agent.
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối.
 
-@misc{Zhan2025Adaptive,
+@inproceedings{Zhan2025Adaptive,
   title        = {Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on {LLM} Agents},
-  author       = {Zhan, Qiusi and others},
+  author       = {Zhan, Qiusi and Fang, Richard and Panchal, Henil Shalin and Kang, Daniel},
+  booktitle    = {Findings of the Association for Computational Linguistics: NAACL 2025},
   year         = {2025},
   eprint       = {2503.00061},
   archivePrefix= {arXiv},
-  primaryClass = {cs.CR},
-  howpublished = {arXiv preprint}
+  primaryClass = {cs.CR}
 }
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối.
+% arXiv comment ghi "(NAACL 2025 Findings)". TODO: số trang proceedings.
 
 @article{CII2026,
   title        = {Cascading Instruction Influence: Indirect Prompt Injection in Hierarchical Multi-Agent Systems},
@@ -128,16 +151,4 @@
   doi          = {10.1186/s42400-026-00628-w}
 }
 % Đã xác minh qua Semantic Scholar / DBLP (journals/cybersec/LeDNN26).
-% TODO: bổ sung volume và article number. Tên tác giả đã chuyển sang ASCII.
-
-@misc{StrUQ2024,
-  title        = {{StruQ}: Defending Against Prompt Injection with Structured Queries},
-  author       = {Chen, Sizhe and others},
-  year         = {2024},
-  eprint       = {2402.06363},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.CR},
-  howpublished = {arXiv preprint}
-}
-% Là baseline defence ta đã implement nhưng chưa đánh giá trên model thật.
-% TODO: chép đủ danh sách tác giả; kiểm tra venue cuối (USENIX Security 2025?).
+% TODO: volume và article number. Tên tác giả đã chuyển sang ASCII.

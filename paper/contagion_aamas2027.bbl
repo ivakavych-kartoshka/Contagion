@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{10}
+\begin{thebibliography}{11}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -51,18 +51,36 @@
 
 \bibitem[Cemri et~al\mbox{.}(2025)]%
         {Cemri2025MAST}
-\bibfield{author}{\bibinfo{person}{Mert Cemri} {et~al\mbox{.}}}
-  \bibinfo{year}{2025}\natexlab{}.
+\bibfield{author}{\bibinfo{person}{Mert Cemri}, \bibinfo{person}{Melissa~Z.
+  Pan}, \bibinfo{person}{Shuyi Yang}, \bibinfo{person}{Lakshya~A. Agrawal},
+  \bibinfo{person}{Bhavya Chopra}, \bibinfo{person}{Rishabh Tiwari},
+  \bibinfo{person}{Kurt Keutzer}, \bibinfo{person}{Aditya Parameswaran},
+  \bibinfo{person}{Dan Klein}, \bibinfo{person}{Kannan Ramchandran},
+  \bibinfo{person}{Matei Zaharia}, \bibinfo{person}{Joseph~E. Gonzalez}, {and}
+  \bibinfo{person}{Ion Stoica}.} \bibinfo{year}{2025}\natexlab{}.
 \newblock \bibinfo{title}{Why Do Multi-Agent {LLM} Systems Fail?}
 \newblock \bibinfo{howpublished}{arXiv preprint}.
 \newblock
 \showeprint[arxiv]{2503.13657}~[cs.AI]
 
 
+\bibitem[Chen et~al\mbox{.}(2025)]%
+        {StrUQ2025}
+\bibfield{author}{\bibinfo{person}{Sizhe Chen}, \bibinfo{person}{Julien Piet},
+  \bibinfo{person}{Chawin Sitawarin}, {and} \bibinfo{person}{David Wagner}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{StruQ}: Defending Against Prompt Injection with
+  Structured Queries}. In \bibinfo{booktitle}{\emph{34th USENIX Security
+  Symposium (USENIX Security 25)}}. \bibinfo{publisher}{USENIX Association}.
+\newblock
+
+
 \bibitem[Debenedetti et~al\mbox{.}(2024)]%
         {Debenedetti2024AgentDojo}
-\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti} {et~al\mbox{.}}}
-  \bibinfo{year}{2024}\natexlab{}.
+\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti}, \bibinfo{person}{Jie
+  Zhang}, \bibinfo{person}{Mislav Balunovi{\'c}}, \bibinfo{person}{Luca
+  Beurer-Kellner}, \bibinfo{person}{Marc Fischer}, {and}
+  \bibinfo{person}{Florian Tram{\`e}r}.} \bibinfo{year}{2024}\natexlab{}.
 \newblock \bibinfo{title}{{AgentDojo}: A Dynamic Environment to Evaluate Prompt
   Injection Attacks and Defenses for {LLM} Agents}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
@@ -72,9 +90,11 @@
 
 \bibitem[Greshake et~al\mbox{.}(2023)]%
         {Greshake2023}
-\bibfield{author}{\bibinfo{person}{Kai Greshake} {et~al\mbox{.}}}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \bibinfo{title}{Not What You've Signed Up For: Compromising
+\bibfield{author}{\bibinfo{person}{Kai Greshake}, \bibinfo{person}{Sahar
+  Abdelnabi}, \bibinfo{person}{Shailesh Mishra}, \bibinfo{person}{Christoph
+  Endres}, \bibinfo{person}{Thorsten Holz}, {and} \bibinfo{person}{Mario
+  Fritz}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Not what you've signed up for: Compromising
   Real-World {LLM}-Integrated Applications with Indirect Prompt Injection}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
 \newblock
@@ -83,9 +103,15 @@
 
 \bibitem[Hong et~al\mbox{.}(2023)]%
         {Hong2023MetaGPT}
-\bibfield{author}{\bibinfo{person}{Sirui Hong} {et~al\mbox{.}}}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \bibinfo{title}{{MetaGPT}: Meta Programming for a Multi-Agent
+\bibfield{author}{\bibinfo{person}{Sirui Hong}, \bibinfo{person}{Mingchen
+  Zhuge}, \bibinfo{person}{Jiaqi Chen}, \bibinfo{person}{Xiawu Zheng},
+  \bibinfo{person}{Yuheng Cheng}, \bibinfo{person}{Ceyao Zhang},
+  \bibinfo{person}{Jinlin Wang}, \bibinfo{person}{Zili Wang},
+  \bibinfo{person}{Steven Ka~Shing Yau}, \bibinfo{person}{Zijuan Lin},
+  \bibinfo{person}{Liyang Zhou}, \bibinfo{person}{Chenyu Ran},
+  \bibinfo{person}{Lingfeng Xiao}, \bibinfo{person}{Chenglin Wu}, {and}
+  \bibinfo{person}{J{\"u}rgen Schmidhuber}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{{MetaGPT}: Meta Programming for A Multi-Agent
   Collaborative Framework}.
 \newblock \bibinfo{howpublished}{arXiv preprint}.
 \newblock
@@ -117,7 +143,13 @@
 
 \bibitem[Wu et~al\mbox{.}(2023)]%
         {Wu2023AutoGen}
-\bibfield{author}{\bibinfo{person}{Qingyun Wu} {et~al\mbox{.}}}
+\bibfield{author}{\bibinfo{person}{Qingyun Wu}, \bibinfo{person}{Gagan Bansal},
+  \bibinfo{person}{Jieyu Zhang}, \bibinfo{person}{Yiran Wu},
+  \bibinfo{person}{Beibin Li}, \bibinfo{person}{Erkang Zhu},
+  \bibinfo{person}{Li Jiang}, \bibinfo{person}{Xiaoyun Zhang},
+  \bibinfo{person}{Shaokun Zhang}, \bibinfo{person}{Jiale Liu},
+  \bibinfo{person}{Ahmed~Hassan Awadallah}, \bibinfo{person}{Ryen~W White},
+  \bibinfo{person}{Doug Burger}, {and} \bibinfo{person}{Chi Wang}.}
   \bibinfo{year}{2023}\natexlab{}.
 \newblock \bibinfo{title}{{AutoGen}: Enabling Next-Gen {LLM} Applications via
   Multi-Agent Conversation}.
@@ -140,11 +172,13 @@
 
 \bibitem[Zhan et~al\mbox{.}(2025)]%
         {Zhan2025Adaptive}
-\bibfield{author}{\bibinfo{person}{Qiusi Zhan} {et~al\mbox{.}}}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan}, \bibinfo{person}{Richard Fang},
+  \bibinfo{person}{Henil~Shalin Panchal}, {and} \bibinfo{person}{Daniel Kang}.}
   \bibinfo{year}{2025}\natexlab{}.
-\newblock \bibinfo{title}{Adaptive Attacks Break Defenses Against Indirect
-  Prompt Injection Attacks on {LLM} Agents}.
-\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock \showarticletitle{Adaptive Attacks Break Defenses Against Indirect
+  Prompt Injection Attacks on {LLM} Agents}. In
+  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: NAACL 2025}}.
 \newblock
 \showeprint[arxiv]{2503.00061}~[cs.CR]
 

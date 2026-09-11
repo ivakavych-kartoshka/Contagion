@@ -242,7 +242,7 @@ InjecAgent~\cite{Zhan2024InjecAgent} builds 1{,}054 test cases across 30 LLMs an
 reports an attack success rate of 24\% for a ReAct GPT-4 agent, with the
 \emph{content-freedom} of the injected field dominating vulnerability.
 AgentDojo~\cite{Debenedetti2024AgentDojo} provides a dynamic evaluation
-environment for one agent over one hop. Liu and Gong~\cite{LiuGong2023} formalise
+environment for one agent over one hop. Liu and Gong~\cite{LiuGong2024} formalise
 injection as $\tilde{x} = \mathcal{A}(x_{\mathrm{target}}, s_{\mathrm{inj}},
 x_{\mathrm{inj}})$ and introduce the ASV/MR metrics we reuse. All of these
 terminate at one hop: they cannot express whether a compromise survives transfer.
@@ -340,7 +340,7 @@ of $(0,1)$ on real models.
 \subsection{Compromise judgment}
 
 An activation is judged compromised by a deterministic, non-LLM rule following
-Liu and Gong~\cite{LiuGong2023}: $C = \ind[\mathrm{ASV} \ge \tau_{\mathrm{asv}}
+Liu and Gong~\cite{LiuGong2024}: $C = \ind[\mathrm{ASV} \ge \tau_{\mathrm{asv}}
 \ \lor\ \mathrm{MR} \ge \tau_{\mathrm{mr}}]$, where ASV is the fraction of target
 bigrams present in the output and MR is a similarity against the reference
 hijacked output. For family B we use the ASV branch only ($\tau_{\mathrm{asv}} =
@@ -951,13 +951,12 @@ that makes a defence's efficacy unidentifiable---is invisible if only one number
 is reported.
 
 \paragraph{Isolated attack success is not a composable unit.} The immediate
-implication of Section~\ref{sec:transport} is a bound on how single-agent
-benchmarks can be used: composing isolated per-hop success rates into a pipeline
-prediction is invalid on at least one frontier model, in the direction of
-under-estimating spread, by a factor of four on the affected edge. Because
-$\prod_i \snat{i} = \mathrm{ASR}$ is an identity, the practically useful control
-is to measure the conditional rate \emph{in the deployment configuration} rather
-than in a canonical harness.
+implication of Sections~\ref{sec:transport} and~\ref{sec:depth} is a bound on how
+single-agent benchmarks can be used: composing isolated per-hop success rates into a
+pipeline prediction is unreliable, and the magnitude of the error grows with the
+number of hops the payload must survive. Because $\prod_i \snat{i} = \mathrm{ASR}$
+is an identity, the practically useful control is to measure the conditional rate
+\emph{in the deployment configuration} rather than in a canonical harness.
 
 \paragraph{Defence evaluation needs headroom.} A defence can only be credited with
 what it removes. Reporting a large relative reduction on a model whose no-defence
@@ -966,14 +965,13 @@ defence configuration is either essential or bypassable depending on the model
 family. This argues for selecting model/probe pairs where the unprotected attack
 succeeds, and for reporting the unprotected rate as a first-class quantity.
 
-\paragraph{Toward defence placement.} The framework's natural next use---which we
-have \emph{not} carried out---is the placement question: given a graph, which node
-should be hardened to drive the effective reproduction number below one, and at
-what utility cost. Our role-dependence results say the answer is unlikely to be
-uniform: if the low-survival position is consistently the receiver that is busy
-with substantive work, then hardening effort should target the opposite end of the
-distribution. We regard this as the most valuable open direction and state it as
-future work rather than a result.
+\paragraph{Placement is a structural question.} Section~\ref{sec:threshold} answers
+the placement question in closed form for feed-forward networks: only nodes on an
+entry--target path matter, and among those all are equally effective, so the choice
+is one of cost rather than of criticality. Per-hop survival does not determine
+\emph{where} to harden, only whether a defence is worth deploying at all. Redundant
+paths, which our topologies do not contain, are what would turn placement into an
+optimisation rather than a structural query.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1002,11 +1000,13 @@ analysis of Section~\ref{sec:threshold} becomes non-trivial. The scale promised 
 a full agent-organisation study (tens of agents, mesh and debate topologies) is not
 covered here.
 
-\emph{Unmeasured attack dimensions.} Re-injection variants (independent versus
-colluding compromised agents, adaptive re-optimisation) and the content-freedom of
-the inter-agent field are implemented in our harness but not yet varied
-experimentally; the content-form ablation of Section~\ref{sec:contentform} is the
-first step.
+\emph{Unmeasured attack dimensions and defences.} Re-injection variants
+(independent versus colluding compromised agents, adaptive re-optimisation), the
+content-freedom of the inter-agent field, and the additional defence families our
+harness implements---prompt-injection detection, hop isolation, and
+structured-query isolation~\cite{StrUQ2025}---are not varied experimentally here;
+the content-form ablation of Section~\ref{sec:contentform} is a first step in that
+direction.
 
 \emph{Sample sizes.} Most cells use 30--40 trials; intervals are reported and the
 composition claim is made only where power was validated. Multiplicity across the

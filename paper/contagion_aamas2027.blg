@@ -8,16 +8,14 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'wiz_functions' (item size: 4) to 6000 items.
 Database file #1: refs.bib
-I was expecting a `{' or a `('---line 84 of file refs.bib
- : % TODO: chép đủ danh sách tác giả; kiểm tra venue cuối (AISec@ccs 
- :                                                                               2023?).
-I'm skipping whatever remains of this entry
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'wiz_functions' (item size: 4) to 9000 items.
 Reallocating 'glb_str_end' (item size: 4) to 20 items.
 Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
 Reallocating 'global_strs' (item size: 1) to 4000000 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--empty address in StrUQ2025
+Warning--page numbers missing in both pages and numpages fields in StrUQ2025
 Warning--no number and no volume in SwarmMarkov2026
 Warning--page numbers missing in both pages and numpages fields in SwarmMarkov2026
 Warning--empty address in LiuGong2024
@@ -25,45 +23,48 @@ Warning--page numbers missing in both pages and numpages fields in LiuGong2024
 Warning--empty publisher in Zhan2024InjecAgent
 Warning--empty address in Zhan2024InjecAgent
 Warning--page numbers missing in both pages and numpages fields in Zhan2024InjecAgent
-You've used 10 entries,
+Warning--empty publisher in Zhan2025Adaptive
+Warning--empty address in Zhan2025Adaptive
+Warning--page numbers missing in both pages and numpages fields in Zhan2025Adaptive
+You've used 11 entries,
             6273 wiz_defined-function locations,
-            1579 strings with 20038 characters,
-and the built_in function-call counts, 9576 in all, are:
-= -- 1174
-> -- 334
+            1586 strings with 21258 characters,
+and the built_in function-call counts, 12668 in all, are:
+= -- 1361
+> -- 693
 < -- 0
-+ -- 117
-- -- 139
-* -- 650
-:= -- 1004
-add.period$ -- 49
-call.type$ -- 10
-change.case$ -- 65
-chr.to.int$ -- 10
-cite$ -- 17
-duplicate$ -- 827
-empty$ -- 591
-format.name$ -- 151
-if$ -- 2207
++ -- 244
+- -- 241
+* -- 1132
+:= -- 1425
+add.period$ -- 53
+call.type$ -- 11
+change.case$ -- 125
+chr.to.int$ -- 11
+cite$ -- 23
+duplicate$ -- 968
+empty$ -- 690
+format.name$ -- 281
+if$ -- 2829
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 18
-newline$ -- 126
-num.names$ -- 70
-pop$ -- 299
+missing$ -- 28
+newline$ -- 132
+num.names$ -- 77
+pop$ -- 441
 preamble$ -- 1
-purify$ -- 138
+purify$ -- 206
 quote$ -- 0
-skip$ -- 331
+skip$ -- 356
 stack$ -- 0
-substring$ -- 621
-swap$ -- 53
+substring$ -- 675
+swap$ -- 60
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 272
-warning$ -- 7
-while$ -- 65
+type$ -- 302
+warning$ -- 12
+while$ -- 44
 width$ -- 0
-write$ -- 227
-(There was 1 error message)
+write$ -- 244
+(There were 12 warnings)
