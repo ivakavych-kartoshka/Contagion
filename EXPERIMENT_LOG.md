@@ -1221,3 +1221,63 @@ báo cáo ngược thì hệ bắt đầu tự duy trì lây nhiễm*. Đã đư
 - Kết quả: nội dung hết ở **trang 8**, trang 9 chỉ còn References (kiểm bằng cách
   giải mã PDF: trang 9 chứa "References" nhưng KHÔNG chứa "Conclusion").
 
+---
+
+## 10. Revision pack theo phản biện mô phỏng (2026-09-12) — đã KIỂM CHỨNG
+
+Người dùng tự tạo `paper/AAMAS2027_REVIEWS.md` (4 review + meta-review, mean 6.25 →
+accept có điều kiện) và `paper/AAMAS2027_IMPROVEMENTS.md` (14 việc, tự đánh dấu 9 việc
+`✅ XONG`). Tôi kiểm lại từng mục trong `.tex` và trong dữ liệu gốc.
+
+### 10.1 Xong thật (7 mục)
+
+§1.1 thu hẹp "prescriptions" (abstract nay là *"It **can** fail…"*; đóng góp #1 thêm
+*"without first checking that they transport"*) · §1.2 câu multiplicity ở §3.8 +
+Limitations · §1.4 `R_0` = *"descriptive amplification statistic, not a safety
+certificate"* · §2.1 **Phụ lục A** (BH, `tab:bh`) · §2.2 **Phụ lục B** (cluster CI,
+`tab:cluster`) · §2.3 câu nêu độ phủ theo từng claim (5 / 3 / 1 model).
+
+### 10.2 Phụ lục B — số khớp hoàn toàn (đã chạy lại)
+
+`python scripts\appendix_stats.py`, nguồn `sensitivity_llama/results.json` lọc T=0,7
+(6 repeat × 20 trial):
+
+| | $\hat s$ | 95% CI | width |
+|---|---|---|---|
+| Wilson (i.i.d.) | 0.242 (29/120) | [0.174, 0.326] | 0.152 |
+| cluster bootstrap theo **repeat** | 0.242 | [0.167, 0.317] | 0.150 |
+
+⇒ hệ số nới **0,99×**: trong cùng một temperature, Wilson đã đúng; $\varphi=2.93$ chỉ là
+artefact của **gộp cross-temperature** — đúng như §5.10. Đây là **củng cố**, không phải
+điểm yếu. (per-repeat k/n = 2, 7, 7, 3, 5, 5 trên 20.)
+
+### 10.3 ⚠️ Hai mục bị đánh dấu "XONG" nhưng KHÔNG có trong `.tex`
+
+- **Artifact Availability**: không có mục nào (đếm `\section*` = **0**); chỉ còn 1 câu
+  trong Kết luận (*"We release all code and outputs"*).
+- **Ethics / responsible-use**: `\begin{acks}` vẫn là comment TODO; chỉ có mệnh đề
+  *"attacks use a benign marker against our own harness only"* ở cuối Kết luận.
+
+### 10.4 🔴 Bốn vấn đề do revision pack tạo ra
+
+1. **Mâu thuẫn với chính E22**: `tab:bh` (rank 2) và câu §3.8 tính ô
+   **DeepSeek `p=0.0030`** là "reject" — nhưng đó là kết quả **đã rút lại** ở §5.3
+   (fixed-artefact; fresh protocol cho $p=0.63$). Phần trả lời QT2W lại tái khẳng định
+   phát hiện đã rút.
+2. **Số Llama không truy được**: `tab:bh` ghi $p=0.0001$, dữ liệu lưu là
+   **0,00025** (`frontier_llama3-3-70b*`). Verdict BH không đổi nhưng số thì lệch.
+3. `scripts/appendix_stats.py` **hard-code** cả 5 p-value của Table A (dòng 45–51) —
+   docstring ghi nguồn `markov_formal/table.md` nhưng script không đọc dữ liệu nào. Nó
+   in lại số đã gõ, không kiểm được gì.
+4. **Phụ lục ở TRANG 9** (cả `tab:bh` và `tab:cluster` theo `.aux`), tức ngoài 8 trang.
+   Comment trong `.tex` khẳng định "sau References nên không tính" là **giả định chưa
+   kiểm**; CFP chỉ miễn trừ *bibliographic references*.
+
+*(Phụ: Nova ghi 0,0858 vs dữ liệu 0,084 — lệch nhỏ.)*
+
+### 10.5 Trạng thái build sau revision
+
+0 lỗi · 0 overfull · 0 undefined · nội dung hết **trang 8** · PDF **9 trang** (trang 9 =
+References **+ hai phụ lục**). Việc còn lại trước khi nộp: sửa P1/P4 (bắt buộc), P2/P3,
+và thêm §1.3 + §1.5.
+

@@ -19,7 +19,7 @@ Nguồn chân lý về con số là `paper/contagion_aamas2027.tex` + `experimen
 
 | Hạng mục | Trạng thái | Bằng chứng |
 |---|---|---|
-| Giới hạn trang AAMAS main track | **ĐẠT** | Nội dung hết ở **trang 8**; trang 9 chỉ có tài liệu tham khảo (giải mã PDF: trang 9 chứa "References", **không** chứa "Conclusion") |
+| Giới hạn trang AAMAS main track | **ĐẠT cho nội dung — nhưng có rủi ro mới, xem §7c/P4** | Nội dung (§1–§8) hết ở **trang 8**. PDF 9 trang: trang 9 = References **+ hai phụ lục** (`tab:bh`, `tab:cluster`). CFP chỉ miễn trừ *bibliographic references*, nên phụ lục ở trang 9 có thể bị coi là vượt 8 trang |
 | Biên dịch | 0 lỗi, 0 overfull, 0 undefined | `paper/contagion_aamas2027.log` |
 | Cấu trúc / cite / ref / hình | 0 lỗi | `python scripts/check_paper.py paper\contagion_aamas2027.tex --bib paper\refs.bib` |
 | Vệ sinh hình | **Sạch** | `paper/` chỉ còn đúng 2 PNG được `.tex` tham chiếu; `check_figures.py` ✅ (checker đã sửa để chỉ kiểm hình thật sự được dùng) |
@@ -125,3 +125,61 @@ Select-String -Path contagion_aamas2027.log -Pattern 'undefined'
   đóng gói đóng góp (định lý ρ(M)=0, chẩn đoán độ dốc, kết quả cyclic).
 - Điểm yếu **không giấu**: `M_t` là proxy, `n = 30–40` ở phần lớn ô, chưa có
   mesh/debate, 2 defence được đánh giá thực chất, utility đo bằng proxy.
+
+---
+
+## 7. Revision pack theo `paper/AAMAS2027_REVIEWS.md` — **đã kiểm chứng 2026-09-12**
+
+Người dùng tự thực hiện theo `paper/AAMAS2027_IMPROVEMENTS.md` (file đó ghi 9/14 việc
+`✅ XONG`). Tôi **kiểm lại từng mục trong `.tex` + dữ liệu gốc** thay vì ghi theo lời
+khai. Kết quả: **7 mục xong thật, 2 mục chưa xong, và 4 vấn đề mới phát sinh.**
+
+### 7a. Đã xong — có bằng chứng trong `.tex`
+
+| Việc (theo improvements) | Bằng chứng |
+|---|---|
+| §1.1 thu hẹp "prescriptions" | abstract dòng 101: *"It **can** fail, and where it does its error compounds…"*; đóng góp #1 dòng 228: *"**without first checking that they transport**"* |
+| §1.2 câu multiplicity | §3.8 L461–462: *"both survive a Benjamini–Hochberg correction across the five non-degenerate cells at q=0.05"*; Limitations L1068–1069 |
+| §1.4 làm rõ `R_0` | L504–505: *"use $R_0$ as a **descriptive amplification statistic**, not a safety certificate"* |
+| §2.1 Phụ lục A (BH) | `\appendix` sau `\bibliography`, `\section{Multiplicity Control…}`, `tab:bh` (5 dòng + `tab:cluster`) |
+| §2.2 Phụ lục B (cluster CI) | `\section{Context-Clustered Interval on the Weak Edge}`, `tab:cluster`; §5.10 L1023–1024 tham chiếu `Appendix~\ref{app:cluster}` |
+| §2.3 độ phủ theo từng claim | L219–221: *"coverage differs by claim (cross-model susceptibility spans all five, the depth profile three, and the topology comparison a single model)"* |
+| Build | **0 lỗi · 0 overfull · 0 undefined**; nội dung hết **trang 8**, phụ lục ở trang 9 |
+
+**Phụ lục B kiểm chứng đúng hoàn toàn** (chạy `python scripts\appendix_stats.py`):
+6 repeat × 20 trial ở T=0,7 → k=29/120, $\hat s=0.242$; Wilson $[0.174,0.326]$;
+cluster-bootstrap theo repeat $[0.167,0.317]$; hệ số nới **0,99×** ⇒ Wilson *within
+temperature* là hợp lệ, và $\varphi=2.93$ đúng là artefact của việc gộp temperature
+(khớp §5.10). Đây là điểm **củng cố**, không phải điểm yếu.
+
+### 7b. ⚠️ CHƯA XONG nhưng file improvements đánh dấu "XONG" (2 mục)
+
+| Việc | Trạng thái thật |
+|---|---|
+| §1.3 **Artifact Availability thành mục có tiêu đề** | ❌ **Không có** mục nào. Kiểm cả file: **0** `\section*`. Nội dung chỉ còn **một câu** trong Kết luận (L1082: *"We release all code and outputs"*). Yêu cầu của AC là mục riêng nói rõ **3 tầng tái lập** (0-API / local qwen / cần key) |
+| §1.5 **Tuyên bố đạo đức / responsible-use** | ❌ **Không có** mục. `\begin{acks}` vẫn chỉ là comment TODO. Chỉ có **mệnh đề** ở cuối Kết luận (L1083: *"attacks use a benign marker against our own harness only"*) |
+
+Cả hai đều **30–45 phút** và **[0 API]** — nhưng phải cắt chỗ khác vì bài đã kín 8 trang.
+
+### 7c. 🔴 Bốn vấn đề MỚI do revision pack tạo ra
+
+| # | Vấn đề | Bằng chứng | Mức độ |
+|---|---|---|---|
+| **P1** | **Bảng BH và câu ở §3.8 tính ô DeepSeek `p=0.0030` là "reject" — nhưng đó chính là kết quả đã RÚT LẠI ở §5.3** (artefact của fixed-artefact protocol; chạy lại đúng cách $p=0.63$). Tức phần sửa theo yêu cầu của QT2W lại **tái khẳng định** một phát hiện bài đã rút | `tab:bh` dòng rank 2; §3.8 L461 "both survive"; so §5.3 | 🔴 **Nặng** — QT2W sẽ thấy ngay mâu thuẫn |
+| **P2** | `p` của Llama ghi **0,0001**, nhưng giá trị lưu trong kết quả là **0,00025** (`frontier_llama3-3-70b*`). Verdict BH không đổi (vẫn reject) nhưng **số không truy được về dữ liệu** | `tab:bh` rank 1 vs `results.json` | 🟠 Trung bình — đúng loại lỗi "số nhập tay" |
+| **P3** | `scripts/appendix_stats.py` **hard-code** toàn bộ 5 p-value của Table A (dòng 45–51) dù docstring ghi nguồn là `markov_formal/table.md`. Nghĩa là script **không kiểm tra gì cả**, chỉ in lại số đã gõ — và **không đọc dữ liệu** | đọc script | 🟠 Trung bình — nên sửa để đọc thật |
+| **P4** | **Phụ lục nằm ở TRANG 9**, tức ngoài 8 trang. `.tex` có comment khẳng định "appendix sau References nên không tính vào giới hạn 8 trang" — **đây là giả định chưa kiểm**. CFP chỉ miễn trừ *bibliographic references*; phụ lục là nội dung | `tab:bh`/`tab:cluster` đều ở trang 9 (`aux`); PDF 9 trang | 🔴 **Nặng về hình thức** — có thể bị coi là vượt trang |
+
+*(Phụ: Nova ghi 0,0858 còn dữ liệu lưu 0,084 — lệch nhỏ, có thể do bootstrap khác seed.)*
+
+### 7d. Việc cần làm để thật sự đóng revision pack
+
+1. **P1 (bắt buộc)**: bỏ ô DeepSeek fixed khỏi BH, hoặc dùng `p=0.63` (fresh protocol) và
+   ghi rõ "the one composition rejection (Llama) survives BH; the DeepSeek deviation does
+   not survive the fresh-artefact protocol". Sửa cả câu §3.8.
+2. **P4 (bắt buộc, chọn 1)**: (a) đưa 2 bảng phụ lục **vào trong 8 trang** (phải cắt
+   ~0,5 trang chỗ khác), (b) chuyển phụ lục sang **supplement/arXiv** và giữ bản nộp
+   sạch 8 trang, hoặc (c) giữ nguyên và **chấp nhận rủi ro**.
+3. **P2 + P3**: sửa số Llama thành 0,0002/0,00025 và cho `appendix_stats.py` đọc p-value
+   thật từ kết quả.
+4. **§1.3 + §1.5**: thêm mục Artifact Availability + tuyên bố đạo đức (2 việc 0 API cuối cùng).

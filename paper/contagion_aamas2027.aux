@@ -27,10 +27,10 @@
 \@writefile{toc}{\contentsline {paragraph}{Defences.}{2}{section*.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Contagion and thresholds in networks.}{2}{section*.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Gap.}{2}{section*.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Framework: Measuring Propagation}{2}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Network and threat model}{2}{subsection.3.1}\protected@file@percent }
 \citation{Zhan2024InjecAgent}
 \citation{LiuGong2024}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Framework: Measuring Propagation}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Network and threat model}{3}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Task families}{3}{subsection.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Compromise judgment}{3}{subsection.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Two independent protocols}{3}{subsection.3.4}\protected@file@percent }
@@ -53,13 +53,13 @@
 \@writefile{toc}{\contentsline {section}{\numberline {5}Results}{4}{section.5}\protected@file@percent }
 \newlabel{sec:results}{{5}{4}{Results}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Per-hop survival is role-dependent, and susceptibility does not track capability}{4}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The isolated per-hop rate does not transport to the chain}{4}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:transport}{{5.2}{4}{The isolated per-hop rate does not transport to the chain}{subsection.5.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Chain, no defence, Task Family B. $\bar  s$ is the mean controlled per-edge survival. Per-edge order follows the chain. Rows marked $\dagger $ used the fresh-artefact protocol (Section\nonbreakingspace \ref {sec:ablation}); others used the default fixed-artefact protocol, which is why both are reported in Table\nonbreakingspace \ref {tab:ablation} for the models where we have both. An independent replicate of the DeepSeek cell gave $\mathrm  {ASR} = 0.375$ with per-edge $0.700/0.733/0.833$, illustrating the sampling variability at $n = 40$ that the MDE of Section\nonbreakingspace 3.7 quantifies.}}{5}{table.caption.16}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:cross}{{1}{5}{Chain, no defence, Task Family B. $\bar s$ is the mean controlled per-edge survival. Per-edge order follows the chain. Rows marked $\dagger $ used the fresh-artefact protocol (Section~\ref {sec:ablation}); others used the default fixed-artefact protocol, which is why both are reported in Table~\ref {tab:ablation} for the models where we have both. An independent replicate of the DeepSeek cell gave $\mathrm {ASR} = 0.375$ with per-edge $0.700/0.733/0.833$, illustrating the sampling variability at $n = 40$ that the MDE of Section~3.7 quantifies}{table.caption.16}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-hop survival by receiving role (five-agent chain, $n=30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged.}}{5}{figure.caption.17}\protected@file@percent }
 \newlabel{fig:role}{{1}{5}{Per-hop survival by receiving role (five-agent chain, $n=30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged}{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The isolated per-hop rate does not transport to the chain}{5}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:transport}{{5.2}{5}{The isolated per-hop rate does not transport to the chain}{subsection.5.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Transportability of the isolated per-hop estimate, per edge and per model (fresh-artefact protocol). \emph  {ratio} is $\ensuremath  {s^{\mathrm  {nat}}_{}}/\ensuremath  {s^{\mathrm  {ctrl}}_{}}$: values near one mean the isolated estimate transports. $\DOTSI \prodop \slimits@ $ rows are products over the three edges; the final row is measured independently on natural runs and must equal $\DOTSI \prodop \slimits@ $ of the in-chain column (Eq.\nonbreakingspace \eqref  {eq:identity}).}}{5}{table.caption.18}\protected@file@percent }
 \newlabel{tab:transport}{{2}{5}{Transportability of the isolated per-hop estimate, per edge and per model (fresh-artefact protocol). \emph {ratio} is $\snat {}/\scite {}$: values near one mean the isolated estimate transports. $\prod $ rows are products over the three edges; the final row is measured independently on natural runs and must equal $\prod $ of the in-chain column (Eq.~\eqref {eq:identity})}{table.caption.18}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Artefact-policy ablation: controlled per-edge estimates $\ensuremath  {s^{\mathrm  {ctrl}}_{}}$ under a fixed artefact (one sample reused across trials) versus a fresh artefact per trial, with the resulting product and test. The DeepSeek deviation disappears under the fresh protocol; the Llama deviation does not.}}{5}{table.caption.19}\protected@file@percent }
@@ -71,10 +71,10 @@
 \newlabel{tab:form}{{4}{6}{Content-form ablation (Llama 3.3 70B, chain n=4; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference between them is attributable to payload form alone. The harness check is the comparison of columns one and two}{table.caption.20}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Why isolation fails: the form of the payload}{6}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:contentform}{{5.4}{6}{Why isolation fails: the form of the payload}{subsection.5.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Defence: redaction blocks literal attacks, and the bypass depends on headroom}{6}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:defence}{{5.5}{6}{Defence: redaction blocks literal attacks, and the bypass depends on headroom}{subsection.5.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Single-hop compromise rate by defence and attack form, one panel per model ($n=30$ per cell for Claude 4.5, $n=8$ for DeepSeek, $n=16$ for qwen; the $n=8$ cells have wide intervals and we do not interpret small differences there). \texttt  {none}$\cdot $split and \texttt  {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise.}}{6}{figure.caption.21}\protected@file@percent }
 \newlabel{fig:obf}{{2}{6}{Single-hop compromise rate by defence and attack form, one panel per model ($n=30$ per cell for Claude 4.5, $n=8$ for DeepSeek, $n=16$ for qwen; the $n=8$ cells have wide intervals and we do not interpret small differences there). \texttt {none}$\cdot $split and \texttt {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Defence: redaction blocks literal attacks, and the bypass depends on headroom}{6}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:defence}{{5.5}{6}{Defence: redaction blocks literal attacks, and the bypass depends on headroom}{subsection.5.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology changes the spread of survival, not just the amount}{6}{subsection.5.6}\protected@file@percent }
 \newlabel{sec:topology}{{5.6}{6}{Topology changes the spread of survival, not just the amount}{subsection.5.6}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together.}}{7}{table.caption.22}\protected@file@percent }
@@ -83,12 +83,15 @@
 \newlabel{tab:depth}{{6}{7}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error}{table.caption.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The shape of the depth profile is a diagnostic}{7}{subsection.5.7}\protected@file@percent }
 \newlabel{sec:depth}{{5.7}{7}{The shape of the depth profile is a diagnostic}{subsection.5.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces One criterion, two models, two opposite predictions. $\DOTSI \sumop \slimits@ _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed.}}{7}{table.caption.24}\protected@file@percent }
-\newlabel{tab:cyclic}{{7}{7}{One criterion, two models, two opposite predictions. $\sum _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed}{table.caption.24}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Recurrence makes the threshold non-vacuous}{7}{subsection.5.8}\protected@file@percent }
 \newlabel{sec:cyclic}{{5.8}{7}{Recurrence makes the threshold non-vacuous}{subsection.5.8}{}}
 \newlabel{eq:cyclicrho}{{4}{7}{Recurrence makes the threshold non-vacuous}{equation.4}{}}
 \citation{StrUQ2025}
+\bibstyle{ACM-Reference-Format}
+\bibdata{refs}
+\bibcite{CII2026}{{1}{2026}{{Abdellah and Aziz}}{{}}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces One criterion, two models, two opposite predictions. $\DOTSI \sumop \slimits@ _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed.}}{8}{table.caption.24}\protected@file@percent }
+\newlabel{tab:cyclic}{{7}{8}{One criterion, two models, two opposite predictions. $\sum _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed}{table.caption.24}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Utility under attack (Section\nonbreakingspace \ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$.}}{8}{table.caption.25}\protected@file@percent }
 \newlabel{tab:utility}{{8}{8}{Utility under attack (Section~\ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$}{table.caption.25}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Utility under attack}{8}{subsection.5.9}\protected@file@percent }
@@ -96,16 +99,10 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Estimator validation}{8}{subsection.5.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{8}{section.6}\protected@file@percent }
 \newlabel{sec:discussion}{{6}{8}{Discussion}{section.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{What the four prescriptions cost to adopt.}{8}{section*.26}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defence evaluation needs headroom.}{8}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Placement is a structural question.}{8}{section*.28}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {7}Limitations and Threats to Validity}{8}{section.7}\protected@file@percent }
 \newlabel{sec:limits}{{7}{8}{Limitations and Threats to Validity}{section.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{8}{section.8}\protected@file@percent }
 \newlabel{sec:conclusion}{{8}{8}{Conclusion}{section.8}{}}
-\bibstyle{ACM-Reference-Format}
-\bibdata{refs}
-\bibcite{CII2026}{{1}{2026}{{Abdellah and Aziz}}{{}}}
 \bibcite{Cemri2025MAST}{{2}{2025}{{Cemri et~al\mbox  {.}}}{{}}}
 \bibcite{StrUQ2025}{{3}{2025}{{Chen et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2024AgentDojo}{{4}{2024}{{Debenedetti et~al\mbox  {.}}}{{}}}
@@ -121,11 +118,19 @@
 \bibcite{Zhan2024InjecAgent}{{14}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
-\newlabel{tocindent1}{4.185pt}
+\newlabel{tocindent1}{6.25499pt}
 \newlabel{tocindent2}{10.34999pt}
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{toc}{\contentsline {section}{References}{9}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{9}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Multiplicity Control for the Composition Test}{9}{appendix.A}\protected@file@percent }
+\newlabel{app:bh}{{A}{9}{Multiplicity Control for the Composition Test}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Context-Clustered Interval on the Weak Edge}{9}{appendix.B}\protected@file@percent }
+\newlabel{app:cluster}{{B}{9}{Context-Clustered Interval on the Weak Edge}{appendix.B}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells. $p$-values are the bootstrap two-sided values from Section\nonbreakingspace \ref {sec:threshold}.}}{9}{table.caption.28}\protected@file@percent }
+\newlabel{tab:bh}{{9}{9}{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells. $p$-values are the bootstrap two-sided values from Section~\ref {sec:threshold}}{table.caption.28}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Weak edge $\texttt  {a1}\to \texttt  {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples).}}{9}{table.caption.29}\protected@file@percent }
+\newlabel{tab:cluster}{{10}{9}{Weak edge $\texttt {a1}\to \texttt {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples)}{table.caption.29}{}}
 \newlabel{TotPages}{{9}{9}{}{page.9}{}}
 \gdef \@abspage@last{9}

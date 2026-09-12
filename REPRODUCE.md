@@ -167,7 +167,16 @@ python scripts\audit_numbers.py --md        # → AUDIT_TABLE.md (number audit +
 python scripts\check_results_complete.py    # mọi thư mục kết quả có hoàn chỉnh không
 python scripts\check_paper.py paper\contagion_aamas2027.tex --bib paper\refs.bib
 python scripts\check_figures.py             # 6 phép kiểm tra hình (0 API)
+python scripts\appendix_stats.py            # BH (Phụ lục A) + cluster CI (Phụ lục B)
 ```
+
+> ⚠️ **`appendix_stats.py` chưa đọc dữ liệu cho Phụ lục A.** Nó **hard-code** cả 5
+> p-value của bảng Benjamini–Hochberg (dòng 45–51), nên nó chỉ in lại số đã gõ chứ
+> không kiểm chứng gì. Phụ lục B thì đọc thật từ `sensitivity_llama/results.json` và
+> **khớp hoàn toàn** (29/120, Wilson [0.174,0.326], cluster [0.167,0.317], nới 0,99×).
+> Ngoài ra `tab:bh` đang ghi `p=0.0001` cho Llama trong khi dữ liệu lưu là **0,00025**,
+> và **ô DeepSeek `p=0.0030` là kết quả đã bị rút lại** ở §5.3 — xem
+> `SUBMISSION_CHECKLIST.md` §7c trước khi dùng bảng đó.
 
 `depth_trend.py` là script sinh **cột ρ và slope** của Table trong §5.7: nó tính
 Spearman hạng giữa depth và sai số tương đối, độ dốc OLS, và **loại tường minh**

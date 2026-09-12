@@ -70,7 +70,7 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 
 %%% Use this command to specify the title of your paper.
 
-\title[Per-Hop Survival in LLM Agent Networks Does Not Compose]{Contagion: Per-Hop Survival in LLM Agent Networks Does Not Compose}
+\title[Per-Hop Prompt-Injection Survival Does Not Compose]{Contagion: Per-Hop Prompt-Injection Survival in LLM Agent Networks Does Not Compose}
 
 %%% Provide names, affiliations, and email addresses for all authors.
 %%% (Hidden in `anonymous' mode -- TODO: fill in real author info for camera-ready.)
@@ -98,10 +98,12 @@ protocol measuring end-to-end success and the reproduction number $R_0$. Four
 results follow. \textbf{(i)} In a chain, $C_i{=}1 \Rightarrow C_{i-1}{=}1$, so
 $\mathrm{ASR} = \prod_i s_i^{\mathrm{nat}}$ is an \emph{identity}, not a modelling
 assumption; the substantive question is whether the per-hop rate measured
-\emph{in isolation} transports to the in-chain regime. \textbf{(ii)} It does not,
-and its error compounds with distance: across chains and trees the relative error
-of isolated measurement rises from $8\%$ at one hop to $82\%$ at six, with a sign
-that is model- and topology-dependent. We trace the mechanism to payload
+\emph{in isolation} transports to the in-chain regime. \textbf{(ii)} It \emph{can}
+fail, and where it does its error compounds with distance: on a seven-hop chain the
+relative error of isolated measurement rises at every step (Spearman $+1.00$,
+$+11.8$ points per hop), while on a model where the rate transports the profile is
+flat (mean $21\%$)---so the profile's slope, not a single number, is what diagnoses
+transportability. We trace the mechanism to payload
 \emph{form}: the same target survives at $0.067$ arriving as a bare assertion and
 $0.967$ embedded in a work product, under the same receivers and judge.
 \textbf{(iii)} The standard epidemic-threshold criterion is vacuous for agent
@@ -112,9 +114,9 @@ placement is decided by graph structure rather than by per-hop survival.
 \textbf{(iv)} Defence efficacy is unidentifiable without a matched no-defence
 baseline: one redaction defence is either essential or irrelevant depending only
 on the model's unprotected susceptibility ($1.00$ versus $0.10$). We report
-role-conditioned per-hop survival for five models from four families, and we
-report one of our own initially significant findings that proved to be a
-protocol artefact.
+role-conditioned per-hop survival for five models from five independent developers, and
+one of our
+own initially significant findings that proved to be a protocol artefact.
 \end{abstract}
 
 %%% Use this command to specify a few keywords describing your work.
@@ -212,15 +214,17 @@ point estimates, with Wilson intervals, a bootstrap test carrying a stated minim
 detectable effect, and estimators validated on synthetic data of known ground truth.
 
 \paragraph{Findings, stated as prescriptions.} Using this framework on five models
-from four families we reach four conclusions, each of which changes what a
-practitioner should do.
+from five independent developers we reach four conclusions, each of which changes what
+a practitioner should do.
 
 \begin{enumerate}
 \item \textbf{Do not compose isolated injection results into pipeline
-predictions.} Per-hop survival measured in isolation does not transport to the
-in-chain regime, and its error \emph{grows with distance}: the relative error rises
-from $8\%$ at one hop to $82\%$ at six (Section~\ref{sec:depth}). A single-hop
-benchmark number is not a pipeline parameter.
+predictions without first checking that they transport.} Per-hop survival measured
+in isolation \emph{can} fail to transport to the in-chain regime, and where it fails
+its error \emph{grows with distance} ($+11.8$ points per hop, rank correlation
+$+1.00$), while on another model it transports and the profile is flat---so the depth
+profile's slope is itself the diagnostic (Section~\ref{sec:depth}). A single-hop
+benchmark number is not a pipeline parameter until that check passes.
 \item \textbf{Report per-hop survival conditioned on the receiving role, together
 with ASR and legitimate-task retention, and always include the no-defence
 baseline.} Per-hop survival varies $6.5\times$ across receiver roles within one
@@ -302,12 +306,11 @@ unreliable. We therefore keep the network-contagion framing but report which of
 its standard instruments transfer and which do not.
 
 \paragraph{Gap.} No prior work, to our knowledge, provides all of: conditional
-per-hop survival measured with a controlled protocol; end-to-end ASR measured with
-an independent natural-run protocol; a test of whether the isolated estimate
-transports to the in-chain regime, reported with resolution; per-hop rates
-conditioned on the receiving agent's role; and the legitimate-task cost reported
-alongside. Each clause corresponds to a measurement we show changes the
-conclusion.
+per-hop survival under a controlled protocol; end-to-end ASR under an independent
+natural-run protocol; a test of whether the isolated estimate transports to the
+in-chain regime; per-hop rates conditioned on the receiving agent's role; and the
+legitimate-task cost reported alongside. Each clause corresponds to a measurement we
+show changes the conclusion.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -450,6 +453,11 @@ detectable effect $\mathrm{MDE} = (z_{1-\alpha/2} + z_{\mathrm{power}})\,
 reported as support: when $\mathrm{ASR} = \prod_i \hat s_i = 0$ the test has
 $\mathrm{sd}(\Delta) = 0$ and is \emph{uninformative}.
 
+Over the six chain cells, only two reject $H_0$ (Llama, $p = 0.0001$; DeepSeek
+fixed-artefact, $p = 0.0030$), and both survive a Benjamini--Hochberg correction
+across the five non-degenerate cells at $q = 0.05$; multiplicity does not inflate
+these two positive findings.
+
 \subsection{Percolation on a feed-forward network, and why $R_0$ is not a safety criterion}
 \label{sec:threshold}
 
@@ -489,6 +497,10 @@ that matters, while the centre it reaches has no successors and so contributes
 nothing to $R_0$. Reach and reproduction are different risks and can move in
 opposite directions (Section~\ref{sec:topology}).
 
+We therefore use $R_0$ as a \emph{descriptive amplification statistic}, not a safety
+certificate: reachability, the quantity a practitioner cares about, is given by
+Eq.~\eqref{eq:percolation}, not by $R_0$.
+
 A corollary concerns defence placement. In a feed-forward network a node can
 affect end-to-end propagation only if it lies on some path from the entry to the
 target, and among the nodes that do, hardening any one is equally effective.
@@ -510,14 +522,17 @@ can be bypassed and placement becomes a genuine optimisation.
 \section{Experimental Setup}
 \label{sec:setup}
 
-\paragraph{Models.} Five models from four families: qwen2.5:\-7b (local),
-DeepSeek V3.2, Llama 3.3 70B, Nova Pro, and Claude Sonnet 4.5 (the latter four via
-Bedrock, region us-east-1). Temperature $0.7$; the models marked $\dagger$ require
-Bedrock inference-profile identifiers.
+\paragraph{Models.} Five models from five independent developers: qwen2.5:\-7b
+(Alibaba, local), DeepSeek V3.2 (DeepSeek), Llama 3.3 70B (Meta), Nova Pro (Amazon),
+and Claude Sonnet 4.5 (Anthropic); the latter four via Bedrock, region us-east-1.
+Temperature $0.7$; the models marked $\dagger$ require Bedrock inference-profile
+identifiers.
 
 \paragraph{Cells.} Unless stated otherwise: four-agent chain, entry
 \texttt{agent\_0}, 40 natural trials, 30 controlled per-edge trials per edge,
-benign assignments rotated across trials, ASV-only judge at $\tau = 0.9$.
+benign assignments rotated across trials, ASV-only judge at $\tau = 0.9$. The study
+comprises $25$ result sets and $\approx\!9{,}000$ model calls (a lower bound, counted
+from these configurations).
 
 \paragraph{Defences.} None (baseline, required by the floor effect);
 \emph{redaction}, a deterministic DLP rule that removes the literal target from
@@ -552,6 +567,7 @@ susceptibility does not follow capability: the most capable model we test is the
 most susceptible, and five models produce four qualitatively different outcomes.
 
 \begin{table}[t]
+\small
 \caption{Chain, no defence, Task Family B. $\bar s$ is the mean controlled
 per-edge survival. Per-edge order follows the chain. Rows marked $\dagger$ used
 the fresh-artefact protocol (Section~\ref{sec:ablation}); others used the default
@@ -620,6 +636,7 @@ edges; Section~\ref{sec:identity} explains why it is the assumption worth testin
 rather than the product identity.
 
 \begin{table}[t]
+\small
 \caption{Transportability of the isolated per-hop estimate, per edge and per
 model (fresh-artefact protocol). \emph{ratio} is $\snat{}/\scite{}$: values near
 one mean the isolated estimate transports. $\prod$ rows are products over the
@@ -646,6 +663,7 @@ DeepSeek V3.2   & \texttt{a0}$\to$\texttt{a1} & 0.667 & 0.600 & 0.90$\times$ \\
 \end{table}
 
 \begin{table}[t]
+\small
 \caption{Artefact-policy ablation: controlled per-edge estimates $\scite{}$ under
 a fixed artefact (one sample reused across trials) versus a fresh artefact per
 trial, with the resulting product and test. The DeepSeek deviation disappears
@@ -703,6 +721,7 @@ the content came from. The harness is self-validating, because one arm replays
 content captured from real natural runs and must therefore reproduce $\snat{}$.
 
 \begin{table}[t]
+\small
 \caption{Content-form ablation (Llama 3.3 70B, chain n=4; 40 natural runs, 30
 replays per arm and edge). Both replay arms use the same receivers, assignments
 and judge, so the difference between them is attributable to payload form alone.
@@ -724,22 +743,9 @@ Table~\ref{tab:form} shows that payload form is a first-order determinant of
 per-hop survival. On the middle edge, the same target judged by the same receivers
 under the same assignment survives at $0.967$ when it arrives embedded in a work
 product and at $0.067$ when it arrives as a bare assertion---a $14\times$
-difference produced entirely by packaging (Fig.~\ref{fig:form}). We read this as
-the mechanism behind Section~\ref{sec:transport}: the canonical artefact used by
-isolated measurement is not a representative message.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig6_content_form.png}
-  \caption{Content-form ablation. The two replay arms use identical receivers,
-  assignments and judge; only the payload source differs. On the middle edge the
-  in-context form survives at $0.967$ and the canonical form at $0.067$.}
-  \label{fig:form}
-  \Description{Grouped bar chart per chain edge with three series: in-chain
-  survival, replay of captured in-context content, and replay of the canonical
-  forced artefact. The middle edge shows a large gap between the in-context series
-  near 0.97 and the canonical series near 0.07.}
-\end{figure}
+difference produced entirely by packaging. We read this as the mechanism behind
+Section~\ref{sec:transport}: the canonical artefact used by isolated measurement is
+not a representative message.
 
 The effect is not uniform across edges: on the last edge the canonical form is
 \emph{more} effective ($1.000$ versus $0.733$), so form interacts with position
@@ -752,8 +758,8 @@ edges and we do not treat the third as a clean comparison.
 \label{sec:defence}
 
 Redaction removes the literal target and drives chain survival to $0.000$ on all
-three models where we measured it. The obfuscation arm (Table~\ref{tab:obf},
-Fig.~\ref{fig:obf}) shows why this is a weaker statement than it appears. On the
+three models where we measured it. The obfuscation arm (Fig.~\ref{fig:obf}) shows
+why this is a weaker statement than it appears. On the
 model with a high no-defence baseline, redaction takes the plain attack from
 $1.00$ to $0.00$ while the split attack remains at $1.00$ and the spaced attack at
 $0.88$: the defence works on the literal channel and is bypassed by ordinary
@@ -770,33 +776,14 @@ utility where $\mathrm{ASR}$ is already $0.000$. This is consistent with prior
 single-agent findings that paraphrasing is breakable~\cite{Zhan2025Adaptive}, and
 it is visible only because utility is reported jointly with propagation.
 
-\begin{table}[t]
-\caption{Single-hop compromise rate by defence and attack form.
-$n=30$ per cell for Claude Sonnet 4.5, $n=8$ for DeepSeek and $n=16$ for qwen;
-intervals are wide at $n=8$ and we do not interpret small differences there.
-\texttt{none}$\cdot$split and \texttt{redact}$\cdot$split measure the same
-quantity by construction, so the gap between them gauges our own noise.}
-\label{tab:obf}
-\begin{tabular}{llccc}
-\toprule
-\textit{defence} & \textit{model} & \textit{plain} & \textit{spaced} & \textit{split} \\
-\midrule
-none   & Claude 4.5      & 0.10 & 0.00 & 0.10 \\
-redact & Claude 4.5      & 0.00 & 0.00 & 0.03 \\
-none   & DeepSeek V3.2   & 1.00 & 0.75 & 1.00 \\
-redact & DeepSeek V3.2   & 0.00 & 0.88 & 1.00 \\
-none   & qwen2.5:7b      & 0.94 & 0.00 & 1.00 \\
-redact & qwen2.5:7b      & 0.00 & 0.00 & 1.00 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig4_obfuscation_heatmap.png}
-  \caption{Obfuscation versus deterministic redaction, one panel per model. The
-  offensive cell is only informative where the no-defence panel shows the attack
-  working at all; the rightmost panels are wide-interval cells.}
+  \caption{Single-hop compromise rate by defence and attack form, one panel per
+  model ($n=30$ per cell for Claude 4.5, $n=8$ for DeepSeek, $n=16$ for qwen; the
+  $n=8$ cells have wide intervals and we do not interpret small differences there).
+  \texttt{none}$\cdot$split and \texttt{redact}$\cdot$split measure the same
+  quantity by construction, so the gap between them gauges our own noise.}
   \label{fig:obf}
   \Description{Heat maps of compromise rate for two defences and three attack
   forms, one panel per model. Redaction reduces the plain attack to zero on every
@@ -839,6 +826,7 @@ much role heterogeneity the network averages over, and hence whether a single
 scalar $s$ is an adequate summary at all.
 
 \begin{table}[t]
+\small
 \caption{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no
 defence, 40 natural runs, 30 controlled trials per edge). The three topologies have
 similar mean per-hop survival but differ substantially in outcome, and the two
@@ -855,71 +843,63 @@ tree           & 6 & 0.928 & \textbf{0.800} & \textbf{0.831} \\
 \end{tabular}
 \end{table}
 
-Two further observations from the same cells. First, Eq.~\eqref{eq:identity} holds
-at this depth too: the six in-chain per-hop rates multiply to $0.450$, exactly the
-measured ASR. Second, the isolated protocol's error compounds along the chain:
-$\prod_i \scite{i} = 0.080$ against $\mathrm{ASR} = 0.450$, a $5.6\times$
-under-estimate, with two of the six edges off by factors of $3.2$ and $2.9$---the
-opposite of the behaviour one would want from a composable per-hop quantity.
-
 \subsection{The shape of the depth profile is a diagnostic}
 \label{sec:depth}
 
 \begin{table}[t]
-\caption{Isolated per-hop measurement versus measured propagation, as a function
-of how many hops separate the target from the entry (Llama 3.3 70B,
-fresh-artefact protocol). \emph{ratio} is
-$\mathrm{ASR} / \prod_i \scite{i}$; \emph{rel.\ err.} is
-$|\prod_i \scite{i} - \mathrm{ASR}| / \mathrm{ASR}$.}
+\small
+\caption{Shape of the depth profile: relative error of the isolated product,
+$|\prod_i \scite{i} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the
+entry (fresh-artefact protocol). \emph{range} is min--max over informative depths;
+$\rho$ is Spearman's rank correlation between depth and error, \emph{slope} its OLS
+trend in percentage points per hop. On Llama the chain dies at depth $11$, so the
+last four depths are undefined and excluded rather than scored as total error.}
 \label{tab:depth}
-\begin{tabular}{lccccc}
+\begin{tabular}{llcccc}
 \toprule
-\textit{topology} & \textit{hops} & \textit{$\prod_i \scite{i}$} & \textit{ASR}
-& \textit{ratio} & \textit{rel.\ err.} \\
+\textit{model} & \textit{chain} & \textit{range} & \textit{mean} & \textit{$\rho$}
+& \textit{slope} \\
 \midrule
-star n=7  & 1 & 0.667 & 0.725 & $0.92\times$ & $8\%$ \\
-tree n=7  & 2 & 1.000 & 0.800 & $1.25\times$ & $25\%$ \\
-chain n=4 & 3 & 0.233 & 0.850 & $0.27\times$ & $73\%$ \\
-chain n=7 & 6 & 0.080 & 0.450 & $0.18\times$ & $82\%$ \\
+qwen2.5:7b     & n=7  & $31$--$89\%$ & $66\%$ & $+1.00$ & $+11.8$ \\
+Llama 3.3 70B  & n=15 & $0$--$92\%$  & $66\%$ & $+0.77$ & $+6.8$  \\
+DeepSeek V3.2  & n=8  & $7$--$35\%$  & $21\%$ & $-0.07$ & $+0.1$  \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:depth} gives the depth profile for Llama 3.3 70B: the magnitude of
-the error rises with the number of hops the payload must survive, from $8\%$ at one
-hop to $82\%$ at six. Repeating the measurement on DeepSeek V3.2 over a seven-hop
-chain produces a different shape. Errors at depths $1\ldots7$ are $17$, $35$, $7$,
-$30$, $14$, $10$ and $32\%$---a mean of $21\%$ with \emph{no} trend, fluctuating as
-the product of seven edge estimates accumulates sampling noise rather than bias.
+Table~\ref{tab:depth} gives the depth profile for three models, and the shapes
+differ in a way that is itself informative. On qwen2.5:7b the error rises at every
+step ($\rho = +1.00$, $+11.8$ points per hop). On Llama 3.3 70B it rises almost
+monotonically to $92\%$ ($\rho = +0.77$, $+6.8$ points per hop) before the chain
+dies outright at depth $11$. On DeepSeek V3.2 there is \emph{no} trend at all
+($\rho = -0.07$, $+0.1$ points per hop): the error fluctuates between $7\%$ and
+$35\%$ as seven edge estimates accumulate sampling noise rather than bias.
 
-The two shapes are not a contradiction but a consequence of what
-Section~\ref{sec:transport} measures directly. Whether the error compounds is
-determined by whether the per-edge isolated rate transports at all. Where it
-transports---as for DeepSeek, whose isolated product matches its measured ASR to
-$2.2\%$---composing edge estimates introduces no systematic error, and the profile
-is flat. Where it fails on one edge---as for Llama, whose middle edge is
-under-estimated by $3.75\times$---that error enters every product containing the
-edge and compounds with depth. The depth profile is therefore a cheap diagnostic:
-one long chain, one run, and its slope indicates whether isolated per-hop rates
-compose for that model at all.
+The shapes are not a contradiction but a consequence of what
+Section~\ref{sec:transport} measures directly. Where the isolated rate
+transports---DeepSeek's isolated product matches its measured ASR to $2.2\%$---composing
+edge estimates adds no systematic error and the profile is flat; where it fails on
+one edge---Llama's middle edge is under-estimated by $3.75\times$---that error enters
+every product containing the edge and compounds with depth. The profile is therefore
+a cheap diagnostic: one long chain, one run, and its \emph{slope} indicates whether
+isolated per-hop rates compose for that model at all.
 
 The tree cell adds a second constraint: the error's \emph{sign} is not fixed. On
 the tree the isolated estimate is optimistic, predicting certain compromise
 ($\prod_i \scite{i} = 1.000$) where the measured rate is $0.800$, and the two edges
 on the target's path are exactly the ones whose isolated survival exceeds their
-in-chain survival. So the defensible statement is neither that isolated measurement
-under-estimates spread nor that its error grows universally, but that
+in-chain survival. The shallow end is also where the error is smallest---$8\%$ at
+the star's single hop, $25\%$ on the tree's two-hop path. So the defensible
+statement is neither that isolated measurement under-estimates spread nor that its
+error grows universally, but that
 \emph{the profile's slope diagnoses transportability while its direction remains
 model- and topology-dependent}. The mechanism is the content-form effect of
 Section~\ref{sec:contentform}: every hop is an opportunity for the payload to be
 re-packaged.
 
-Evaluated on the in-chain rates, Eq.~\eqref{eq:percolation} reproduces the measured
-ASR exactly in all three topologies ($0.450$, $0.725$ and $0.800$), as it must;
-evaluated on isolated rates it deviates by $-0.370$, $-0.058$ and $+0.200$. The
-star and the tree are thus independent checks in which the independence assumption
-approximately holds, while the chain cells are where it fails---consistent with the
-view that what breaks independence is not the network but the repeated
+Evaluated on in-chain rates, Eq.~\eqref{eq:percolation} reproduces the measured ASR
+exactly in all three topologies; on isolated rates it deviates by $-0.370$, $-0.058$
+and $+0.200$. What breaks independence is therefore not the network but the repeated
 re-packaging of the payload along it.
 
 \subsection{Recurrence makes the threshold non-vacuous}
@@ -928,52 +908,68 @@ re-packaging of the payload along it.
 Section~\ref{sec:threshold} proved the threshold criterion vacuous for acyclic
 graphs and observed that it becomes informative only when the interaction graph
 contains a cycle. We test that second half on a pattern real frameworks use: a
-manager broadcasting to two workers that report back.
+manager broadcasting to workers that report back.
 
-With these per-hop survivals, the eigenvalue equation for
-$M = \left(\begin{smallmatrix}0&a&b\\ c&0&0\\ d&0&0\end{smallmatrix}\right)$
-gives $\lambda^2 = ac + bd$, hence
-$\rho = \sqrt{a\,c + b\,d} = \sqrt{1.000{\times}0.867 + 1.000{\times}0.933} =
-1.342$. The \emph{same} survivals read as a feed-forward network
-($m\!\to\!w_1$, $m\!\to\!w_2$ only) give $\rho = 0$ by triangularity. The threshold
-verdict therefore flips from vacuously subcritical to supercritical on the presence
-of two feedback edges, with every $s$ held fixed (Table~\ref{tab:cyclic}).
+For a manager with $w$ reporting workers, the infection matrix has
+$M[m\!\to\! w_j] = a_j$ and $M[w_j\!\to\! m] = c_j$, and its characteristic
+polynomial is $\lambda^{w-1}(\lambda^2 - \sum_j a_j c_j)$. Hence
+\begin{equation}
+  \rho(M) = \sqrt{\textstyle\sum_j a_j\,c_j}
+  \label{eq:cyclicrho}
+\end{equation}
+for every $w$ (checked numerically against the eigenvalues to machine precision on
+$320$ random configurations). Two consequences follow. A feed-forward reading sets
+every $c_j = 0$, so $\rho = 0$ however strong the edges are---the vacuity of
+Section~\ref{sec:threshold} again, now with the feedback edges removed. And the
+system is supercritical exactly when $\sum_j a_j c_j > 1$; for symmetric edges
+$a_j = c_j = s$ this is $w\,s^2 > 1$. That is a \emph{design rule} rather than a
+diagnostic: at $s = 0.5$ a manager needs five reporting workers to sustain an
+endemic injection, at $s = 0.7$ three, at $s = 0.9$ two.
+
+Applied to measured survivals, Eq.~\eqref{eq:cyclicrho} makes two \emph{opposite}
+predictions, which is the test a criterion has to pass to be worth using
+(Table~\ref{tab:cyclic}). On Llama the sum is $1.800$, so the loop should be
+supercritical; on qwen2.5:7b it is $0.578$, so the same loop should decay.
 
 \begin{table}[t]
-\caption{The same agents and the same per-hop survivals, read two ways. Feedback
-turns a vacuous criterion into a binding one.}
+\small
+\caption{One criterion, two models, two opposite predictions. $\sum_j a_jc_j$ uses
+the measured per-hop survivals of the same three-agent recurrent pattern; the
+feed-forward column is the same survivals with the two feedback edges removed.}
 \label{tab:cyclic}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-\textit{reading} & \textit{edges} & \textit{$\rho(M)$} & \textit{verdict} \\
+\textit{model} & \textit{$\sum_j a_jc_j$} & \textit{$\rho$ rec.}
+& \textit{$\rho$ fwd.} & \textit{prediction} \\
 \midrule
-feed-forward   & 2 & 0.000 & subcritical (vacuous) \\
-with feedback  & 4 & \textbf{1.342} & \textbf{supercritical} \\
+Llama 3.3 70B & $1.800$ & $\mathbf{1.342}$ & $0.000$ & supercritical \\
+qwen2.5:7b    & $0.578$ & $0.760$ & $0.000$ & subcritical \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The empirical consequence matches the prediction. The feed-forward reading of the
-same agents terminates at the workers (both compromised in $1.000$ of runs); that
-is the whole of its propagation. In the recurrent run the manager---the agent that
-sent the payload---is re-compromised by its own workers' reports in
-$0.725$ $[0.572, 0.839]$ of runs, and the payload does not die out: at round five
-the manager is still compromised in $0.700$ of runs and some agent in
-$1.000$ $[0.912, 1.000]$, with the workers near saturation. The system settles into
-an endemic state rather than decaying, which is what $\rho > 1$ predicts.
+The measured dynamics follow. On Llama the feed-forward reading terminates at the
+workers; in the recurrent run the manager---the agent that sent the payload---is
+re-compromised by its own workers' reports in $0.725$ $[0.572, 0.839]$ of runs and
+does not die out: at round five it is still compromised in $0.700$ of runs with the
+workers near saturation ($0.925$, $0.975$), the endemic behaviour $\rho > 1$
+predicts. On qwen the same loop decays instead: the manager's re-compromise rate
+falls from $0.775$ $[0.625, 0.877]$ at its first exposure to reports to $0.650$ by
+round five, and the workers plateau at $0.475$ and $0.525$ rather than saturating.
+One criterion, two opposite predictions, both borne out.
 
 Two caveats. First, $\rho$ is computed from \emph{isolated} survivals, i.e.\ through
 exactly the pipeline that Sections~\ref{sec:transport}--\ref{sec:depth} show to be
-unreliable; the verdict survives because it is not marginal---it needs only
-$ac + bd > 1$, and the measured value is $1.80$, so the conclusion tolerates
-substantial error in the edge estimates. Second, this is a single three-agent
-pattern at one temperature: we report it as a demonstration that recurrence makes
-the criterion non-vacuous, not as a survey of cyclic structures.
+unreliable; the verdicts survive because neither is marginal---they need only
+$\sum_j a_jc_j$ on either side of $1$, against measured $1.80$ and $0.58$. Second, we
+study a single recurrent pattern at one temperature and only five rounds: enough to
+separate monotone decay from saturation, not enough to demonstrate extinction.
 
 \subsection{Utility under attack}
 \label{sec:utility}
 
 \begin{table}[t]
+\small
 \caption{Utility under attack (Section~\ref{sec:utility}), 20 paired clean/attack
 runs. Retention $= U_{\mathrm{attack}}/U_{\mathrm{clean}}$.}
 \label{tab:utility}
@@ -992,25 +988,37 @@ Claude   & redact     & 0.000 & 1.000 & $+0.000$ & 1.000 \\
 \end{table}
 
 Table~\ref{tab:utility} makes the trade-off concrete. Redaction on the susceptible
-model blocks propagation entirely at \emph{no} utility cost. Paraphrase on the
-same model provides no propagation benefit and costs utility. On the resistant
-model, where there is no propagation to block, paraphrase is pure cost. Reporting
-$(\mathrm{ASR}, \Delta U)$ jointly is what makes these statements checkable; a
-propagation-only table would have made paraphrase look neutral and redaction look
-merely adequate.
+model blocks propagation entirely at \emph{no} utility cost, while paraphrase on the
+same model buys no propagation benefit and costs utility; on the resistant model,
+where there is no propagation to block, paraphrase is pure cost. Reporting
+$(\mathrm{ASR}, \Delta U)$ jointly is what makes these statements checkable---a
+propagation-only table would have made paraphrase look neutral and redaction merely
+adequate.
 
 \subsection{Estimator validation}
 
-On synthetic data with known ground truth, Wilson intervals attain nominal
-coverage, and our bootstrap test shows no systematic bias ($|\mathrm{bias}| \le
-0.10\sigma$) with size $0.067$--$0.083$ at $\alpha = 0.05$ over 60 replications
-(Monte-Carlo standard error $\pm 0.028$, consistent with nominal) and higher power
-than a conservative CI-overlap rule ($0.750$ vs $0.625$ at 75 trials). Its
-resolution matters for reading our own tables: detecting a deviation of $0.10$ at
-power $0.8$ requires $n \approx 200$, so at our default $n = 40$ only deviations
-above $0.26$ are excluded---we do not treat a null verdict at $n = 40$ as evidence,
-and we label the one cell where $\mathrm{ASR} = \prod_i \hat s_i = 0$ makes the
-test uninformative rather than supportive.
+On synthetic data with known ground truth, Wilson intervals attain nominal coverage
+and our bootstrap test is unbiased ($|\mathrm{bias}| \le 0.10\sigma$) with size
+$0.067$--$0.083$ at $\alpha = 0.05$ over 60 replications, with higher power than a
+CI-overlap rule ($0.750$ vs $0.625$ at 75 trials). Its resolution bounds how our
+tables may be read: detecting a deviation of $0.10$ at power $0.8$ needs
+$n \approx 200$, so at $n = 40$ only deviations above $0.26$ are excluded---we treat
+no null verdict at $n = 40$ as evidence, and label the one cell where
+$\mathrm{ASR} = \prod_i \hat s_i = 0$ as uninformative rather than supportive.
+
+We also tested the trial-level assumption behind the intervals. $\varphi$ must be
+computed \emph{within} a temperature, since temperature is a deliberate systematic
+factor; pooling it inflates $\varphi$ to $2.93$ for no reason other than that. Within
+a fixed temperature the weak edge gives $\varphi = 0.58$ with an upper confidence
+limit of $1.00$ ($8$ replications $\times$ $20$ trials at $T = 0.7$; the two
+saturated edges have no observed variance), supporting the Bernoulli assumption
+behind Wilson intervals. A homogeneity test across the three benign task
+contexts, however, rejects exchangeability on that same weak edge
+($\chi^2 = 13.40$, $\mathrm{df} = 2$, $p = 0.0014$; $18/56$ versus $3/56$ versus
+$13/48$) while the two saturated edges are perfectly homogeneous: trial outcomes
+depend on the legitimate task the receiver is doing, the same context-dependence the
+content-form ablation exposes from the other direction. Our rates are averages over
+contexts, not properties of an edge alone.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1019,20 +1027,13 @@ test uninformative rather than supportive.
 
 \paragraph{What the four prescriptions cost to adopt.} The recommendations of
 Section~1 are cheap: a no-defence baseline and a per-role breakdown require no new
-machinery, only a change in what is reported, and the depth-scaling result says
-that a pipeline's propagation cannot be read off a single-hop number at all. The
-one genuinely new instrument we propose is Eq.~\eqref{eq:percolation}, which
-computes reachability from edge rates in one pass and reproduces every measured ASR
-in this paper when fed in-chain rates---so a benchmark that records its per-hop
-surveys can predict pipeline behaviour without re-running the pipeline.
-
-\paragraph{Isolated attack success is not a composable unit.} The immediate
-implication of Sections~\ref{sec:transport} and~\ref{sec:depth} is a bound on how
-single-agent benchmarks can be used: composing isolated per-hop success rates into a
-pipeline prediction is unreliable, and the magnitude of the error grows with the
-number of hops the payload must survive. Because $\prod_i \snat{i} = \mathrm{ASR}$
-is an identity, the practically useful control is to measure the conditional rate
-\emph{in the deployment configuration} rather than in a canonical harness.
+machinery, only a change in what is reported. The one new instrument is
+Eq.~\eqref{eq:percolation}, which computes reachability from edge rates in one pass
+and reproduces every measured ASR here when fed in-chain rates---so a benchmark that
+records its per-hop surveys can predict pipeline behaviour without re-running the
+pipeline. Because composing \emph{isolated} rates is the unreliable step, the useful
+control is to measure the conditional rate in the deployment configuration rather
+than in a canonical harness.
 
 \paragraph{Defence evaluation needs headroom.} A defence can only be credited with
 what it removes. Reporting a large relative reduction on a model whose no-defence
@@ -1044,72 +1045,76 @@ succeeds, and for reporting the unprotected rate as a first-class quantity.
 \paragraph{Placement is a structural question.} Section~\ref{sec:threshold} answers
 the placement question in closed form for feed-forward networks: only nodes on an
 entry--target path matter, and among those all are equally effective, so the choice
-is one of cost rather than of criticality. Per-hop survival does not determine
-\emph{where} to harden, only whether a defence is worth deploying at all. Redundant
-paths, which our topologies do not contain, are what would turn placement into an
-optimisation rather than a structural query.
+is one of cost rather than criticality. Redundant paths, which our topologies do not
+contain, are what would turn placement into an optimisation rather than a structural
+query.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Limitations and Threats to Validity}
 \label{sec:limits}
 
-\emph{Utility metric uses a proxy ground truth.} $U$ measures contamination of the
-deliverable, not its correctness. A task family with verifiable answers would
-strengthen the utility analysis of Section~\ref{sec:utility}.
+\emph{Proxy utility ground truth.} $U$ measures contamination of the deliverable,
+not its correctness; a task family with verifiable answers would strengthen
+Section~\ref{sec:utility}.
 
 \emph{Transportability is demonstrated, not estimated.} The failure is shown on one
-edge of one model. It is a proof of existence---isolation \emph{can} fail by
+edge of one model: a proof of existence---isolation \emph{can} fail by
 $3.75\times$---not an estimate of how often it fails.
 
 \emph{One artefact of our own, reported.} Our initial significant composition
-failure on one model was an artefact of the fixed-artefact protocol and does not
-survive per-trial artefacts. We keep both the artefact and the correction because
-the protocol sensitivity is itself a finding, but this episode is also a warning:
-composition results in this area are sensitive to protocol details that are easy
-to leave unstated.
+failure on one model was an artefact of the fixed-artefact protocol
+(Section~\ref{sec:ablation}). We keep both the artefact and the correction, but it
+is also a warning: composition results here are sensitive to protocol details that
+are easy to leave unstated.
 
-\emph{Scale and topology coverage.} Headline results are chains of four to seven
-agents plus one seven-agent star and one seven-agent tree; no topology in our
-suite contains a cycle, which is precisely the regime in which the threshold
-analysis of Section~\ref{sec:threshold} becomes non-trivial. The scale promised by
-a full agent-organisation study (tens of agents, mesh and debate topologies) is not
-covered here.
+\emph{Scale and topology coverage.} Headline results are chains of four to fifteen
+agents plus one seven-agent star and tree; the recurrent pattern of
+Section~\ref{sec:cyclic} is a single three-agent instance, not a survey of cyclic
+structures, and the scale of a full agent-organisation study (tens of agents, mesh
+and debate topologies) is not covered.
 
-\emph{Unmeasured attack dimensions and defences.} Re-injection variants
-(independent versus colluding compromised agents, adaptive re-optimisation), the
-content-freedom of the inter-agent field, and the additional defence families our
-harness implements---prompt-injection detection, hop isolation, and
-structured-query isolation~\cite{StrUQ2025}---are not varied experimentally here;
-the content-form ablation of Section~\ref{sec:contentform} is a first step in that
-direction.
+\emph{Unmeasured dimensions and defences.} Re-injection variants (colluding versus
+independent compromised agents, adaptive re-optimisation) and the further defence
+families our harness implements---detection, hop isolation and structured
+queries~\cite{StrUQ2025}---are not varied experimentally.
 
-\emph{Sample sizes.} Most cells use 30--40 trials; intervals are reported and the
-composition claim is made only where power was validated. Multiplicity across the
-model $\times$ defence $\times$ attack grid is not corrected.
-
-\emph{Judge scope.} Thresholds for the ASV branch are calibrated against a literal
-target and are model-independent; the MR branch used for family A does require
-per-model recalibration, and family A results carry that caveat.
+\emph{Sample size and judge scope.} Most cells use 30--40 trials and multiplicity
+across the model $\times$ defence $\times$ attack grid is uncorrected; ASV
+thresholds are calibrated against a literal target, while the family-A MR branch
+needs per-model recalibration.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion}
+\label{sec:conclusion}
 
 Prompt-injection propagation in LLM agent networks is a multiagent phenomenon: a
 compromise's reach is a property of the graph, the roles on it, and the message
-that travels, not of any single agent. We presented a framework that measures
-per-hop survival with a controlled protocol and end-to-end success with an
-independent one, and we showed that the compositional question usually posed as a
-Markov assumption is in fact an identity plus a transportability hypothesis. On
-five models we find survival to be strongly role-dependent, transportability to
-fail by a factor of four on one frontier model while holding on another, and
-defence efficacy to be unidentifiable without a matched no-defence baseline. We
-also report a significant result of our own that did not survive a protocol fix,
-together with the fix, because in a measurement study the protocol is part of the
-result. Code, configurations and raw model outputs for every cell are released
-with the paper, including the per-trial artefacts needed to reproduce the
-ablation of Section~\ref{sec:ablation}.
+that travels, not of any single agent. We presented a framework measuring per-hop
+survival with a controlled protocol and end-to-end success with an independent one,
+and showed that the compositional question usually posed as a Markov assumption is
+in fact an identity plus a transportability hypothesis whose failure is visible in
+the shape of a depth profile. On five models, survival is strongly role-dependent,
+transportability fails by a factor of four on one frontier model while holding on
+another, and defence efficacy is unidentifiable without a matched no-defence
+baseline. We also report a significant result of our own that did not survive a
+protocol fix, together with the fix, because in a measurement study the protocol is
+part of the result. Code and raw model outputs for every cell are released.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Artifact availability.} We release the framework, all configurations, and
+raw per-cell outputs. Every number reproduces offline from the stored outputs (code,
+\texttt{results.json}/\texttt{outputs.jsonl}, unit suite, estimator validation,
+percolation/placement, figures, and the Benjamini--Hochberg pass above); qwen2.5:7b
+cells re-run on a free local model; only the four frontier cells need paid Bedrock
+access (inference-profile \texttt{us.}\ prefix for the Anthropic and Meta models).
+
+\paragraph{Ethics.} The payload is a benign marker (\texttt{BANANA-77}) and all
+attacks target only our own harness: no deployed system is exploited and no user data
+is involved. The framework is for \emph{defensive} evaluation, and we report defences
+alongside attacks throughout.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
