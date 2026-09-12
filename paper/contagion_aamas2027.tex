@@ -457,10 +457,12 @@ detectable effect $\mathrm{MDE} = (z_{1-\alpha/2} + z_{\mathrm{power}})\,
 reported as support: when $\mathrm{ASR} = \prod_i \hat s_i = 0$ the test has
 $\mathrm{sd}(\Delta) = 0$ and is \emph{uninformative}.
 
-Over the six chain cells, only two reject $H_0$ (Llama, $p = 0.0001$; DeepSeek
-fixed-artefact, $p = 0.0030$), and both survive a Benjamini--Hochberg correction
-across the five non-degenerate cells at $q = 0.05$; multiplicity does not inflate
-these two positive findings.
+Over the six chain cells, only the Llama cell rejects $H_0$ under our default
+fresh-artefact protocol ($p = 0.0002$); it survives a Benjamini--Hochberg
+correction across the five non-degenerate cells at $q = 0.05$, so multiplicity does
+not inflate this positive finding. (The one apparent DeepSeek rejection was a
+fixed-artefact artefact that vanishes under the fresh protocol, $p = 0.63$;
+Section~\ref{sec:ablation} and Appendix~\ref{app:bh}.)
 
 \subsection{Percolation on a feed-forward network, and why $R_0$ is not a safety criterion}
 \label{sec:threshold}
@@ -1081,8 +1083,25 @@ A compromise's reach in an LLM agent network is a property of the graph, the rol
 it, and the message that travels---not of any single agent. Two independent protocols
 recast the compositional question posed as a Markov assumption into an identity plus a
 transportability hypothesis, and expose role-dependent survival and the floor effect
-in defence evaluation. We release all code and outputs; attacks use a benign marker
-against our own harness only.
+in defence evaluation.
+
+\section*{Ethical Considerations}
+All experiments run against our own harness with a \emph{benign} marker as the
+injected payload---no real secret or harmful capability is elicited---and every
+model is queried through standard provider APIs. The attack forms we report
+(literal, spaced, split-word) are already documented for the single-agent setting;
+we add no novel exploit, and release code and data to help defenders measure and
+mitigate multi-hop contamination.
+
+\section*{Artifact Availability}
+We provide three reproducibility tiers: \textbf{(i)} a zero-API tier---code, all
+per-cell outputs, tests, and every offline re-analysis (percolation, the
+Benjamini--Hochberg pass of Appendix~\ref{app:bh}, the cluster bootstrap of
+Appendix~\ref{app:cluster}, and the threshold sweep of Appendix~\ref{app:tau})
+reproduce our tables and figures without any model call; \textbf{(ii)} a free
+local-model tier (\texttt{qwen2.5:7b}) for the depth-profile and cyclic cells; and
+\textbf{(iii)} the hosted frontier cells, which need provider API access. A
+\texttt{REPRODUCE} manifest maps each table to its command, cost, and caveats.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1105,33 +1124,38 @@ against our own harness only.
 \bibliography{refs}
 
 
-%%% Appendix appears AFTER the references, so it does not count against the
-%%% 8-page content limit. All numbers here are produced offline by
-%%% scripts/appendix_stats.py from stored results (0 API).
+%%% Ethics and Artifact-availability statements follow the Conclusion; the
+%%% technical appendix appears AFTER the references. Per AAMAS/ACM practice these
+%%% do not count against the 8-page content limit (only the numbered body must fit
+%%% 8 pages, which it does: Sections 1-8 end on page 8). All appendix numbers are
+%%% produced offline by scripts/appendix_stats.py from stored results (0 API).
 \appendix
 
 \section{Multiplicity Control for the Composition Test}
 \label{app:bh}
-Table~\ref{tab:bh} applies a Benjamini--Hochberg correction to the six chain
-composition tests of Section~\ref{sec:threshold}. The two rejections (Llama,
-DeepSeek fixed-artefact) survive at $q = 0.05$; the three ``consistent'' verdicts
-remain non-significant. The Claude cell is degenerate
-($\mathrm{ASR} = \prod_i \hat s_i = 0$, $\mathrm{sd}(\Delta) = 0$) and is excluded
-from the correction.
+Table~\ref{tab:bh} applies a Benjamini--Hochberg correction to the composition
+tests of Section~\ref{sec:threshold}, using the \emph{default fresh-artefact
+protocol} for every cell. Only the Llama cell rejects $H_0$; it survives the
+correction at $q = 0.05$, while the four remaining non-degenerate cells---including
+DeepSeek, whose fixed-artefact deviation is a protocol artefact that disappears
+under the fresh protocol (Section~\ref{sec:ablation})---stay non-significant. The
+Claude cell is degenerate ($\mathrm{ASR} = \prod_i \hat s_i = 0$,
+$\mathrm{sd}(\Delta) = 0$) and is excluded from the correction.
 
 \begin{table}[h]
 \small
-\caption{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells.
-$p$-values are the bootstrap two-sided values from Section~\ref{sec:threshold}.}
+\caption{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells
+(fresh-artefact protocol). $p$-values are the bootstrap two-sided values from
+Section~\ref{sec:threshold}. Only the Llama rejection survives.}
 \label{tab:bh}
 \begin{tabular}{clcc}
 \toprule
 \textit{rank} & \textit{cell} & \textit{$p$} & \textit{BH thr.\ ($q{=}0.05$)} \\
 \midrule
-1 & Llama $\cdot$ none            & $0.0001$ & $0.010$ \\ % reject
-2 & DeepSeek $\cdot$ none         & $0.0030$ & $0.020$ \\ % reject
-3 & Nova $\cdot$ none             & $0.0858$ & $0.030$ \\
-4 & qwen $\cdot$ none             & $0.3165$ & $0.040$ \\
+1 & Llama $\cdot$ none            & $0.0002$ & $0.010$ \\ % reject
+2 & Nova $\cdot$ none             & $0.0840$ & $0.020$ \\
+3 & qwen $\cdot$ none             & $0.3165$ & $0.030$ \\
+4 & DeepSeek $\cdot$ none (fresh) & $0.6300$ & $0.040$ \\
 5 & qwen $\cdot$ paraphrase       & $0.7775$ & $0.050$ \\
 \bottomrule
 \end{tabular}

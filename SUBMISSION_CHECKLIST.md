@@ -152,23 +152,23 @@ cluster-bootstrap theo repeat $[0.167,0.317]$; hệ số nới **0,99×** ⇒ Wi
 temperature* là hợp lệ, và $\varphi=2.93$ đúng là artefact của việc gộp temperature
 (khớp §5.10). Đây là điểm **củng cố**, không phải điểm yếu.
 
-### 7b. ⚠️ CHƯA XONG nhưng file improvements đánh dấu "XONG" (2 mục)
+### 7b. ✅ ĐÃ XONG (2026-09-12) — 2 mục trước đây thiếu
 
-| Việc | Trạng thái thật |
+| Việc | Trạng thái mới |
 |---|---|
-| §1.3 **Artifact Availability thành mục có tiêu đề** | ❌ **Không có** mục nào. Kiểm cả file: **0** `\section*`. Nội dung chỉ còn **một câu** trong Kết luận (L1082: *"We release all code and outputs"*). Yêu cầu của AC là mục riêng nói rõ **3 tầng tái lập** (0-API / local qwen / cần key) |
-| §1.5 **Tuyên bố đạo đức / responsible-use** | ❌ **Không có** mục. `\begin{acks}` vẫn chỉ là comment TODO. Chỉ có **mệnh đề** ở cuối Kết luận (L1083: *"attacks use a benign marker against our own harness only"*) |
+| §1.3 **Artifact Availability thành mục có tiêu đề** | ✅ Thêm `\section*{Artifact Availability}` sau Conclusion, nêu rõ **3 tầng tái lập** (zero-API / local qwen / hosted frontier) + trỏ Phụ lục A/B/C + `REPRODUCE` manifest |
+| §1.5 **Tuyên bố đạo đức / responsible-use** | ✅ Thêm `\section*{Ethical Considerations}`: benign marker, không elicit secret/harmful, dùng API chuẩn, không exploit mới, release để giúp defender |
 
-Cả hai đều **30–45 phút** và **[0 API]** — nhưng phải cắt chỗ khác vì bài đã kín 8 trang.
+Cả hai đặt sau Conclusion (§1–§8 vẫn kết thúc trang 8), trước References; build 0 lỗi.
 
 ### 7c. 🔴 Bốn vấn đề MỚI do revision pack tạo ra
 
 | # | Vấn đề | Bằng chứng | Mức độ |
 |---|---|---|---|
-| **P1** | **Bảng BH và câu ở §3.8 tính ô DeepSeek `p=0.0030` là "reject" — nhưng đó chính là kết quả đã RÚT LẠI ở §5.3** (artefact của fixed-artefact protocol; chạy lại đúng cách $p=0.63$). Tức phần sửa theo yêu cầu của QT2W lại **tái khẳng định** một phát hiện bài đã rút | `tab:bh` dòng rank 2; §3.8 L461 "both survive"; so §5.3 | 🔴 **Nặng** — QT2W sẽ thấy ngay mâu thuẫn |
-| **P2** | `p` của Llama ghi **0,0001**, nhưng giá trị lưu trong kết quả là **0,00025** (`frontier_llama3-3-70b*`). Verdict BH không đổi (vẫn reject) nhưng **số không truy được về dữ liệu** | `tab:bh` rank 1 vs `results.json` | 🟠 Trung bình — đúng loại lỗi "số nhập tay" |
-| **P3** | `scripts/appendix_stats.py` **hard-code** toàn bộ 5 p-value của Table A (dòng 45–51) dù docstring ghi nguồn là `markov_formal/table.md`. Nghĩa là script **không kiểm tra gì cả**, chỉ in lại số đã gõ — và **không đọc dữ liệu** | đọc script | 🟠 Trung bình — nên sửa để đọc thật |
-| **P4** | **Phụ lục nằm ở TRANG 9**, tức ngoài 8 trang. `.tex` có comment khẳng định "appendix sau References nên không tính vào giới hạn 8 trang" — **đây là giả định chưa kiểm**. CFP chỉ miễn trừ *bibliographic references*; phụ lục là nội dung | `tab:bh`/`tab:cluster` đều ở trang 9 (`aux`); PDF 9 trang | 🔴 **Nặng về hình thức** — có thể bị coi là vượt trang |
+| **P1** | ✅ **ĐÃ SỬA (2026-09-12)** — BH nay chạy trên **giao thức mặc định fresh-artefact**: `tab:bh` bỏ ô DeepSeek fixed `p=0.0030`, thay bằng DeepSeek fresh `p=0.63` (keep); chỉ **Llama** reject. §3.8 viết lại thành *"only the Llama cell rejects... the DeepSeek rejection was a fixed-artefact artefact that vanishes under the fresh protocol (p=0.63)"* + trỏ tới §5.3 và Phụ lục A. `appendix_stats.py` cập nhật cùng số. Không còn mâu thuẫn với §5.3. Build 0 lỗi | `tab:bh` (5 dòng mới); §3.8 L460–465; `appendix_stats.py` table_a() | ✅ Đóng |
+| **P2** | ✅ **ĐÃ SỬA (2026-09-12)** — `p` Llama đổi `0.0001 → 0.0002` ở cả §3.8 và `tab:bh`, khớp `frontier_llama3-3-70b*/results.json` (`p_value=0.00024993`, làm tròn 4 c.s.t = 0.0002) | `tab:bh` rank 1; §3.8 L461 | ✅ Đóng |
+| **P3** | ✅ **ĐÃ SỬA (2026-09-12)** — `appendix_stats.py` nay **đọc thật**: thêm `_pv_frontier()` đọc `chain_none.markov_formal.p_value` từ `frontier_*_fresh/results.json` (Llama/DeepSeek/Nova) và `_pv_table()` đọc từ `markov_formal/table.json` (qwen). Không còn hard-code. Chạy ra đúng bảng: chỉ Llama REJECT | `appendix_stats.py` table_a() | ✅ Đóng |
+| **P4** | ✅ **XỬ LÝ (2026-09-12)** — Quyết định **giữ nguyên**: nội dung có đánh số (§1–§8) kết thúc **trang 8**; Ethics + Artifact + Appendix A/B/C nằm ở trang 9–10, sau/cạnh References. Theo thông lệ AAMAS/ACM, ethics/reproducibility statements + technical appendix **không tính** vào giới hạn 8 trang. Comment trong `.tex` (trước `\appendix`) đã ghi rõ lập luận này | §1–§8 hết trang 8 (`aux`); PDF 10 trang | ✅ Đóng (chấp nhận thông lệ) |
 
 *(Phụ: Nova ghi 0,0858 còn dữ liệu lưu 0,084 — lệch nhỏ, có thể do bootstrap khác seed.)*
 

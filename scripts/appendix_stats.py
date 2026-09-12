@@ -39,15 +39,32 @@ def benjamini_hochberg(pvals, q=0.05):
     return out
 
 
+def _pv_frontier(dirname):
+    """Đọc p_value của cell chain_none từ một thư mục frontier_* (0 API)."""
+    d = json.loads((RES / dirname / "results.json").read_text(encoding="utf-8"))
+    return d["chain_none"]["markov_formal"]["p_value"]
+
+
+def _pv_table(label_sub):
+    """Đọc p_value theo label con từ markov_formal/table.json (bootstrap 8k)."""
+    d = json.loads((RES / "markov_formal" / "table.json").read_text(encoding="utf-8"))
+    for c in d["cells"]:
+        if label_sub in c["label"]:
+            return c["p_value"]
+    raise KeyError(label_sub)
+
+
 def table_a():
-    # p-values đọc thẳng từ markov_formal/table.md (bootstrap 8k, đã kiểm).
-    # Cell degenerate (Claude, sd(delta)=0) bị loại khỏi hiệu chỉnh.
+    # P3 fix: ĐỌC THẬT p-value từ kết quả đã lưu (không hard-code).
+    # BH chạy trên GIAO THỨC MẶC ĐỊNH (fresh-artefact) cho mọi cell, khớp §5.3 +
+    # Phụ lục A của bài. DeepSeek dùng p fresh (không dùng p fixed 0.0030 đã rút lại
+    # ở §5.3). Cell degenerate (Claude, sd(delta)=0) bị loại khỏi hiệu chỉnh.
     cells = [
-        ("qwen2.5:7b none",        0.3165),
-        ("qwen2.5:7b paraphrase",  0.7775),
-        ("deepseek none",          0.0030),
-        ("llama none",             0.0001),
-        ("nova none",              0.0858),
+        ("qwen2.5:7b none",        round(_pv_table("qwen2.5:7b \u00b7 none"), 4)),
+        ("qwen2.5:7b paraphrase",  round(_pv_table("qwen2.5:7b \u00b7 paraphrase"), 4)),
+        ("deepseek none (fresh)",  round(_pv_frontier("frontier_deepseek_fresh"), 4)),
+        ("llama none (fresh)",     round(_pv_frontier("frontier_llama3-3-70b_fresh"), 4)),
+        ("nova none",              round(_pv_frontier("frontier_nova-pro"), 4)),
     ]
     print("== TABLE A: Benjamini-Hochberg (m=%d non-degenerate, q=0.05) ==" % len(cells))
     res = benjamini_hochberg(cells, q=0.05)
@@ -55,6 +72,8 @@ def table_a():
         p, rank, thr, verdict = res[label]
         print(f"  rank {rank}: {label:24s} p={p:.4f}  BH_thr={thr:.4f}  -> {verdict.upper()}")
     print("  (Claude none: degenerate, sd(delta)=0, excluded)")
+    print("  source: frontier_*_fresh/results.json (Llama/DeepSeek/Nova) + "
+          "markov_formal/table.json (qwen)")
 
 
 def wilson(k, n, z=1.96):
