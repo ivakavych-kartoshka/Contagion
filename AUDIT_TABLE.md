@@ -61,3 +61,15 @@ Sinh bởi `python scripts\audit_numbers.py --md`. Không có số nào nhập t
 | `semantic_probe` | JSON gốc là list, không phải object |
 | `taskb_obfuscation` | JSON gốc là list, không phải object |
 | `threshold_analysis` | keys: chain n=7 (Llama 3.3 70B), star n=7 (Llama 3.3 70B), tree n=7 (Llama 3.3 70B) |
+
+## Claim lint — câu MÔ TẢ trong paper vs dữ liệu thật
+
+* model THẬT xuất hiện trong kết quả: **5** (đã loại `mock`)
+    - amazon.nova-pro-v1:0
+    - deepseek.v3.2
+    - qwen2.5:7b
+    - us.anthropic.claude-sonnet-4-5-20250929-v1:0
+    - us.meta.llama3-3-70b-instruct-v1:0
+* topology xuất hiện trong kết quả: **3** -> ['chain', 'star', 'tree']
+* câu đếm trong .tex: five models×5, three models×3, three topologies×2, two defences×1, two models×2
+✅ các câu đếm về families/developers/topologies khớp dữ liệu

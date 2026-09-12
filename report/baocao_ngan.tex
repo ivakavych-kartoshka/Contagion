@@ -1,0 +1,560 @@
+% =====================================================================
+%  BÁO CÁO TIẾN ĐỘ — BẢN NGẮN (10 slide)
+%  Biên dịch:  xelatex baocao_ngan.tex
+%  Bản đầy đủ (17 slide + phụ lục): baocao_noidung.tex / .pdf
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=2.4cm}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=1.3em}
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries\color{blue!55!black}}{Slide \thesection.}{0.5em}{}
+\titleformat{\subsection}[runin]{\normalfont\bfseries}{}{0em}{}[.]
+\titlespacing{\section}{0pt}{14pt}{6pt}
+
+\newcommand{\slide}[1]{\section{#1}}
+\newcommand{\noidung}{\subsection*{Nội dung slide}}
+\newcommand{\loinoi}{\subsection*{Lời nói}}
+
+\title{\textbf{BÁO CÁO TIẾN ĐỘ DỰ ÁN NGHIÊN CỨU --- BẢN NGẮN}\\ \large
+Contagion: đo lan truyền prompt injection trong mạng LLM agent}
+\author{Người báo cáo: \underline{\hspace{5cm}} \quad Lớp/Đơn vị: \underline{\hspace{4cm}}}
+\date{Ngày báo cáo: \underline{\hspace{4cm}}}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\vspace{-0.4cm}
+\begin{center}
+\fbox{\parbox{0.92\textwidth}{
+\textbf{Bản ngắn 10 slide.} Mỗi mục gồm \textbf{[Nội dung slide]} để chép lên slide
+chiếu, và \textbf{[Lời nói]} là văn nói đầy đủ. Muốn bản chi tiết (17 slide + phụ lục
+gồm câu hỏi hội đồng và từ điển thuật ngữ) thì dùng \texttt{baocao\_noidung.pdf}.
+}}
+\end{center}
+
+\newpage
+
+% =====================================================================
+\slide{Bối cảnh và câu hỏi nghiên cứu}
+
+\noidung
+\begin{itemize}
+  \item LLM agent được triển khai như một \emph{tổ chức}: planner $\to$ worker $\to$
+        reviewer $\to$ aggregator. Mỗi lần chuyển giao là một \textbf{ranh giới tin cậy}.
+  \item Kẻ tấn công chèn chỉ dẫn độc hại vào nguồn dữ liệu agent đọc; đầu ra của agent
+        bị nhiễm trở thành đầu vào của agent sau.
+  \item Benchmark hiện có (InjecAgent, AgentDojo) chỉ đo \emph{một agent, một bước}.
+  \item \textbf{Câu hỏi:} một agent bị nhiễm thì lan được bao xa, và cái gì quyết định
+        nó sống sót qua mỗi lần chuyển giao?
+  \item \textbf{Cách làm:} khung đo với \emph{hai protocol độc lập}; 5 model / 5 nhà phát triển;
+        3 topology.
+\end{itemize}
+
+\loinoi
+Kính thưa thầy/cô. Dự án của em nghiên cứu \emph{lan truyền prompt injection trong mạng
+nhiều LLM agent}.
+
+Các hệ thống LLM hiện nay không còn là một model đơn lẻ mà là một tổ chức: một agent
+lập kế hoạch, chia việc cho agent con, một agent kiểm tra, một agent tổng hợp. Dữ liệu
+truyền qua lại là văn bản tự do, nên mỗi lần chuyển giao là một ranh giới tin cậy ---
+agent nhận không phân biệt được đâu là dữ liệu, đâu là mệnh lệnh. Kẻ tấn công khai thác
+đúng điểm đó: chỉ cần đặt chỉ dẫn độc hại vào một tài liệu hay một kết quả gọi công cụ
+mà agent sẽ đọc.
+
+Các benchmark hiện có đều đo \emph{một} agent trong \emph{một} bước, nên không trả lời
+được câu hỏi em đặt ra: một khi đã lọt vào, nó lan được bao xa, và cái gì quyết định nó
+sống sót qua từng lần chuyển giao. Để trả lời, em xây một khung đo gồm hai protocol độc
+lập, chạy trên năm model thuộc năm nhà phát triển độc lập.
+
+% =====================================================================
+\slide{Phương pháp: hai protocol độc lập}
+
+\noidung
+\begin{itemize}
+  \item \textbf{Protocol A --- đo từng cạnh có kiểm soát:} ép đầu ra của agent nguồn
+        thành ``đã nhiễm'' $\to$ đưa cho agent nhận $\to$ chấm. Cho
+        $s_i=\Pr[C_i{=}1 \mid C_{i-1}{=}1]$.
+  \item \textbf{Protocol B --- chạy tự nhiên:} chạy cả mạng, đo tỉ lệ thành công đầu-cuối
+        (ASR) và chỉ số lây nhiễm $R_0$.
+  \item \textbf{Vì sao hai?} Một cách đo thì khi hai con số lệch nhau, không phân biệt
+        được ``đo sai'' với ``hiểu sai hệ thống''.
+  \item Chấm điểm \textbf{tất định}, \emph{không} dùng LLM làm giám khảo (tránh giám
+        khảo cũng bị lây). 3 ngữ cảnh công việc hợp lệ xoay vòng.
+  \item 5 model / 5 nhà phát triển độc lập: Llama 3.3 70B (Meta), DeepSeek V3.2
+        (DeepSeek), Claude Sonnet 4.5 (Anthropic), Nova Pro (Amazon), qwen2.5:7b
+        (Alibaba, chạy local).
+\end{itemize}
+
+\loinoi
+Điểm em muốn nhấn mạnh là em cố tình xây \emph{hai} cách đo và giữ chúng tách biệt.
+
+Cách thứ nhất: em không chờ mạng tự lan, mà chủ động \emph{ép} đầu ra của agent trước
+thành nội dung đã bị nhiễm, đưa đúng nội dung đó cho agent sau, rồi chấm. Làm nhiều lần
+thì được xác suất có điều kiện: nếu agent trước đã nhiễm thì agent sau nhiễm với xác
+suất bao nhiêu. Cách thứ hai là để mạng chạy tự nhiên rồi đo tỉ lệ thành công đầu-cuối.
+
+Lý do phải có cả hai: nếu chỉ có một cách đo, khi thấy hai con số không khớp, em không
+phân biệt được là do \emph{em đo sai} hay do \emph{hệ thống thực sự khác điều em tưởng}.
+Có hai cách độc lập thì mâu thuẫn giữa chúng trở thành một phát hiện.
+
+Việc chấm ``agent có bị nhiễm hay không'' làm bằng công cụ tất định, không dùng LLM làm
+giám khảo --- vì trong bài toán lan truyền, giám khảo đọc chính nội dung cần chấm nên có
+thể bị ảnh hưởng. Em cũng dùng ba ngữ cảnh công việc hợp lệ khác nhau để kết quả không
+phụ thuộc vào một đề bài duy nhất.
+
+% =====================================================================
+\slide{Quy mô thực nghiệm: đã chạy những gì và bao nhiêu lần}
+
+\noidung
+\begin{itemize}
+  \item \textbf{Tổng khối lượng:} 46 thư mục kết quả (25 có cấu trúc chuẩn);
+        \textbf{$\approx$ 9.070 lượt gọi model}; \textbf{2.342 trial tự nhiên};
+        \textbf{4,3 giờ} thời gian máy ghi lại được.
+  \item \textbf{5 model / 5 nhà phát triển} · \textbf{2 protocol độc lập} ·
+        \textbf{3 topology} · \textbf{3 defense} · \textbf{3 kiểu biến hình tấn công}.
+  \item \textbf{Cấu hình từng loại thí nghiệm:}
+        \begin{center}
+        \small
+        \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Loại thí nghiệm} & \textbf{Số lần chạy}\\
+        \hline
+        Ô chuẩn (mọi model) & chuỗi $n=4$: \textbf{40} trial tự nhiên $+$ \textbf{30} trial/cạnh\\
+        Đường cong chiều sâu & \textbf{60} trial tự nhiên; \textbf{30}/cạnh (qwen 25);\\
+         & chuỗi $n=15$ (Llama), $n=8$ (DeepSeek), $n=7$ (qwen)\\
+        Mô hình có vòng & \textbf{40} trial $\times$ \textbf{5 vòng} $\times$ 3 agent\\
+        Utility (công việc hợp lệ) & \textbf{20} cặp sạch/bị tấn công cho mỗi defense\\
+        Độ nhạy (seed $\times$ temp) & \textbf{8} seed $\times$ \textbf{20} trial/cạnh ở temp $0{,}7$\\
+        Biến hình $\times$ defense & \textbf{6} ô $\times$ \textbf{30} mẫu/ô\\
+        Topology & 3 topology $\times$ $n=7$: 40 trial tự nhiên $+$ 30/cạnh\\
+        \hline
+        \end{tabular}
+        \end{center}
+  \item Cách đếm: lượt gọi là \textbf{ước lượng cận dưới} tính từ cấu hình
+        (trial tự nhiên $\times$ số agent $+$ trial/cạnh $\times$ số cạnh), \emph{chưa}
+        tính các lần thử lại khi ép đầu ra bị nhiễm và các lần chạy hỏng.
+\end{itemize}
+
+\loinoi
+Thầy/cô thường hỏi khối lượng thực nghiệm, nên em chuẩn bị riêng một slide cho việc này.
+
+Tính đến nay em đã chạy khoảng \emph{chín nghìn lượt gọi model}, trên \emph{hai nghìn ba
+trăm trial tự nhiên}, trải qua bốn mươi sáu thư mục kết quả. Con số chín nghìn là
+\emph{ước lượng cận dưới}: em đếm theo công thức từ cấu hình của từng thí nghiệm chứ
+không đếm từng lần gọi, và chưa tính các lần thử lại khi phải ép đầu ra thành nội dung bị
+nhiễm. Em nói rõ điều này để không ai hiểu nhầm đó là con số đo trực tiếp.
+
+Về cấu hình cụ thể. Mỗi ô chuẩn --- tức là mỗi model, mỗi topology --- chạy bốn mươi lần
+tự nhiên, cộng ba mươi lần cho \emph{mỗi cạnh} theo giao thức có kiểm soát. Thí nghiệm
+đường cong chiều sâu chạy sáu mươi lần tự nhiên trên chuỗi dài, tới mười lăm agent với
+Llama và bảy đến tám agent với hai model còn lại. Thí nghiệm mô hình có vòng chạy bốn
+mươi lần, mỗi lần năm vòng. Phần đo ảnh hưởng lên công việc hợp lệ chạy hai mươi cặp
+sạch và bị tấn công cho mỗi cơ chế phòng thủ. Phần độ nhạy chạy tám seed, mỗi seed hai
+mươi lần mỗi cạnh. Bảng biến hình tấn công có sáu ô, mỗi ô ba mươi mẫu.
+
+Có hai điểm em muốn nói thêm về con số này. Thứ nhất, thời gian máy ghi lại được là bốn
+phẩy ba giờ, nhưng đây cũng là cận dưới, vì hai họ script --- đường cong chiều sâu và mô
+hình có vòng --- không ghi lại thời gian chạy. Thứ hai, điều quan trọng không phải là con
+số chín nghìn, mà là \emph{mỗi ô đều có khoảng tin cậy và đều công bố độ lệch nhỏ nhất
+phát hiện được}. Chạy nhiều mà không biết mình phát hiện được gì thì con số lớn cũng
+không có ý nghĩa.
+
+% =====================================================================
+\slide{Kết quả 1 và 2: ``giả định Markov'' là đẳng thức, và nó \emph{thất bại}}
+
+\noidung
+\begin{itemize}
+  \item Trong chuỗi: $C_i{=}1 \Rightarrow C_{i-1}{=}1$
+        $\Rightarrow \mathrm{ASR}=\prod_i s_i^{\mathrm{nat}}$ là \textbf{đẳng thức}, không
+        phải giả định (kiểm: chuỗi 4 agent $0{,}850=0{,}850$; chuỗi 7 agent
+        $0{,}450=0{,}450$).
+  \item Vậy câu hỏi thật là: con số đo \emph{cách ly} có bằng con số \emph{trong chuỗi}?
+        Câu trả lời: \textbf{tuỳ model}.
+        \begin{itemize}
+          \item DeepSeek: khớp tới $2{,}2\%$ $\Rightarrow$ chuyển được.
+          \item Llama: cạnh giữa cách ly $0{,}233$ nhưng trong chuỗi $0{,}875$
+                $\Rightarrow$ \textbf{lệch $3{,}75$ lần}.
+        \end{itemize}
+  \item \textbf{Sai số lớn dần theo độ sâu} --- đo trên chuỗi dài, 3 model:
+        \begin{center}
+        \small
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Chuỗi} & \textbf{Sai số} & \textbf{$\rho$} & \textbf{Dốc (\%/hop)}\\
+        \hline
+        qwen2.5:7b & n=7 & $31\%\to 89\%$ & $+1{,}00$ & $+11{,}8$\\
+        Llama 3.3 70B & n=15 & $0\%\to 92\%$ & $+0{,}77$ & $+6{,}8$\\
+        DeepSeek V3.2 & n=8 & $7\%$--$35\%$ & $-0{,}07$ & $+0{,}1$\\
+        \hline
+        \end{tabular}
+        \end{center}
+  \item $\Rightarrow$ \textbf{độ dốc đường cong là phép chẩn đoán}: một chuỗi dài, một
+        lần chạy, biết ngay model đó có cộng dồn được hay không.
+\end{itemize}
+
+\loinoi
+Đây là kết quả trung tâm. Trước hết, một kết quả lý thuyết: trong chuỗi, để agent thứ ba
+bị nhiễm thì agent thứ hai phải đã nhiễm, vì chính đầu ra của agent thứ hai mới lây sang
+agent thứ ba. Hệ quả là tỉ lệ thành công đầu-cuối \emph{đúng bằng} tích các xác suất có
+điều kiện --- một đẳng thức, không phải giả định cần kiểm định. Em kiểm bằng số đo thật:
+chuỗi bốn agent cho $0{,}850$ và tích cũng $0{,}850$; chuỗi bảy agent cho $0{,}450$ và
+tích cũng $0{,}450$.
+
+Vậy câu hỏi ``Markov có đúng không'' là câu hỏi đặt sai. Câu hỏi đúng là: con số đo
+\emph{cách ly} --- đo riêng lẻ từng cạnh --- có bằng con số khi mạng chạy thật không.
+Câu trả lời là \emph{tuỳ model}. Với DeepSeek thì khớp tới hai phần trăm. Với Llama thì
+ngược lại: một cạnh ở giữa đo cách ly cho $0{,}233$ nhưng trong chuỗi thật là $0{,}875$
+--- đo cách ly đánh giá thấp gần bốn lần.
+
+Đáng chú ý hơn là \emph{quy luật} của sai số. Em chạy một chuỗi dài, mỗi nút là một mốc
+độ sâu, rồi so tích các con số cách ly với xác suất nhiễm thật. Với qwen, sai số tăng
+đơn điệu từng bước, tương quan hạng đúng bằng $+1$. Với Llama, tương quan $+0{,}77$, lên
+tới $92\%$. Với DeepSeek thì không có xu hướng nào.
+
+Ý nghĩa thực tiễn: độ dốc của đường cong tự nó là phép chẩn đoán. Chỉ cần một chuỗi dài,
+một lần chạy, nhìn độ dốc là biết có nên tin vào việc nhân các con số đo cách ly hay
+không. Một chi tiết về trung thực: bốn điểm cuối của Llama không xác định được vì chuỗi
+đã chết hẳn, nên em \emph{loại} chứ không gán cho chúng sai số 100\% cho đẹp hình.
+
+% =====================================================================
+\slide{Cơ chế: hình thức của thông điệp quyết định}
+
+\noidung
+\begin{itemize}
+  \item Cùng mục tiêu, cùng agent nhận, cùng cách chấm, cùng phân công --- chỉ đổi cách
+        trình bày:
+        \begin{center}
+        \small
+        \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Cách trình bày} & \textbf{Xác suất sống sót}\\
+        \hline
+        Một câu khẳng định trần & $0{,}067$\\
+        Nhúng trong một sản phẩm công việc & $\mathbf{0{,}967}$\\
+        \hline
+        \end{tabular}
+        \end{center}
+  \item Chênh \textbf{14 lần} chỉ vì cách đóng gói.
+  \item Đây là lời giải thích cho kết quả trước: artefact ``chuẩn hoá'' dùng khi đo cách
+        ly \emph{không đại diện} cho thông điệp thật trong mạng.
+  \item Tự kiểm tra lại: phát lại nội dung bắt được khớp \textbf{2/3} cạnh --- báo cáo
+        đúng $2/3$, không làm tròn thành ``khớp hoàn toàn''.
+\end{itemize}
+
+\loinoi
+Kết quả trước nói rằng phép đo cách ly sai. Câu hỏi tiếp là sai vì cái gì. Câu trả lời:
+vì \emph{hình thức} của thông điệp.
+
+Em làm một thí nghiệm đối chứng rất gọn: giữ nguyên mọi thứ --- cùng mục tiêu, cùng các
+agent nhận, cùng cách chấm, cùng phân công --- chỉ đổi cách trình bày. Nếu nội dung độc
+hại đến dưới dạng một câu khẳng định trần, tỉ lệ sống sót là $0{,}067$, tức gần như bị
+chặn hết. Nếu nó được nhúng vào trong một sản phẩm công việc thật, tỉ lệ sống sót là
+$0{,}967$. Chênh nhau mười bốn lần, chỉ vì cách đóng gói.
+
+Điều này giải thích vì sao phép đo cách ly lệch: khi đo cách ly, em buộc phải dùng một
+artefact ``chuẩn hoá'' để đưa cho agent nhận, và artefact đó không đại diện cho thông
+điệp thật trong mạng.
+
+Em cũng tự kiểm tra lại chính mình bằng cách phát lại nội dung đã bắt được trong chuỗi
+thật. Kết quả là hai trên ba cạnh tái hiện được, và em báo cáo đúng hai trên ba.
+
+% =====================================================================
+\slide{Kết quả 3: tiêu chí ngưỡng dịch tễ \emph{vô hiệu} với mạng agent}
+
+\noidung
+\begin{itemize}
+  \item Tiêu chí quen thuộc: ``$R_0<1$ thì dịch tắt, hệ an toàn''.
+  \item \textbf{Định lý:} ma trận lây nhiễm của \emph{mọi} mạng không có vòng, sắp theo
+        topology, là \textbf{tam giác chặt} $\Rightarrow$ mọi giá trị riêng bằng $0$
+        $\Rightarrow \rho(M)=0$ \textbf{luôn luôn}, bất kể cạnh mạnh cỡ nào.
+  \item Nghĩa là tiêu chí được thoả mãn \emph{tầm thường}: không phân biệt được hệ an
+        toàn với hệ nguy hiểm.
+  \item Bằng chứng thực nghiệm:
+        \begin{itemize}
+          \item chuỗi 7 agent: $R_0=0{,}821<1$ nhưng ASR $=0{,}450$
+          \item hình sao: $R_0=0{,}420<1$ nhưng ASR $=0{,}725$
+        \end{itemize}
+  \item \textbf{Độ lan tới} và \textbf{khả năng tái lây} là hai rủi ro khác nhau.
+\end{itemize}
+
+\loinoi
+Kết quả thứ ba là phản biện một công cụ đang được dùng rộng rãi. Trong mạng lưới nói
+chung, người ta hay dùng tiêu chí: nếu chỉ số lây nhiễm nhỏ hơn một thì dịch sẽ tắt.
+
+Em chứng minh rằng với mạng agent dạng feed-forward --- mạng không có vòng, mọi agent
+chỉ chuyển tiếp về phía trước --- thì tiêu chí này \emph{luôn luôn} được thoả mãn một
+cách tầm thường. Lý do rất gọn: ma trận mô tả ``một agent lây cho bao nhiêu agent'', khi
+sắp theo thứ tự truyền, luôn có dạng tam giác; mà ma trận tam giác thì toàn bộ giá trị
+riêng bằng không. Không phụ thuộc cạnh mạnh hay yếu. Tức là tiêu chí đó luôn báo ``an
+toàn''.
+
+Thực nghiệm xác nhận: chuỗi bảy agent có chỉ số lây nhiễm $0{,}821$, nhỏ hơn một, nhưng
+vẫn có $45$ phần trăm số lần tấn công thành công đầu-cuối. Hình sao còn rõ hơn: chỉ số
+$0{,}420$ mà tỉ lệ thành công tới $72{,}5$ phần trăm. Nghĩa là ``đi được tới đích'' và
+``tái lây được tiếp'' là hai rủi ro khác nhau.
+
+% =====================================================================
+\slide{Kết quả 3 (tiếp): có vòng lặp thì tiêu chí \emph{có} hiệu lực --- và thành quy tắc thiết kế}
+
+\noidung
+\begin{itemize}
+  \item Mô hình thật: manager giao việc cho $w$ worker, worker \textbf{báo cáo ngược lại}.
+  \item \textbf{Công thức} (kiểm bằng số tới $4{,}4\times10^{-16}$ trên 320 cấu hình):
+        \[
+          \rho(M)=\sqrt{\textstyle\sum_j a_jc_j}\quad\text{với \emph{mọi} } w,
+          \qquad\text{vượt ngưỡng}\iff \sum_j a_jc_j>1 .
+        \]
+        Không có báo cáo ngược ($c_j{=}0$) $\Rightarrow \rho=0$ bất kể cạnh mạnh cỡ nào.
+  \item Đối xứng ($a_j{=}c_j{=}s$): $w\,s^2>1$ --- ở $s{=}0{,}5$ cần \textbf{5} worker,
+        $0{,}7$ cần \textbf{3}, $0{,}9$ cần \textbf{2}.
+  \item \textbf{Hai dự đoán ngược nhau, cả hai đều đúng:}
+        \begin{center}
+        \small
+        \begin{tabular}{|l|c|c|l|}
+        \hline
+        \textbf{Model} & $\sum_j a_jc_j$ & $\rho$ & \textbf{Dự đoán $\to$ Đo được}\\
+        \hline
+        Llama & $1{,}800$ & $\mathbf{1{,}342}$ & bền $\to$ manager $0{,}725$, vòng 5 còn $0{,}700$ \checkmark\\
+        qwen & $0{,}578$ & $0{,}760$ & yếu dần $\to$ manager $0{,}775\to\mathbf{0{,}650}$ \checkmark\\
+        \hline
+        \end{tabular}
+        \end{center}
+  \item Giới hạn đã ghi trong bài: mới 5 vòng --- đủ phân biệt ``yếu dần'' với ``bão
+        hoà'', \emph{chưa} đủ chứng minh tắt hẳn.
+\end{itemize}
+
+\loinoi
+Nhưng tiêu chí ngưỡng không phải lúc nào cũng vô nghĩa --- nó chỉ vô nghĩa khi mạng
+không có vòng. Mà mạng agent thật thì \emph{có} vòng: mô hình rất phổ biến là một manager
+giao việc cho các worker, rồi worker báo cáo kết quả ngược trở lại. Chính các cạnh báo
+cáo ngược đó tạo thành vòng.
+
+Em tính được công thức bán kính phổ cho mô hình này: căn bậc hai của tổng, qua từng
+worker, của tích ``xác suất lây xuống nhân xác suất báo cáo ngược lên''. Em kiểm công
+thức bằng số trên hơn ba trăm cấu hình ngẫu nhiên, sai số lớn nhất là bốn phần mười mũ
+mười sáu --- tức là một đẳng thức, không phải xấp xỉ.
+
+Từ đó ra một \emph{quy tắc thiết kế}: hệ bắt đầu tự duy trì lây nhiễm khi tổng đó lớn hơn
+một. Trường hợp đối xứng thì điều kiện là $w$ nhân $s$ bình phương lớn hơn một. Cụ thể:
+xác suất sống sót mỗi chiều là $0{,}5$ thì cần năm worker mới vượt ngưỡng; $0{,}7$ thì
+cần ba; $0{,}9$ thì chỉ cần hai.
+
+Điểm em thấy quan trọng nhất: công thức này \emph{dám} đưa ra hai dự đoán \emph{ngược
+nhau} trên hai model em đã đo, và em đã chạy cả hai. Với Llama, tổng bằng $1{,}8$, dự
+đoán vượt ngưỡng --- và thực tế manager bị tái nhiễm bởi chính báo cáo của worker mình
+với xác suất $0{,}725$, tới vòng năm vẫn còn $0{,}700$, tức hệ không tắt. Với qwen, tổng
+chỉ $0{,}578$, dự đoán yếu dần --- và thực tế manager từ $0{,}775$ giảm còn $0{,}650$ ở
+vòng năm, worker dừng lại chứ không bão hoà.
+
+Em xin nói rõ giới hạn: mới chạy năm vòng, đủ để phân biệt ``yếu dần'' với ``bão hoà''
+nhưng chưa đủ để khẳng định tắt hẳn, nên trong bài em không dùng chữ ``tắt hẳn''.
+
+% =====================================================================
+\slide{Kết quả 4: đánh giá phòng thủ cần baseline ``không phòng thủ''}
+
+\noidung
+\begin{itemize}
+  \item Cùng defense, cùng kiểu tấn công, cùng code chấm điểm, chỉ đổi model:
+        \begin{itemize}
+          \item Claude: không phòng thủ đã chỉ $0{,}10$; bật redaction còn $0{,}00$
+                $\Rightarrow$ ``trông hoàn hảo'' nhưng chỉ có $10\%$ để bảo vệ.
+          \item DeepSeek: không phòng thủ $1{,}00$; bật redaction còn $0{,}00$
+                $\Rightarrow$ defense thật sự làm hết việc.
+        \end{itemize}
+  \item \textbf{Kết luận:} thiếu baseline ``không phòng thủ'' thì \emph{không xác định
+        được} hiệu quả của một defense.
+  \item Kèm theo: biến hình tấn công (tách chuỗi, chèn khoảng trắng) phá được redaction.
+  \item Phải báo cáo \emph{cặp} (ASR, mức mất công việc hợp lệ): trên DeepSeek,
+        \texttt{paraphrase} \textbf{không giảm} ASR mà còn làm mất thêm công việc hợp lệ
+        --- tệ hơn cả không làm gì.
+\end{itemize}
+
+\loinoi
+Kết quả thứ tư là về \emph{cách đánh giá}. Em dùng cùng một cơ chế phòng thủ, cùng kiểu
+tấn công, cùng đoạn code chấm điểm, chỉ đổi model.
+
+Trên Claude, khi \emph{không} bật phòng thủ, tỉ lệ nhiễm đã chỉ là $0{,}10$; bật
+redaction lên thì còn $0{,}00$. Nhìn con số cuối thì có vẻ hoàn hảo, nhưng thực ra nó chỉ
+có mười phần trăm để bảo vệ --- phần còn lại là model vốn đã kháng tốt. Trên DeepSeek,
+cùng phép so sánh lại có ý nghĩa khác hẳn: không phòng thủ là $1{,}00$, bật lên còn
+$0{,}00$.
+
+Nên khuyến nghị phương pháp là: báo cáo đánh giá phòng thủ mà không kèm con số baseline
+khi không phòng thủ thì người đọc \emph{không thể} biết phòng thủ đó có thật sự làm việc
+hay không. Em gọi đây là hiệu ứng sàn.
+
+Thêm một điểm nữa: phải báo cáo cả \emph{công việc hợp lệ còn làm được bao nhiêu}. Trên
+DeepSeek, cơ chế viết lại ngữ nghĩa \texttt{paraphrase} không giảm được lan truyền chút
+nào mà còn làm mất thêm công việc hợp lệ --- tệ hơn cả việc không làm gì. Nếu chỉ báo cáo
+mỗi tỉ lệ tấn công thì nó trông ``trung tính''; chỉ khi báo cáo cặp hai con số mới thấy
+vấn đề.
+
+% =====================================================================
+\slide{Kết quả phụ: vai trò agent và năng lực model}
+
+\noidung
+\begin{itemize}
+  \item Cùng model, cùng kiểu tấn công: xác suất sống sót chênh \textbf{$6{,}5$ lần} giữa
+        các vai trò (worker $0{,}133$ so với reviewer $0{,}867$).
+  \item ``Dễ bị lây'' \textbf{không} đi theo ``model mạnh hơn'':
+        \begin{center}
+        \small
+        \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Model} & \textbf{ASR} & \textbf{$\bar s$}\\
+        \hline
+        Llama 3.3 70B & $0{,}800$ & $0{,}722$\\
+        DeepSeek V3.2 & $0{,}475$ & $0{,}933$\\
+        qwen2.5:7b & $0{,}300$ & $0{,}611$\\
+        Nova Pro & $0{,}075$ & $0{,}178$\\
+        Claude Sonnet 4.5 & $0{,}000$ & $0{,}211$\\
+        \hline
+        \end{tabular}
+        \end{center}
+  \item \textbf{Topology} ở cùng 7 agent, cùng $\bar s\approx0{,}76$: ASR $0{,}450$ /
+        $0{,}725$ / $0{,}800$ cho chain / star / tree.
+  \item \textbf{Đặt phòng thủ ở đâu:} trên mạng không vòng, chỉ agent trên đường tới mục
+        tiêu mới có ý nghĩa, và mọi agent trên đường đó \emph{hiệu quả như nhau}
+        $\Rightarrow$ bài toán \emph{cấu trúc}, không phải thống kê.
+\end{itemize}
+
+\loinoi
+Hai kết quả phụ, nhưng theo em là quan trọng cho người thiết kế hệ thống.
+
+Thứ nhất, xác suất lây không phải thuộc tính của model mà là thuộc tính của \emph{vị trí}
+agent trong quy trình. Cùng một model và cùng kiểu tấn công, agent ở vai trò worker có
+xác suất bị lây $0{,}133$, còn reviewer là $0{,}867$ --- chênh sáu lần rưỡi.
+
+Thứ hai, trực giác ``model mạnh hơn thì an toàn hơn'' không đúng. Llama 3.3 70B có tỉ lệ
+tấn công thành công $0{,}800$, cao hơn DeepSeek $0{,}475$, cao hơn qwen $0{,}300$, cao
+hơn Nova Pro $0{,}075$, và Claude gần như bằng không. Đây không phải thứ tự năng lực. Nên
+phải đo trên đúng model mình dùng, không suy ra từ bảng xếp hạng. Topology cũng quyết
+định: ba mạng bảy agent có cùng xác suất lây trung bình nhưng cho tỉ lệ thành công khác
+hẳn nhau.
+
+Cuối cùng, từ định lý ở kết quả ba, em rút ra câu trả lời cho câu hỏi ``đặt phòng thủ ở
+đâu'': trên mạng không có vòng, chỉ agent nằm trên đường từ điểm xâm nhập tới mục tiêu
+mới đáng quan tâm, và trong số đó mọi agent đều hiệu quả như nhau. Nghĩa là đây là bài
+toán về cấu trúc đồ thị và chi phí triển khai, không phải bài toán cần số liệu thống kê.
+
+% =====================================================================
+\slide{Trung thực phương pháp: một phát hiện của chính em đã bị rút lại}
+
+\noidung
+\begin{itemize}
+  \item Ban đầu: trên DeepSeek, kiểm định bác bỏ giả thuyết Markov với
+        $p=\mathbf{0{,}0030}$ --- tưởng là phát hiện lớn.
+  \item Nguyên nhân thật: protocol khi đó \emph{giữ cố định} artefact đã nhiễm và dùng
+        lại cho mọi trial $\Rightarrow$ các trial phụ thuộc nhau, độ lệch bị phóng đại.
+  \item Sửa: thêm chế độ \texttt{--fresh-artifact} (mỗi trial rút artefact mới)
+        $\Rightarrow$ chạy lại: $p=\mathbf{0{,}630}$, \emph{không} bác bỏ được gì.
+  \item Giữ cả cái sai và cách sửa trong bài: với nghiên cứu đo lường,
+        \textbf{cách đo là một phần của kết quả}.
+  \item Ngược lại, bất thường của Llama \emph{đứng vững} qua cả hai chế độ artefact.
+\end{itemize}
+
+\loinoi
+Phần này em dành riêng để nói về một sai sót của chính mình, vì em nghĩ nó là một phần
+quan trọng của tiến độ.
+
+Giai đoạn đầu, em chạy kiểm định thống kê và thấy trên DeepSeek giả thuyết Markov bị bác
+bỏ với $p$ bằng $0{,}003$ --- một kết quả rất mạnh, đủ để viết thành đóng góp chính.
+Nhưng khi kiểm tra lại quy trình đo, em phát hiện protocol khi đó \emph{giữ cố định} một
+artefact đã bị nhiễm và dùng lại cho mọi trial. Cách làm đó khiến các trial không còn độc
+lập và làm độ lệch bị phóng đại.
+
+Em sửa bằng cách rút artefact mới cho từng trial rồi chạy lại: $p$ bằng $0{,}630$, hoàn
+toàn không bác bỏ được gì. Kết quả cũ là artefact của thiết kế đo.
+
+Em giữ cả hai trong bài --- cả cái sai và cách sửa --- vì trong nghiên cứu đo lường, cách
+đo là một phần của kết quả. Để công bằng, em cũng kiểm ngược: kết quả bất thường của
+Llama thì đứng vững qua cả hai chế độ, tức đó là bất thường thật.
+
+% =====================================================================
+\slide{Sản phẩm, hạn chế, kế hoạch}
+
+\noidung
+\begin{itemize}
+  \item \textbf{Sản phẩm:} bản thảo bài báo định dạng AAMAS 2027 --- \textbf{8 trang nội
+        dung} + 1 trang tài liệu tham khảo (đúng giới hạn); 8 bảng + 2 hình; mọi số sinh
+        tự động từ file kết quả, \emph{không nhập tay}.
+  \item Kèm theo: tài liệu tái lập (mỗi bảng gắn với câu lệnh sinh ra nó) và script đối
+        chiếu từng con số trong bài với kết quả gốc.
+  \item \textbf{Hạn chế (đã ghi rõ trong bài):} utility đo bằng proxy; cỡ mẫu $n=30$--$40$
+        (chỉ phát hiện được lệch $>0{,}26$); chưa có topology lưới/tranh luận; mô hình có
+        vòng mới có 1 instance; transportability mới chứng minh \emph{tồn tại} thất bại;
+        chưa hiệu chỉnh đa so sánh.
+  \item \textbf{Kế hoạch:} mở rộng topology (lưới, tranh luận); nhiệm vụ có đáp án kiểm
+        chứng được để đo utility thật; chạy lại các ô quan trọng ở cỡ mẫu lớn hơn.
+\end{itemize}
+
+\loinoi
+Về sản phẩm, hiện em có một bản thảo bài báo hoàn chỉnh theo định dạng hội nghị AAMAS
+2027, dài đúng tám trang nội dung cộng một trang tài liệu tham khảo. Nguyên tắc em đặt ra
+từ đầu là \emph{không có con số nào nhập tay}: mọi bảng hình đều sinh tự động từ file kết
+quả, và em có thêm một script đối chiếu từng con số trong bài với kết quả gốc --- nó đã
+phát hiện và giúp em sửa hai chỗ ghi thiếu chính xác.
+
+Về hạn chế, em xin nói thẳng. Đại lượng đo mức ảnh hưởng lên công việc hợp lệ hiện là
+đại lượng thay thế, chưa phải độ đúng thật. Cỡ mẫu phần lớn là ba mươi đến bốn mươi lần
+chạy, ở cỡ đó chỉ phát hiện được lệch lớn hơn $0{,}26$, và em công bố con số này trong
+bài chứ không giấu. Em chưa có topology mạng lưới và mạng tranh luận; mô hình có vòng mới
+có một instance; và kết quả về tính chuyển được mới chứng minh sự \emph{tồn tại} của thất
+bại, chưa ước lượng được tần suất.
+
+Kế hoạch tiếp theo là mở rộng độ phủ topology, đặc biệt là mạng có đường song song vì đó
+là nơi bài toán đặt phòng thủ trở thành bài toán tối ưu thật sự; và xây một họ nhiệm vụ
+có đáp án kiểm chứng được để đo mức ảnh hưởng lên công việc một cách chính xác.
+
+% =====================================================================
+\slide{Kết luận}
+
+\noidung
+\begin{itemize}
+  \item Lan truyền prompt injection trong mạng agent là hiện tượng \textbf{đa tác nhân}:
+        tầm với của một vụ nhiễm là thuộc tính của \emph{đồ thị, vai trò và thông điệp}.
+  \item \textbf{Ba thông điệp:}
+        \begin{enumerate}
+          \item Con số ASR của benchmark một-agent \textbf{không} dùng được như tham số
+                để nhân lên thành dự đoán cho pipeline; sai số \emph{tăng theo độ dài
+                pipeline} (và độ dốc đó là phép chẩn đoán).
+          \item ``$R_0<1$ là an toàn'' \textbf{không} dùng được cho mạng không vòng; khi
+                có vòng thì tiêu chí \emph{có} hiệu lực, và trở thành quy tắc thiết kế
+                ($\sum_j a_jc_j>1$) đã được kiểm hai chiều trên hai model.
+          \item Đánh giá defense mà thiếu baseline ``không phòng thủ'' thì
+                \textbf{không xác định được} hiệu quả.
+        \end{enumerate}
+  \item Sản phẩm: khung đo tái lập được + bản thảo 8 trang + toàn bộ dữ liệu thô, kể cả
+        một phát hiện sai của chính nhóm đã được rút lại.
+\end{itemize}
+
+\loinoi
+Em xin kết luận. Điểm cốt lõi: lan truyền prompt injection trong mạng agent là hiện tượng
+đa tác nhân, và tầm với của một vụ nhiễm là thuộc tính của đồ thị, của vai trò agent và
+của hình thức thông điệp --- không phải thuộc tính của một agent đơn lẻ.
+
+Ba thông điệp em muốn mang về. Một: con số tỉ lệ tấn công thành công mà các benchmark đo
+trên một agent không dùng được như tham số để nhân lên thành dự đoán cho cả pipeline, và
+mức sai lệch tăng theo độ dài pipeline --- hơn nữa, độ dốc của đường cong đó tự nó là
+phép chẩn đoán. Hai: tiêu chí ngưỡng ``chỉ số lây nhiễm nhỏ hơn một thì an toàn'' không
+dùng được cho mạng không có vòng, nhưng khi mạng có vòng thì tiêu chí trở nên có hiệu
+lực và trở thành một quy tắc thiết kế, đã được kiểm hai chiều. Ba: đánh giá một cơ chế
+phòng thủ mà thiếu con số baseline khi không phòng thủ thì không thể xác định được hiệu
+quả.
+
+Sản phẩm bàn giao gồm khung đo tái lập được, bản thảo tám trang, và toàn bộ dữ liệu thô
+--- trong đó em giữ lại cả một phát hiện sai của chính mình và cách sửa nó.
+
+Em xin hết phần trình bày và sẵn sàng nhận câu hỏi của thầy/cô.
+
+\end{document}

@@ -61,7 +61,7 @@ trực tiếp từ kết quả đã chạy và đã lưu trên máy, không có 
         injection, nó lan được bao xa, và điều gì quyết định nó sống sót qua mỗi
         lần chuyển giao?
   \item \textbf{Cách làm:} xây một khung đo gồm \emph{hai protocol độc lập}, chạy
-        trên 5 model thuộc 4 họ model, lấy số liệu ở cấp từng cạnh và cấp toàn mạng.
+        trên 5 model thuộc 5 nhà phát triển độc lập model, lấy số liệu ở cấp từng cạnh và cấp toàn mạng.
   \item \textbf{Đã đạt:} 4 phát hiện chính, 1 phát hiện của chính nhóm bị chính
         nhóm rút lại sau khi tìm ra lỗi thiết kế đo.
   \item \textbf{Hiện trạng:} bản thảo bài báo đã viết xong, đúng giới hạn 8 trang.
@@ -82,7 +82,7 @@ giao? Các benchmark hiện có đều đo \emph{một agent, một bước}, n�
 câu hỏi này.
 
 Để trả lời, em xây một khung đo với hai protocol độc lập nhau, chạy trên năm model
-thuộc bốn họ model khác nhau. Kết quả chính gồm bốn phát hiện, và đặc biệt có một
+thuộc năm nhà phát triển độc lập khác nhau. Kết quả chính gồm bốn phát hiện, và đặc biệt có một
 phát hiện \emph{của chính em} mà sau đó em phát hiện là do lỗi thiết kế đo và đã rút
 lại --- em sẽ trình bày cả cái sai đó, vì trong nghiên cứu đo lường thì cách đo là
 một phần của kết quả.
@@ -216,8 +216,9 @@ chấm.
         chỉ yêu cầu agent ``đọc lại một chuỗi''.
   \item \textbf{3 ngữ cảnh công việc hợp lệ} khác nhau, xoay vòng theo từng trial ---
         để không đo nhầm một tình huống duy nhất.
-  \item \textbf{5 model, 4 họ:} Llama 3.3 70B, DeepSeek V3.2, Claude Sonnet 4.5,
-        Amazon Nova Pro, qwen2.5:7b (chạy local, miễn phí).
+  \item \textbf{5 model, 5 nhà phát triển độc lập:} Llama 3.3 70B (Meta), DeepSeek
+        V3.2 (DeepSeek), Claude Sonnet 4.5 (Anthropic), Amazon Nova Pro (Amazon),
+        qwen2.5:7b (Alibaba, chạy local, miễn phí).
   \item \textbf{3 topology} ở cùng số agent: chain (chuỗi), star (hình sao, fan-in),
         tree (cây).
   \item Mọi kết quả thô của từng lượt gọi model đều được lưu lại để chấm lại mà
@@ -241,9 +242,79 @@ Thứ ba, em dùng ba ngữ cảnh công việc hợp lệ khác nhau và xoay v
 một đề bài duy nhất cho mọi lượt --- nếu không, kết quả chỉ đúng cho đúng một tình
 huống.
 
-Thứ tư, em chạy trên năm model thuộc bốn họ khác nhau, ba topology, và lưu lại toàn
+Thứ tư, em chạy trên năm model thuộc năm nhà phát triển độc lập, ba topology, và lưu lại toàn
 bộ đầu ra thô. Việc lưu đầu ra thô rất quan trọng: sau này khi em sửa cách chấm, em
 chấm lại được toàn bộ dữ liệu cũ mà không tốn thêm chi phí gọi model.
+
+% =====================================================================
+\slide{Quy mô thực nghiệm: đã chạy những gì và bao nhiêu lần}
+\label{slide:scale}
+
+\noidung
+\begin{itemize}
+  \item \textbf{Tổng khối lượng đã chạy:}
+        \begin{itemize}
+          \item 46 thư mục kết quả (25 thư mục có cấu trúc chuẩn);
+          \item \textbf{$\approx$ 9.070 lượt gọi model} (ước lượng cận dưới);
+          \item \textbf{2.342 trial ``tự nhiên''};
+          \item \textbf{4,3 giờ} thời gian máy ghi lại được (cận dưới).
+        \end{itemize}
+  \item \textbf{Độ phủ:} 5 model / 5 nhà phát triển · 2 protocol độc lập ·
+        3 topology · 3 defense · 3 kiểu biến hình tấn công.
+  \item \textbf{Cấu hình từng loại thí nghiệm:}
+        \begin{center}
+        \small
+        \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Loại thí nghiệm} & \textbf{Số lần chạy}\\
+        \hline
+        Ô chuẩn (mọi model) & chuỗi $n=4$: \textbf{40} trial tự nhiên $+$ \textbf{30} trial/cạnh\\
+        Đường cong chiều sâu & \textbf{60} trial tự nhiên; \textbf{30}/cạnh (qwen 25);\\
+         & chuỗi $n=15$ (Llama), $n=8$ (DeepSeek), $n=7$ (qwen)\\
+        Mô hình có vòng & \textbf{40} trial $\times$ \textbf{5 vòng} $\times$ 3 agent\\
+        Utility (công việc hợp lệ) & \textbf{20} cặp sạch/bị tấn công cho mỗi defense\\
+        Độ nhạy (seed $\times$ temp) & \textbf{8} seed $\times$ \textbf{20} trial/cạnh ở temp $0{,}7$\\
+        Biến hình $\times$ defense & \textbf{6} ô $\times$ \textbf{30} mẫu/ô\\
+        Topology & 3 topology $\times$ $n=7$: 40 trial tự nhiên $+$ 30/cạnh\\
+        \hline
+        \end{tabular}
+        \end{center}
+  \item \textbf{Cách đếm (nói rõ để không hiểu nhầm):} lượt gọi là \emph{ước lượng cận
+        dưới}, tính từ cấu hình: (trial tự nhiên $\times$ số agent) $+$
+        (trial/cạnh $\times$ số cạnh). Chưa tính các lần thử lại khi phải ép đầu ra bị
+        nhiễm, và chưa tính các lần chạy hỏng hoặc bị hủy.
+\end{itemize}
+
+\loinoi
+Trước khi vào kết quả, em xin báo cáo \emph{khối lượng} đã chạy, vì đây là câu hỏi thầy/cô
+thường đặt ra và cũng là thứ quyết định độ tin cậy của các con số phía sau.
+
+Tính đến nay, dự án đã tạo ra bốn mươi sáu thư mục kết quả, trong đó hai mươi lăm thư mục
+có cấu trúc chuẩn dùng trực tiếp cho bài báo; phần còn lại là các thí nghiệm thăm dò giai
+đoạn đầu. Tổng số lượt gọi model vào khoảng \emph{chín nghìn}, trên \emph{hai nghìn ba
+trăm trial tự nhiên}. Thời gian máy ghi lại được là bốn phẩy ba giờ.
+
+Em xin nói rõ hai điều về những con số này để không ai hiểu nhầm. Thứ nhất, con số chín
+nghìn là \emph{ước lượng cận dưới}: em tính từ cấu hình của từng thí nghiệm --- số trial
+tự nhiên nhân số agent, cộng số trial mỗi cạnh nhân số cạnh --- chứ không đếm từng lần
+gọi. Cách đếm này bỏ sót các lần thử lại khi phải ép đầu ra thành nội dung bị nhiễm, và
+bỏ sót các lần chạy hỏng hoặc bị hủy giữa chừng. Thứ hai, thời gian máy cũng là cận dưới,
+vì hai họ script --- đường cong chiều sâu và mô hình có vòng --- không ghi lại thời gian
+chạy.
+
+Về cấu hình cụ thể. Mỗi ô chuẩn, tức mỗi model và mỗi topology, chạy bốn mươi lần tự
+nhiên cộng ba mươi lần cho mỗi cạnh theo giao thức có kiểm soát. Thí nghiệm đường cong
+chiều sâu chạy sáu mươi lần tự nhiên trên chuỗi dài, tới mười lăm agent với Llama và bảy
+đến tám agent với hai model còn lại, vì chuỗi quá dài thì sẽ tắt hẳn và đường cong mất ý
+nghĩa. Thí nghiệm mô hình có vòng chạy bốn mươi lần, mỗi lần năm vòng. Phần đo ảnh hưởng
+lên công việc hợp lệ chạy hai mươi cặp sạch và bị tấn công cho mỗi cơ chế phòng thủ. Phần
+độ nhạy chạy tám seed, mỗi seed hai mươi lần mỗi cạnh ở một temperature. Bảng biến hình
+tấn công có sáu ô, mỗi ô ba mươi mẫu.
+
+Điều em muốn nhấn mạnh là: con số chín nghìn tự nó không phải thành tích. Cái quan trọng
+là \emph{mỗi ô đều có khoảng tin cậy và đều công bố độ lệch nhỏ nhất mà nó phát hiện
+được}. Chạy thật nhiều mà không biết mình phát hiện được gì thì cũng không nói lên điều
+gì.
 
 % =====================================================================
 \slide{Kết quả 1 --- ``Giả định Markov'' thực ra là một đẳng thức}
@@ -825,7 +896,7 @@ $0{,}067$ đến $0{,}083$, và mạnh hơn quy tắc so khoảng tin cậy thô
         bài với file kết quả gốc --- đã phát hiện và sửa 2 chỗ ghi thiếu chính xác.
   \item \textbf{Kiểm tra toàn vẹn dữ liệu}: xác nhận không mất kết quả nào khi API key
         của trường hết hiệu lực giữa chừng.
-  \item Quy mô dữ liệu: 5 model thuộc 4 họ, khoảng 45 thư mục kết quả, hàng chục nghìn
+  \item Quy mô dữ liệu: 5 model thuộc 5 nhà phát triển độc lập, khoảng 45 thư mục kết quả, hàng chục nghìn
         lượt gọi model.
 \end{itemize}
 

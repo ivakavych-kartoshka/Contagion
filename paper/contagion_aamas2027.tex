@@ -113,7 +113,8 @@ placement is decided by graph structure rather than by per-hop survival.
 \textbf{(iv)} Defence efficacy is unidentifiable without a matched no-defence
 baseline: one redaction defence is either essential or irrelevant depending only
 on the model's unprotected susceptibility ($1.00$ versus $0.10$). We report
-role-conditioned per-hop survival for five models from four families, and one of our
+role-conditioned per-hop survival for five models from five independent developers, and
+one of our
 own initially significant findings that proved to be a protocol artefact.
 \end{abstract}
 
@@ -212,8 +213,8 @@ point estimates, with Wilson intervals, a bootstrap test carrying a stated minim
 detectable effect, and estimators validated on synthetic data of known ground truth.
 
 \paragraph{Findings, stated as prescriptions.} Using this framework on five models
-from four families we reach four conclusions, each of which changes what a
-practitioner should do.
+from five independent developers we reach four conclusions, each of which changes what
+a practitioner should do.
 
 \begin{enumerate}
 \item \textbf{Do not compose isolated injection results into pipeline
@@ -512,14 +513,17 @@ can be bypassed and placement becomes a genuine optimisation.
 \section{Experimental Setup}
 \label{sec:setup}
 
-\paragraph{Models.} Five models from four families: qwen2.5:\-7b (local),
-DeepSeek V3.2, Llama 3.3 70B, Nova Pro, and Claude Sonnet 4.5 (the latter four via
-Bedrock, region us-east-1). Temperature $0.7$; the models marked $\dagger$ require
-Bedrock inference-profile identifiers.
+\paragraph{Models.} Five models from five independent developers: qwen2.5:\-7b
+(Alibaba, local), DeepSeek V3.2 (DeepSeek), Llama 3.3 70B (Meta), Nova Pro (Amazon),
+and Claude Sonnet 4.5 (Anthropic); the latter four via Bedrock, region us-east-1.
+Temperature $0.7$; the models marked $\dagger$ require Bedrock inference-profile
+identifiers.
 
 \paragraph{Cells.} Unless stated otherwise: four-agent chain, entry
 \texttt{agent\_0}, 40 natural trials, 30 controlled per-edge trials per edge,
-benign assignments rotated across trials, ASV-only judge at $\tau = 0.9$.
+benign assignments rotated across trials, ASV-only judge at $\tau = 0.9$. The study
+comprises $25$ result sets and $\approx\!9{,}000$ model calls (a lower bound, counted
+from these configurations).
 
 \paragraph{Defences.} None (baseline, required by the floor effect);
 \emph{redaction}, a deterministic DLP rule that removes the literal target from

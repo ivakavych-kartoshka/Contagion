@@ -34,7 +34,7 @@
     \item \textbf{Đối tượng:} mạng nhiều LLM agent phối hợp (kiểu MetaGPT, AutoGen).
     \item \textbf{Câu hỏi:} một agent bị nhiễm $\Rightarrow$ lan được bao xa, và cái gì
           quyết định nó sống sót qua mỗi lần chuyển giao?
-    \item \textbf{Cách làm:} khung đo với \textbf{hai protocol độc lập}, 5 model / 4 họ
+    \item \textbf{Cách làm:} khung đo với \textbf{hai protocol độc lập}, 5 model / 5 nhà phát triển
           model, 3 topology.
     \item \textbf{Kết quả:} 4 phát hiện chính + 1 phát hiện của chính nhóm
           \textbf{đã bị rút lại} sau khi tìm ra lỗi thiết kế đo.
@@ -87,10 +87,39 @@
     \item Hai họ nhiệm vụ: \textbf{ngữ nghĩa} (Task A) và \textbf{marker}
           \texttt{BANANA-77} (Task B); nhiệm vụ độc hại phải \emph{cạnh tranh} với việc hợp lệ.
     \item \textbf{3 ngữ cảnh công việc hợp lệ} xoay vòng theo trial.
-    \item \textbf{5 model / 4 họ:} Llama 3.3 70B · DeepSeek V3.2 · Claude Sonnet 4.5 ·
-          Nova Pro · qwen2.5:7b (local, miễn phí).
+    \item \textbf{5 model / 5 nhà phát triển độc lập:} Llama 3.3 70B (Meta) · DeepSeek
+          V3.2 (DeepSeek) · Claude Sonnet 4.5 (Anthropic) · Nova Pro (Amazon) ·
+          qwen2.5:7b (Alibaba, local).
     \item \textbf{3 topology:} chuỗi (chain) · hình sao (star fan-in) · hình cây (tree).
     \item Lưu \emph{toàn bộ đầu ra thô} $\Rightarrow$ chấm lại được mà không tốn thêm chi phí.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Quy mô thực nghiệm: đã chạy bao nhiêu?}
+  \begin{itemize}
+    \item \textbf{$\approx$ 9.070 lượt gọi model} (cận dưới) · \textbf{2.342} trial tự
+          nhiên · 46 thư mục kết quả · \textbf{4,3 giờ} máy (cận dưới)
+    \item \textbf{5 model / 5 nhà phát triển · 2 protocol · 3 topology · 3 defense ·
+          3 kiểu biến hình}
+  \end{itemize}
+  \begin{center}
+  \scriptsize
+  \begin{tabular}{|l|l|}
+  \hline
+  \textbf{Loại thí nghiệm} & \textbf{Số lần chạy}\\
+  \hline
+  Ô chuẩn (mọi model) & chuỗi $n{=}4$: 40 trial tự nhiên $+$ 30 trial/cạnh\\
+  Đường cong chiều sâu & 60 trial; 30/cạnh; $n{=}15$ / $n{=}8$ / $n{=}7$\\
+  Mô hình có vòng & 40 trial $\times$ 5 vòng $\times$ 3 agent\\
+  Utility (công việc hợp lệ) & 20 cặp sạch/tấn công cho mỗi defense\\
+  Độ nhạy (seed $\times$ temp) & 8 seed $\times$ 20 trial/cạnh\\
+  Biến hình $\times$ defense & 6 ô $\times$ 30 mẫu/ô\\
+  Topology & 3 topology $\times$ $n{=}7$\\
+  \hline
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item Lượt gọi là \textbf{ước lượng cận dưới} --- chưa tính lần thử lại và lần chạy hỏng.
   \end{itemize}
 \end{frame}
 
@@ -327,7 +356,7 @@
     \item \texttt{AUDIT\_TABLE.md}: đối chiếu từng con số trong bài với kết quả gốc
           (đã phát hiện \& sửa 2 chỗ ghi thiếu chính xác).
     \item Kiểm tra toàn vẹn: xác nhận \emph{không mất kết quả} khi API key hết hiệu lực.
-    \item Quy mô: 5 model / 4 họ, $\sim$45 thư mục kết quả, hàng chục nghìn lượt gọi model.
+    \item Quy mô: 5 model / 5 nhà phát triển, $\sim$45 thư mục kết quả, hàng chục nghìn lượt gọi model.
   \end{itemize}
 \end{frame}
 

@@ -188,7 +188,7 @@ Using this framework on three model families (qwen2.5:7b locally, Claude Sonnet
 
 We measure one attack family (semantically framed injected instructions), two
 task families, three defenses, three topologies (chain with the headline numbers,
-star/tree for `R_0`), and **five models across four families**. Sample sizes are
+star/tree for `R_0`), and **five models across five developers**. Sample sizes are
 30–40 trials per cell for most cells, which bounds absolute claims via the
 reported intervals; the compositional (isolation) test is run at n=200 for the
 power claim. Our utility metric (metric §7) uses a proxy ground truth (whether

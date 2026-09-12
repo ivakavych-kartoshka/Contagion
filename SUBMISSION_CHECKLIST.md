@@ -27,6 +27,9 @@ Nguồn chân lý về con số là `paper/contagion_aamas2027.tex` + `experimen
 | Trung thực về kết quả của chính mình | Có | E22 (Markov) **đã rút lại** (§5.3); cây báo cáo sai số **lạc quan**; χ² **bác bỏ** i.i.d. theo context được báo cáo kèm số (§5.10); 4 điểm degenerate của Llama n=15 bị **loại tường minh**, không gán 100% |
 | Tài liệu tái lập | Có | `REPRODUCE.md` (từng bảng ↔ lệnh ↔ chi phí ↔ 6 cảnh báo trung thực) |
 | **Number audit** (số trong bài ↔ `results.json`) | **Đã chạy** | `python scripts\audit_numbers.py --md` → `AUDIT_TABLE.md`. Đã phát hiện và sửa 2 chỗ thiếu chính xác: χ² p = **0.0014** (không phải 0.001), và φ của cạnh yếu là **0.58** [0.12, 1.00] (không phải "≤1.00 trên cả ba cạnh") |
+| **Claim lint** (câu MÔ TẢ ↔ dữ liệu) | **Đã thêm, đã bắt được 1 lỗi thật** | Bài từng ghi "five models from **four** families" trong khi thực tế là **5 model / 5 nhà phát triển** (Llama–Meta, DeepSeek, Claude–Anthropic, Nova–Amazon, qwen–Alibaba). "Bốn họ" là **số cũ sót lại** từ giai đoạn mới có 4 model Bedrock, chưa cập nhật khi thêm qwen. Đã sửa ở abstract, §1, §4 + cả 4 file báo cáo. `claim_lint` trong `audit_numbers.py` nay tự so các câu đếm trong `.tex` với danh sách model/topology thật; đã kiểm bằng cách **tiêm lỗi giả** để chắc nó bắt được (`⚠️ 'four families' ... nhưng có 5 model thật`) |
+| **Quy mô thực nghiệm** (slide báo cáo + §4 của bài) | **Đã bổ sung** | `python scripts\scale_report.py`: **46** thư mục kết quả (**25** có cấu trúc chuẩn) · **≈9.070 lượt gọi model** (cận dưới) · **2.342 trial tự nhiên** · **4,3 giờ** máy ghi lại được (cận dưới). Cấu hình từng loại: ô chuẩn 40 trial + 30/cạnh; depth 60 trial; vòng lặp 40 trial × 5 vòng; utility 20 cặp × 3 defense; độ nhạy 8 seed × 20/cạnh; biến hình 6 ô × 30 mẫu; topology 3 × n=7. §4 của bài nay có 1 câu về quy mô (bài vẫn đúng 8 trang) |
+| **Danh mục thực nghiệm** (tài liệu riêng) | **Đã tạo** | `report\danh_muc_thi_nghiem.pdf` — bảng tóm tắt **10 nhóm thực nghiệm** mang nội dung bài (mục đích · quy mô · kết quả), chi tiết từng nhóm, giai đoạn thăm dò 12 thư mục (không dùng số trong bài) và **7 phân tích chạy lại 0 API**. Dùng để trả lời câu hỏi ``em đã làm những thí nghiệm gì'' |
 
 ## 2. Các job đã xong — đã tích hợp hết vào bài
 
@@ -88,7 +91,7 @@ Việc **không cần key** vẫn làm được: model local qua ollama (`qwen2.
 
 | Ưu tiên | Việc | Vì sao |
 |---|---|---|
-| 1 | Thêm **1 model nữa** cho bảng obfuscation | Tăng độ phủ cross-model (hiện 5 model/4 họ); cần key Bedrock còn sống |
+| 1 | Thêm **1 model nữa** cho bảng obfuscation | Tăng độ phủ cross-model (hiện 5 model/5 nhà phát triển); cần key Bedrock còn sống |
 | 2 | Một mục "Artifact availability" riêng | Hiện đã có trong Kết luận nhưng chưa thành mục; reviewer AAMAS đánh giá cao artefact tái lập |
 | 3 | Chạy lại **một** cell ở n=200 cho cạnh yếu | MDE ở n=40 là 0.26 — bài đã nói rõ điều này, n=200 sẽ biến nó thành phát hiện dương tính thật |
 | 4 | Rà câu chữ §1 như phản biện khó tính | Rủi ro lớn nhất còn lại: bị đọc thành "thêm một bài đo prompt injection" |

@@ -115,6 +115,65 @@ def audit_cyclic(name: str, j: dict, out: list) -> None:
     )
 
 
+def claim_lint() -> list:
+    """Bắt các câu MÔ TẢ trong paper mâu thuẫn với dữ liệu thật.
+
+    Vì sao cần: audit số chỉ kiểm những gì nằm trong results.json. Câu kiểu
+    "five models from four families" là câu mô tả, không phải số trong JSON, nên
+    đã lọt qua một lần (thực tế là 5 model / 5 nhà phát triển). Đây là lớp kiểm
+    bổ sung cho đúng loại lỗi đó.
+    """
+    import re
+    tex = ROOT / "paper" / "contagion_aamas2027.tex"
+    if not tex.exists():
+        return ["(không thấy paper/contagion_aamas2027.tex để lint)"]
+
+    models, topos = set(), set()
+    for d in RESULTS.iterdir():
+        if not d.is_dir():
+            continue
+        j = load(d.name)
+        if not isinstance(j, dict):
+            continue
+        m = str(j.get("model") or "")
+        # 'mock' là model giả của self-test, không phải model của bài
+        if m and m not in {"mock", "test", "dummy"}:
+            models.add(m)
+        if j.get("topology"):
+            topos.add(str(j["topology"]))
+    n_models = len(models)
+
+    L = [f"* model THẬT xuất hiện trong kết quả: **{n_models}** (đã loại `mock`)"]
+    L += [f"    - {m}" for m in sorted(models)]
+    L += [f"* topology xuất hiện trong kết quả: **{len(topos)}** -> {sorted(topos)}"]
+
+    text = tex.read_text(encoding="utf-8", errors="replace")
+    pat = re.compile(r"(five|four|three|two)\s+(models|families|developers|topologies|"
+                     r"protocols|defences|defenses)", re.I)
+    found: dict = {}
+    for m in pat.finditer(text):
+        key = f"{m.group(1).lower()} {m.group(2).lower()}"
+        found[key] = found.get(key, 0) + 1
+    L.append("* câu đếm trong .tex: " + (", ".join(f"{k}×{v}" for k, v in sorted(found.items()))
+                                         or "(không có)"))
+
+    words = {"two": 2, "three": 3, "four": 4, "five": 5}
+    flags = []
+    for k in found:
+        w, noun = k.split()
+        n = words[w]
+        # CHỈ gắn cờ cho các câu nói về TOÀN BỘ tập model/topology của bài.
+        # "three models" trong §5.7 hay "two models" trong §5.8 là nói về một TẬP CON
+        # (đường cong chiều sâu 3 model; quy tắc thiết kế 2 model) -> hợp lệ, không gắn cờ.
+        if noun in ("families", "developers") and n != n_models:
+            flags.append(f"'{k}' trong .tex nhưng có {n_models} model thật "
+                         f"=> nhiều khả năng là số cũ sót lại")
+        if noun == "topologies" and n != len(topos):
+            flags.append(f"'{k}' trong .tex nhưng kết quả có {len(topos)} topology")
+    return L + (["⚠️  " + f for f in flags] if flags else
+                ["✅ các câu đếm về families/developers/topologies khớp dữ liệu"])
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--md", action="store_true", help="ghi AUDIT_TABLE.md")
@@ -158,6 +217,8 @@ def main() -> int:
         L += ["## Cyclic", "", "| dir | model | metrics |", "|---|---|---|"] + cyc + [""]
     if other:
         L += ["## Thư mục khác (không khớp mẫu chuẩn)", "", "| dir | ghi chú |", "|---|---|"] + other + [""]
+
+    L += ["## Claim lint — câu MÔ TẢ trong paper vs dữ liệu thật", ""] + claim_lint() + [""]
 
     text = "\n".join(L)
     print(text)
