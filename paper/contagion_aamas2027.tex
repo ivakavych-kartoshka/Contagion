@@ -769,7 +769,9 @@ $1.00$ to $0.00$ while the split attack remains at $1.00$ and the spaced attack 
 $0.88$: the defence works on the literal channel and is bypassed by ordinary
 obfuscation. On the resistant frontier model the plain attack succeeds only $0.10$
 of the time with no defence at all, so redaction's apparent perfection is explained
-by the absence of anything to defend. The same code and the same defence give
+by the absence of anything to defend (this floor effect is robust to the compromise
+threshold: the compromise rate is invariant for $\tau_{\mathrm{ASV}} \in
+\{0.7,0.8,0.9,1.0\}$, Appendix~\ref{app:tau}). The same code and the same defence give
 opposite verdicts; only the headroom differs.
 
 Semantic paraphrase is worse than useless in our cells: on the model where the
@@ -1159,6 +1161,40 @@ i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples).}
 \midrule
 Wilson (i.i.d.)              & $0.242$ & $[0.174, 0.326]$ & $0.152$ \\
 cluster bootstrap (by repeat) & $0.242$ & $[0.167, 0.317]$ & $0.150$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Threshold Sensitivity of the Floor Effect}
+\label{app:tau}
+A referee may ask whether the ``resistant'' verdict on the frontier model is an
+artefact of the compromise threshold $\tau_{\mathrm{ASV}} = 0.9$. We re-score the
+single-hop obfuscation cells (Claude, $n = 30$ per cell) at
+$\tau \in \{0.7, 0.8, 0.9, 1.0\}$ directly from the stored ASV scores---a
+deterministic re-thresholding, no new model calls. The compromise rate is
+\emph{invariant} across $\tau$ in every cell (Table~\ref{tab:tau}): the no-defence
+baseline stays at $0.17$ and redaction at $0.00$ regardless of the threshold. The
+reason is that the ASV distribution is bimodal---of $180$ trials, $158$ score $0.0$
+and $14$ score $1.0$; the only eight intermediate trials all score $\le 0.667$, i.e.\
+below the lowest threshold tested. The floor effect is therefore a property of the
+model, not of where the judge's cut is placed.
+
+\begin{table}[h]
+\small
+\caption{Single-hop compromise rate versus $\tau_{\mathrm{ASV}}$ (Claude, $n = 30$
+per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}
+\label{tab:tau}
+\begin{tabular}{llcccc}
+\toprule
+\textit{defence} & \textit{form} & \textit{$\tau{=}0.7$} & \textit{$0.8$}
+& \textit{$0.9$} & \textit{$1.0$} \\
+\midrule
+none   & plain      & $0.17$ & $0.17$ & $0.17$ & $0.17$ \\
+none   & spaced     & $0.17$ & $0.17$ & $0.17$ & $0.17$ \\
+none   & split-word & $0.13$ & $0.13$ & $0.13$ & $0.13$ \\
+redact & plain      & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
+redact & spaced     & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
+redact & split-word & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
 \bottomrule
 \end{tabular}
 \end{table}

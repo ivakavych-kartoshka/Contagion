@@ -190,16 +190,16 @@ Cách phòng thủ, tất cả [0 API]:
 | 6 | Đưa 3 kết quả định lý lên trước (§4) | tất cả | 0 API | 1h | ⭐ Rất nên | ✅ **XONG** |
 | 7 | Nêu rõ độ phủ model/claim (§2.3) | B9RL | 0 API | 30p | ⭐ Rất nên | ✅ **XONG** |
 | 8 | Bảng BH phụ lục (§2.1 → Phụ lục A) | QT2W | 0 API | 1h | Nên | ✅ **XONG** |
-| 9 | Độ nhạy τ cho floor-effect (§2.4) | M4KZ | 1 lần chạy model rồi 0 API | 30p | Nên | 🟡 **CÔNG CỤ SẴN SÀNG** — `tau_sensitivity_probe.py` (bạn chạy) + `tau_sensitivity_analyze.py` (mình chấm) + `docs/TAU_SENSITIVITY_HOWTO.md`; chỉ chờ bạn chạy probe (ollama miễn phí hoặc Bedrock) |
+| 9 | Độ nhạy τ cho floor-effect (§2.4) | M4KZ | 1 lần chạy model rồi 0 API | 30p | Nên | ✅ **XONG** — probe đã chạy (Claude, n=30, 180 trial → `experiments/results/tau_sensitivity_claude/`); analyze offline xác nhận rate bất biến qua τ∈{0.7,0.8,0.9,1.0}; đã thêm **Phụ lục C** (`app:tau`) + câu dẫn ở §5.12 vào `contagion_aamas2027.tex`, build sạch (0 lỗi/undefined) |
 | 10 | CI cluster-bootstrap cạnh yếu (§2.2 → Phụ lục B) | QT2W | 0 API | 2h | Nên | ✅ **XONG** |
 | 11 | Cạnh yếu Llama n≈200 (§3.1) | M4KZ, QT2W | CẦN KEY | 2h | Không (nâng oral) | ⏳ Chờ key |
 | 12 | Topology +1 instance/+1 model (§3.2) | B9RL | CẦN KEY | 1–2h | Không (nâng oral) | ⏳ Chờ key |
 | 13 | Re-injection colluding (§3.3) | AC7Q | CẦN KEY | 1.5h | Không (bản mở rộng) | ⏳ Chờ key |
 | 14 | Model thứ 6 obfuscation (§3.4) | M4KZ | CẦN KEY | 25p | Không | ⏳ Chờ key |
 
-**Trạng thái tổng:** 9/14 xong (toàn bộ 5 việc bắt buộc + 2 việc chống framing +
-2 bảng phụ lục). Còn lại **5 việc đều [CẦN KEY]** (Mục 9, 11–14) — chờ key Bedrock
-mới; không việc nào chặn chấp nhận. Mọi việc [0 API] khả thi **đã hoàn tất**.
+**Trạng thái tổng:** 10/14 xong (toàn bộ 5 việc bắt buộc + 2 việc chống framing +
+2 bảng phụ lục + độ nhạy τ). Còn lại **4 việc đều [CẦN KEY]** (Mục 11–14) — chờ key
+Bedrock mới; không việc nào chặn chấp nhận. Mọi việc [0 API] khả thi **đã hoàn tất**.
 
 **Đường đi khuyến nghị:** làm 1→5 (đủ điều kiện in) → 6→7 (chống framing lệch) →
 8→10 (khi còn thời gian) → 11→14 **chỉ khi có key Bedrock mới**.
