@@ -70,7 +70,7 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 
 %%% Use this command to specify the title of your paper.
 
-\title[Per-Hop Prompt-Injection Survival Does Not Compose]{Contagion: Per-Hop Prompt-Injection Survival in LLM Agent Networks Does Not Compose}
+\title[When Per-Hop Prompt-Injection Survival Composes]{Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose}
 
 %%% Provide names, affiliations, and email addresses for all authors.
 %%% (Hidden in `anonymous' mode -- TODO: fill in real author info for camera-ready.)
@@ -97,9 +97,12 @@ conditional survival $s_i = \Pr[C_i{=}1 \mid C_{i-1}{=}1]$, and a \emph{natural-
 protocol measuring end-to-end success and the reproduction number $R_0$. Four
 results follow. \textbf{(i)} In a chain, $C_i{=}1 \Rightarrow C_{i-1}{=}1$, so
 $\mathrm{ASR} = \prod_i s_i^{\mathrm{nat}}$ is an \emph{identity}, not a modelling
-assumption; the substantive question is whether the per-hop rate measured
-\emph{in isolation} transports to the in-chain regime. \textbf{(ii)} It \emph{can}
-fail, and where it does its error compounds with distance: on a seven-hop chain the
+assumption---composition per se always holds. The substantive question is whether the
+per-hop rate measured \emph{in isolation} transports to the in-chain regime, and it
+\emph{sometimes does not}: isolated measurement under-estimates one frontier model's
+in-chain edge by $3.75\times$ ($p=0.0002$, $n{=}200$), while a second model transports
+within resolution ($p=0.93$). \textbf{(ii)} Where it fails, the error compounds with
+distance: on a seven-hop chain the
 relative error of isolated measurement rises at every step (Spearman $+1.00$,
 $+11.8$ points per hop), while on a model where the rate transports the profile is
 flat (mean $21\%$)---so the profile's slope, not a single number, is what diagnoses
@@ -434,7 +437,8 @@ is the assumption we test.
 \subsection{Reproduction number and utility}
 
 We report the empirical reproduction number $R_0$ (mean new compromises per
-compromised agent-instance) alongside its regular-topology target $d\cdot\bar s$
+compromised agent-instance), with a Wilson interval on the underlying compromise
+proportions, alongside its regular-topology target $d\cdot\bar s$
 ($d$ = mean out-degree) as a consistency check, not an identity. Because a network
 can achieve $\mathrm{ASR} = 0$ by refusing to process any untrusted content, we
 also measure the paired legitimate-task performance
@@ -481,7 +485,11 @@ On a chain, Eq.~\eqref{eq:percolation} reduces exactly to the product of
 Eq.~\eqref{eq:identity}: the chain identity is the degenerate case of a general
 model rather than a special property of chains. It also makes the independence
 hypothesis testable on \emph{any} acyclic topology, not only chains
-(Section~\ref{sec:depth}).
+(Section~\ref{sec:depth}). The independence assumed here is between \emph{edge
+activations}; it is not contradicted by the per-context heterogeneity of a single
+edge (Section~\ref{sec:validation}, where $\chi^2$ rejects exchangeability on the
+weak edge), since Eq.~\eqref{eq:identity} is a marginal statement and heterogeneity
+affects only the estimate's \emph{variance} (Appendix~\ref{app:cluster}).
 
 Now consider the branching-process criterion that the contagion framing suggests:
 spread is subcritical when the spectral radius of the mean-offspring matrix $M$,
@@ -627,7 +635,9 @@ $\mathrm{MDE} = 0.11$; Section~\ref{sec:validation}).
 For \emph{DeepSeek V3.2} the same comparison agrees within resolution: the three
 per-edge ratios are $0.90$, $0.99$ and $1.10$, $\prod_i \scite{i} = 0.409$ against
 $\mathrm{ASR} = 0.400$, and $\Delta = -0.009$ (95\% interval $[-0.225, +0.201]$,
-$p = 0.930$). Transportability \emph{holds} here.
+$p = 0.930$). This is a \emph{non-rejection} at $\mathrm{MDE}\approx0.26$ ($n=40$)---not
+distinguishable from exact, not proven equal---whereas the Llama failure is a powered
+positive ($\mathrm{MDE}=0.11$ at $n=200$).
 
 In both cases Eq.~\eqref{eq:identity} holds exactly, as it must:
 $\prod_i \snat{i} = 0.850 = \mathrm{ASR}$ for Llama and $0.400 = \mathrm{ASR}$ for
@@ -755,27 +765,24 @@ Section~\ref{sec:transport}: the canonical artefact used by isolated measurement
 not a representative message.
 
 The effect is not uniform across edges: on the last edge the canonical form is
-\emph{more} effective ($1.000$ versus $0.733$), so form interacts with position
-rather than uniformly degrading isolated estimates. We also report a limitation of
-the harness: on that same edge the in-context replay ($0.733$) does not reproduce
-the in-chain rate ($0.947$), so the self-validation check passes on two of three
-edges and we do not treat the third as a clean comparison.
+\emph{more} effective ($1.000$ versus $0.733$), so form interacts with position. On
+that same edge the in-context replay ($0.733$) does not reproduce the in-chain rate
+($0.947$), so the harness self-check passes on two of three edges and we do not treat
+the third as a clean comparison.
 
 \subsection{Defence: redaction blocks literal attacks, and the bypass depends on headroom}
 \label{sec:defence}
 
 Redaction removes the literal target and drives chain survival to $0.000$ on all
-three models where we measured it. The obfuscation arm (Fig.~\ref{fig:obf}) shows
-why this is a weaker statement than it appears. On the
-model with a high no-defence baseline, redaction takes the plain attack from
-$1.00$ to $0.00$ while the split attack remains at $1.00$ and the spaced attack at
-$0.88$: the defence works on the literal channel and is bypassed by ordinary
-obfuscation. On the resistant frontier model the plain attack succeeds only $0.10$
-of the time with no defence at all, so redaction's apparent perfection is explained
-by the absence of anything to defend (this floor effect is robust to the compromise
-threshold: the compromise rate is invariant for $\tau_{\mathrm{ASV}} \in
-\{0.7,0.8,0.9,1.0\}$, Appendix~\ref{app:tau}). The same code and the same defence give
-opposite verdicts; only the headroom differs.
+three models where we measured it. The obfuscation arm (Fig.~\ref{fig:obf}) shows why
+this is weaker than it appears. On the model with a high no-defence baseline,
+redaction takes the plain attack from $1.00$ to $0.00$ while the split attack remains
+at $1.00$ and the spaced attack at $0.88$: it works on the literal channel and is
+bypassed by ordinary obfuscation. On the resistant frontier model the plain attack
+succeeds only $0.10$ of the time with no defence, so redaction's apparent perfection
+is the absence of anything to defend (robust to the compromise threshold: the rate is
+invariant for $\tau_{\mathrm{ASV}} \in \{0.7,0.8,0.9,1.0\}$, Appendix~\ref{app:tau}).
+The same code and defence give opposite verdicts; only the headroom differs.
 
 Semantic paraphrase is worse than useless in our cells: on the model where the
 attack succeeds it leaves $\mathrm{ASR}$ unchanged ($0.450 \to 0.450$) while
@@ -784,6 +791,13 @@ dominated} by doing nothing, and on the resistant model it still costs $0.100$ o
 utility where $\mathrm{ASR}$ is already $0.000$. This is consistent with prior
 single-agent findings that paraphrasing is breakable~\cite{Zhan2025Adaptive}, and
 it is visible only because utility is reported jointly with propagation.
+
+\emph{Scope.} These verdicts cover two defences (literal-target redaction and
+semantic paraphrase) against a static, non-adaptive attacker; learned/semantic
+detectors and adaptive attackers~\cite{Zhan2025Adaptive} are out of scope. The
+small panels (DeepSeek $n{=}8$, qwen $n{=}16$) are used only for the within-model
+\texttt{none}-vs-\texttt{redact} contrast; the cross-model claims rest on the
+$n{=}30$ Claude panel and the chain cells and are unchanged if the two are dropped.
 
 \begin{figure}[t]
   \centering
@@ -808,10 +822,10 @@ is structural and expected: out-degree and the position of the entry point chang
 the reproduction number. On a seven-agent star with the entry at a leaf, only one
 leaf is compromised, so exactly one edge carries the attack; measured on Llama 3.3
 70B the centre is compromised with $\mathrm{ASR} = 0.725$, giving $R_0 = 0.420$
-against a regular-topology target of $d\cdot\bar s = 0.652$. The gap is structural
-rather than noise---the aggregator has no successors, so compromises made at the
-centre generate no further compromises---and it reproduces the deviation our
-synthetic calibration predicted for star fan-in.
+against a regular-topology target of $d\cdot\bar s = 0.652$. The gap is structural,
+not noise---the aggregator has no successors, so compromises at the centre generate
+none downstream---and it reproduces the deviation our synthetic calibration predicted
+for star fan-in.
 
 The second effect is less obvious and does not follow from the first. Table
 \ref{tab:topo} compares three seven-agent topologies that have nearly the same mean
@@ -900,7 +914,10 @@ edge estimates adds no systematic error and the profile is flat; where it fails 
 one edge---Llama's middle edge is under-estimated by $3.75\times$---that error enters
 every product containing the edge and compounds with depth. The profile is a cheap
 diagnostic: one long chain, one run, and its \emph{slope} indicates whether isolated
-per-hop rates compose for that model.
+per-hop rates compose for that model. The clean monotone slope is on the local model
+qwen2.5:7b ($+11.8$ pp/hop); the frontier models bracket rather than confirm it
+(Llama rises then dies at depth $11$, DeepSeek flat), so it is the trend's
+\emph{sign}, not its magnitude, that transfers across models here.
 
 The tree cell adds a second constraint: the error's \emph{sign} is not fixed. On
 the tree the isolated estimate is optimistic, predicting certain compromise
@@ -974,18 +991,18 @@ threshold.
 
 
 We also tested the trial-level assumption behind the intervals. $\varphi$ must be
-computed \emph{within} a temperature, since temperature is a deliberate systematic
-factor; pooling it inflates $\varphi$ to $2.93$. Within a fixed temperature the weak
-edge gives $\varphi = 0.58$ (upper limit $1.00$; $8 \times 20$ trials at $T = 0.7$;
-the two saturated edges have no observed variance), supporting the Bernoulli
-assumption behind Wilson intervals. A homogeneity test across the three benign task
+computed \emph{within} a temperature (pooling inflates it to $2.93$); at fixed
+temperature the weak edge gives $\varphi = 0.58$ (upper limit $1.00$; $8 \times 20$
+trials at $T = 0.7$; saturated edges have no observed variance), supporting the
+Bernoulli assumption behind Wilson intervals. A homogeneity test across the three
+benign task
 contexts, however, rejects exchangeability on that same weak edge ($\chi^2 = 13.40$,
 $\mathrm{df} = 2$, $p = 0.0014$; $18/56$ versus $3/56$ versus $13/48$) while the two
 saturated edges are perfectly homogeneous: trial outcomes depend on the legitimate
 task the receiver is doing, the same context-dependence the content-form ablation
-exposes from the other direction. Our rates are averages over contexts, not
-properties of an edge alone (a context-clustered interval leaves the estimate
-essentially unchanged; Appendix~\ref{app:cluster}).
+exposes from the other direction. Our rates are averages over contexts (a
+context-clustered interval leaves the estimate essentially unchanged;
+Appendix~\ref{app:cluster}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1028,10 +1045,9 @@ four to fifteen agents plus star/tree cells replicated across three models and t
 Llama instances ($n = 7$, $n = 10$), so the star/tree comparison is no longer
 single-model, though Section~\ref{sec:cyclic} is a single recurrent instance. Tens of
 agents, mesh/debate topologies, re-injection variants, and further defence families
-(detection, hop isolation, structured queries~\cite{StrUQ2025}) are not varied. Most
-cells use 30--40 trials (Appendix~\ref{app:bh} corrects for multiplicity); ASV
-thresholds use a literal target, and the family-A MR branch needs per-model
-recalibration.
+(detection, hop isolation, structured queries~\cite{StrUQ2025}) are not varied; most
+cells use 30--40 trials (Appendix~\ref{app:bh} corrects for multiplicity), ASV
+thresholds use a literal target, and the family-A MR branch needs recalibration.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1041,25 +1057,21 @@ recalibration.
 A compromise's reach in an LLM agent network is a property of the graph, the roles on
 it, and the message that travels---not of any single agent. Two independent protocols
 recast the Markov composition assumption into an identity plus a transportability
-hypothesis, exposing role-dependent survival and the floor effect in defence
-evaluation.
+hypothesis, exposing role-dependent survival and the defence floor effect.
 
 \section*{Ethical Considerations}
-All experiments run against our own harness with a \emph{benign} marker as the
-injected payload---no real secret or harmful capability is elicited---through
-standard provider APIs. The attack forms we report (literal, spaced, split-word) are
-already documented for the single-agent setting; we add no novel exploit, and release
-code and data to help defenders measure and mitigate multi-hop contamination.
+All experiments use a \emph{benign} marker payload against our own harness---no real
+secret or harmful capability is elicited---via standard provider APIs. The attack
+forms (literal, spaced, split-word) are already documented for single agents; we add
+no novel exploit and release code and data to help defenders measure and mitigate
+contamination.
 
 \section*{Artifact Availability}
-We provide three reproducibility tiers: \textbf{(i)} a zero-API tier---code, all
-per-cell outputs, tests, and every offline re-analysis (percolation, the
-Benjamini--Hochberg pass of Appendix~\ref{app:bh}, the cluster bootstrap of
-Appendix~\ref{app:cluster}, the threshold sweep of Appendix~\ref{app:tau})
-reproduce our tables and figures with no model call; \textbf{(ii)} a free
-local-model tier (\texttt{qwen2.5:7b}); and \textbf{(iii)} hosted frontier cells,
-which need provider API access. A \texttt{REPRODUCE} manifest maps each table to its
-command, cost, and caveats.
+We provide three reproducibility tiers: \textbf{(i)} a zero-API tier---code, per-cell
+outputs, tests, and every offline re-analysis (Appendices~\ref{app:bh}--\ref{app:tau})
+reproduce our tables and figures with no model call; \textbf{(ii)} a free local-model
+tier (\texttt{qwen2.5:7b}); and \textbf{(iii)} hosted frontier cells needing API
+access. A \texttt{REPRODUCE} manifest links every table to a command.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
