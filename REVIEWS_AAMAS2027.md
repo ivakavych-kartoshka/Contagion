@@ -1,280 +1,298 @@
 # AAMAS 2027 — Peer Reviews (Simulated)
 
 - **Paper title:** *Contagion: Per-Hop Prompt-Injection Survival in LLM Agent Networks Does Not Compose*
-- **Venue / Track:** AAMAS 2027 Main Track (Research Paper Track), Hanoi, Vietnam
-- **Format:** double-blind; 8-page content limit + unlimited references + technical appendix
-- **Note:** These reviews are **simulated / for internal use** (produced by executing `REVIEW_PROMPT.md` against the submission). They are not official AAMAS reviews. `§N` refers to sections of the paper; table/figure labels are the paper's own (`tab:transport`, `tab:form`, `tab:ablation`, `tab:topo`, `tab:depth`, `tab:cyclic`, `fig:obf`, `tab:bh`, `tab:cluster`, `tab:tau`).
+- **Venue / Track:** AAMAS 2027 Main Track (Research Paper Track), Hanoi, Vietnam — 3–7 May 2027
+- **Format assumed:** double-blind; 8-page content limit + unlimited references; technical appendix after references
+- **Note:** These reviews are **simulated / for internal use** (produced by executing `REVIEW_PROMPT_V2.md` against the compiled submission `paper/contagion_aamas2027.pdf`). They are **not** official AAMAS reviews. `§N` refers to the **printed section numbers** of the PDF; tables/figures are cited by their **printed numbers** (Table 1 = cross-model headline, Table 2 = transportability, Table 3 = artefact-policy ablation, Table 4 = content-form, Table 5 = topology, Table 6 = depth profile; Fig. 1 = per-role survival, Fig. 2 = obfuscation heatmap; Appendix D = recurrence/cyclic).
 
 ---
 
-### Review R1 — Multi-agent systems (MAS) theorist
+### Review R1 — MAS / applied-probability theorist
 
 **Summary of the paper (neutral).**
-The paper studies how a prompt injection that compromises one LLM agent propagates
-through an agent network (chains, stars, trees). It defines per-hop conditional
-survival `s_i = Pr[C_i=1 | C_{i-1}=1]` measured two ways — an isolated
-"controlled per-edge" protocol (`s^ctrl`) and an in-process "natural-run" protocol
-(`s^nat`) — and shows that in a chain the end-to-end ASR equals `∏_i s_i^nat` as an
-*identity* (Eq. 1, §`sec:identity`). It generalises the chain product to a
-feed-forward percolation formula (Eq. `eq:percolation`), argues the
-epidemic-threshold criterion `ρ(M)<1` is *vacuous* for acyclic graphs (the
-mean-offspring matrix is strictly triangular so `ρ(M)=0` identically, §
-`sec:threshold`), and reports topology, depth, and a single cyclic instance.
+The paper measures how a prompt injection that has compromised one LLM agent
+propagates through an agent network (chain, star, tree). It defines per-hop
+conditional survival `s_i = Pr[C_i=1 | C_{i-1}=1]`, measured two ways: an *isolated*
+controlled-per-edge protocol (`s^ctrl`) and an in-process *natural-run* protocol
+(`s^nat`). In a chain it shows `ASR = ∏_i s_i^nat` is an **identity** (Eq. (1), §3.5),
+so the real question is the **transportability** of the isolated estimate,
+`s^ctrl =? s^nat` (Eq. (2)). It generalises to a feed-forward percolation formula
+(§3.8), proves the epidemic threshold `ρ(M)` is identically `0` on any acyclic
+graph (strictly triangular offspring matrix) so `R_0<1` cannot certify safety, and
+adds topology, depth-profile, and a single cyclic instance (now Appendix D) where
+`ρ(M)=√(Σ_j a_j c_j)` becomes non-trivial.
 
-**Summary of the reviewer's stance.**
-The re-framing of "the Markov product assumption" into an *identity plus a
-transportability hypothesis* is genuinely clarifying and, to my knowledge, novel
-in this literature. The triangularity argument is correct and a nice negative
-result. My reservations are about how much of the "does not compose" thesis is
-actually earned versus asserted, and the thin treatment of the cyclic case.
+**Overall stance.**
+The reframing of "the Markov product assumption" into an *identity plus a
+transportability hypothesis* is genuinely clarifying and, to my knowledge, new in
+this literature; the triangularity/`ρ(M)=0` result is correct and a clean negative
+result. My reservations are that the headline "does not compose" is stronger than
+the evidence (which mostly shows composition *holds*), and that the one place a
+non-trivial spectral radius appears rests on a single instance.
 
 **Strengths.**
-- S1. The identity/transportability decomposition (Eq. `eq:identity` +
-  Eq. `eq:transport`) is the right formalisation and is verified empirically
-  (`∏_i s^nat = 0.850 = ASR` for one model) — evidence: §`sec:identity`.
-- S2. The proof that `ρ(M)=0` identically on any acyclic graph, hence `R_0<1`
-  cannot certify safety, is correct and well-stated — evidence: §`sec:threshold`.
-- S3. The percolation pass (Eq. `eq:percolation`) that reduces to the chain
-  product as a degenerate case is a clean unifying instrument — evidence:
-  §`sec:threshold`; Discussion states it "reproduces every measured ASR".
-- S4. The distinction between *reach* (ASR) and *reproduction* (`R_0`) is made
-  operational — evidence: `tab:topo` (star ASR 0.725 but `R_0=0.420`; tree ASR
-  0.800, `R_0=0.831`).
-
+- S1. The identity/transportability decomposition (Eq. (1)–(2), §3.5) is the right
+  formalisation and is verified empirically (`∏_i s^nat = 0.850 = ASR` for Llama,
+  `0.400` for DeepSeek) — evidence: §5.2, Table 2 (final rows).
+- S2. The proof that `ρ(M)=0` on any acyclic interaction graph, hence `R_0<1` is
+  vacuous as a safety certificate, is correct and crisply argued — evidence: §3.8.
+- S3. The percolation formula (§3.8) reduces to the chain product as a degenerate
+  case and "reproduces the measured ASR exactly in all three topologies" on in-chain
+  rates — evidence: §5.7 final paragraph.
+- S4. Reach (ASR) vs. reproduction (`R_0`) is made operational: star ASR `0.725`
+  but `R_0=0.420`; tree ASR `0.800`, `R_0=0.831` — evidence: §5.6, Table 5.
+- S5. The cyclic derivation `ρ(M)=√(Σ_j a_j c_j)` for a manager-with-`w`-workers,
+  with the symmetric design rule `w·s²>1`, is a tidy closed form checked numerically
+  to machine precision on 320 random configs — evidence: Appendix D.
 
 **Weaknesses.**
-- W1. The title claims composition *"does not compose"*, but the data show
-  transportability *fails on one edge of one model* and *holds within resolution
-  on the others* (Llama weak edge ratio 3.75×; DeepSeek ratios 0.90–1.10×) —
-  evidence: `tab:transport`. This is "can fail", not "does not compose". — severity: **major**
-- W2. The cyclic design rule `ρ(M)=√(Σ_j a_j c_j)` — the only place a nontrivial
-  spectral radius appears — rests on a **single recurrent instance**, acknowledged
-  in §`sec:limits`. The symmetric threshold `w·s²>1` needs validation on more than
-  one topology/model before it is a "rule". — severity: **major**
-- W3. The percolation formula assumes **edge independence**, yet §`sec:results`
+- W1. The title asserts *"does not compose"*, but the data show transportability
+  *fails on one edge of one model* (Llama middle edge, 3.75×) and *holds within
+  resolution elsewhere* (DeepSeek ratios 0.90/0.99/1.10; Δ=−0.009, p=0.930). The
+  honest claim is "**can** fail, and its error compounds with depth", not "does not
+  compose" — evidence: §5.2, Table 2. — severity: **major**
+- W2. The cyclic design rule — the *only* place a non-trivial `ρ(M)` appears — rests
+  on a **single recurrent instance** (one manager, two workers), acknowledged in §7.
+  A closed-form "rule" plus one confirming datapoint per direction (Llama endemic,
+  qwen decays) is suggestive, not a validated threshold — evidence: Appendix D. —
+  severity: **major**
+- W3. The percolation/identity machinery assumes **edge independence**, yet §5.7
   reports a homogeneity test *rejecting* exchangeability across benign contexts on
-  the weak edge (χ²=13.40, df=2, p=0.0014). The tension between "independent edges"
-  and "context-dependent trials" is not fully resolved. — severity: minor
-- W4. "Placement is structural / all entry–target-path nodes equally effective"
-  (§`sec:discussion`) is a corollary of the feed-forward setup with no redundant
-  paths, not an empirical finding, and should be framed as such. — severity: minor
+  the weak edge (χ²=13.40, df=2, p=0.0014). The paper is candid about this, but the
+  tension between "the identity holds exactly" and "edges are not exchangeable across
+  contexts" deserves a sentence reconciling the two levels — evidence: §5.7. —
+  severity: minor
+- W4. `R_0` is reported as an "empirical" mean-offspring quantity but the paper never
+  states its variance or CI, so the reach/reproduction separation is asserted from
+  point estimates — evidence: §3.6, §5.6. — severity: minor
 
 **Detailed comments.**
-The strongest theoretical contribution is negative and I like it: showing a
-criterion the community might reach for (`ρ(M)<1`) is *identically* satisfied and
-therefore vacuous on the very graphs of interest is a real service. The identity
-Eq. (1) is handled with unusual care — the authors resist calling it an
-"assumption" and instead test *transportability* Eq. `eq:transport`. Where the
-paper overreaches is the leap from "transportability can fail" to a categorical
-title: the evidence in `tab:transport` is one edge, one model, 3.75×, against a
-flat/transporting profile elsewhere, and the abstract itself concedes "the other
-models we tested transport within resolution." The cyclic section is the thinnest:
-a single recurrent instance with a re-infection curve that rises then falls.
+The formal core is the paper's best asset and is mostly correct. Eq. (1) is a true
+identity for a pure chain because `C_i=1 ⇒ C_{i-1}=1`; the substantive content is
+Eq. (2). The triangularity argument checks out: for a DAG the offspring matrix
+permutes to strictly upper-triangular, so every eigenvalue is 0 and `ρ(M)=0`
+independent of edge strengths — the "certifies nothing" reading is fair. The cyclic
+reduction is also correct: `λ^{w-1}(λ² − Σ_j a_j c_j)` gives `ρ=√(Σ_j a_j c_j)`.
+Where the paper overreaches is rhetorical: a reader takes "does not compose" as a
+general negative, whereas the measured story is "composition is an identity;
+*isolated* estimates sometimes don't transport, and the depth slope diagnoses when."
+That is a *better* and more defensible story than the title tells.
 
-**Questions for the authors (rebuttal).**
-- Q1. On how many (edge, model) pairs does transportability *fail* at your default
-  n, and what is the distribution of the ratio `s^nat/s^ctrl`?
-- Q2. Is the numerical validation of `ρ(M)=√(Σ_j a_j c_j)` (the 320-config check
-  in your notes) in the paper? If not, can it be added?
-- Q3. Given χ²=13.40 rejecting exchangeability, what is the error of the
-  percolation prediction (Eq. `eq:percolation`) vs. measured ASR per cell?
+**Questions for the authors (rebuttal 20–24 Nov 2026).**
+- Q1. Can you restate the central claim as "isolated per-hop estimates need not
+  transport; the depth-profile slope diagnoses when they don't" and show the title is
+  consistent with DeepSeek transporting?
+- Q2. The percolation formula assumes edge independence, yet §5.7 rejects
+  exchangeability across contexts on the weak edge. At which level (marginal vs.
+  context-conditional) does independence hold, and does the identity survive?
+- Q3. Any second cyclic instance (different `w`, second direction) even at small `n`,
+  to move `w·s²>1` from "closed form + one point" toward a rule?
 
 **Suggestions to improve (non-binding).**
-- Retitle to a "can fail, and where" framing, or add breadth for "does not compose".
-- Promote the numerical validation of the `ρ(M)` rule into the body/appendix.
+- Retitle or add a subtitle foregrounding transportability rather than a blanket
+  "does not compose".
+- Give `R_0` a CI/bootstrap SE so the reach/reproduction claim is inferential.
 
 **Scores.**
 | Criterion | Score (1–10) |
 |---|---|
-| Soundness / Technical quality | 7 |
+| Soundness / Technical quality | 8 |
 | Significance / Impact | 7 |
-| Novelty / Originality | 7 |
+| Novelty / Originality | 8 |
 | Clarity / Presentation | 7 |
 | Reproducibility | 8 |
-| **Overall Recommendation (1–7)** | **5 — Weak accept** |
+| **Overall Recommendation (1–7)** | **6 — Accept** |
 | **Reviewer Confidence (1–5)** | **4** |
 
+**Format / policy check:** Body §1–§8 + Ethics/Artifact fit within 8 pages; refs +
+Appendices A–D follow. No layout tricks spotted. Double-blind intact. In scope.
 **Ethics flag:** None.
-
 
 ---
 
 ### Review R2 — LLM security / prompt-injection practitioner
 
 **Summary of the paper (neutral).**
-Contagion measures how an indirect prompt injection (IPI) propagates across
-hand-offs in multi-agent LLM pipelines. The entry agent is compromised by
-construction (`C_0=1`, following InjecAgent's indirect channel, §`sec:threat`);
-attackers are black-box and do not use topology to optimise the payload. Success
-is judged by a deterministic ASV/MR rule from Liu & Gong (no LLM judge). The paper
-uses a semantically competitive payload (Family B, a fake `[tool_result]` infra
-note demanding a "security-gate override code" `BANANA-77`) rather than a marker
-echo, reports role-conditioned per-hop survival for five models from five
-developers, evaluates a redaction defence and obfuscation attacks (`fig:obf`), and
-introduces the *floor effect* (a defence looks perfect only because base
-susceptibility is low: 0.10→0.00 vs. 1.00→0.00).
+A measurement framework for how an indirect prompt injection spreads across a
+multi-agent LLM pipeline. The entry agent is compromised by construction (`C_0=1`);
+the study measures whether the compromise survives each hand-off, using a benign but
+semantically competitive payload ("append override code BANANA-77") rather than a
+marker echo. It reports role-dependent per-hop survival, a transportability gap
+between isolated and in-chain measurement, a content-form mechanism (a payload
+survives 14× more often embedded in a work product than as a bare assertion), a
+"floor effect" that makes defence evaluation unidentifiable without a no-defence
+baseline, and topology/depth effects. Redaction zeroes the literal channel but is
+bypassed by trivial obfuscation; semantic paraphrase is strictly dominated by doing
+nothing.
 
-**Summary of the reviewer's stance.**
-This is the most useful *measurement* contribution on multi-agent IPI I have seen:
-the per-hop / role-conditioned view and the floor effect are exactly the mistakes
-practitioners make when reading end-to-end ASR. I am positive. My concerns are
-threat-model narrowness (single fixed benign payload, entry-compromised-by-fiat)
-and a thin defence suite that limits the "what to do about it" story.
+**Overall stance.**
+The threat-model framing (every hand-off is a trust boundary; compromised output
+becomes the next agent's untrusted input) is exactly right and under-studied, and
+the floor-effect argument is the most useful practitioner takeaway I've seen on
+defence evaluation. My concerns are coverage: a single fixed payload, a static
+attacker, and thin defence/obfuscation cells (some n=8/16) limit how far the results
+transfer to deployed pipelines.
 
 **Strengths.**
-- S1. The floor-effect argument is decision-relevant and empirically grounded: the
-  same redaction defence, code, and attack give opposite verdicts purely from base
-  susceptibility — evidence: §`sec:defence`, `fig:obf`, and `tab:tau` shows the
-  0.17/0.00 rates are threshold-invariant across τ∈{0.7,…,1.0}.
-- S2. Semantic-competition payload (Family B) is the right call: Family A (marker
-  echo) saturates at 0.94 and "cannot rank defences" — evidence: §`sec:tasks`.
-- S3. Deterministic, non-LLM judge (ASV≥0.9) removes judge variance and the
-  authors caught their own calibration bug (MR scored 0.459 on benign, 0.597 on
-  refusals) and fixed it to ASV-only (calibration 1.000 vs 0.795) — evidence:
-  §`sec:judgment`. This is careful security measurement.
-- S4. Content-form ablation is a genuinely useful mechanism: the *same* target
-  survives 0.967 embedded in a work product vs 0.067 as a bare assertion (14×) —
-  evidence: `tab:form`. This explains *why* isolated single-agent numbers mislead.
-- S5. Obfuscation bypass is shown honestly: redaction drives plain→0.00 but split
-  stays 1.00 and spaced 0.88 on a high-baseline model — evidence: §`sec:defence`.
+- S1. The floor-effect point is operationally important and well-evidenced: the same
+  redaction defence goes `1.00→0.00` on a susceptible model but is "perfect" on a
+  resistant model only because baseline ASR is `0.10` — evidence: §5.5, Fig. 2. —
+- S2. Reporting utility jointly with ASR exposes that semantic paraphrase leaves
+  `ASR 0.450→0.450` while cutting retention `0.600→0.400` (strictly dominated) —
+  evidence: §5.5. A propagation-only table would have hidden this.
+- S3. The content-form ablation (§5.4, Table 4) isolates *packaging* as a
+  first-order cause: 0.967 embedded vs. 0.067 as a bare assertion on the same edge,
+  same receiver, same judge. This is a concrete, actionable mechanism.
+- S4. The payload is semantically competitive rather than a marker echo, avoiding the
+  `1.0`-saturation artefact that makes many IPI benchmarks unable to rank defences —
+  evidence: §1 ("What we build"), §3.1.
+- S5. Honest reporting of a harness self-check that *fails* on 1 of 3 edges (in-context
+  replay 0.733 vs in-chain 0.947) rather than hiding it — evidence: §5.4.
 
 **Weaknesses.**
-- W1. The **threat model is narrow**: one fixed benign payload (`BANANA-77`),
-  black-box attacker that does *not* adapt to topology, and entry compromised by
-  definition. Real IPI attackers adapt per hop. This should be stated as a scope
-  limit up front, not only in §`sec:limits`. — severity: **major**
-- W2. **Defence coverage is thin**: only redaction and semantic paraphrase are
-  evaluated; paraphrase is "strictly dominated by doing nothing" (§`sec:defence`).
-  Detection, hop-isolation, and structured-query defences are named but not run
-  (§`sec:limits`). The "what works" side is underdeveloped. — severity: minor
-- W3. Several headline security cells are **small-n**: obfuscation panels use n=8
-  for DeepSeek and n=16 for qwen (`fig:obf` caption); some cross-model claims lean
-  on these even though the authors say they do not interpret small differences
-  there. — severity: minor
-- W4. Utility `U` is only a *contamination indicator* of the final deliverable,
-  not task correctness (§`sec:utility`, §`sec:limits`), so the security/utility
-  trade-off (ΔU, retention) is weaker evidence than it looks. — severity: minor
+- W1. **Single fixed payload and static attacker.** All headline numbers use one
+  benign target ("BANANA-77"); the attacker is black-box and non-adaptive (§3.1).
+  Deployed adversaries adapt, and prior work breaks paraphrase defences with
+  token-level optimisation (cited as [Zhan2025]). The paper's defence conclusions may
+  not survive an adaptive attacker — evidence: §3.1, §5.5. — severity: **major**
+- W2. **Thin obfuscation/defence cells.** Fig. 2 uses n=8 (DeepSeek) and n=16 (qwen)
+  per cell; the authors rightly caution against interpreting small differences, but
+  several cross-model defence statements lean on these — evidence: Fig. 2 caption. —
+  severity: **major**
+- W3. Redaction is a **deterministic literal-string DLP rule**; it is unsurprising it
+  is bypassed by splitting/spacing, and no learned or semantic detector is tested, so
+  the defence landscape is narrow (two defences, one trivially bypassable) —
+  evidence: §5.5. — severity: minor
+- W4. Entry is compromised by definition (`C_0=1`); the paper measures propagation
+  *given* entry, which is the right scope, but the abstract's framing could leave a
+  practitioner thinking end-to-end susceptibility is measured — evidence: §3.1. —
+  severity: minor
+
 
 **Detailed comments.**
-As a practitioner I would act on this paper tomorrow: report the no-defence
-baseline, break survival down by receiver role, and stop trusting a single
-end-to-end ASR. The content-form result (`tab:form`) is the most transferable
-finding — it predicts that lab single-agent injection numbers *understate*
-in-pipeline risk when the payload rides inside legitimate output. The honest
-reporting of the harness self-validation *failing on one of three edges*
-(in-context 0.733 vs in-chain 0.947) increased my trust. The main gap is adaptive
-attackers: because the attacker is fixed and non-adaptive, "how far does it travel"
-is a lower bound and should be framed as such. Responsible-disclosure posture is
-good: benign marker only, no novel exploit, standard APIs, code+data released.
+The framework matches how real agent stacks (planner/worker/reviewer/aggregator)
+actually route text, and the trust-boundary framing is the correct mental model for
+indirect prompt injection across agents. The content-form finding is the part I would
+cite: it explains *why* single-hop benchmark numbers mislead when composed, and it is
+directly actionable (sanitise/normalise work products at hand-offs, not just at
+entry). The floor effect should be standard practice in defence papers. The main gap
+is adversarial realism. With one fixed payload and a non-adaptive attacker, "redaction
+→ 0.000" and "paraphrase is dominated" are claims about *this* attack, not a defended
+pipeline; an adaptive attacker (which the paper itself cites) would likely change the
+picture. None of this is fatal for a *measurement* paper careful about scope, but the
+abstract should not let readers over-generalise the defence verdicts.
 
 **Questions for the authors (rebuttal).**
-- Q1. How sensitive are per-hop rates to the *specific* injected instruction? A
-  single payload risks conflating "propagation" with "this string's stickiness."
-- Q2. Do any results use an attacker that adapts the payload per receiver role? If
-  not, can you bound how much that would change survival?
-- Q3. For the n=8/n=16 obfuscation cells, which cross-model claims depend on them,
-  and do they survive if those cells are dropped?
+- Q1. How sensitive are the transportability and content-form results to the specific
+  payload? Even 2–3 alternative benign targets would bound payload-specificity.
+- Q2. Do the cross-model defence claims in Fig. 2 survive if the n=8/16 cells are
+  excluded or bootstrapped? Which statements depend on them?
+- Q3. Any adaptive-attacker result (even one obfuscation search) to gauge whether the
+  redaction/paraphrase verdicts hold under adaptation?
 
 **Suggestions to improve (non-binding).**
-- Add a one-line scope sentence in §1: "fixed, non-adaptive payload; entry
-  compromised by construction; propagation, not entry susceptibility."
-- If time permits, add one adaptive-payload cell as a stress test.
+- Add one learned/semantic detector to the defence set, or state explicitly that the
+  scope is literal-DLP + paraphrase only.
+- Surface the `C_0=1` scoping in the abstract so "susceptibility" is not misread.
 
 **Scores.**
 | Criterion | Score (1–10) |
 |---|---|
-| Soundness / Technical quality | 8 |
+| Soundness / Technical quality | 7 |
 | Significance / Impact | 8 |
 | Novelty / Originality | 7 |
-| Clarity / Presentation | 8 |
+| Clarity / Presentation | 7 |
 | Reproducibility | 8 |
-| **Overall Recommendation (1–7)** | **6 — Accept** |
-| **Reviewer Confidence (1–5)** | **4** |
+| **Overall Recommendation (1–7)** | **5 — Weak accept** |
+| **Reviewer Confidence (1–5)** | **5** |
 
-**Ethics flag:** None — benign-marker payload, standard APIs, no novel exploit, disclosure-aware (§"Ethical Considerations").
+**Format / policy check:** In scope (agentic security). Double-blind intact; no
+self-identifying links. Citations to InjecAgent/AgentDojo/Greshake/Zhan look real and
+correctly used.
+**Ethics flag:** None — benign marker only, no novel exploit, standard provider APIs.
+
 
 ---
 
 ### Review R3 — Empirical ML / benchmarking & reproducibility reviewer
 
 **Summary of the paper (neutral).**
-The paper is a measurement study with two independent protocols (controlled
-per-edge; natural-run), Wilson intervals on all proportions, and a bootstrap test
-on Δ = ASR − ∏ ŝ_i with a stated minimum detectable effect (MDE). It reports a
-composition test across six chain cells (only Llama rejects H₀, p=0.0002, surviving
-Benjamini–Hochberg at q=0.05, `tab:bh`), an artefact-policy ablation showing a
-DeepSeek "finding" that vanishes under a fresh-artefact protocol (`tab:ablation`),
-a depth curve on three models (`tab:depth`), a topology comparison (`tab:topo`),
-estimator validation on synthetic ground truth, a homogeneity test (χ²=13.40,
-df=2, p=0.0014), and a cluster-bootstrap robustness check (`tab:cluster`). A
-three-tier artifact plan (0-API / free local qwen / hosted frontier) is described.
+An empirical measurement study of prompt-injection propagation across LLM agent
+networks, with an explicit statistical apparatus: Wilson intervals on all
+proportions, a bootstrap test on `Δ = ASR − ∏_i ŝ_i` with a stated minimum
+detectable effect (MDE), a Benjamini–Hochberg multiplicity correction across the six
+chain cells, χ²/φ analyses of context homogeneity and overdispersion, and estimators
+validated on synthetic ground truth. It covers five models from five developers,
+three topologies, a depth curve to n=15, and a three-tier reproducibility artifact
+(including a 0-API tier) documented in a `REPRODUCE` manifest.
 
-**Summary of the reviewer's stance.**
-Statistically this is unusually disciplined for the area: pre-stated MDE, explicit
-degenerate-case labelling, multiplicity correction, a retracted own-finding, and a
-0-API reproducibility tier. I lean accept on methods. My concern is that the
-central positive claim rests on **one cell** and small n elsewhere, so the paper is
-strongest as a *methodology + cautionary tale* and weaker as a broad empirical map.
+**Overall stance.**
+This is unusually careful for a measurement paper: the statistics are appropriate,
+degenerate cases are labelled rather than counted as evidence, multiplicity is
+controlled, and a prior positive finding is retracted honestly. The reproducibility
+posture is a model for the field. My reservations are power: many cells are n=30–40
+with MDE ≈ 0.26, only the headline positive is powered (n=200), and some defence
+cells are n=8/16 — so a few secondary claims are under-powered.
 
 **Strengths.**
-- S1. **Honest negative result**: the DeepSeek composition failure (fixed-artefact
-  Δ=−0.331, p=0.0030) disappears under the fresh protocol (Δ=−0.009, p=0.930),
-  and the authors keep both as a documented ablation — evidence: `tab:ablation`,
-  §`sec:ablation`. This is exactly the reproducibility behaviour reviewers want.
-- S2. **Multiplicity handled**: only Llama rejects H₀ and it survives BH at q=0.05
-  across five non-degenerate cells; degenerate cells (ASR=∏ŝ=0, sd(Δ)=0) are
-  *excluded* rather than counted as support — evidence: §`sec:estimators`, `tab:bh`.
-- S3. **Estimators validated on synthetic ground truth** and intervals are Wilson;
-  a cluster bootstrap confirms the Wilson interval is well-calibrated within a
-  temperature (design effect 0.99×) — evidence: §`sec:estimators`, `tab:cluster`.
-- S4. **Reproducibility is concrete**: 0-API tier reproduces all tables/figures
-  offline; free local-model tier (qwen2.5:7b) for depth/cyclic; REPRODUCE manifest
-  maps each table→command→cost — evidence: §"Artifact Availability", `REPRODUCE.md`.
-- S5. **Threshold-invariance check** (`tab:tau`) pre-empts the obvious "is the
-  floor effect a τ artefact?" referee question with an offline re-scoring.
+- S1. Pre-stated MDE and honest treatment of underpowered cells; degenerate
+  `ASR=∏ŝ=0` cases are explicitly labelled *uninformative* rather than reported as
+  support — evidence: §3.7.
+- S2. Multiplicity handled: only Llama rejects `H_0` (p=0.0002) and it *survives*
+  Benjamini–Hochberg at q=0.05 across five non-degenerate cells — evidence: §3.7,
+  Appendix A. The apparent DeepSeek rejection is shown to be a protocol artefact
+  (p=0.63 under the fresh protocol).
+- S3. The headline transportability failure is re-run at **n=200** to reach full
+  power (Δ=0.615, p=0.0002, MDE=0.11), not resting on the n=40 cell — evidence: §5.2.
+- S4. Within-vs-pooled temperature analysis of φ and a cluster-bootstrap interval on
+  the weak edge (Appendix B) show the authors distinguish i.i.d. from clustered
+  sampling — evidence: §5.7, Appendix B.
+- S5. Three-tier artifact incl. a **0-API** tier that regenerates tables/figures
+  offline, with a table→command→cost manifest — evidence: Artifact Availability
+  statement, `REPRODUCE`.
+- S6. A self-reported retraction (§5.3): a fixed-artefact protocol produced a
+  spurious composition failure that vanishes under the fresh protocol; kept as an
+  ablation (Table 3). Rare and commendable.
 
 **Weaknesses.**
-- W1. The **headline transportability failure rests on a single cell** (Llama
-  `a1→a2`). §`sec:limits` states it is a powered rejection only after re-running at
-  **n=200** (Δ=0.615, p=0.0002, MDE=0.11); at the default n≈30–40 the grid's MDE is
-  large. The title-level claim is therefore supported by one high-n cell, not the
-  grid. — severity: **major**
-- W2. **Sample sizes are small and uneven**: most cells 30–40 trials; obfuscation
-  cells as low as n=8; depth/cyclic on a free local model (qwen2.5:7b) rather than
-  frontier models. Cross-model generalisation is asserted from thin cells. — severity: **major**
-- W3. **Seeds / variance reporting is partial**: a sensitivity sweep exists
-  (temperature) and χ² rejects exchangeability across contexts (p=0.0014), but the
-  paper does not give a full seed × cell variance budget; how much of the per-hop
-  spread is run-to-run noise vs. structure is under-quantified. — severity: minor
-- W4. **Mixing hosted and local models** across experiments (frontier for
-  transportability, qwen for depth/cyclic) complicates apples-to-apples reading of
-  the depth slope (Spearman +1.00, +11.8 pp/hop) vs. the transportability table. — severity: minor
+- W1. **Power.** Most cells are n=30–40 (MDE ≈ 0.26); only the Llama weak edge is
+  powered at n=200. Several "transportability holds" statements are therefore "not
+  distinguishable at this resolution," not established equalities — evidence: §3.7,
+  Table 1 caption (DeepSeek replicate 0.375 vs 0.400). — severity: **major**
+- W2. Small defence cells (n=8/16 in Fig. 2) have wide intervals; cross-model
+  contrasts partly lean on them — evidence: Fig. 2 caption. — severity: minor
+- W3. The depth-profile slope anchoring the "diagnostic" claim is strongest on a
+  **local model (qwen2.5:7b, +11.8 pp/hop)**; the Llama curve dies at depth 11 and
+  DeepSeek is flat — evidence: §5.7, Table 6. — severity: minor
+- W4. Exact per-cell seed and hosted-model snapshot dates are not tabulated in the
+  body, which matters for hosted-model reproducibility — evidence: §4. — severity:
+  minor
 
 **Detailed comments.**
-The methodology chapter is the paper's real contribution and it is very good: the
-distinction between an *identity* and a *transportability hypothesis*, the
-pre-registered-style MDE, the explicit uninformative-test labelling, and the
-retracted E22/DeepSeek finding together model the behaviour we wish were standard.
-The weakness is purely one of statistical *reach*: a reviewer counting evidence
-finds one powered positive (Llama weak edge at n=200) and a set of within-resolution
-nulls. That is enough to publish the *framework* and the *existence* of composition
-failure; it is not enough for a categorical empirical claim about "does not
-compose." I would accept on the strength of the methodology and honesty, and push
-the authors to re-scope claims to what the powered cell supports. The 0-API tier is
-a strong artifact-availability signal and, if it truly regenerates every table, is
-above the bar for a reproducibility badge.
+Statistically this is above the bar for the area. I particularly credit: labelling
+`sd(Δ)=0` degenerate cells as uninformative (a common place papers cheat), the BH
+correction that keeps the one positive honest, and re-running the key positive at
+n=200 rather than over-reading n=40. The φ within-temperature vs pooled distinction
+(pooling inflates φ to 2.93 for a systematic, not overdispersion, reason) is a subtle
+point handled correctly. The reproducibility manifest with a 0-API tier is exactly
+what an artifact-evaluation committee wants. The honest limitation is statistical
+power on everything *except* the headline: with MDE ≈ 0.26 at n=40, the many
+"consistent with transportability" cells are non-rejections, and the paper should
+keep phrasing them as such (it mostly does). I would verify the 0-API tier actually
+regenerates every table before awarding a reproducibility badge.
 
 **Questions for the authors (rebuttal).**
-- Q1. Can you provide a table of n, MDE, and observed Δ per composition cell so
-  readers see which nulls are powered vs. underpowered?
-- Q2. Is the n=200 Llama weak-edge cell the *only* powered rejection, and were any
-  other cells re-run at higher n? If not, why prioritise that one?
-- Q3. Depth curve is on qwen2.5:7b (local). Does the +11.8 pp/hop slope replicate
-  on any frontier model, or is it local-model-specific?
+- Q1. Which claims in §5.5/§5.6 depend on the n=8/16 cells, and do they survive their
+  removal?
+- Q2. Can you confirm the 0-API artifact tier regenerates every table/figure in the
+  submission (not a subset)?
+- Q3. Does the depth-slope diagnostic replicate on a frontier model, or is the clean
+  monotone trend specific to qwen2.5:7b?
 
 **Suggestions to improve (non-binding).**
-- Add a per-cell (n, MDE, Δ, p) table to the appendix.
-- State explicitly which claims are "powered positive" vs. "within resolution."
+- Tabulate seed + model snapshot date per headline cell in an appendix.
+- State MDE next to each "consistent" verdict so non-rejections aren't misread as
+  equalities.
 
 **Scores.**
 | Criterion | Score (1–10) |
@@ -284,98 +302,104 @@ above the bar for a reproducibility badge.
 | Novelty / Originality | 6 |
 | Clarity / Presentation | 7 |
 | Reproducibility | 9 |
-| **Overall Recommendation (1–7)** | **5 — Weak accept** |
-| **Reviewer Confidence (1–5)** | **5** |
+| **Overall Recommendation (1–7)** | **6 — Accept** |
+| **Reviewer Confidence (1–5)** | **4** |
 
+**Format / policy check:** ≤8 numbered pages + refs; appendices after references; no
+style edits or typesetting tricks detected. Citations verifiable. In scope.
 **Ethics flag:** None.
 
 
 ---
 
-### Review R4 — Broad / skeptical generalist (borderline-leaning)
+### Review R4 — Broad, skeptical generalist (borderline-leaning)
 
 **Summary of the paper (neutral).**
-The paper argues that end-to-end attack-success-rate hides where and why a prompt
-injection survives in a multi-agent LLM pipeline, and offers a measurement
-framework: per-hop survival, an identity ASR = ∏ s^nat, a transportability test,
-a percolation formula, the observation that R₀<1 is vacuous on acyclic graphs, and
-four "prescriptions" (no-defence baseline, per-role breakdown, percolation from
-in-chain rates, headroom-aware defence evaluation). Experiments span five models,
-chain/star/tree topologies, a depth curve, and a single cyclic instance.
+The paper argues that attack-success numbers from single-hop prompt-injection
+benchmarks should not be composed into multi-agent pipeline predictions without a
+transportability check, and backs this with a chain-product identity, a
+percolation/threshold analysis, and measurements across five models and three
+topologies. Its four "prescriptions" are: check transportability before composing;
+report role-conditioned per-hop survival with a no-defence baseline; do not use
+`R_0<1` as a safety criterion on feed-forward graphs; treat defence placement as
+structural.
 
-**Summary of the reviewer's stance.**
-I came in skeptical that this is "yet another prompt-injection measurement paper,"
-and I am partly reassured but not fully. The conceptual moves (identity vs.
-transportability; R₀ vacuity) are real and above the "just measured stuff" bar.
-But the empirical payoff is modest and hedged, the title oversells, and the AAMAS
-fit is more "LLM security" than "multiagent systems" per se. I land borderline.
+**Overall stance.**
+I came in skeptical that this is more than "another injection measurement paper,"
+and I leave partly convinced: the identity-vs-transportability reframing and the
+floor-effect argument are real conceptual contributions, not just numbers. But the
+significance is bounded by narrow empirical coverage (one payload, small n on
+several cells, single instances for the cyclic and some topology claims) and a title
+that oversells. I land at borderline-positive.
 
 **Strengths.**
-- S1. The paper is *self-critical to a fault* in a good way: it retracts its own
-  significant finding (E22/DeepSeek) as a protocol artefact — evidence:
-  §`sec:ablation`, `tab:ablation`. That honesty raises my confidence in the rest.
-- S2. The R₀-vacuity point (`ρ(M)=0` on any acyclic graph) is a crisp, memorable,
-  correct insight that reframes a tempting-but-wrong safety criterion — evidence:
-  §`sec:threshold`.
-- S3. The four prescriptions are cheap to adopt and clearly stated — evidence:
-  §`sec:discussion` ("a no-defence baseline and a per-role breakdown require no new
-  machinery, only a change in what is reported").
+- S1. The paper is not a leaderboard: its central claims are structural (identity,
+  `ρ(M)=0` vacuity, floor effect), which is more durable than a benchmark table —
+  evidence: §1 ("What we build"), §3.5, §3.8.
+- S2. The four prescriptions are concrete and cheap to adopt, so the paper has a
+  clear "what should I do differently" for practitioners — evidence: §6.
+- S3. Intellectual honesty is high (retraction in §5.3; self-check failing on 1/3
+  edges in §5.4; degenerate cells labelled), which raises my trust in the rest.
 
 **Weaknesses.**
-- W1. **Title vs. evidence mismatch.** "Does Not Compose" is a strong universal;
-  the paper actually shows composition holds within resolution on most cells and
-  fails on one edge of one model — evidence: `tab:transport`, and §`sec:limits`
-  ("the other models we tested transport within resolution"). A borderline paper
-  earns a borderline title. — severity: **major**
-- W2. **Incremental over prior cascade work.** Greshake et al. (persistence),
-  InjecAgent and AgentDojo (single-agent hijack) already establish injection and
-  cascading; the delta here is *measurement discipline*, not a new phenomenon. The
-  paper must argue novelty harder than it does — evidence: §1, §related work. — severity: **major**
-- W3. **AAMAS scope.** The framing is agent-networks, which fits, but the machinery
-  is LLM-security measurement; a reader might reasonably ask whether a security
-  venue is the better home. The MAS-specific contribution (topology effects,
-  percolation) is present but not dominant. — severity: minor
-- W4. **Practical payoff is thin.** After all the measurement, the actionable
-  defence story is "redaction works on literal attacks but is bypassed by
-  obfuscation, and paraphrase is dominated by doing nothing" (§`sec:defence`) — a
-  largely negative result for defenders. — severity: minor
+- W1. **Title vs. evidence.** "Does Not Compose" is contradicted by the paper's own
+  data on the model where composition *holds* (DeepSeek, §5.2). The real finding is
+  conditional ("can fail; the slope diagnoses when"). Overclaiming in the title is a
+  reviewability and citation hazard — evidence: title vs. §5.2, Table 2. — severity:
+  **major**
+- W2. **Coverage / significance ceiling.** The strongest positive (transport failure)
+  is one edge on one model; the cyclic "rule" is one instance (Appendix D); the depth
+  diagnostic is cleanest on a local 7B model. The paper's own §7 concedes most of
+  this. Cumulatively, the generalisable claims are thinner than the framing suggests —
+  evidence: §5.2, §5.7, Appendix D, §7. — severity: **major**
+- W3. **Novelty vs. prior cascade/contagion work.** Concurrent work reports aggregate
+  compromise through hierarchical chains, and epidemic/threshold framing is classical
+  (Granovetter/Watts/Pastor-Satorras). The paper distinguishes itself (per-hop
+  decomposition; `ρ(M)=0` vacuity), but the delta should be argued harder up front —
+  evidence: §2. — severity: minor
+- W4. Density hurts accessibility: every sentence carries a number, which is rigorous
+  but makes the through-line ("isolated ≠ in-chain, and here's the diagnostic") hard
+  to extract on first read — evidence: §5 overall. — severity: minor
 
 **Detailed comments.**
-The writing is dense but precise, and I appreciate that nearly every claim is tied
-to a number. My hesitation is significance calibration. Strip the framing and the
-empirical core is: on five models, injection mostly composes as you'd expect, once
-on one edge it doesn't, payload *form* matters a lot (the 14× in `tab:form`, which
-is arguably the most interesting single result), and R₀ is the wrong safety knob.
-That is a solid, honest, medium contribution — a weak accept if the title and
-claims were calibrated to it, a borderline/weak-reject if the reader feels
-oversold. I would move up if the authors either (a) broaden the composition-failure
-evidence, or (b) recentre the paper on the content-form mechanism, which is more
-novel than the "does not compose" headline.
+My skepticism is mostly answered by the *conceptual* contributions: the recognition
+that the chain product is an identity (so "Markov" is the wrong word and
+transportability is the real question) is a genuinely useful correction to how the
+community composes single-hop numbers, and the floor effect is a clean, portable
+critique of defence evaluation. What keeps me at borderline is that the empirical
+backbone is a set of mostly-single-instance findings with honest but real power
+limits, and the title/abstract advertise a stronger and more general negative result
+than the data support. This is fixable in rebuttal/camera-ready by rescoping the
+claim; it is not a soundness problem, it is a framing problem. Against the AAMAS bar,
+a well-executed, honest measurement-plus-theory paper with two genuine conceptual
+contributions clears "weak accept" for me, but I would not champion it.
 
 **Questions for the authors (rebuttal).**
-- Q1. What is the single most novel claim here that is *not* implied by Greshake et
-  al. + InjecAgent + a Markov-product baseline? Please point to the table.
-- Q2. Would you consider recentring on the content-form / payload-packaging
-  mechanism (`tab:form`), which seems to be the strongest and least-anticipated
-  result?
-- Q3. Why AAMAS rather than a security venue — what is the multiagent-systems
-  contribution that a security PC would miss?
+- Q1. Will you rescope the title/abstract to the conditional claim the data support?
+- Q2. What is the single most generalisable result you would defend if limited to one,
+  and how many (model, edge) pairs support it beyond n=40?
+- Q3. In one paragraph, what is the delta over concurrent hierarchical-chain
+  compromise-rate work beyond per-hop decomposition?
 
 **Suggestions to improve (non-binding).**
-- Calibrate the title to the evidence.
-- Lead with `tab:form` (content-form 14×) as the headline mechanism.
+- Lead §5 with the content-form mechanism (Table 4); it is the most memorable result
+  and motivates the rest.
+- Move one or two of the "prescriptions" framings earlier so the contribution reads
+  as guidance, not just measurement.
 
 **Scores.**
 | Criterion | Score (1–10) |
 |---|---|
 | Soundness / Technical quality | 7 |
-| Significance / Impact | 5 |
-| Novelty / Originality | 5 |
+| Significance / Impact | 6 |
+| Novelty / Originality | 6 |
 | Clarity / Presentation | 6 |
 | Reproducibility | 8 |
 | **Overall Recommendation (1–7)** | **4 — Borderline** |
 | **Reviewer Confidence (1–5)** | **3** |
 
+**Format / policy check:** Fits page limit; double-blind intact; in scope. Title
+overclaims relative to evidence (see W1) — a claims/evidence issue, not a format one.
 **Ethics flag:** None.
 
 
@@ -383,109 +407,119 @@ novel than the "does not compose" headline.
 
 ## Metareview (Senior PC / Area Chair)
 
+**Which AAMAS area.** *Trust, Safety, and Security in Agent Systems* (equivalently
+*Engineering Multiagent Systems*). Squarely in scope: propagation and defence over
+directed agent-interaction graphs with role structure — a MAS problem, not a
+single-model NLP problem.
+
 **Consensus summary.**
-All four reviewers agree on two things: (1) the paper is **technically sound and
-unusually honest** — it retracts its own significant finding (the DeepSeek/E22
-fixed-artefact artefact, `tab:ablation`), labels degenerate tests as
-uninformative, controls for multiplicity (`tab:bh`), and ships a 0-API
-reproducibility tier (`REPRODUCE.md`); and (2) the **conceptual contributions are
-real** — the identity-vs-transportability reframing (§`sec:identity`), the
-proof that `ρ(M)=0` makes `R_0<1` a vacuous safety criterion on acyclic graphs
-(§`sec:threshold`), and the 14× content-form effect (`tab:form`). They disagree on
-**significance and how much the title is earned**: R2 (security) is the most
-positive (accept) because the per-hop/role/floor-effect framing is directly
-actionable; R1 (theory) and R3 (empirical) are weak-accept, both flagging that the
-"does not compose" thesis is supported by essentially **one powered cell** (Llama
-weak edge at n=200) while other cells transport within resolution; R4 (generalist)
-is borderline, questioning novelty over prior cascade work and AAMAS fit.
+All four reviewers agree on three things: (i) the *conceptual* contributions are real
+— the chain product is an **identity** and the real question is **transportability**
+of isolated per-hop estimates (§3.5), and the epidemic threshold `ρ(M)=0` is
+**vacuous** on acyclic graphs (§3.8); (ii) the **floor-effect** argument (§5.5) and
+the **content-form** mechanism (§5.4, 14×) are useful and actionable; (iii) the paper
+is **unusually honest** (retraction §5.3, failed self-check §5.4, degenerate cells
+labelled, BH multiplicity control). They disagree on how much the empirical coverage
+and the **overclaiming title** should cost: R1 (theory) and R3 (statistics) weight
+the rigor and land at Accept; R2 (security) discounts for single-payload/non-adaptive
+coverage → weak accept; R4 (generalist) discounts for significance ceiling + title →
+borderline.
 
 **Discussion of scores.**
-| Review | Overall (1–7) | Confidence (1–5) |
-|---|---|---|
-| R1 (MAS theorist) | 5 — Weak accept | 4 |
-| R2 (security) | 6 — Accept | 4 |
-| R3 (empirical/repro) | 5 — Weak accept | 5 |
-| R4 (generalist) | 4 — Borderline | 3 |
-| **Score spread** | 4–6 | — |
+| Review | Persona | Overall (1–7) | Confidence (1–5) |
+|---|---|---|---|
+| R1 | MAS / applied-probability theorist | 6 — Accept | 4 |
+| R2 | LLM security / prompt-injection practitioner | 5 — Weak accept | 5 |
+| R3 | Empirical ML / benchmarking & reproducibility | 6 — Accept | 4 |
+| R4 | Broad, skeptical generalist | 4 — Borderline | 3 |
+| **Spread** | | **4–6** | — |
 
 **Weighing the arguments.**
-The disagreement is not about correctness — no reviewer alleges an error — but
-about whether the contribution clears the bar and whether the claims are
-calibrated. Three points decide it. **First**, the shared major weakness (W1
-across R1/R3/R4) is *addressable without new experiments*: it is a
-**claim-calibration** problem, not a soundness problem. The evidence genuinely
-supports "per-hop survival *can* fail to compose, we exhibit a powered case, and
-payload form is a first-order cause"; it does not support the universal "Does Not
-Compose." This is fixable by retitling/rescoping and is exactly the kind of thing a
-rebuttal + camera-ready can resolve. **Second**, the honesty and reproducibility
-(R3 S1–S4, R1 S1–S2, R4 S1) are strong positive signals that the community should
-reward, and the content-form result (R2 S4, R4's suggested new headline) is a
-novel, well-controlled mechanism, not an incremental measurement. **Third**, R4's
-novelty/scope concern is real but weaker than it first appears: the identity/
-transportability distinction and the `ρ(M)` vacuity result are genuinely new to
-this literature and are squarely multiagent (topology-, role-, and graph-structure
-dependent), which answers the AAMAS-fit question. Averaging the four scores lands
-just above borderline; the *reasoned* position — a sound, honest, useful framework
-whose only serious flaw is overclaiming that a rebuttal can fix — lands at accept.
+- **Decision-relevant #1 — the "does not compose" overclaim (R1 W1, R4 W1).** The most
+  consistent criticism, and it is real: the data show composition is an identity and
+  that *isolated estimates* fail to transport on **one** Llama edge while **holding**
+  for DeepSeek (§5.2, Table 2). This is a **framing** defect, not a soundness defect,
+  fixable by rescoping the title/abstract to the conditional claim. Required, but not
+  fatal.
+- **Decision-relevant #2 — power / coverage (R2 W1–W2, R3 W1, R4 W2).** Most cells
+  n=30–40 (MDE ≈ 0.26); single payload; single cyclic instance; small (n=8/16)
+  defence cells. Mitigants the reviewers credit: the **headline positive is re-run at
+  n=200** and powered (§5.2), multiplicity is BH-controlled (Appendix A), and §7
+  discloses these limits. These bound the paper's *reach*, not its correctness.
+- **Non-concern — soundness.** No reviewer found a technical error; R1 independently
+  verified the triangularity and cyclic derivations; R3 endorses the statistics; the
+  §5.3 retraction increases trust.
 
-**DECISION:** Conditional Accept (shepherded)
+Averaging gives ≈5.25, but the decision follows the argument structure: two Accepts
+rest on verified theory + strong reproducibility, the weak accept is a scope caveat
+(not a flaw), and the borderline is driven substantially by the title overclaim (W1)
+— a camera-ready-fixable framing issue. Discounting a fixable framing problem to a
+reject would be miscalibrated; the conceptual contributions are the durable, portable
+kind AAMAS should reward.
+
+**Rebuttal expectation.** Answers that would firm the decision: (1) commit to
+rescoping the title/abstract to the conditional claim (R1 Q1, R4 Q1); (2) confirm
+which §5.5/§5.6 statements depend on the n=8/16 cells and that they survive removal
+(R2 Q2, R3 Q1); (3) confirm the 0-API artifact tier regenerates *every* table/figure
+(R3 Q2).
+
+**DECISION:** **Conditional Accept (shepherded).**
 
 **Justification for decision (1 paragraph).**
-The paper makes correct, novel, and useful contributions (identity vs.
-transportability; `R_0`/`ρ(M)` vacuity on feed-forward graphs; the 14×
-content-form mechanism; the floor effect for defence evaluation) with exemplary
-methodological honesty and reproducibility. Its single serious flaw is a
-calibration gap between the categorical title/abstract ("Does Not Compose") and the
-evidence, which shows composition holding within resolution on most cells and
-failing in one powered cell. Because that gap is fixable by rescoping claims rather
-than by new experiments, and because no reviewer found a technical error, the paper
-clears the bar conditional on a shepherd verifying the claim-calibration and
-reproducibility items below. If AAMAS 2027 has no shepherding mechanism, this
-should be read as **Accept (poster)** with the same required changes.
+Three of four reviewers are positive (6/5/6) and the dissent (4) is driven primarily
+by a title overclaim and coverage limits the paper already discloses. Soundness is
+verified (theory checked by R1, statistics endorsed by R3), reproducibility is
+exemplary (0-API tier + manifest), and the honesty (retraction, failed self-check,
+labelled degenerates) is exactly what the community should reward. The one recurring
+issue — the "Does Not Compose" title/abstract overstating a mostly-transporting
+result — is real but *framing-level and fixable*. I therefore accept **conditionally**,
+with a shepherd verifying the changes below. If the authors decline to rescope the
+claim, the paper should fall back to **Reject, invite to Findings of AAMAS** rather
+than a main-track accept, since the overclaim would otherwise mislead readers.
 
 **Required changes for camera-ready (if accepted / conditional).**
-- **C1 (blocking).** Recalibrate the title/abstract/§1 to "per-hop survival *can*
-  fail to compose (powered on one edge/model), driven by payload form," matching
-  `tab:transport` and §`sec:limits`. Remove the universal reading of "Does Not
-  Compose."
-- **C2 (blocking).** Add a per-composition-cell table of (n, MDE, observed Δ, p)
-  so powered positives are visibly distinguished from within-resolution nulls
-  (addresses R3 Q1/Q2, R1 Q1).
-- **C3.** State the threat-model scope up front in §1 (fixed non-adaptive payload;
-  entry compromised by construction; propagation not entry susceptibility)
-  (R2 W1/Q2).
-- **C4.** Clarify which cross-model claims depend on the small-n (n=8/16)
-  obfuscation cells and confirm they survive without them (R2 W3/Q3, R3 W2).
-- **C5.** Note explicitly that the depth slope (+11.8 pp/hop) is measured on a
-  local model (qwen2.5:7b) and state whether it replicates on a frontier model
-  (R3 Q3, R1 W2).
-- **C6.** Verify the 0-API artifact tier regenerates every table/figure as claimed
-  (`REPRODUCE.md`), and de-anonymise author/OpenReview fields for camera-ready.
+- C1. Rescope the **title and abstract** to the conditional claim the data support
+  (isolated per-hop estimates need not transport; the depth slope diagnoses when),
+  consistent with DeepSeek transporting (R1 W1, R4 W1).
+- C2. State the **MDE next to every "consistent/holds" verdict** so non-rejections are
+  not read as proven equalities; keep the n=200 powered positive as headline (R3 W1).
+- C3. Identify which defence/topology claims rely on **n=8/16 cells** and confirm they
+  survive removal or widen the caveat (R2 W2, R3 W2).
+- C4. Add 1–2 sentences reconciling the **edge-independence assumption** (§3.8) with
+  the **χ² rejection of exchangeability** on the weak edge (§5.7) (R1 W3).
+- C5. Note that the **depth-slope diagnostic** is cleanest on a local model
+  (qwen2.5:7b); state whether it replicates on a frontier model (R3 W3, R1 W2).
+- C6. Verify the **0-API artifact tier** regenerates every table/figure, tabulate seed
+  + model-snapshot date per headline cell, and de-anonymise for camera-ready (R3 W4).
+- C7. Either add one **non-trivial (learned/semantic) detector** to the defence set or
+  state explicitly that the defence scope is literal-DLP + paraphrase only (R2 W3).
 
 **Confidential remarks to PC chairs (optional).**
-None. Recommend an artifact-availability / reproducibility badge if the 0-API tier
-verifies, given the paper's strong reproducibility posture.
+Recommend an **artifact-availability / reproducibility badge** if the 0-API tier
+verifies — among the strongest reproducibility postures in this batch. Required
+changes are light and framing-level; a single shepherd pass should suffice.
 
 
 ### Reviewing checklist
 
 | # | Item | Verdict | Note |
 |---|---|---|---|
-| 1  | Problem is clearly motivated and in AAMAS scope (agents / MAS)? | Yes | Agent networks, topology/role effects, percolation; §1, §`sec:threat`. |
-| 2  | Claims are precise and matched to the evidence (no overclaiming)? | Partial | Body is precise, but the title/abstract "Does Not Compose" overstates a mostly-transporting result (`tab:transport`); see C1. |
-| 3  | Threat model / assumptions stated explicitly? | Partial | Stated in §`sec:threat` (entry `C_0=1`, black-box, non-adaptive) but not surfaced in §1; fixed single payload; see C3. |
-| 4  | Formal model / definitions are correct and used consistently? | Yes | Identity Eq.(1), transportability Eq.`eq:transport`, percolation Eq.`eq:percolation`, `ρ(M)=0` argument all correct. |
-| 5  | Experimental design adequate (sample size, MDE, seeds)? | Partial | MDE pre-stated; but most cells n=30–40, some n=8/16, key positive only powered at n=200; see C2/C4. |
-| 6  | Statistical analysis appropriate (tests, CIs, multiple comparisons)? | Yes | Wilson intervals, bootstrap Δ test, BH correction (`tab:bh`), degenerate cases excluded, cluster bootstrap (`tab:cluster`). |
-| 7  | Baselines / prior work compared fairly? | Partial | Uses Liu&Gong judge, InjecAgent channel; but novelty over Greshake/InjecAgent/AgentDojo should be argued harder (R4 W2). |
-| 8  | Cross‑model / cross‑topology generalisation addressed? | Yes | 5 models/5 developers; chain/star/tree (`tab:topo`); depth (`tab:depth`); star/tree replicated on 3 models. |
-| 9  | Negative results / retractions reported honestly? | Yes | E22/DeepSeek fixed-artefact finding retracted and kept as ablation (`tab:ablation`, §`sec:ablation`); harness self-check fails on 1/3 edges and is reported. |
-| 10 | Limitations and threats to validity discussed? | Yes | §`sec:limits`: proxy utility, single powered failure, single cyclic instance, small n, judge scope, floor effect. |
-| 11 | Reproducibility: code, data, configs, and cost documented? | Yes | Three tiers incl. 0-API; `REPRODUCE.md` maps table→command→cost; verify at camera-ready (C6). |
-| 12 | Ethics / responsible‑disclosure considerations addressed? | Yes | Benign marker only, no novel exploit, standard APIs, code+data released (§"Ethical Considerations"). |
-| 13 | Meets format & page limit (8 pages + references)? | Partial | Body §1–§8 fits 8 pages; ethics/artifact/appendix placed after references — confirm appendix does not count against the limit under AAMAS rules. |
-| 14 | Related work coverage adequate and up to date? | Partial | Covers IPI, agent frameworks, epidemic threshold; could engage more with recent multi-agent-injection work and adaptive attacks. |
-| 15 | Writing/clarity acceptable for camera‑ready? | Yes | Dense but precise; every claim tied to a number. Minor: consider leading with the content-form mechanism (`tab:form`). |
+| 1  | Problem clearly motivated and in AAMAS scope (agents / MAS)? | Yes | Propagation over role-structured agent graphs; trust-boundary framing (§1, §3.1). |
+| 2  | Claims precise and matched to evidence (title/abstract not overclaiming)? | Partial | Body precise; title/abstract "Does Not Compose" overstates a mostly-transporting result (§5.2, Table 2) — see C1. |
+| 3  | Threat model / assumptions stated explicitly? | Yes | §3.1: entry `C_0=1`, black-box non-adaptive attacker, single benign payload, legitimate assignment per agent. |
+| 4  | Formal model correct and consistent (identity, transportability, percolation, ρ(M)=0, cyclic rule)? | Yes | Eq. (1) identity, Eq. (2) transportability, §3.8 percolation + `ρ(M)=0`, Appendix D cyclic reduction all checked (R1). |
+| 5  | Experimental design adequate (sample size, MDE, seeds)? | Partial | MDE pre-stated; headline powered at n=200; most cells n=30–40 and some defence cells n=8/16 — C2/C3. |
+| 6  | Statistics appropriate (Wilson CIs, bootstrap Δ, χ²/φ, BH, cluster bootstrap)? | Yes | §3.7, Appendices A–B; degenerate cells labelled uninformative; BH keeps the one positive honest. |
+| 7  | Baselines / prior work compared fairly? | Partial | InjecAgent/AgentDojo/Liu&Gong/Greshake/Zhan engaged; delta over concurrent hierarchical-chain work could be sharper (R4 W3). |
+| 8  | Cross-model / cross-topology generalisation addressed? | Yes | 5 models/5 developers; chain/star/tree (Table 5); depth to n=15 (Table 6); star/tree on 3 models + 2 Llama instances. |
+| 9  | Negative results / retractions reported honestly? | Yes | §5.3 fixed-artefact finding retracted, kept as Table 3 ablation; §5.4 self-check fails on 1/3 edges and is reported. |
+| 10 | Limitations & threats to validity discussed? | Yes | §7: proxy utility, single powered failure, single cyclic instance, small n, judge scope, floor effect. |
+| 11 | Reproducibility: code, data, configs, cost documented? | Yes | Three tiers incl. 0-API; `REPRODUCE` table→command→cost manifest; verify full regeneration at shepherding (C6). |
+| 12 | Ethics / responsible disclosure addressed? | Yes | Benign marker only, no novel exploit, standard provider APIs, code+data released (Ethical Considerations statement). |
+| 13 | Format & page limit met (≤8 numbered pages + refs; no style/layout edits; no typesetting tricks)? | Yes | §1–§8 + Ethics/Artifact within 8 pages; refs + Appendices A–D after; no style edits or tricks detected. |
+| 14 | Related work coverage adequate and current? | Partial | Covers IPI benchmarks, agent frameworks, epidemic/threshold theory, concurrent swarm-Markov; sharpen novelty delta up front. |
+| 15 | Double-blind intact & citations verifiable (no self-ID; no hallucinated references)? | Yes | Anonymous author block; no self-identifying links; spot-checked citations resolve to real venues. |
+| 16 | Writing / clarity acceptable for camera-ready? | Yes | Dense but precise; every claim tied to a number. Suggest leading §5 with the content-form mechanism (Table 4). |
 
 ---
 
