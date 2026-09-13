@@ -19,7 +19,7 @@ Nguồn chân lý về con số là `paper/contagion_aamas2027.tex` + `experimen
 
 | Hạng mục | Trạng thái | Bằng chứng |
 |---|---|---|
-| Giới hạn trang AAMAS main track | **ĐẠT cho nội dung — nhưng có rủi ro mới, xem §7c/P4** | Nội dung (§1–§8) hết ở **trang 8**. PDF 9 trang: trang 9 = References **+ hai phụ lục** (`tab:bh`, `tab:cluster`). CFP chỉ miễn trừ *bibliographic references*, nên phụ lục ở trang 9 có thể bị coi là vượt 8 trang |
+| Giới hạn trang AAMAS main track | **ĐẠT — đã xử lý triệt để (2026-09-13)** | Toàn bộ nội dung CÓ ĐÁNH SỐ §1–§8 (kể cả Conclusion) + Ethics + Artifact nằm trọn **trang 8**; References bắt đầu trang 8. PDF 10 trang: trang 9 = References + Appendix A/B/C, trang 10 = Appendix D. Đã chuyển §5.8 Recurrence → Appendix D để §8 về trang 8 (di chuyển, không mất kết quả). Xác minh: `.aux` `sec:conclusion`={8}{8}; trích text PDF trang 8 có cả 3 mục, trang 9 có 0 mục nội dung |
 | Biên dịch | 0 lỗi, 0 overfull, 0 undefined | `paper/contagion_aamas2027.log` |
 | Cấu trúc / cite / ref / hình | 0 lỗi | `python scripts/check_paper.py paper\contagion_aamas2027.tex --bib paper\refs.bib` |
 | Vệ sinh hình | **Sạch** | `paper/` chỉ còn đúng 2 PNG được `.tex` tham chiếu; `check_figures.py` ✅ (checker đã sửa để chỉ kiểm hình thật sự được dùng) |
@@ -168,7 +168,7 @@ Cả hai đặt sau Conclusion (§1–§8 vẫn kết thúc trang 8), trước R
 | **P1** | ✅ **ĐÃ SỬA (2026-09-12)** — BH nay chạy trên **giao thức mặc định fresh-artefact**: `tab:bh` bỏ ô DeepSeek fixed `p=0.0030`, thay bằng DeepSeek fresh `p=0.63` (keep); chỉ **Llama** reject. §3.8 viết lại thành *"only the Llama cell rejects... the DeepSeek rejection was a fixed-artefact artefact that vanishes under the fresh protocol (p=0.63)"* + trỏ tới §5.3 và Phụ lục A. `appendix_stats.py` cập nhật cùng số. Không còn mâu thuẫn với §5.3. Build 0 lỗi | `tab:bh` (5 dòng mới); §3.8 L460–465; `appendix_stats.py` table_a() | ✅ Đóng |
 | **P2** | ✅ **ĐÃ SỬA (2026-09-12)** — `p` Llama đổi `0.0001 → 0.0002` ở cả §3.8 và `tab:bh`, khớp `frontier_llama3-3-70b*/results.json` (`p_value=0.00024993`, làm tròn 4 c.s.t = 0.0002) | `tab:bh` rank 1; §3.8 L461 | ✅ Đóng |
 | **P3** | ✅ **ĐÃ SỬA (2026-09-12)** — `appendix_stats.py` nay **đọc thật**: thêm `_pv_frontier()` đọc `chain_none.markov_formal.p_value` từ `frontier_*_fresh/results.json` (Llama/DeepSeek/Nova) và `_pv_table()` đọc từ `markov_formal/table.json` (qwen). Không còn hard-code. Chạy ra đúng bảng: chỉ Llama REJECT | `appendix_stats.py` table_a() | ✅ Đóng |
-| **P4** | ✅ **XỬ LÝ (2026-09-12)** — Quyết định **giữ nguyên**: nội dung có đánh số (§1–§8) kết thúc **trang 8**; Ethics + Artifact + Appendix A/B/C nằm ở trang 9–10, sau/cạnh References. Theo thông lệ AAMAS/ACM, ethics/reproducibility statements + technical appendix **không tính** vào giới hạn 8 trang. Comment trong `.tex` (trước `\appendix`) đã ghi rõ lập luận này | §1–§8 hết trang 8 (`aux`); PDF 10 trang | ✅ Đóng (chấp nhận thông lệ) |
+| **P4** | ✅ **ĐÃ SỬA TRIỆT ĐỂ (2026-09-13)** — Không còn dựa vào "thông lệ". Đã chuyển §5.8 Recurrence + bảng `tab:cyclic` xuống **Appendix D** (sau references), để lại đoạn tóm tắt 7 dòng trỏ tới. Kết quả: **toàn bộ §1–§8 có đánh số + Ethics + Artifact nằm trong trang 8**, References bắt đầu trang 8. Không mất kết quả (chỉ di chuyển), không tiểu xảo/sửa style. Xác minh trực tiếp PDF | `.aux` `sec:conclusion`={8}{8}; trang 8 chứa cả 3 mục, trang 9=0 | ✅ Đóng (đạt đúng câu chữ CFP) |
 
 *(Phụ: Nova ghi 0,0858 còn dữ liệu lưu 0,084 — lệch nhỏ, có thể do bootstrap khác seed.)*
 

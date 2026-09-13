@@ -171,12 +171,31 @@ python scripts\appendix_stats.py            # BH (Phụ lục A) + cluster CI (P
 ```
 
 > ✅ **`appendix_stats.py` nay ĐỌC THẬT dữ liệu cho cả hai phụ lục (đã sửa P1/P2/P3).**
-> Phụ lục A (BH) đọc `p_value` trực tiếp: Llama/DeepSeek/Nova từ
-> `frontier_*_fresh/results.json`, qwen từ `markov_formal/table.json`. BH chạy trên
-> **giao thức mặc định fresh-artefact** nên chỉ Llama reject (`p=0.0002`); ô DeepSeek
-> dùng `p=0.63` (fresh) — **không** còn dùng `p=0.0030` (fixed, đã rút lại ở §5.3),
-> nên không còn mâu thuẫn nội tại. Phụ lục B đọc thật từ `sensitivity_llama/results.json`
-> và **khớp hoàn toàn** (29/120, Wilson [0.174,0.326], cluster [0.167,0.317], nới 0,99×).
+> Phụ lục A (BH) đọc `p_value` trực tiếp: Llama từ `frontier_llama3-3-70b_iso`,
+> DeepSeek từ `frontier_deepseek_fresh`, Nova từ `frontier_nova-pro/results.json`,
+> qwen từ `markov_formal/table.json`. BH chạy trên **giao thức mặc định fresh-artefact**
+> nên chỉ Llama reject (`p=0.0002`); ô DeepSeek dùng `p=0.63` (fresh) — **không** còn
+> dùng `p=0.0030` (fixed, đã rút lại ở §5.3), nên không còn mâu thuẫn nội tại. Phụ lục B
+> đọc thật từ `sensitivity_llama/results.json` và **khớp hoàn toàn** (29/120,
+> Wilson [0.174,0.326], cluster [0.167,0.317], nới 0,99×).
+
+### 3.1 CHỐT nguồn cho các hàng Llama chain-none (giải quyết P1)
+
+Có **hai** replicate Llama chain-none được TRÍCH trong bài, và một replicate thừa
+đã được dọn khỏi phạm vi audit/figure:
+
+| Thư mục | ASR | cạnh yếu a1→a2 | ∏s | Δ | Bài dùng ở đâu |
+|---|---|---|---|---|---|
+| `frontier_llama3-3-70b_iso` | **0.850** | **0.233** | 0.233 | **+0.617** | hàng **fresh †** của `tab:cross`/`tab:transport`/`tab:ablation`; rank-1 REJECT của `tab:bh` (Phụ lục A). **Là dir duy nhất có `survival_natural`** ⇒ bắt buộc cho B2 transportability. |
+| `frontier_llama3-3-70b` | 0.800 | 0.167 | 0.167 | +0.633 | hàng **fixed**-artefact của `tab:ablation` (bằng chứng ta tự rút lại một claim). |
+| ~~`frontier_llama3-3-70b_fresh`~~ → `_unused_frontier_llama3-3-70b_fresh_replicate2` | 0.925 | 0.300 | 0.300 | +0.625 | **KHÔNG trích trong bài.** Là replicate fresh thứ hai; đã đổi tên với tiền tố `_` để cả `make_figures.py` và `audit_numbers.py` **bỏ qua** (cả hai skip dir bắt đầu bằng `_`). Giữ lại làm bằng chứng độ vững: cả hai replicate fresh đều cho Δ dương lớn (0.617 và 0.625) ⇒ kết luận super-Markov của Llama **không đổi**. |
+
+> ⚠️ **Tên `_iso` là do lịch sử (isolated-protocol run), nhưng nội dung của nó là
+> fresh-artefact** (đã bật `per_edge_fresh_artifact` và có `survival_natural`). Vì đổi
+> tên thư mục sẽ phải sửa nhiều tham chiếu trong repo, ta **giữ tên `_iso`** và ghi rõ
+> ý nghĩa ở đây thay vì rename. `audit_numbers.py` giờ chỉ in `frontier_llama3-3-70b`
+> (0.800, fixed) và `frontier_llama3-3-70b_iso` (0.850, fresh) — **khớp đúng bài**;
+> con số nhiễu 0.925/0.300 không còn xuất hiện trong bảng audit.
 
 `depth_trend.py` là script sinh **cột ρ và slope** của Table trong §5.7: nó tính
 Spearman hạng giữa depth và sai số tương đối, độ dốc OLS, và **loại tường minh**

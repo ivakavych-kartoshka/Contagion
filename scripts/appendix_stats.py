@@ -63,7 +63,12 @@ def table_a():
         ("qwen2.5:7b none",        round(_pv_table("qwen2.5:7b \u00b7 none"), 4)),
         ("qwen2.5:7b paraphrase",  round(_pv_table("qwen2.5:7b \u00b7 paraphrase"), 4)),
         ("deepseek none (fresh)",  round(_pv_frontier("frontier_deepseek_fresh"), 4)),
-        ("llama none (fresh)",     round(_pv_frontier("frontier_llama3-3-70b_fresh"), 4)),
+        # Llama fresh row = frontier_llama3-3-70b_iso (the dir the paper's fresh
+        # transport/cross tables cite: ASR 0.850, weak edge 0.233; it is the only
+        # Llama chain-none dir carrying survival_natural). p_value is identical
+        # across all three Llama replicates (0.00024993 -> 0.0002), so BH is
+        # unchanged; we read _iso for provenance consistency with the paper.
+        ("llama none (fresh)",     round(_pv_frontier("frontier_llama3-3-70b_iso"), 4)),
         ("nova none",              round(_pv_frontier("frontier_nova-pro"), 4)),
     ]
     print("== TABLE A: Benjamini-Hochberg (m=%d non-degenerate, q=0.05) ==" % len(cells))
@@ -72,8 +77,8 @@ def table_a():
         p, rank, thr, verdict = res[label]
         print(f"  rank {rank}: {label:24s} p={p:.4f}  BH_thr={thr:.4f}  -> {verdict.upper()}")
     print("  (Claude none: degenerate, sd(delta)=0, excluded)")
-    print("  source: frontier_*_fresh/results.json (Llama/DeepSeek/Nova) + "
-          "markov_formal/table.json (qwen)")
+    print("  source: frontier_llama3-3-70b_iso + frontier_deepseek_fresh + "
+          "frontier_nova-pro (results.json) + markov_formal/table.json (qwen)")
 
 
 def wilson(k, n, z=1.96):

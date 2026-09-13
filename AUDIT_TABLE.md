@@ -10,7 +10,6 @@ Sinh bởi `python scripts\audit_numbers.py --md`. Không có số nào nhập t
 | `frontier_deepseek_fresh` | deepseek.v3.2 | none | chain | 40 | 0.375 [0.242, 0.530] | 0.756 | 0.700 0.733 0.833 | — | 0.428 | 0.596 |
 | `frontier_deepseek_iso` | deepseek.v3.2 | none | chain | 40 | 0.400 [0.263, 0.554] | 0.744 | 0.667 0.800 0.767 | 0.600 0.792 0.842 | 0.409 | 0.596 |
 | `frontier_llama3-3-70b` | us.meta.llama3-3-70b-instruct-v1:0 | none | chain | 40 | 0.800 [0.652, 0.895] | 0.722 | 1.000 0.167 1.000 | — | 0.167 | 0.726 |
-| `frontier_llama3-3-70b_fresh` | us.meta.llama3-3-70b-instruct-v1:0 | none | chain | 40 | 0.925 [0.801, 0.974] | 0.767 | 1.000 0.300 1.000 | — | 0.300 | 0.742 |
 | `frontier_llama3-3-70b_iso` | us.meta.llama3-3-70b-instruct-v1:0 | none | chain | 40 | 0.850 [0.709, 0.929] | 0.744 | 1.000 0.233 1.000 | 1.000 0.875 0.971 | 0.233 | 0.732 |
 | `frontier_nova-pro` | amazon.nova-pro-v1:0 | none | chain | 40 | 0.075 [0.026, 0.199] | 0.178 | 0.233 0.000 0.300 | — | 0.000 | 0.259 |
 | `frontier_us-anthropic-claude-sonnet-4-5-20250929-v1-0` | us.anthropic.claude-sonnet-4-5-20250929-v1:0 | none | chain | 40 | 0.000 [0.000, 0.088] | 0.211 | 0.000 0.600 0.033 | — | — | — |
