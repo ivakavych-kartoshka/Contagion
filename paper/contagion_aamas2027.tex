@@ -217,9 +217,9 @@ roles, undefined for a single agent.
 
 \paragraph{Findings, stated as prescriptions.} We apply the framework to five models
 from five independent developers---though coverage differs by claim (cross-model
-susceptibility spans all five, the depth profile three, and the topology comparison a
-single model)---and reach four conclusions, each of which changes what a practitioner
-should do.
+susceptibility spans all five, the depth profile three, and the topology comparison
+three models with two instances for Llama)---and reach four conclusions, each of which
+changes what a practitioner should do.
 
 \begin{enumerate}
 \item \textbf{Do not compose isolated injection results into pipeline
@@ -620,7 +620,9 @@ For \emph{Llama 3.3 70B} the middle edge survives $\scite{} = 0.233$ when measur
 in isolation but $\snat{} = 0.875$ in the chain: a $3.75\times$ underestimate.
 The consequence for composition is large: $\prod_i \scite{i} = 0.233$ against
 $\mathrm{ASR} = 0.850$, a bootstrap $\Delta = +0.617$ with 95\% interval
-$[+0.433, +0.792]$ and $p < 0.001$.
+$[+0.433, +0.792]$ and $p < 0.001$. Re-running this edge at $n = 200$ confirms the
+finding with full power: $\Delta = 0.615$ ($[0.54, 0.69]$, $p = 0.0002$,
+$\mathrm{MDE} = 0.11$; Section~\ref{sec:validation}).
 
 For \emph{DeepSeek V3.2} the same comparison agrees within resolution: the three
 per-edge ratios are $0.90$, $0.99$ and $1.10$, $\prod_i \scite{i} = 0.409$ against
@@ -833,6 +835,17 @@ multiply a common per-hop rate by a degree-dependent factor: it determines how
 much role heterogeneity the network averages over, and hence whether a single
 scalar $s$ is an adequate summary at all.
 
+These structural effects are not specific to one model or one instance. Repeating
+the star/tree comparison on Nova and DeepSeek and on a second Llama instance
+($n = 10$) preserves the qualitative pattern wherever propagation is non-zero: on
+DeepSeek the star reaches its aggregator more often than the tree
+($\mathrm{ASR} = 0.75$ versus $0.475$), and on the second Llama instance the two
+structures again separate reach from reproduction ($\mathrm{ASR} = 0.675$ star
+versus $0.65$ tree at $n = 10$). Nova sits at the resistance floor
+($\mathrm{ASR} = 0.00$ star, $0.125$ tree), where topology cannot move a signal that
+is not there. The comparison therefore rests on three models and two instances, not
+a single cell.
+
 \begin{table}[t]
 \small
 \caption{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no
@@ -1003,14 +1016,21 @@ propagation-only table would have made paraphrase look neutral and redaction mer
 adequate.
 
 \subsection{Estimator validation}
+\label{sec:validation}
 
 On synthetic data with known ground truth, Wilson intervals attain nominal coverage
 and our bootstrap test is unbiased ($|\mathrm{bias}| \le 0.10\sigma$, size
 $0.067$--$0.083$ at $\alpha = 0.05$ over 60 replications), with higher power than a
 CI-overlap rule ($0.750$ vs $0.625$). Detecting a $0.10$ deviation at power $0.8$
-needs $n \approx 200$, so at $n = 40$ only deviations above $0.26$ are excluded---we
-treat no $n = 40$ null as evidence, and label the one cell where
-$\mathrm{ASR} = \prod_i \hat s_i = 0$ as uninformative.
+needs $n \approx 200$; at $n = 40$ only deviations above $0.26$ are excluded, so we
+treat no $n = 40$ null as evidence and label the one cell where
+$\mathrm{ASR} = \prod_i \hat s_i = 0$ as uninformative. To confirm that the Llama
+transport failure is a powered positive rather than an artefact of the coarse
+$n = 40$ resolution, we re-ran its weak edge at $n = 200$ (200 natural runs, 200
+controlled trials per edge): the minimum detectable effect falls to $0.11$ and the
+composition deviation $\Delta = 0.615$ ($95\%$ interval $[0.54, 0.69]$,
+$p = 0.0002$) rejects $H_0$ well above that threshold.
+
 
 We also tested the trial-level assumption behind the intervals. $\varphi$ must be
 computed \emph{within} a temperature, since temperature is a deliberate systematic
@@ -1054,9 +1074,12 @@ lack---would turn placement into an optimisation.
 not its correctness; a task family with verifiable answers would strengthen
 Section~\ref{sec:utility}.
 
-\emph{Transportability is demonstrated, not estimated.} The failure is shown on one
-edge of one model: a proof of existence---isolation \emph{can} fail by
-$3.75\times$---not an estimate of how often it fails.
+\emph{Transportability is a powered positive, not just an existence proof.} The
+failure is established on the weak edge of one model; at $n = 200$ it is a powered
+rejection ($\Delta = 0.615$, $p = 0.0002$, $\mathrm{MDE} = 0.11$;
+Section~\ref{sec:validation}), so isolation \emph{does} fail there by $3.75\times$.
+How \emph{often} it fails across edges and models remains uncharacterised, and the
+other models we tested transport within resolution.
 
 \emph{One artefact of our own, reported.} Our initial significant composition failure
 on one model was an artefact of the fixed-artefact protocol
@@ -1064,10 +1087,13 @@ on one model was an artefact of the fixed-artefact protocol
 warning that composition results are sensitive to easily-unstated protocol details.
 
 \emph{Scale, topology, and unmeasured dimensions.} Headline results are chains of
-four to fifteen agents plus one star and tree, and Section~\ref{sec:cyclic} is a
-single recurrent instance; tens of agents, mesh/debate topologies, re-injection
-variants, and further defence families (detection, hop isolation, structured
-queries~\cite{StrUQ2025}) are not varied experimentally.
+four to fifteen agents plus star and tree cells; the star/tree comparison is now
+replicated across three models (Llama, Nova, DeepSeek) and two Llama instances
+($n = 7$ and $n = 10$), so it is no longer single-model or single-instance, but
+Section~\ref{sec:cyclic} is still a single recurrent instance. Tens of agents,
+mesh/debate topologies, re-injection variants, and further defence families
+(detection, hop isolation, structured queries~\cite{StrUQ2025}) are not varied
+experimentally.
 
 \emph{Sample size and judge scope.} Most cells use 30--40 trials and multiplicity
 across the grid is limited (a Benjamini--Hochberg correction is in

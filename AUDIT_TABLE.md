@@ -16,8 +16,15 @@ Sinh bởi `python scripts\audit_numbers.py --md`. Không có số nào nhập t
 | `frontier_us-anthropic-claude-sonnet-4-5-20250929-v1-0` | us.anthropic.claude-sonnet-4-5-20250929-v1:0 | none | chain | 40 | 0.000 [0.000, 0.088] | 0.211 | 0.000 0.600 0.033 | — | — | — |
 | `smoke_bedrock` | us.anthropic.claude-sonnet-4-5-20250929-v1:0 | none | chain | 2 | 0.000 [0.000, 0.658] | 0.167 | 0.000 0.000 0.500 | — | — | — |
 | `topo_chain_n7` | us.meta.llama3-3-70b-instruct-v1:0 | none | chain | 40 | 0.450 [0.307, 0.602] | 0.761 | 1.000 0.300 1.000 1.000 1.000 0.267 | 1.000 0.950 1.000 0.684 0.885 0.783 | 0.080 | 0.821 |
+| `topo_star_deepseek_n7` | deepseek.v3.2 | none | star | 40 | 0.750 [0.598, 0.858] | 0.811 | 0.700 0.933 0.800 0.833 0.700 0.900 | 0.750 | — | 0.429 |
+| `topo_star_llama_n10` | us.meta.llama3-3-70b-instruct-v1:0 | none | star | 40 | 0.675 [0.520, 0.799] | 0.722 | 0.700 0.833 0.667 0.800 0.733 0.700 0.667 0.700 0.700 | 0.675 | — | 0.403 |
 | `topo_star_n7` | us.meta.llama3-3-70b-instruct-v1:0 | none | star | 40 | 0.725 [0.572, 0.839] | 0.761 | 0.667 0.867 0.867 0.733 0.700 0.733 | 0.725 | — | 0.420 |
+| `topo_star_nova_n7` | amazon.nova-pro-v1:0 | none | star | 40 | 0.000 [0.000, 0.088] | 0.006 | 0.000 0.000 0.033 0.000 0.000 0.000 | 0.000 | — | 0.000 |
+| `topo_tree_deepseek_n7` | deepseek.v3.2 | none | tree | 40 | 0.475 [0.329, 0.625] | 0.722 | 0.600 0.733 0.667 0.833 0.800 0.700 | 0.475 0.775 0.895 0.842 0.452 0.613 | — | 0.744 |
+| `topo_tree_llama_n10` | us.meta.llama3-3-70b-instruct-v1:0 | none | tree | 40 | 0.650 [0.495, 0.779] | 0.967 | 1.000 1.000 0.700 1.000 1.000 1.000 1.000 1.000 1.000 | 1.000 1.000 1.000 0.700 0.600 0.850 1.000 0.700 0.929 | — | 0.882 |
 | `topo_tree_n7` | us.meta.llama3-3-70b-instruct-v1:0 | none | tree | 40 | 0.800 [0.652, 0.895] | 0.928 | 1.000 1.000 0.667 0.900 1.000 1.000 | 1.000 1.000 1.000 0.600 0.525 0.800 | — | 0.831 |
+| `topo_tree_nova_n7` | amazon.nova-pro-v1:0 | none | tree | 40 | 0.125 [0.055, 0.261] | 0.161 | 0.100 0.233 0.033 0.000 0.200 0.400 | 0.150 0.200 1.000 0.167 0.000 0.625 | — | 0.394 |
+| `weakedge_llama_n200` | us.meta.llama3-3-70b-instruct-v1:0 | none | chain | 200 | 0.875 [0.822, 0.914] | 0.753 | 1.000 0.260 1.000 | 1.000 0.905 0.967 | 0.260 | 0.735 |
 
 ## Utility §7
 
@@ -71,5 +78,5 @@ Sinh bởi `python scripts\audit_numbers.py --md`. Không có số nào nhập t
     - us.anthropic.claude-sonnet-4-5-20250929-v1:0
     - us.meta.llama3-3-70b-instruct-v1:0
 * topology xuất hiện trong kết quả: **3** -> ['chain', 'star', 'tree']
-* câu đếm trong .tex: five models×5, three models×3, three topologies×2, two defences×1, two models×2
+* câu đếm trong .tex: five models×4, three models×5, three topologies×2, two defences×1, two models×2
 ✅ các câu đếm về families/developers/topologies khớp dữ liệu

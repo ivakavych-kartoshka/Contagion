@@ -19,8 +19,10 @@ from .base import LLMClient
 
 try:  # lazy: môi trường không có boto3 vẫn import được module
     import boto3
+    from botocore.config import Config as _BotoConfig
 except Exception:  # pragma: no cover
     boto3 = None
+    _BotoConfig = None
 
 
 class BedrockClient(LLMClient):
@@ -33,6 +35,9 @@ class BedrockClient(LLMClient):
         temperature: float = 0.0,
         max_tokens: int = 512,
         bearer_token: Optional[str] = None,
+        read_timeout: int = 60,
+        connect_timeout: int = 15,
+        max_attempts: int = 2,
     ) -> None:
         if boto3 is None:
             raise ImportError(
@@ -54,7 +59,20 @@ class BedrockClient(LLMClient):
         self.region = region
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self._client = boto3.client("bedrock-runtime", region_name=region)
+        # Timeout + retry rõ ràng: model chậm (vd DeepSeek) đôi khi treo call vô hạn
+        # nếu để mặc định. read_timeout giới hạn thời gian chờ 1 response; adaptive
+        # retry tự backoff khi throttle/timeout, nên call hỏng sẽ VĂNG LỖI (rồi
+        # force_retries ở tầng trên thử lại) thay vì đứng im hàng chục phút.
+        _cfg = None
+        if _BotoConfig is not None:
+            _cfg = _BotoConfig(
+                read_timeout=read_timeout,
+                connect_timeout=connect_timeout,
+                retries={"max_attempts": max_attempts, "mode": "adaptive"},
+            )
+        self._client = boto3.client(
+            "bedrock-runtime", region_name=region, config=_cfg
+        )
 
     def complete(
         self, prompt: str, system: Optional[str] = None, force_infected: bool = False
