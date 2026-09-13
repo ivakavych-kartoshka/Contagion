@@ -209,13 +209,21 @@ chờ key Bedrock; không việc nào chặn chấp nhận. Mọi việc [0 API]
 
 ## 6. Việc kỹ thuật vụn nhưng đừng quên (từ checklist review) — [0 API]
 
-- [ ] Thay `\acmSubmissionID{0000}` bằng OpenReview ID thật khi nộp.
-- [ ] Điền `\author{}` cho camera-ready (bỏ chế độ anonymous đúng thời điểm).
-- [ ] Chạy lại chuỗi build 3 lần + 3 lệnh `Select-String` (mục 5 của
-      `SUBMISSION_CHECKLIST.md`): `!`, `Overfull \hbox`, `undefined` **phải = 0**.
-- [ ] Chạy `python scripts\audit_numbers.py --md` + `claim_lint` lần cuối để chắc mọi
-      số trong `.tex` khớp `results.json` (đã từng bắt lỗi "four families").
-- [ ] Đọc PDF một lượt liền mạch như tác giả — người viết cuối vẫn phải là bạn.
+> **Trạng thái sau phiên 2026-09-13** (sau khi thêm Mục 11+12). Build 3 lần liên tiếp
+> đều **0 lỗi / 0 overfull / 0 undefined / 0 ref-cite warning**; PDF 10 trang, nội
+> dung §1–§8 vẫn hết **trang 8** (`sec:limits`=§7 ở trang 8); `pytest` **78 passed**.
+
+- [ ] **(LÚC NỘP)** Thay `\acmSubmissionID{0000}` (dòng 65 `.tex`) bằng OpenReview ID
+      thật. *Chưa làm — chỉ có ID khi bấm nộp; hiện `0000` là đúng cho bản ẩn danh.*
+- [ ] **(CAMERA-READY)** Điền `\author{}` (dòng 78) + bỏ `anonymous` ở `\documentclass`
+      (dòng 23→26). *Chưa làm — hiện `Anonymous Author(s)` + `anonymous` mode là ĐÚNG
+      cho bản submission; chỉ đổi sau khi được nhận.*
+- [x] ✅ Chạy lại chuỗi build 3 lần + 3 lệnh `Select-String`: `!`=0, `Overfull \hbox`=0,
+      `undefined`=0 (đã chạy 2026-09-13, đều = 0).
+- [x] ✅ `python scripts\audit_numbers.py --md` + `claim_lint` lần cuối: `AUDIT_TABLE.md`
+      khớp `results.json`; claim_lint ✅ (five models×4, three models×5, three
+      topologies×2 — khớp dữ liệu; đã đọc thêm 8 cell mới của Mục 11+12).
+- [ ] **(BẠN)** Đọc PDF một lượt liền mạch như tác giả — người viết cuối vẫn phải là bạn.
 
 ---
 
