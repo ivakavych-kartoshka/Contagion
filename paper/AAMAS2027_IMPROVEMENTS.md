@@ -192,7 +192,7 @@ Cách phòng thủ, tất cả [0 API]:
 | 8 | Bảng BH phụ lục (§2.1 → Phụ lục A) | QT2W | 0 API | 1h | Nên | ✅ **XONG** |
 | 9 | Độ nhạy τ cho floor-effect (§2.4) | M4KZ | 1 lần chạy model rồi 0 API | 30p | Nên | ✅ **XONG** — probe đã chạy (Claude, n=30, 180 trial → `experiments/results/tau_sensitivity_claude/`); analyze offline xác nhận rate bất biến qua τ∈{0.7,0.8,0.9,1.0}; đã thêm **Phụ lục C** (`app:tau`) + câu dẫn ở §5.12 vào `contagion_aamas2027.tex`, build sạch (0 lỗi/undefined) |
 | 10 | CI cluster-bootstrap cạnh yếu (§2.2 → Phụ lục B) | QT2W | 0 API | 2h | Nên | ✅ **XONG** |
-| 11 | Cạnh yếu Llama n≈200 (§3.1) | M4KZ, QT2W | CẦN KEY | 2h | Không (nâng oral) | ✅ **XONG** — đã chạy `weakedge_llama_n200` (chain n=4, trials=200, per-edge=200, fresh): MDE 0.26→**0.11**, Δ=**0.615** [0.54,0.69], **p=0.0002**, verdict **reject** (không còn underpowered). Đã cập nhật §5.3/§5.5/§5.11 trong `.tex`, build sạch (0 lỗi/overfull/undefined) |
+| 11 | Cạnh yếu Llama n≈200 (§3.1) | M4KZ, QT2W | CẦN KEY | 2h | Không (nâng oral) | ✅ **XONG + MỞ RỘNG** — `weakedge_llama_n200` (Llama): MDE 0.26→**0.11**, Δ=**0.615**, **p=0.0002**, **reject**. Thêm `frontier_deepseek_n200` (transport **giữ** dưới power gấp đôi: Δ=0.022, p=0.60, MDE=0.13) và `frontier_nova_n200` (n=40 null p=0.084 → n=200 **reject** p=0.0002, Δ nhỏ 0.051 ở floor; cạnh giữa 0.09 vs 0.66 — non-transport như Llama). Cập nhật §5.2/§5.3/§5.5/§5.11 + Phụ lục A; BH giữ ở n=40 (so cùng power); claim_lint ✅; build sạch |
 | 12 | Topology +1 instance/+1 model (§3.2) | B9RL | CẦN KEY | 1–2h | Không (nâng oral) | ✅ **XONG** — 6 cell mới: Nova + DeepSeek star/tree n=7 + Llama star/tree **n=10** (instance thứ 2). Topology giờ **3 model × {star,tree} + 2 instance Llama** — hết single-model/single-instance. Đã cập nhật §1 (coverage), §5.6 (đoạn replication + số thật), §5.11 (limitations); claim_lint ✅ khớp; build sạch |
 | 13 | Re-injection colluding (§3.3) | AC7Q | CẦN KEY | 1.5h | Không (bản mở rộng) | ⏳ Chờ key |
 | 14 | Model thứ 6 obfuscation (§3.4) | M4KZ | CẦN KEY | 25p | Không | ⏳ Chờ key |
@@ -201,6 +201,22 @@ Cách phòng thủ, tất cả [0 API]:
 2 bảng phụ lục + độ nhạy τ + Mục 11 cạnh yếu n=200 + Mục 12 topology 3-model/2-instance).
 Còn lại **2 việc [CẦN KEY]** (Mục 13 re-injection, Mục 14 model thứ 6 obfuscation) —
 chờ key Bedrock; không việc nào chặn chấp nhận. Mọi việc [0 API] khả thi **đã hoàn tất**.
+
+> **Bổ sung 2026-09-13 (ngoài 14 mục):** thêm 2 cell recurrence (`cyclic_deepseek`,
+> `cyclic_llama_w3`) → Appendix D (§5.8) giờ có **3 model, 2 frontier supercritical**
+> (Llama Σa·c=1.800 ρ=1.34; DeepSeek Σ=1.018 ρ=1.01 marginal, vẫn endemic qua 8 vòng;
+> qwen Σ=0.578 decay) — vá "single recurrent instance" trong Limitations. Đã viết lại
+> caveat trung thực (DeepSeek sát biên tới hạn). Build sạch, §8 vẫn ở trang 8, 78 tests
+> pass, claim_lint ✅.
+>
+> **Bổ sung T2.4 depth-slope powered (2026-09-13):** `depth_curve_llama_long` (n=15,
+> 120/60) **xác nhận** slope Llama (ρ=+0.76 vs +0.77 cũ, +6.3 pp/hop). `depth_curve_
+> deepseek_long` (n=10, 120/60) cho **ρ=+0.65, +2.3 pp/hop** — DeepSeek KHÔNG còn
+> "phẳng" như bản n=8 (ρ=−0.07); bản n=8 hoá ra underpowered. Đã reframe §5.7 từ nhị
+> phân "flat vs steep" thành **phổ độ dốc liên tục** (qwen +11.8 > Llama +6.8 > DeepSeek
+> ≤+2.3), cập nhật `tab:depth` (thêm dòng DeepSeek n=10), abstract + đóng góp #1 ("order
+> of magnitude shallower" thay "flat"). Trung thực + củng cố thesis "slope chẩn đoán
+> transportability". Build sạch, §8 trang 8, 78 tests pass, claim_lint ✅.
 
 **Đường đi khuyến nghị:** làm 1→5 (đủ điều kiện in) → 6→7 (chống framing lệch) →
 8→10 (khi còn thời gian) → 11→14 **chỉ khi có key Bedrock mới**.

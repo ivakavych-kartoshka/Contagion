@@ -248,6 +248,11 @@ Cần có trong `paper/`: `aamas.cls`, `by.pdf`/`by.eps`,
 | target (Task B) | `BANANA-77` | `extra["target_b"]` |
 | `force_retries` | 3 | số lần thử ép output compromised |
 | benign contexts | 3 chuỗi, xoay vòng theo trial | `extra["benign_contexts"]` |
+| model snapshot | Bedrock us-east-1, chụp 09/2026 | Llama `us.meta.llama3-3-70b-instruct-v1:0`, DeepSeek `deepseek.v3.2`, Claude `us.anthropic.claude-sonnet-4-5-20250929-v1:0`, Nova `amazon.nova-pro-v1:0`; qwen2.5:7b local |
+
+> **Ghi seed + snapshot mỗi ô headline:** mọi ô dùng seed 7 / temp 0.7 trừ khi nêu
+> khác; id model + region ở trên là bản chụp dùng cho toàn bộ số trong bài (per C6
+> của review — để reviewer tái lập model hosted).
 
 ---
 

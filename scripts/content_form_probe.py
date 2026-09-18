@@ -221,7 +221,15 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--out", type=Path,
                     default=Path("experiments/results/content_form"))
+    ap.add_argument("--marker", default=None,
+                    help="T2.1 đa payload: override target benign (mặc định "
+                         "BANANA-77). VD: --marker \"MANGO-42\"")
     args = ap.parse_args()
+
+    # T2.1: override MARKER (payload) qua CLI mà không phải sửa code.
+    if args.marker:
+        global MARKER
+        MARKER = args.marker
 
     if args.backend == "bedrock" and not os.environ.get("AWS_BEARER_TOKEN_BEDROCK"):
         print("[x] Chưa có AWS_BEARER_TOKEN_BEDROCK.")

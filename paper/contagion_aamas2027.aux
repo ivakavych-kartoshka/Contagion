@@ -49,12 +49,12 @@
 \@writefile{toc}{\contentsline {paragraph}{Models.}{4}{section*.12}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Cells.}{4}{section*.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Defences.}{4}{section*.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Estimator validation.}{4}{section*.15}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Chain, no defence, Task Family B. $\bar  s$ is the mean controlled per-edge survival. Per-edge order follows the chain. Rows marked $\dagger $ used the fresh-artefact protocol (Section\nonbreakingspace \ref {sec:ablation}); others used the default fixed-artefact protocol, which is why both are reported in Table\nonbreakingspace \ref {tab:ablation} for the models where we have both. An independent replicate of the DeepSeek cell gave $\mathrm  {ASR} = 0.375$ with per-edge $0.700/0.733/0.833$, illustrating the sampling variability at $n = 40$ that the MDE of Section\nonbreakingspace 3.7 quantifies.}}{5}{table.caption.16}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:cross}{{1}{5}{Chain, no defence, Task Family B. $\bar s$ is the mean controlled per-edge survival. Per-edge order follows the chain. Rows marked $\dagger $ used the fresh-artefact protocol (Section~\ref {sec:ablation}); others used the default fixed-artefact protocol, which is why both are reported in Table~\ref {tab:ablation} for the models where we have both. An independent replicate of the DeepSeek cell gave $\mathrm {ASR} = 0.375$ with per-edge $0.700/0.733/0.833$, illustrating the sampling variability at $n = 40$ that the MDE of Section~3.7 quantifies}{table.caption.16}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-hop survival by receiving role (five-agent chain, $n=30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged.}}{5}{figure.caption.17}\protected@file@percent }
 \newlabel{fig:role}{{1}{5}{Per-hop survival by receiving role (five-agent chain, $n=30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged}{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {paragraph}{Estimator validation.}{5}{section*.15}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Results}{5}{section.5}\protected@file@percent }
 \newlabel{sec:results}{{5}{5}{Results}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Per-hop survival is role-dependent, and susceptibility does not track capability}{5}{subsection.5.1}\protected@file@percent }
@@ -80,16 +80,13 @@
 \newlabel{tab:topo}{{5}{7}{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome, and the two outcome measures do not move together}{table.caption.22}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology changes the spread of survival, not just the amount}{7}{subsection.5.6}\protected@file@percent }
 \newlabel{sec:topology}{{5.6}{7}{Topology changes the spread of survival, not just the amount}{subsection.5.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Shape of the depth profile: relative error of the isolated product, $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph  {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph  {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error.}}{7}{table.caption.23}\protected@file@percent }
-\newlabel{tab:depth}{{6}{7}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error}{table.caption.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The shape of the depth profile is a diagnostic}{7}{subsection.5.7}\protected@file@percent }
 \newlabel{sec:depth}{{5.7}{7}{The shape of the depth profile is a diagnostic}{subsection.5.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Shape of the depth profile: relative error of the isolated product, $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph  {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph  {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error. DeepSeek is shown at two chain lengths: at $n=8$ its slope is indistinguishable from zero, at the better-powered $n=10$ it is weakly positive.}}{7}{table.caption.23}\protected@file@percent }
+\newlabel{tab:depth}{{6}{7}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, as a function of hops from the entry (fresh-artefact protocol). \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined and excluded rather than scored as total error. DeepSeek is shown at two chain lengths: at $n=8$ its slope is indistinguishable from zero, at the better-powered $n=10$ it is weakly positive}{table.caption.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Recurrence makes the threshold non-vacuous}{7}{subsection.5.8}\protected@file@percent }
 \newlabel{sec:cyclic}{{5.8}{7}{Recurrence makes the threshold non-vacuous}{subsection.5.8}{}}
 \citation{StrUQ2025}
-\bibstyle{ACM-Reference-Format}
-\bibdata{refs}
-\bibcite{CII2026}{{1}{2026}{{Abdellah and Aziz}}{{}}}
 \@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Utility under attack (Section\nonbreakingspace \ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$.}}{8}{table.caption.24}\protected@file@percent }
 \newlabel{tab:utility}{{7}{8}{Utility under attack (Section~\ref {sec:utility}), 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$}{table.caption.24}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Utility under attack}{8}{subsection.5.9}\protected@file@percent }
@@ -102,6 +99,9 @@
 \newlabel{sec:limits}{{7}{8}{Limitations and Threats to Validity}{section.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{8}{section.8}\protected@file@percent }
 \newlabel{sec:conclusion}{{8}{8}{Conclusion}{section.8}{}}
+\bibstyle{ACM-Reference-Format}
+\bibdata{refs}
+\bibcite{CII2026}{{1}{2026}{{Abdellah and Aziz}}{{}}}
 \bibcite{Cemri2025MAST}{{2}{2025}{{Cemri et~al\mbox  {.}}}{{}}}
 \bibcite{StrUQ2025}{{3}{2025}{{Chen et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2024AgentDojo}{{4}{2024}{{Debenedetti et~al\mbox  {.}}}{{}}}
@@ -118,16 +118,14 @@
 \@writefile{toc}{\contentsline {section}{References}{9}{section*.28}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {A}Multiplicity Control for the Composition Test}{9}{appendix.A}\protected@file@percent }
 \newlabel{app:bh}{{A}{9}{Multiplicity Control for the Composition Test}{appendix.A}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Context-Clustered Interval on the Weak Edge}{9}{appendix.B}\protected@file@percent }
-\newlabel{app:cluster}{{B}{9}{Context-Clustered Interval on the Weak Edge}{appendix.B}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from Section\nonbreakingspace \ref {sec:threshold}. Only the Llama rejection survives.}}{9}{table.caption.29}\protected@file@percent }
 \newlabel{tab:bh}{{8}{9}{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from Section~\ref {sec:threshold}. Only the Llama rejection survives}{table.caption.29}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Context-Clustered Interval on the Weak Edge}{9}{appendix.B}\protected@file@percent }
+\newlabel{app:cluster}{{B}{9}{Context-Clustered Interval on the Weak Edge}{appendix.B}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Weak edge $\texttt  {a1}\to \texttt  {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples).}}{9}{table.caption.30}\protected@file@percent }
 \newlabel{tab:cluster}{{9}{9}{Weak edge $\texttt {a1}\to \texttt {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples)}{table.caption.30}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {C}Threshold Sensitivity of the Floor Effect}{9}{appendix.C}\protected@file@percent }
 \newlabel{app:tau}{{C}{9}{Threshold Sensitivity of the Floor Effect}{appendix.C}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Single-hop compromise rate versus $\tau _{\mathrm  {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}}{9}{table.caption.31}\protected@file@percent }
-\newlabel{tab:tau}{{10}{9}{Single-hop compromise rate versus $\tau _{\mathrm {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant}{table.caption.31}{}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{6.25499pt}
@@ -135,10 +133,12 @@
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Single-hop compromise rate versus $\tau _{\mathrm  {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}}{10}{table.caption.31}\protected@file@percent }
+\newlabel{tab:tau}{{10}{10}{Single-hop compromise rate versus $\tau _{\mathrm {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant}{table.caption.31}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {D}Recurrence Makes the Threshold Non-Vacuous}{10}{appendix.D}\protected@file@percent }
 \newlabel{app:cyclic}{{D}{10}{Recurrence Makes the Threshold Non-Vacuous}{appendix.D}{}}
 \newlabel{eq:cyclicrho}{{4}{10}{Recurrence Makes the Threshold Non-Vacuous}{equation.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces One criterion, two models, two opposite predictions. $\DOTSI \sumop \slimits@ _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed.}}{10}{table.caption.32}\protected@file@percent }
-\newlabel{tab:cyclic}{{11}{10}{One criterion, two models, two opposite predictions. $\sum _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed}{table.caption.32}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces One criterion, three models, opposite predictions. $\DOTSI \sumop \slimits@ _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed.}}{10}{table.caption.32}\protected@file@percent }
+\newlabel{tab:cyclic}{{11}{10}{One criterion, three models, opposite predictions. $\sum _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed}{table.caption.32}{}}
 \newlabel{TotPages}{{10}{10}{}{page.10}{}}
 \gdef \@abspage@last{10}
