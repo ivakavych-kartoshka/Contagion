@@ -83,5 +83,5 @@ Sinh bởi `python scripts\audit_numbers.py --md`. Không có số nào nhập t
     - us.anthropic.claude-sonnet-4-5-20250929-v1:0
     - us.meta.llama3-3-70b-instruct-v1:0
 * topology xuất hiện trong kết quả: **3** -> ['chain', 'star', 'tree']
-* câu đếm trong .tex: five models×4, three models×7, three topologies×2, two defences×2, two models×1
+* câu đếm trong .tex: five models×4, three models×5, three topologies×2, two defences×2, two models×1
 ✅ các câu đếm về families/developers/topologies khớp dữ liệu

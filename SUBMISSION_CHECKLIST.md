@@ -183,3 +183,112 @@ Cả hai đặt sau Conclusion (§1–§8 vẫn kết thúc trang 8), trước R
 3. **P2 + P3**: sửa số Llama thành 0,0002/0,00025 và cho `appendix_stats.py` đọc p-value
    thật từ kết quả.
 4. **§1.3 + §1.5**: thêm mục Artifact Availability + tuyên bố đạo đức (2 việc 0 API cuối cùng).
+
+---
+
+## 8. Kiểm format 2026-09-14 — hai lỗi format **ĐÃ SỬA** (xem §8f)
+
+### 8a. 🔴 Thân bài VƯỢT 8 trang (~14 dòng)
+
+Đo từ PDF hiện tại (**10 trang**). Trang 9, **cột trái**, trước chữ "References":
+
+| Dòng trên trang 9 | Nội dung |
+|---|---|
+| 2 | `Ethical Considerations` (tiêu đề) |
+| 3–7 | 5 dòng văn bản đạo đức |
+| 9 | `Artifact Availability` (tiêu đề) |
+| 11–15 | 5 dòng văn bản artifact |
+| **17** | **`References` bắt đầu** |
+
+⇒ **14 dòng thân bài** nằm trên trang 9 trước References. Một trang 2 cột ≈ 110 dòng,
+nên thân bài ≈ **8,13 trang**, không phải ≤ 8. Quy định đã dẫn chỉ miễn *bibliographic
+references*, **không** nhắc miễn Ethics/Artifact. ⇒ **Vi phạm nếu ban tổ chức không có
+ngoại lệ riêng** (nhiều hội nghị ACM/AAMAS *có* miễn hai mục này, nhưng văn bản bạn có
+thì không nói).
+
+### 8b. 🔴 Bốn phụ lục nhúng trong PDF chính (~1,5 trang)
+
+| Phụ lục | Tiêu đề | Bảng | Trang |
+|---|---|---|---|
+| A | Multiplicity Control for the Composition Test | `tab:bh` | 9 |
+| B | Context-Clustered Interval on the Weak Edge | `tab:cluster` | 9 |
+| C | Threshold Sensitivity of the Floor Effect | `tab:tau` | 10 |
+| D | Recurrence Makes the Threshold Non-Vacuous | `tab:cyclic` | 10 |
+
+PDF = **10 trang**; phụ lục chiếm cột phải trang 9 → hết trang 10 (~1,5 trang). Nếu CFP
+yêu cầu supplementary là **một file zip riêng** thì cách này không khớp quy trình.
+*(Tôi đã grep toàn workspace tìm đúng câu CFP bạn dẫn — **0 kết quả**, nên không kiểm
+chứng được nguyên văn; tạm lấy theo lời bạn.)*
+
+### 8c. ✅ Tin tốt: P1 (mâu thuẫn BH ↔ kết quả đã rút lại) ĐÃ ĐƯỢC SỬA
+
+`tab:bh` caption mới ghi *"(fresh-artefact protocol) … **Only the Llama rejection
+survives**"*, và phần chữ nói rõ DeepSeek fixed-artefact *"is a protocol artefact that
+disappears under the fresh protocol (Section 5.3)"*. Câu §3.8 (L467–470) cũng đã sửa
+theo ⇒ không còn tuyên bố mâu thuẫn với E22.
+
+### 8d. ✅ Bài đã được tăng cường bằng **loạt thí nghiệm mới** (bộ nhớ cũ lỗi thời)
+
+Các thư mục kết quả mới (12–14/09) — tức **toàn bộ nhóm [CẦN KEY]** trong
+`AAMAS2027_IMPROVEMENTS.md` **đã chạy xong, và hơn thế**:
+
+| Thư mục | Trả lời đòn nào |
+|---|---|
+| `weakedge_llama_n200` · `frontier_nova_n200` · `frontier_deepseek_n200` | M4KZ/QT2W: MDE ở n=40 → có phép kiểm có lực ở n=200 |
+| `topo_star/tree_deepseek_n7` · `topo_star/tree_nova_n7` · `topo_star/tree_llama_n10` | **B9RL W1/W2**: topology nay **đa model + đa instance** |
+| `cyclic_llama_w3` · `cyclic_deepseek` | AC7Q: mô hình có vòng nay 3 model + biến thể $w=3$ |
+| `depth_curve_llama_long` · `depth_curve_deepseek_long` | QT2W: đường cong chiều sâu có chuỗi dài hơn |
+| `tau_sensitivity_claude` | M4KZ câu hỏi 1 (độ nhạy $\tau$) → Phụ lục C |
+
+⇒ Ba trong bốn đòn nặng nhất của reviewer mưu phản nay **đã có dữ liệu trả lời**; ước
+lượng "~35–40% được nhận" nên được nâng lên. **Chưa** kiểm từng con số mới trong `.tex`
+có truy đúng về các thư mục này — cần thêm một lượt audit.
+
+### 8e. Cách sửa đề xuất (theo thứ tự)
+
+1. **Chuyển phụ lục A–D ra supplementary zip.** Giữ *câu* trong thân bài (multiplicity
+   §3.8, $\tau$ L784, cluster L495, cyclic L947) — yêu cầu của meta-review là **câu**,
+   không phải bảng, nên điều kiện chấp nhận vẫn thoả. Thêm 1 câu trỏ tới supplementary.
+2. **Cắt ~14 dòng thân bài** để hết đúng trang 8: rút Ethics 5→3 dòng + Artifact 5→3
+   (được ~4 dòng), cắt ~10 dòng còn lại ở §2 hoặc prose §5.6/§5.7.
+3. **Hoặc hỏi ban tổ chức** xem Ethics/Artifact có được miễn giới hạn không và phụ lục
+   sau References có được chấp nhận không. Nếu được miễn thì **không cần cắt gì**, chỉ
+   cần chuyển phụ lục ra zip cho đúng quy trình.
+
+### 8f. ✅ ĐÃ SỬA theo **Cách A** (2026-09-14)
+
+**Kết quả đo lại (bằng chứng):**
+
+| Hạng mục | Trước | Sau |
+|---|---|---|
+| Thân bài kết thúc ở | trang 9, dòng 15 (14–15 dòng tràn) | **trang 8** — trang 9 bắt đầu bằng `References` |
+| Phụ lục | A–D nhúng trong PDF chính, trang 9–10 | **ra file riêng**: `paper/supplementary.pdf` (3 trang) + `paper/supplementary.zip` |
+| Tổng PDF chính | 10 trang | **9 trang** (8 nội dung + trang 9 chỉ có tài liệu tham khảo) |
+| Build | 0 lỗi / 0 overfull / 0 undefined | **0 lỗi / 0 overfull / 0 undefined** |
+
+**Đã làm cụ thể:**
+
+1. **Tách phụ lục**: tạo `paper/supplementary.tex` chứa đủ 4 phụ lục (A Multiplicity,
+   B Cluster-CI, C τ-sensitivity, D Recurrence), build bằng `pdflatex` → 3 trang, sạch.
+   Trong supplement, mọi tham chiếu tới bài chính ghi thẳng số mục ("Section 3.8 of the
+   main paper") nên **không phụ thuộc `.aux`** của bài chính.
+2. **Đóng gói**: `paper/supplementary.zip` = `supplementary.pdf` + `supplementary_README.txt`
+   (README ghi rõ phụ lục nào ứng với mục nào của bài chính, và script nào sinh số).
+3. **Gỡ 176 dòng khỏi `.tex` chính** (4 phụ lục + khối comment giải thích cũ).
+4. **Sửa 7 tham chiếu chéo** trong thân bài từ `\ref{app:...}` sang chữ
+   "supplementary Appendix A/B/C/D" ⇒ **0 `\ref` treo** (`undefined = 0`).
+5. **Cắt ~23 dòng thân bài** để bù đúng phần tràn, ở: §2 (đoạn contagion/thresholds),
+   §1 (mục (a), (b), "What we build", đoạn "structural results"), §5.9 (utility),
+   §5.10 (giả định trial-level + câu n=200), §6 Discussion, Limitations, Ethics,
+   Artifact Availability, Conclusion. **Không** cắt phần trung thực (E22 rút lại, χ² tự
+   bác bỏ, cell degenerate) và **không** đổi tham số layout (margin/font/spacing giữ
+   nguyên) — chỉ cắt chữ.
+
+**Hai điều cần nhớ về trạng thái này:**
+
+- **Ethical Considerations và Artifact Availability vẫn nằm trong thân bài** (đúng yêu
+  cầu của meta-review), chỉ được viết gọn lại. Nếu ban tổ chức trả lời rằng hai mục này
+  **được miễn** giới hạn 8 trang thì có thể khôi phục bản đầy đủ hơn của chúng.
+- **`scripts/appendix_stats.py` vẫn hard-code** p-value cho Bảng A (đã ghi chú trong
+  `supplementary_README.txt` và `REPRODUCE.md`). Đây là việc còn lại nhỏ; bài **không**
+  phụ thuộc vào nó để đúng format.
