@@ -1,0 +1,209 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  refs.bib — bibliography cho paper AAMAS-2027 "Contagion"
+%
+%  QUY ƯỚC: ghi chú cần kiểm tra nằm ở COMMENT (%) — không để trong `note`,
+%  vì `note` ĐƯỢC IN RA trong danh mục tham khảo.
+%
+%  TRẠNG THÁI XÁC MINH (2026-09-11) — ĐÃ ĐỐI CHIẾU TOÀN BỘ:
+%    Nguồn: trang nhà xuất bản (CII), Semantic Scholar / DBLP (swarm),
+%           arXiv API (id_list) cho 7 entry arXiv, arXiv abs page (Liu-Gong).
+%
+%    Venue đã xác nhận:
+%      LiuGong2024    USENIX Security 2024
+%      StrUQ2025      USENIX Security 2025   (arXiv comment: "To appear at USENIX Security Symposium 2025")
+%      Zhan2025Adaptive  Findings of NAACL 2025 (arXiv comment: "NAACL 2025 Findings")
+%      Zhan2024InjecAgent Findings of ACL 2024
+%      CII2026        Statistics, Optimization & Information Computing 15(6):5445-5458
+%      SwarmMarkov2026   Cybersecurity
+%
+%    Còn lại ghi dạng arXiv preprint (arXiv KHÔNG nêu venue trong comment nên
+%    không suy đoán): MetaGPT, AutoGen, AgentDojo, Greshake, MAST.
+%    Danh sách tác giả của TẤT CẢ entry đã lấy đủ từ arXiv API.
+%
+%    ĐÃ XONG: số trang proceedings của LiuGong2024 (1831--1847, BibTeX USENIX) và
+%    Zhan2024InjecAgent (10471--10506, BibTeX ACL Anthology); volume 9/issue 1
+%    của SwarmMarkov2026 (OpenAlex + Semantic Scholar). Không còn TODO trong file này.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{LiuGong2024,
+  title        = {Formalizing and Benchmarking Prompt Injection Attacks and Defenses},
+  author       = {Liu, Yupei and Jia, Yuqi and Geng, Runpeng and Jia, Jinyuan and Gong, Neil Zhenqiang},
+  booktitle    = {33rd USENIX Security Symposium (USENIX Security 24)},
+  year         = {2024},
+  pages        = {1831--1847},
+  address      = {Philadelphia, PA},
+  publisher    = {USENIX Association},
+  url          = {https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei}
+}
+% Nguồn của ASV/MR và của formalism mà paper mở rộng. Số trang + địa điểm lấy
+% từ BibTeX chính thức trên usenix.org (bản ghi 299563), không suy đoán.
+
+@inproceedings{StrUQ2025,
+  title        = {{StruQ}: Defending Against Prompt Injection with Structured Queries},
+  author       = {Chen, Sizhe and Piet, Julien and Sitawarin, Chawin and Wagner, David},
+  booktitle    = {34th USENIX Security Symposium (USENIX Security 25)},
+  year         = {2025},
+  publisher    = {USENIX Association}
+}
+% arXiv:2402.06363, comment ghi "To appear at USENIX Security Symposium 2025".
+% Là họ defense structured-query ta đã implement nhưng CHƯA đánh giá trên model thật.
+
+@misc{Hong2023MetaGPT,
+  title        = {{MetaGPT}: Meta Programming for A Multi-Agent Collaborative Framework},
+  author       = {Hong, Sirui and Zhuge, Mingchen and Chen, Jiaqi and Zheng, Xiawu and
+                  Cheng, Yuheng and Zhang, Ceyao and Wang, Jinlin and Wang, Zili and
+                  Yau, Steven Ka Shing and Lin, Zijuan and Zhou, Liyang and Ran, Chenyu and
+                  Xiao, Lingfeng and Wu, Chenglin and Schmidhuber, J{\"u}rgen},
+  year         = {2023},
+  eprint       = {2308.00352},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  howpublished = {arXiv preprint}
+}
+% arXiv không nêu venue trong comment ⇒ giữ dạng arXiv preprint, không suy đoán.
+
+@misc{Wu2023AutoGen,
+  title        = {{AutoGen}: Enabling Next-Gen {LLM} Applications via Multi-Agent Conversation},
+  author       = {Wu, Qingyun and Bansal, Gagan and Zhang, Jieyu and Wu, Yiran and
+                  Li, Beibin and Zhu, Erkang and Jiang, Li and Zhang, Xiaoyun and
+                  Zhang, Shaokun and Liu, Jiale and Awadallah, Ahmed Hassan and
+                  White, Ryen W and Burger, Doug and Wang, Chi},
+  year         = {2023},
+  eprint       = {2308.08155},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  howpublished = {arXiv preprint}
+}
+
+@inproceedings{Zhan2024InjecAgent,
+  title        = {{InjecAgent}: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents},
+  author       = {Zhan, Qiusi and Liang, Zhixiang and Ying, Zifan and Kang, Daniel},
+  booktitle    = {Findings of the Association for Computational Linguistics: ACL 2024},
+  year         = {2024},
+  pages        = {10471--10506},
+  address      = {Bangkok, Thailand},
+  publisher    = {Association for Computational Linguistics},
+  doi          = {10.18653/v1/2024.findings-acl.624},
+  eprint       = {2403.02691},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CR}
+}
+% Tác giả + số trang lấy từ BibTeX chính thức của ACL Anthology
+% (2024.findings-acl.624), không suy đoán.
+
+@misc{Debenedetti2024AgentDojo,
+  title        = {{AgentDojo}: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for {LLM} Agents},
+  author       = {Debenedetti, Edoardo and Zhang, Jie and Balunovi{\'c}, Mislav and
+                  Beurer-Kellner, Luca and Fischer, Marc and Tram{\`e}r, Florian},
+  year         = {2024},
+  eprint       = {2406.13352},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CR},
+  howpublished = {arXiv preprint}
+}
+
+@misc{Greshake2023,
+  title        = {Not what you've signed up for: Compromising Real-World {LLM}-Integrated Applications with Indirect Prompt Injection},
+  author       = {Greshake, Kai and Abdelnabi, Sahar and Mishra, Shailesh and
+                  Endres, Christoph and Holz, Thorsten and Fritz, Mario},
+  year         = {2023},
+  eprint       = {2302.12173},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CR},
+  howpublished = {arXiv preprint}
+}
+
+@misc{Cemri2025MAST,
+  title        = {Why Do Multi-Agent {LLM} Systems Fail?},
+  author       = {Cemri, Mert and Pan, Melissa Z. and Yang, Shuyi and Agrawal, Lakshya A. and
+                  Chopra, Bhavya and Tiwari, Rishabh and Keutzer, Kurt and
+                  Parameswaran, Aditya and Klein, Dan and Ramchandran, Kannan and
+                  Zaharia, Matei and Gonzalez, Joseph E. and Stoica, Ion},
+  year         = {2025},
+  eprint       = {2503.13657},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.AI},
+  howpublished = {arXiv preprint}
+}
+% Báo cáo inter-agent misalignment (FC2) chiếm 32.3% các thất bại multi-agent.
+
+@inproceedings{Zhan2025Adaptive,
+  title        = {Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on {LLM} Agents},
+  author       = {Zhan, Qiusi and Fang, Richard and Panchal, Henil Shalin and Kang, Daniel},
+  booktitle    = {Findings of the Association for Computational Linguistics: NAACL 2025},
+  year         = {2025},
+  eprint       = {2503.00061},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CR}
+}
+% arXiv comment ghi "(NAACL 2025 Findings)". TODO: số trang proceedings.
+
+@article{CII2026,
+  title        = {Cascading Instruction Influence: Indirect Prompt Injection in Hierarchical Multi-Agent Systems},
+  author       = {Abdellah, Mohamed Refaat Mohamed and Aziz, Alber S.},
+  journal      = {Statistics, Optimization \& Information Computing},
+  volume       = {15},
+  number       = {6},
+  pages        = {5445--5458},
+  year         = {2026},
+  doi          = {10.19139/soic-2310-5070-3574}
+}
+% Đã xác minh từ trang nhà xuất bản (công bố 2026-03-24): chuỗi 3 tầng,
+% 10 LLM production, Cohen's d = 2.34 (95% CI 1.82--2.86),
+% sandbox mitigation giảm ASR còn 23.4%.
+
+@article{SwarmMarkov2026,
+  title        = {Cross-layer contagion of prompt injections in multi-agent swarms: a multiplex microscopic {Markov} chain approach},
+  author       = {Le, Tran Duc and Dinh, Truong Duy and Nguyen, Thi Le Quyen and Nguyen, Cong Danh},
+  journal      = {Cybersecurity},
+  volume       = {9},
+  number       = {1},
+  year         = {2026},
+  doi          = {10.1186/s42400-026-00628-w}
+}
+% Đã xác minh: Semantic Scholar + OpenAlex (DBLP journals/cybersec/LeDNN26) cho
+% volume 9, issue 1, 2026. Tạp chí SpringerOpen dùng article number, không có
+% first/last page (OpenAlex trả null) ⇒ không bịa số trang. Tên tác giả đã ASCII hoá.
+%
+% ---------------------------------------------------------------------------
+% Văn liệu nền tảng về lan truyền / ngưỡng dịch tễ trên mạng (network science
+% và MAS cổ điển). Thêm để định vị mô hình percolation của paper trong dòng này.
+% ---------------------------------------------------------------------------
+
+@article{PastorSatorras2001,
+  title        = {Epidemic Spreading in Scale-Free Networks},
+  author       = {Pastor-Satorras, Romualdo and Vespignani, Alessandro},
+  journal      = {Physical Review Letters},
+  volume       = {86},
+  number       = {14},
+  pages        = {3200--3203},
+  year         = {2001},
+  doi          = {10.1103/PhysRevLett.86.3200}
+}
+% Đã xác minh qua Crossref API (2026-09-11). Là nguồn của tiêu chí ngưỡng dịch tễ
+% trên mạng (bán kính phổ của ma trận thế hệ kế tiếp) mà Section 3.8 kiểm tra.
+
+@article{Watts2002,
+  title        = {A simple model of global cascades on random networks},
+  author       = {Watts, Duncan J.},
+  journal      = {Proceedings of the National Academy of Sciences},
+  volume       = {99},
+  number       = {9},
+  pages        = {5766--5771},
+  year         = {2002},
+  doi          = {10.1073/pnas.082090499}
+}
+% Đã xác minh qua Crossref API (2026-09-11). Mô hình ngưỡng cho cascade toàn cục:
+% phụ thuộc phân phối bậc VÀ phân phối ngưỡng — khung mà ta đối chiếu.
+
+@article{Granovetter1978,
+  title        = {Threshold Models of Collective Behavior},
+  author       = {Granovetter, Mark},
+  journal      = {American Journal of Sociology},
+  volume       = {83},
+  number       = {6},
+  pages        = {1420--1443},
+  year         = {1978},
+  doi          = {10.1086/226707}
+}
+% DOI đối chiếu được từ danh mục tham khảo của Watts (2002) trên Crossref.
