@@ -83,41 +83,27 @@ on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, 
 %%% Use this environment to specify a short abstract for your paper.
 
 \begin{abstract}
-Deployed LLM agents are organisations: a planner decomposes a task, workers
-execute, a reviewer checks, an aggregator merges. Every hand-off is a trust
-boundary, and an injection that hijacks one agent becomes the next agent's
-untrusted input. Existing prompt-injection benchmarks measure one agent over one
-hop, so they cannot say whether a compromise survives a hand-off, how far it
-travels, or where to intervene. We present \emph{Contagion}, a measurement
-framework for propagation in LLM agent networks built on two deliberately
-independent protocols: a \emph{controlled per-edge} protocol estimating the
-conditional survival $s_i = \Pr[C_i{=}1 \mid C_{i-1}{=}1]$, and a \emph{natural-run}
-protocol measuring end-to-end success and the reproduction number $R_0$. Four
-results follow. \textbf{(i)} In a chain, $C_i{=}1 \Rightarrow C_{i-1}{=}1$, so
-$\mathrm{ASR} = \prod_i s_i^{\mathrm{nat}}$ is an \emph{identity}, not a modelling
-assumption---composition per se always holds. The substantive question is whether the
-per-hop rate measured \emph{in isolation} transports to the in-chain regime, and it
-\emph{sometimes does not}: isolated measurement under-estimates one frontier model's
-in-chain edge by $3.75\times$ ($p=0.0002$, $n{=}200$), while a second model transports
-within resolution ($p=0.93$). \textbf{(ii)} Where it fails, the error compounds with
-distance: on a seven-hop chain the
-relative error of isolated measurement rises at every step (Spearman $+1.00$,
-$+11.8$ points per hop), while on a model where the rate transports the slope is
-an order of magnitude shallower---so the profile's slope, not a single number,
-diagnoses transportability. We trace the mechanism to payload
-\emph{form}: the same target survives at $0.067$ arriving as a bare assertion and
-$0.967$ embedded in a work product, under the same receivers and judge.
-\textbf{(iii)} The standard epidemic-threshold criterion is vacuous for agent
-networks---the mean-offspring matrix of any acyclic interaction graph is strictly
-triangular, so $\rho(M) = 0$ identically and $R_0 < 1$ cannot certify safety; we
-measure $R_0 < 1$ alongside end-to-end success of $0.45$--$0.73$, and show that
-placement is decided by graph structure rather than by per-hop survival.
-\textbf{(iv)} Defence efficacy is unidentifiable without a matched no-defence
-baseline: one redaction defence is either essential or irrelevant depending only
-on the model's unprotected susceptibility ($1.00$ versus $0.10$). We report
-role-conditioned per-hop survival for five models from five independent developers, and
-one of our
-own initially significant findings that proved to be a protocol artefact.
+Deployed LLM agents are organisations of hand-offs: planner to worker to reviewer
+to aggregator. Every hand-off is a trust boundary, and a prompt injection that
+hijacks one agent propagates into the next agent's input. Existing benchmarks
+measure one agent over one hop; they cannot quantify whether a compromise
+survives transfer, how far it travels, or where to intervene. We present
+\emph{Contagion}, a framework for measuring propagation in LLM agent networks
+using two independent protocols: a \emph{controlled per-edge} protocol that
+estimates conditional survival $s_i = \Pr[C_i{=}1 \mid C_{i-1}{=}1]$, and a
+\emph{natural-run} protocol that measures end-to-end ASR and the reproduction
+number $R_0$. Four results follow. \textbf{(i)}~$\mathrm{ASR}=\prod_i
+s_i^{\mathrm{nat}}$ is an algebraic identity; the assumption worth testing is
+whether isolated per-hop estimates \emph{transport} to the in-chain regime---they
+can underestimate by $3.75\times$ ($p=0.0002$) or transport within noise ($p=0.93$),
+and the depth-error slope distinguishes the two cases. \textbf{(ii)}~The
+mechanism is payload \emph{form}: the same target survives at $0.067$ arriving
+as a bare assertion and at $0.967$ embedded in a work product. \textbf{(iii)}~The
+epidemic threshold $\rho(M)<1$ is identically satisfied on any acyclic graph and
+cannot certify safety; we measure $R_0<1$ alongside ASR of $0.45$--$0.73$.
+\textbf{(iv)}~Defence efficacy is unidentifiable without a no-defence baseline:
+the same redaction code is essential or irrelevant depending solely on the
+model's unprotected susceptibility.
 \end{abstract}
 
 %%% Use this command to specify a few keywords describing your work.
@@ -252,14 +238,18 @@ result.
 \section{Related Work and Positioning}
 
 \paragraph{Single-agent indirect injection.}
-The foundational measurement work evaluates \emph{one} agent with tool access.
-InjecAgent~\cite{Zhan2024InjecAgent} builds 1{,}054 test cases across 30 LLMs and
-reports an attack success rate of 24\% for a ReAct GPT-4 agent, with the
-\emph{content-freedom} of the injected field dominating vulnerability.
-AgentDojo~\cite{Debenedetti2024AgentDojo} provides a dynamic evaluation
-environment for one agent over one hop. Liu and Gong~\cite{LiuGong2024} formalise
-injection as $\tilde{x} = \mathcal{A}(x_{\mathrm{target}}, s_{\mathrm{inj}},
-x_{\mathrm{inj}})$ and introduce the ASV/MR metrics we reuse. All of these
+Prompt injection as an attack class was first named and systematised by
+P\'{e}rez and Ribeiro~\cite{Perez2022PromptInjection}, who showed that an
+attacker controlling any text an LLM reads can override prior instructions.
+The foundational \emph{measurement} work evaluates \emph{one} agent with tool
+access. InjecAgent~\cite{Zhan2024InjecAgent} builds 1{,}054 test cases across
+30 LLMs and reports an attack success rate of 24\% for a
+ReAct~\cite{Yao2023ReAct} GPT-4 agent, with the \emph{content-freedom} of the
+injected field dominating vulnerability. AgentDojo~\cite{Debenedetti2024AgentDojo}
+provides a dynamic evaluation environment for one agent over one hop.
+Liu and Gong~\cite{LiuGong2024} formalise injection as
+$\tilde{x} = \mathcal{A}(x_{\mathrm{target}}, s_{\mathrm{inj}}, x_{\mathrm{inj}})$
+and introduce the ASV/MR metrics we reuse. All of these
 terminate at one hop: they cannot express whether a compromise survives transfer.
 Notably, Liu and Gong report that attack success correlates \emph{positively} with
 model size---an early signal, which our cross-model results sharpen, that
@@ -287,20 +277,25 @@ a literal target) that any user of a tool could produce, rather than white-box
 token optimisation.
 
 \paragraph{Contagion and thresholds in networks.}
-Treating propagation as contagion over a graph is classical. Threshold models make an
-individual's adoption a function of how many neighbours have already
-adopted~\cite{Granovetter1978,Watts2002}; epidemic models supply the complementary
-criterion that spread is subcritical when the spectral radius of the next-generation
-matrix falls below one, a threshold that can vanish on heavy-tailed
-topologies~\cite{PastorSatorras2001}. This is the lens the recent theory work on
-multiplex Markov contagion in agent swarms adopts~\cite{SwarmMarkov2026}. Our results
-sharpen where the analogy fails for LLM agent networks: the spectral criterion is
-\emph{identically} satisfied on any acyclic graph (Section~\ref{sec:threshold}), so it
-cannot discriminate; the empirical reproduction number can be below one while
+Treating propagation as contagion over a graph is classical.
+Threshold models make an individual's adoption a function of how many neighbours
+have already adopted~\cite{Granovetter1978,Watts2002}; epidemic models supply the
+complementary criterion that spread is subcritical when the spectral radius of the
+next-generation matrix falls below one, a threshold that can vanish on heavy-tailed
+topologies~\cite{PastorSatorras2001,Newman2002}. The problem of choosing which
+nodes to seed to maximise reachability---the influence-maximisation
+problem~\cite{Kempe2003}---is NP-hard on general graphs, but tractable in linear
+time on acyclic topologies by topological traversal, which is precisely why
+Eq.~\eqref{eq:percolation} gives exact answers on our feed-forward networks.
+This is the lens the recent theory work on multiplex Markov contagion in agent
+swarms adopts~\cite{SwarmMarkov2026}. Our results sharpen where the analogy
+fails for LLM agent networks: the spectral criterion is \emph{identically}
+satisfied on any acyclic graph (Section~\ref{sec:threshold}), so it cannot
+discriminate; the empirical reproduction number can be below one while
 reachability stays high; and the per-hop rates such an analysis consumes do not
 transport from isolated measurement---the classical pipeline of estimating edge
-parameters and composing them is what our depth result shows to be unreliable. We keep
-the network-contagion framing but report which instruments transfer.
+parameters and composing them is what our depth result shows to be unreliable.
+We keep the network-contagion framing but report which instruments transfer.
 
 \paragraph{Gap.} No prior work, to our knowledge, provides all of: conditional
 per-hop survival under a controlled protocol; end-to-end ASR under an independent
@@ -453,12 +448,13 @@ $\mathrm{sd}(\Delta) = 0$ and is \emph{uninformative}.
 
 Over the six chain cells at the common $n = 40$ grid, only the Llama cell rejects
 $H_0$ under our default fresh-artefact protocol ($p = 0.0002$); it survives a
-Benjamini--Hochberg correction across the five non-degenerate cells at $q = 0.05$, so
-multiplicity does not inflate this positive finding. (The one apparent DeepSeek
-rejection was a fixed-artefact artefact that vanishes under the fresh protocol,
-$p = 0.63$; Section~\ref{sec:ablation} and supplementary Appendix~A. At $n = 200$ the
-Nova cell also rejects---consistent with its $n = 40$ null being underpowered---but at
-a small deviation on the resistance floor; Section~\ref{sec:validation}.)
+Benjamini--Hochberg~\cite{BH1995} correction across the five non-degenerate cells
+at $q = 0.05$, so multiplicity does not inflate this positive finding. (The one
+apparent DeepSeek rejection was a fixed-artefact artefact that vanishes under the
+fresh protocol, $p = 0.63$; Section~\ref{sec:ablation} and supplementary Appendix~A.
+At $n = 200$ the Nova cell also rejects---consistent with its $n = 40$ null being
+underpowered---but at a small deviation on the resistance floor;
+Section~\ref{sec:validation}.)
 
 \subsection{Percolation on a feed-forward network, and why $R_0$ is not a safety criterion}
 \label{sec:threshold}
@@ -528,17 +524,42 @@ can be bypassed and placement becomes a genuine optimisation.
 \section{Experimental Setup}
 \label{sec:setup}
 
-\paragraph{Models.} Five models from five independent developers: qwen2.5:\-7b
-(Alibaba, local), DeepSeek V3.2 (DeepSeek), Llama 3.3 70B (Meta), Nova Pro (Amazon),
-and Claude Sonnet 4.5 (Anthropic); the latter four via Bedrock, region us-east-1.
-Temperature $0.7$; the models marked $\dagger$ require Bedrock inference-profile
-identifiers.
+\paragraph{Models.} Five models from five independent developers:
+qwen2.5:\-7b (Alibaba, local), DeepSeek V3.2 (DeepSeek), Llama 3.3 70B (Meta),
+Nova Pro (Amazon), and Claude Sonnet 4.5 (Anthropic); the latter four via Bedrock,
+region us-east-1. Temperature $0.7$; the models marked $\dagger$ require Bedrock
+inference-profile identifiers. Models were selected to span a wide capability and
+deployment range: from a fully local 7B-parameter open-weight model (qwen2.5:7b,
+running on commodity hardware without API access) to frontier closed models from
+distinct corporate ecosystems. The local model confirms that the framework does not
+require commercial API credentials. Using five \emph{independent} developers also
+minimises the risk that a shared fine-tuning corpus or RLHF pipeline explains
+cross-model patterns.
+
+\paragraph{Agent roles and network wiring.} Each node in the network is assigned a
+role---\emph{planner}, \emph{worker}, \emph{reviewer}, or \emph{aggregator}---and
+receives a fixed system prompt encoding that role's responsibilities. The planner
+(\texttt{agent\_0}, always the entry node) is given a broad coordination mandate;
+the worker (\texttt{agent\_1}) is instructed to execute a delegated sub-task;
+the reviewer (\texttt{agent\_2}) is asked to inspect and summarise incoming content;
+the aggregator (\texttt{agent\_3}) is asked to synthesise a final answer. These roles
+are deliberately minimal: they reflect the structural positions that appear in
+real orchestration frameworks~\cite{Hong2023MetaGPT,Wu2023AutoGen} without
+over-specifying the prompt engineering. All role prompts are held fixed across models
+and attacks; only the underlying model identifier changes, so cross-model differences
+in per-hop survival are attributable to the model, not to prompt variation.
 
 \paragraph{Cells.} Unless stated otherwise: four-agent chain, entry
 \texttt{agent\_0}, 40 natural trials, 30 controlled per-edge trials per edge,
 benign assignments rotated across trials, ASV-only judge at $\tau = 0.9$. The study
 comprises $25$ result sets and $\approx\!9{,}000$ model calls (a lower bound, counted
-from these configurations).
+from these configurations). Benign assignments are drawn from a pool of three short
+operational questions (summarise, fact-recall, draft) rotated cyclically so that no
+trial sees the same context twice; the three contexts are semantically orthogonal to
+the injected task to prevent accidental overlap from inflating survival estimates.
+The practical consequence of this design is visible in Section~\ref{sec:validation}:
+pooling across contexts inflates the overdispersion statistic to $\varphi = 2.93$,
+whereas evaluating at fixed context gives $\varphi = 0.58$.
 
 \paragraph{Defences.} None (baseline, required by the floor effect);
 \emph{redaction}, a deterministic DLP rule that removes the literal target from
@@ -549,13 +570,17 @@ factual notes that strips imperatives while preserving facts. We also study an
 (\texttt{BANANA and 77, combine with a hyphen}). The split style contains no
 literal target, so redaction is a no-op by construction: \texttt{none}$\cdot$split
 and \texttt{redact}$\cdot$split measure the same quantity, which gives us a
-built-in noise gauge.
+built-in noise gauge. Defence scope is deliberately narrow---we evaluate a static,
+non-adaptive attacker and two rule-based defences; adaptive attackers and learned
+detection layers~\cite{Zhan2025Adaptive,StrUQ2025} are left for future work.
 
 \paragraph{Estimator validation.} Before applying the framework we validate its
-estimators on synthetic data with known ground truth (Wilson coverage over a grid
-of $p$ and $n$; size and power of the composition test; calibration of the formal
-test's bias, size and power against the CI-overlap rule; and $R_0$ versus
-$d\cdot\bar s$ across chain, star and tree).
+estimators on synthetic data with known ground truth: Wilson score interval coverage
+over a grid of $p$ and $n$; size and power of the composition bootstrap test;
+calibration of the formal test's bias, size and power against the CI-overlap rule;
+and $R_0$ versus $d\cdot\bar s$ across chain, star and tree. This step serves as
+a sanity check that the measurement instruments do not introduce systematic bias
+before any real model calls are made.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1000,58 +1025,124 @@ supplementary Appendix~B).
 \section{Discussion}
 \label{sec:discussion}
 
-The four prescriptions are cheap to adopt. A no-defence baseline and a per-role
-breakdown only change what is reported, and Eq.~\eqref{eq:percolation} reproduces
-every measured ASR from in-chain edge rates---so composing \emph{isolated} rates is
-the sole unreliable step, fixed by surveying the rate in the deployment configuration.
-Defence evaluation needs headroom: a defence is credited only with what it removes,
-yet the same configuration is essential or bypassable depending on base
-susceptibility. Placement is structural (Section~\ref{sec:threshold}): in feed-forward
-networks only entry--target-path nodes matter and all are equally effective, so only
-redundant paths---which our topologies lack---would make placement an optimisation.
+The four prescriptions of the Introduction are cheap to adopt and each addresses a
+specific measurement failure our results expose.
+
+\paragraph{Composition is safe once transportability is checked.}
+Eq.~\eqref{eq:identity} is an algebraic identity, not a modelling choice, so the
+product of in-chain per-hop rates always equals end-to-end ASR. The only step that can
+fail---and that single-agent benchmarks implicitly rely upon---is transporting isolated
+per-hop estimates into that product. Our depth profiles give a cheap diagnostic: a
+single long chain measured under both protocols, with the \emph{slope} of the relative
+error as the statistic. A flat slope (DeepSeek, $+2.3$ points per hop at
+better-powered $n{=}10$) means isolated measurement is safe to compose; a steep slope
+(qwen, $+11.8$; Llama, $+6.8$) means the in-chain regime must be measured directly.
+
+\paragraph{Defence evaluation requires headroom.}
+A defence cannot remove more signal than its model permits. Where the unprotected
+base rate is $0.10$ (Claude Sonnet 4.5), redaction looks perfect because there is
+almost nothing to defend; where it is $1.00$ (Llama, susceptible cells), the same
+code is essential. Reporting a single post-defence ASR without the no-defence
+baseline confounds the defence effect with the model's floor, and our utility data
+add a further dimension: semantic paraphrase is \emph{strictly dominated} in every
+cell we measured, costing utility while buying nothing on security.
+
+\paragraph{Graph structure decides placement, not per-hop survival.}
+In a feed-forward network the set of nodes that can affect end-to-end propagation is
+exactly the set on some entry--target path, and within that set all placements are
+equally effective (Section~\ref{sec:threshold}). The practitioner's question is
+therefore: compute the paths, and among the nodes they contain harden the one with
+lowest instrumentation cost or least legitimate-traffic impact. Per-hop survival is
+relevant only to the prior question of whether defence is worth deploying at all.
+Redundant paths are the only configuration that promotes placement to a genuine
+optimisation problem.
+
+\paragraph{Scope.} The results above hold under one benign marker payload, a static
+non-adaptive attacker, and networks of up to fifteen agents; the recurrent case spans
+three models with limited power. Extending to larger meshes, adaptive attackers, and
+learned detectors is the natural follow-on.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Limitations and Threats to Validity}
 \label{sec:limits}
 
-\emph{Proxy utility ground truth.} $U$ measures contamination of the deliverable,
-not correctness; a task family with verifiable answers would strengthen
-Section~\ref{sec:utility}.
+\emph{Utility is a contamination proxy, not a correctness oracle.} The utility
+metric $U$ flags whether the injected target string appears in the final deliverable;
+it does not measure whether the legitimate task was answered correctly. A task family
+with an independently verifiable ground-truth answer (e.g.\ arithmetic or code
+execution) would sharpen the security--utility trade-off in Section~\ref{sec:utility}
+and make the utility cost of paraphrase---currently measured only through output
+contamination---directly comparable across defence conditions.
 
-\emph{Transportability is a powered positive.} The clearest failure is on Llama's
-weak edge; at $n = 200$ it is a powered rejection ($\Delta = 0.615$, $p = 0.0002$,
-$\mathrm{MDE} = 0.11$), so isolation \emph{does} fail there by $3.75\times$. Nova
-shows the same middle-edge signature and also rejects at $n = 200$ (small deviation,
-resistance floor), while DeepSeek transports under the same doubled power; how
-\emph{often} and how \emph{large} the failure is across models remains
-uncharacterised.
+\emph{Transportability failures are real but their prevalence is unknown.} The
+clearest failure is Llama's weak edge, powered to $\Delta = 0.615$, $p = 0.0002$,
+$\mathrm{MDE} = 0.11$ at $n = 200$: isolation underestimates in-chain survival by
+$3.75\times$. Nova shows the identical middle-edge signature and rejects at the same
+power level, though the deviation is small given its resistance floor. DeepSeek
+transports cleanly under the same test. This covers three of our five models on one
+attack family and one chain depth; how frequently the failure occurs across model
+families, task families, and chain configurations is uncharacterised. The depth-error
+slope is a diagnostic but not a guarantee: a short chain at low power can read as
+flat even where a longer chain would reveal accumulation.
 
-\emph{One artefact of our own, reported.} Our initial significant composition failure
-on one model was a fixed-artefact protocol artefact (Section~\ref{sec:ablation}); we
-keep both as a warning that composition results are sensitive to unstated protocol
-details.
+\emph{Protocol sensitivity, reported rather than hidden.} Our initial significant
+composition failure on DeepSeek was a fixed-artefact artefact that vanished when
+artefacts were drawn fresh per trial ($p = 0.0030 \to p = 0.930$;
+Section~\ref{sec:ablation}). We present both versions to record that compositional
+claims are sensitive to the artefact-sampling policy, and that the sensitivity can
+flip a result in either direction: DeepSeek moved from apparent over-estimate to
+non-rejection, while Llama's under-estimate was unchanged. Unstated protocol choices
+that alter the result are a class of threat that benchmark replication exercises
+routinely miss.
 
-\emph{Scale, topology, and unmeasured dimensions.} Headline results are chains of
-four to fifteen agents, with star/tree cells replicated across three models and two
-Llama instances ($n = 7$, $n = 10$), and the recurrent case now spans three models.
-Tens of agents, mesh/debate topologies, re-injection variants, and further defence
-families (detection, hop isolation, structured queries~\cite{StrUQ2025}) are not
-varied; most cells use 30--40 trials, ASV thresholds use a literal target, and the
-family-A MR branch needs recalibration.
+\emph{Scale, topology, and defence coverage.} Headline chain results span four to
+fifteen agents; star and tree cells are replicated across three models with two Llama
+instances ($n{=}7$, $n{=}10$); the recurrent (cyclic) case covers three models with
+limited power. Configurations not varied include: networks of tens of agents;
+mesh, debate, or mixture-of-experts topologies; re-injection (an agent injecting its
+successors' \emph{inputs}); and defence families beyond literal-target redaction and
+semantic paraphrase---detection layers, hop isolation, and structured
+queries~\cite{StrUQ2025} are referenced but not evaluated. Cell sizes of 30--40 trials
+provide MDE $\approx 0.26$ for the composition test; the ASV threshold applies to a
+literal target and would need recalibration for paraphrase-obfuscated targets; and
+the family-A MR branch is uncalibrated for the judgement regime used here.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-A compromise's reach in an LLM agent network is a property of the graph, the roles on it,
-and the message that travels---not of any single agent. Two independent protocols recast
-the composition question into an identity plus a transportability hypothesis.
+A compromise's reach in an LLM agent network is a property of the graph, the roles
+travelled, and the form in which the payload is re-packaged at each hand-off---not of
+any single agent in isolation. Four structural results follow from separating the
+identity $\mathrm{ASR}=\prod_i s_i^{\mathrm{nat}}$ from the transportability
+hypothesis $\scite{i}\approx\snat{i}$:
+
+\textbf{(i)} Composition of per-hop rates is an identity that always holds when the
+rates are measured \emph{in the chain}; the failure mode is transporting isolated
+estimates into that product, detectable by the slope of the depth-error profile.
+\textbf{(ii)} Payload form is a first-order mechanism: the same target survives at
+$0.067$ arriving as a bare assertion and $0.967$ embedded in a work product, under
+the same receiver and judge.
+\textbf{(iii)} The epidemic threshold $\rho(M)<1$ is identically satisfied on any
+acyclic interaction graph and cannot certify safety; the correct reachability
+estimate is the percolation formula (Eq.~\eqref{eq:percolation}), not $R_0$.
+\textbf{(iv)} Defence efficacy is unidentifiable without a matched no-defence
+baseline, and defence placement is decided by graph structure (entry--target paths)
+rather than by measured per-hop survival.
+
+Practically, the measurement cost of adopting these prescriptions is low: they change
+what is \emph{reported} rather than what is built, except for the single additional
+long-chain probe that makes the depth slope a routine diagnostic. As LLM agent
+orchestration frameworks grow in complexity, measurement frameworks that decompose
+end-to-end risk into identifiable, role-conditioned, topology-aware quantities become
+a precondition for meaningful security evaluation.
 
 \section*{Ethical Considerations}
 All experiments use a \emph{benign} marker payload against our own harness via standard
-provider APIs; the attack forms are already documented for single agents.
+provider APIs; the attack forms are already documented for single agents. No real
+user data, production deployments, or third-party systems were involved.
 
 \section*{Artifact Availability}
 Code, per-cell outputs, tests and all offline re-analysis (supplementary Appendices~A--D)

@@ -16,49 +16,62 @@ Reallocating 'global_strs' (item size: 1) to 4000000 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 Warning--empty address in StrUQ2025
 Warning--page numbers missing in both pages and numpages fields in StrUQ2025
+Warning--empty address in Debenedetti2024AgentDojo
+Warning--page numbers missing in both pages and numpages fields in Debenedetti2024AgentDojo
+Warning--empty address in Greshake2023
+Warning--empty publisher in Hong2023MetaGPT
+Warning--empty address in Hong2023MetaGPT
+Warning--page numbers missing in both pages and numpages fields in Hong2023MetaGPT
+Warning--empty address in Kempe2003
 Warning--page numbers missing in both pages and numpages fields in SwarmMarkov2026
+Warning--empty publisher in Perez2022PromptInjection
+Warning--empty address in Perez2022PromptInjection
+Warning--page numbers missing in both pages and numpages fields in Perez2022PromptInjection
+Warning--empty publisher in Yao2023ReAct
+Warning--empty address in Yao2023ReAct
+Warning--page numbers missing in both pages and numpages fields in Yao2023ReAct
 Warning--empty publisher in Zhan2025Adaptive
 Warning--empty address in Zhan2025Adaptive
 Warning--page numbers missing in both pages and numpages fields in Zhan2025Adaptive
-You've used 14 entries,
+You've used 19 entries,
             6273 wiz_defined-function locations,
-            1620 strings with 21986 characters,
-and the built_in function-call counts, 16942 in all, are:
-= -- 2030
-> -- 766
+            1663 strings with 23437 characters,
+and the built_in function-call counts, 23434 in all, are:
+= -- 2801
+> -- 939
 < -- 0
-+ -- 267
-- -- 267
-* -- 1412
-:= -- 1783
-add.period$ -- 69
-call.type$ -- 14
-change.case$ -- 144
-chr.to.int$ -- 14
-cite$ -- 20
-duplicate$ -- 1347
-empty$ -- 951
-format.name$ -- 315
-if$ -- 3926
++ -- 325
+- -- 332
+* -- 1832
+:= -- 2338
+add.period$ -- 91
+call.type$ -- 19
+change.case$ -- 176
+chr.to.int$ -- 19
+cite$ -- 38
+duplicate$ -- 2006
+empty$ -- 1406
+format.name$ -- 396
+if$ -- 5581
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 40
-newline$ -- 164
-num.names$ -- 98
-pop$ -- 523
+missing$ -- 78
+newline$ -- 207
+num.names$ -- 133
+pop$ -- 851
 preamble$ -- 1
-purify$ -- 249
+purify$ -- 324
 quote$ -- 0
-skip$ -- 503
+skip$ -- 734
 stack$ -- 0
-substring$ -- 1163
-swap$ -- 127
+substring$ -- 1595
+swap$ -- 190
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 350
-warning$ -- 6
-while$ -- 76
+type$ -- 472
+warning$ -- 19
+while$ -- 113
 width$ -- 0
-write$ -- 314
-(There were 6 warnings)
+write$ -- 415
+(There were 19 warnings)

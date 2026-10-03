@@ -4,25 +4,24 @@
 %  QUY ƯỚC: ghi chú cần kiểm tra nằm ở COMMENT (%) — không để trong `note`,
 %  vì `note` ĐƯỢC IN RA trong danh mục tham khảo.
 %
-%  TRẠNG THÁI XÁC MINH (2026-09-11) — ĐÃ ĐỐI CHIẾU TOÀN BỘ:
-%    Nguồn: trang nhà xuất bản (CII), Semantic Scholar / DBLP (swarm),
-%           arXiv API (id_list) cho 7 entry arXiv, arXiv abs page (Liu-Gong).
-%
+%  TRẠNG THÁI XÁC MINH (2026-10-03) — ĐÃ ĐỐI CHIẾU TOÀN BỘ:
 %    Venue đã xác nhận:
-%      LiuGong2024    USENIX Security 2024
-%      StrUQ2025      USENIX Security 2025   (arXiv comment: "To appear at USENIX Security Symposium 2025")
-%      Zhan2025Adaptive  Findings of NAACL 2025 (arXiv comment: "NAACL 2025 Findings")
+%      LiuGong2024       USENIX Security 2024
+%      StrUQ2025         USENIX Security 2025
+%      Zhan2025Adaptive  Findings of NAACL 2025
 %      Zhan2024InjecAgent Findings of ACL 2024
-%      CII2026        Statistics, Optimization & Information Computing 15(6):5445-5458
-%      SwarmMarkov2026   Cybersecurity
+%      Hong2023MetaGPT   ICLR 2024  (OpenReview: bhMk4f2pUj)
+%      Debenedetti2024   NeurIPS 2024 Datasets & Benchmarks
+%      Greshake2023      AISec (at) CCS 2023  (DOI: 10.1145/3605764.3623985)
+%      CII2026           Statistics, Optimization & Information Computing 15(6)
+%      SwarmMarkov2026   Cybersecurity 9(1)
+%      Yao2023ReAct      ICLR 2023  (OpenReview: WE_vluYUL-X)
+%      Newman2002        Physical Review E 66:016128
+%      Kempe2003         KDD 2003  (DOI: 10.1145/956750.956769)
+%      BH1995            JRSS-B 57(1):289-300
+%      Perez2022         NeurIPS 2022 ML Safety Workshop
 %
-%    Còn lại ghi dạng arXiv preprint (arXiv KHÔNG nêu venue trong comment nên
-%    không suy đoán): MetaGPT, AutoGen, AgentDojo, Greshake, MAST.
-%    Danh sách tác giả của TẤT CẢ entry đã lấy đủ từ arXiv API.
-%
-%    ĐÃ XONG: số trang proceedings của LiuGong2024 (1831--1847, BibTeX USENIX) và
-%    Zhan2024InjecAgent (10471--10506, BibTeX ACL Anthology); volume 9/issue 1
-%    của SwarmMarkov2026 (OpenAlex + Semantic Scholar). Không còn TODO trong file này.
+%    Còn dạng preprint (không xác minh được venue): AutoGen, MAST.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 @inproceedings{LiuGong2024,
@@ -48,19 +47,17 @@
 % arXiv:2402.06363, comment ghi "To appear at USENIX Security Symposium 2025".
 % Là họ defense structured-query ta đã implement nhưng CHƯA đánh giá trên model thật.
 
-@misc{Hong2023MetaGPT,
-  title        = {{MetaGPT}: Meta Programming for A Multi-Agent Collaborative Framework},
+@inproceedings{Hong2023MetaGPT,
+  title        = {{MetaGPT}: Meta Programming for a Multi-Agent Collaborative Framework},
   author       = {Hong, Sirui and Zhuge, Mingchen and Chen, Jiaqi and Zheng, Xiawu and
                   Cheng, Yuheng and Zhang, Ceyao and Wang, Jinlin and Wang, Zili and
                   Yau, Steven Ka Shing and Lin, Zijuan and Zhou, Liyang and Ran, Chenyu and
                   Xiao, Lingfeng and Wu, Chenglin and Schmidhuber, J{\"u}rgen},
-  year         = {2023},
-  eprint       = {2308.00352},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.AI},
-  howpublished = {arXiv preprint}
+  booktitle    = {The Twelfth International Conference on Learning Representations},
+  year         = {2024},
+  url          = {https://openreview.net/forum?id=bhMk4f2pUj}
 }
-% arXiv không nêu venue trong comment ⇒ giữ dạng arXiv preprint, không suy đoán.
+% Published at ICLR 2024 (OpenReview ID bhMk4f2pUj).
 
 @misc{Wu2023AutoGen,
   title        = {{AutoGen}: Enabling Next-Gen {LLM} Applications via Multi-Agent Conversation},
@@ -74,6 +71,27 @@
   primaryClass = {cs.AI},
   howpublished = {arXiv preprint}
 }
+% Giữ preprint — venue proceedings chưa xác minh hoàn toàn.
+
+@inproceedings{Yao2023ReAct,
+  title        = {{ReAct}: Synergizing Reasoning and Acting in Language Models},
+  author       = {Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and
+                  Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan},
+  booktitle    = {The Eleventh International Conference on Learning Representations},
+  year         = {2023},
+  url          = {https://openreview.net/forum?id=WE_vluYUL-X}
+}
+% ICLR 2023. Kiến trúc Reason+Act được InjecAgent và nhiều benchmark dùng
+% làm baseline. Cited khi đề cập đến ReAct-based agent evaluation.
+
+@inproceedings{Perez2022PromptInjection,
+  title        = {Ignore Previous Prompt: Attack Techniques for Language Models},
+  author       = {P{\'{e}}rez, F{\'{a}}bio and Ribeiro, Ian},
+  booktitle    = {Proceedings of the 2022 {NeurIPS} Workshop on Machine Learning Safety},
+  year         = {2022}
+}
+% Workshop paper xuất bản tại NeurIPS 2022 ML Safety Workshop.
+% Một trong những bài đầu tiên đặt tên và hệ thống hoá tấn công prompt injection.
 
 @inproceedings{Zhan2024InjecAgent,
   title        = {{InjecAgent}: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents},
@@ -91,27 +109,31 @@
 % Tác giả + số trang lấy từ BibTeX chính thức của ACL Anthology
 % (2024.findings-acl.624), không suy đoán.
 
-@misc{Debenedetti2024AgentDojo,
-  title        = {{AgentDojo}: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for {LLM} Agents},
-  author       = {Debenedetti, Edoardo and Zhang, Jie and Balunovi{\'c}, Mislav and
-                  Beurer-Kellner, Luca and Fischer, Marc and Tram{\`e}r, Florian},
+@inproceedings{Debenedetti2024AgentDojo,
+  title        = {{AgentDojo}: A Dynamic Environment to Evaluate Prompt Injection Attacks
+                  and Defenses for {LLM} Agents},
+  author       = {Debenedetti, Edoardo and Zhang, Jie and Balunovi{\'{c}}, Mislav and
+                  Beurer-Kellner, Luca and Fischer, Marc and Tram{\`{e}}r, Florian},
+  booktitle    = {Advances in Neural Information Processing Systems},
+  volume       = {37},
   year         = {2024},
-  eprint       = {2406.13352},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.CR},
-  howpublished = {arXiv preprint}
+  publisher    = {Curran Associates, Inc.}
 }
+% Accepted at NeurIPS 2024 Datasets and Benchmarks track.
 
-@misc{Greshake2023,
-  title        = {Not what you've signed up for: Compromising Real-World {LLM}-Integrated Applications with Indirect Prompt Injection},
+@inproceedings{Greshake2023,
+  title        = {Not What You've Signed Up For: Compromising Real-World {LLM}-Integrated
+                  Applications with Indirect Prompt Injection},
   author       = {Greshake, Kai and Abdelnabi, Sahar and Mishra, Shailesh and
                   Endres, Christoph and Holz, Thorsten and Fritz, Mario},
+  booktitle    = {Proceedings of the 16th {ACM} Workshop on Artificial Intelligence
+                  and Security ({AISec} 2023)},
   year         = {2023},
-  eprint       = {2302.12173},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.CR},
-  howpublished = {arXiv preprint}
+  pages        = {79--92},
+  publisher    = {ACM},
+  doi          = {10.1145/3605764.3623985}
 }
+% Published at AISec '23 co-located with CCS 2023. DOI xác minh qua ACM DL.
 
 @misc{Cemri2025MAST,
   title        = {Why Do Multi-Agent {LLM} Systems Fail?},
@@ -166,8 +188,38 @@
 % first/last page (OpenAlex trả null) ⇒ không bịa số trang. Tên tác giả đã ASCII hoá.
 %
 % ---------------------------------------------------------------------------
-% Văn liệu nền tảng về lan truyền / ngưỡng dịch tễ trên mạng (network science
-% và MAS cổ điển). Thêm để định vị mô hình percolation của paper trong dòng này.
+% LAN TRUYỀN / NGƯỠNG DỊCH TỄ TRÊN MẠNG — NỀN TẢNG LÝ THUYẾT
+% ---------------------------------------------------------------------------
+
+@inproceedings{Kempe2003,
+  title        = {Maximizing the Spread of Influence through a Social Network},
+  author       = {Kempe, David and Kleinberg, Jon and Tardos, {\'{E}}va},
+  booktitle    = {Proceedings of the Ninth {ACM} {SIGKDD} International Conference
+                  on Knowledge Discovery and Data Mining},
+  year         = {2003},
+  pages        = {137--146},
+  publisher    = {ACM},
+  doi          = {10.1145/956750.956769}
+}
+% Đã xác minh qua ACM DL. Bài toán tối ưu đặt seed để tối đa hoá reach:
+% placement là bài toán NP-hard trên đồ thị tổng quát; trên đồ thị có hướng
+% không chu trình (acyclic) như paper ta, bài toán giải đúng trong thời gian
+% tuyến tính bằng duyệt topological — nền tảng cho lập luận Section 3.8.
+
+@article{Newman2002,
+  title        = {Spread of epidemic disease on networks},
+  author       = {Newman, M. E. J.},
+  journal      = {Physical Review E},
+  volume       = {66},
+  number       = {1},
+  pages        = {016128},
+  year         = {2002},
+  doi          = {10.1103/PhysRevE.66.016128}
+}
+% Đã xác minh qua Crossref. Phân tích lây lan dịch bệnh bằng percolation trên
+% mạng ngẫu nhiên; bổ sung cho Pastor-Satorras 2001 bằng phương pháp generating
+% function — cùng nhau tạo nền tảng lý thuyết mà paper mượn và phản bác.
+
 % ---------------------------------------------------------------------------
 
 @article{PastorSatorras2001,
@@ -207,3 +259,22 @@
   doi          = {10.1086/226707}
 }
 % DOI đối chiếu được từ danh mục tham khảo của Watts (2002) trên Crossref.
+
+% ---------------------------------------------------------------------------
+% THỐNG KÊ — KIỂM ĐỊNH VÀ ĐIỀU CHỈNH ĐA KIỂM ĐỊNH
+% ---------------------------------------------------------------------------
+
+@article{BH1995,
+  title        = {Controlling the False Discovery Rate: A Practical and Powerful
+                  Approach to Multiple Testing},
+  author       = {Benjamini, Yoav and Hochberg, Yosef},
+  journal      = {Journal of the Royal Statistical Society: Series {B} (Methodological)},
+  volume       = {57},
+  number       = {1},
+  pages        = {289--300},
+  year         = {1995},
+  doi          = {10.1111/j.2517-6161.1995.tb02031.x}
+}
+% Đã xác minh qua Wiley Online Library / JSTOR.
+% Phương pháp BH được Section 3.7 áp dụng để kiểm soát FDR qua
+% năm ô chain không suy biến (five non-degenerate cells, q = 0.05).
