@@ -4,25 +4,96 @@
 %  QUY ƯỚC: ghi chú cần kiểm tra nằm ở COMMENT (%) — không để trong `note`,
 %  vì `note` ĐƯỢC IN RA trong danh mục tham khảo.
 %
-%  TRẠNG THÁI XÁC MINH (2026-10-03) — ĐÃ ĐỐI CHIẾU TOÀN BỘ:
-%    Venue đã xác nhận:
-%      LiuGong2024       USENIX Security 2024
-%      StrUQ2025         USENIX Security 2025
-%      Zhan2025Adaptive  Findings of NAACL 2025
-%      Zhan2024InjecAgent Findings of ACL 2024
-%      Hong2023MetaGPT   ICLR 2024  (OpenReview: bhMk4f2pUj)
-%      Debenedetti2024   NeurIPS 2024 Datasets & Benchmarks
-%      Greshake2023      AISec (at) CCS 2023  (DOI: 10.1145/3605764.3623985)
-%      CII2026           Statistics, Optimization & Information Computing 15(6)
-%      SwarmMarkov2026   Cybersecurity 9(1)
-%      Yao2023ReAct      ICLR 2023  (OpenReview: WE_vluYUL-X)
-%      Newman2002        Physical Review E 66:016128
-%      Kempe2003         KDD 2003  (DOI: 10.1145/956750.956769)
-%      BH1995            JRSS-B 57(1):289-300
-%      Perez2022         NeurIPS 2022 ML Safety Workshop
+%  TRẠNG THÁI XÁC MINH (2026-10-03, lần 2) — ĐÃ ĐỐI CHIẾU TOÀN BỘ.
+%    QUY TẮC: ưu tiên bản ĐÃ XUẤT BẢN (peer-reviewed). Chỉ giữ preprint khi
+%    không tồn tại bản published. Số trang/DOI lấy từ nguồn chính thức
+%    (Crossref / ACL Anthology / proceedings), không suy đoán.
 %
-%    Còn dạng preprint (không xác minh được venue): AutoGen, MAST.
+%    Venue đã xác nhận (published / peer-reviewed):
+%      An2026ACIARena     ACL 2026 (Vol. 1 Long Papers) 10049-10066
+%      Lee2025Infection   ESORICS 2025 Workshops, Springer LNCS 511-520
+%      LiuGong2024        USENIX Security 2024, 1831-1847
+%      StrUQ2025          USENIX Security 2025
+%      Zhan2025Adaptive   Findings of NAACL 2025
+%      Zhan2024InjecAgent Findings of ACL 2024, 10471-10506
+%      Hong2023MetaGPT    ICLR 2024  (OpenReview: bhMk4f2pUj)
+%      Wu2024AutoGen      COLM 2024            <-- đã nâng từ arXiv preprint
+%      Zhang2025ASB       ICLR 2025  (OpenReview: V4y0CpX4hK)
+%      Debenedetti2024    NeurIPS 2024 Datasets & Benchmarks (vol. 37)
+%      Cemri2025MAST      NeurIPS 2025 D&B (vol. 38)  <-- đã nâng từ arXiv preprint
+%      Greshake2023       AISec (at) CCS 2023  (DOI: 10.1145/3605764.3623985)
+%      CII2026            Statistics, Optimization & Information Computing 15(6)
+%      SwarmMarkov2026    Cybersecurity 9(1)
+%      Yao2023ReAct       ICLR 2023  (OpenReview: WE_vluYUL-X)
+%      Newman2002         Physical Review E 66:016128
+%      Kempe2003          KDD 2003  (DOI: 10.1145/956750.956769)
+%      KeelingEames2005   J. R. Soc. Interface 2(4):295-307
+%      Centola2010        Science 329(5996):1194-1197
+%      Wilson1927         JASA 22(158):209-212
+%      Brown2001          Statistical Science 16(2):101-133
+%      Efron1979          Annals of Statistics 7(1):1-26
+%      BH1995             JRSS-B 57(1):289-300
+%      Perez2022          NeurIPS 2022 ML Safety Workshop
+%
+%    Còn dạng preprint: KHÔNG CÒN (đã thay hết bằng bản published).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ---------------------------------------------------------------------------
+% HAI BÀI KIM THẦỦ (closest prior work) — ĐÃ XUẤT BẢN
+% ---------------------------------------------------------------------------
+
+@inproceedings{An2026ACIARena,
+  title        = {{ACIArena}: Toward Unified Evaluation for Agent Cascading Injection},
+  author       = {An, Hengyu and Li, Minxi and Zhang, Jinghuai and Xu, Naen and
+                  Zhou, Chunyi and Li, Changjiang and Xu, Xiaogang and Du, Tianyu and
+                  Ji, Shouling},
+  booktitle    = {Proceedings of the 64th Annual Meeting of the Association for
+                  Computational Linguistics (Volume 1: Long Papers)},
+  year         = {2026},
+  pages        = {10049--10066},
+  address      = {San Diego, California, USA},
+  publisher    = {Association for Computational Linguistics},
+  doi          = {10.18653/v1/2026.acl-long.457}
+}
+% Bài gần nhất và sát nhất với paper này: đặt tên "Agent Cascading Injection"
+% (ACI), benchmark 1.356 test case trên 6 MAS, phát hiện "defenses developed in
+% simplified environments often fail to transfer; narrowly scoped defenses may
+% even introduce new vulnerabilities" — trùng đúng phát hiện floor effect
+% (Section 5.6) và phạm vi hẹp của chúng ta. Khác ta: họ đo outcome tổng thể
+% theo attack surface/objective, ta đo conditional per-hop survival + transport.
+
+@inproceedings{Lee2025Infection,
+  title        = {Prompt Infection: {LLM}-to-{LLM} Prompt Injection within
+                  Multi-Agent Systems},
+  author       = {Lee, Donghyun and Tiwari, Mo and Miranda, Brando},
+  booktitle    = {Computer Security. ESORICS 2025 International Workshops},
+  series       = {Lecture Notes in Computer Science},
+  year         = {2026},
+  pages        = {511--520},
+  publisher    = {Springer},
+  doi          = {10.1007/978-3-032-16092-8_28}
+}
+% Tự nhân bản giữa các agent (computer-virus metaphor) + đề xuất LLM Tagging.
+% Đối chiếu: cùng dùng metaphor "virus", nhưng họ đo infection spread trong
+% social simulation / tool-rich apps, không tách conditional per-hop survival
+% và không kiểm tra transportability của ước lượng cách ly.
+
+@inproceedings{Zhang2025ASB,
+  title        = {Agent Security Bench ({ASB}): Formalizing and Benchmarking
+                  Attacks and Defenses in {LLM}-based Agents},
+  author       = {Zhang, Hanrong and Huang, Jingyuan and Mei, Kai and Yao, Yifei and
+                  Wang, Zhenting and Zhan, Chenlu and Wang, Hongwei and Zhang, Yongfeng},
+  booktitle    = {The Thirteenth International Conference on Learning Representations},
+  year         = {2025},
+  url          = {https://openreview.net/forum?id=V4y0CpX4hK}
+}
+% ICLR 2025. Benchmark single-agent (10 kịch bản, 400+ tools, 13 LLM backbone),
+% ASR trung bình cao nhất 84.30%. Dùng để chứng minh các benchmark injection
+% hiện có đều dừng ở single-agent — khoảng trống mà ta lấp.
+
+% ---------------------------------------------------------------------------
+% HAI BÀI KIM THẦỦ (closest prior work) — ĐÃ XUẤT BẢN
+% ---------------------------------------------------------------------------
 
 @inproceedings{LiuGong2024,
   title        = {Formalizing and Benchmarking Prompt Injection Attacks and Defenses},
@@ -59,19 +130,20 @@
 }
 % Published at ICLR 2024 (OpenReview ID bhMk4f2pUj).
 
-@misc{Wu2023AutoGen,
-  title        = {{AutoGen}: Enabling Next-Gen {LLM} Applications via Multi-Agent Conversation},
+@inproceedings{Wu2024AutoGen,
+  title        = {{AutoGen}: Enabling Next-Gen {LLM} Applications via Multi-Agent
+                  Conversations},
   author       = {Wu, Qingyun and Bansal, Gagan and Zhang, Jieyu and Wu, Yiran and
                   Li, Beibin and Zhu, Erkang and Jiang, Li and Zhang, Xiaoyun and
                   Zhang, Shaokun and Liu, Jiale and Awadallah, Ahmed Hassan and
                   White, Ryen W and Burger, Doug and Wang, Chi},
-  year         = {2023},
-  eprint       = {2308.08155},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.AI},
-  howpublished = {arXiv preprint}
+  booktitle    = {Conference on Language Modeling (COLM)},
+  year         = {2024}
 }
-% Giữ preprint — venue proceedings chưa xác minh hoàn toàn.
+% ĐÃ NÂNG TỪ PREPRINT → PUBLISHED: bản conference paper tại COLM 2024
+% (bản proceedings lưu tại ryenwhite.com/papers/WuiCOLM2024.pdf, đầu bài ghi
+% "Published as a conference paper at COLM 2024"). Không còn hiển thị
+% "arXiv preprint" trong danh mục tham khảo.
 
 @inproceedings{Yao2023ReAct,
   title        = {{ReAct}: Synergizing Reasoning and Acting in Language Models},
@@ -135,19 +207,20 @@
 }
 % Published at AISec '23 co-located with CCS 2023. DOI xác minh qua ACM DL.
 
-@misc{Cemri2025MAST,
+@inproceedings{Cemri2025MAST,
   title        = {Why Do Multi-Agent {LLM} Systems Fail?},
   author       = {Cemri, Mert and Pan, Melissa Z. and Yang, Shuyi and Agrawal, Lakshya A. and
                   Chopra, Bhavya and Tiwari, Rishabh and Keutzer, Kurt and
                   Parameswaran, Aditya and Klein, Dan and Ramchandran, Kannan and
                   Zaharia, Matei and Gonzalez, Joseph E. and Stoica, Ion},
+  booktitle    = {Advances in Neural Information Processing Systems},
+  volume       = {38},
   year         = {2025},
-  eprint       = {2503.13657},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.AI},
-  howpublished = {arXiv preprint}
+  publisher    = {Curran Associates, Inc.}
 }
-% Báo cáo inter-agent misalignment (FC2) chiếm 32.3% các thất bại multi-agent.
+% ĐÃ NÂNG TỪ PREPRINT → PUBLISHED: NeurIPS 2025 Datasets & Benchmarks Track
+% (papers.nips.cc/paper_files/paper/2025/.../b1041e52d3be19f0a9bc491657488e4a).
+% FC2 "inter-agent misalignment" chiếm 32.3% các failure mode.
 
 @inproceedings{Zhan2025Adaptive,
   title        = {Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on {LLM} Agents},
@@ -190,6 +263,37 @@
 % ---------------------------------------------------------------------------
 % LAN TRUYỀN / NGƯỠNG DỊCH TỄ TRÊN MẠNG — NỀN TẢNG LÝ THUYẾT
 % ---------------------------------------------------------------------------
+
+@article{KeelingEames2005,
+  title        = {Networks and epidemic models},
+  author       = {Keeling, Matt J. and Eames, Ken T.},
+  journal      = {Journal of the Royal Society Interface},
+  volume       = {2},
+  number       = {4},
+  pages        = {295--307},
+  year         = {2005},
+  doi          = {10.1098/rsif.2005.0051}
+}
+% Đã xác minh qua Crossref. Tổng quan chuẩn về percolation trên mạng: định
+% nghĩa next-generation matrix, điều kiện subcritical, và việc ngưỡng dịch tễ
+% có thể biến mất tuỳ topology. Đây là nguồn chuẩn cho phát biểu ở
+% Section 3.8 rằng \rho(M) < 1 là tiêu chí chuẩn, không phải lựa chọn của ta.
+
+@article{Centola2010,
+  title        = {The Spread of Behavior in an Online Social Network Experiment},
+  author       = {Centola, Damon},
+  journal      = {Science},
+  volume       = {329},
+  number       = {5996},
+  pages        = {1194--1197},
+  year         = {2010},
+  doi          = {10.1126/science.1185231}
+}
+% Đã xác minh qua Crossref. Thí nghiệm định lượng đầu tiên cho thấy hành vi
+% lan truyền theo "complex contagions" (phụ thuộc nhiều bậc kề) chậm hơn và
+% yếu hơn simple contagion — bằng chứng thực nghiệm cho rằng việc "một hop
+> có sống hay không" quyết định tốc độ lan, củng cố Section 5.7 (role-conditioned
+% survival) và Section 5.8 (depth profile).
 
 @inproceedings{Kempe2003,
   title        = {Maximizing the Spread of Influence through a Social Network},
@@ -261,8 +365,49 @@
 % DOI đối chiếu được từ danh mục tham khảo của Watts (2002) trên Crossref.
 
 % ---------------------------------------------------------------------------
-% THỐNG KÊ — KIỂM ĐỊNH VÀ ĐIỀU CHỈNH ĐA KIỂM ĐỊNH
+% THỐNG KÊ — KHOẢNG TIN CẬY, BOOTSTRAP, KIỂM ĐỊNH VÀ ĐIỀU CHỈNH ĐA KIỂM ĐỊNH
 % ---------------------------------------------------------------------------
+
+@article{Wilson1927,
+  title        = {Probable Inference, the Law of Succession, and Statistical Inference},
+  author       = {Wilson, Edwin B.},
+  journal      = {Journal of the American Statistical Association},
+  volume       = {22},
+  number       = {158},
+  pages        = {209--212},
+  year         = {1927},
+  doi          = {10.1080/01621459.1927.10502953}
+}
+% Đã xác minh qua Crossref. Bản gốc của Wilson score interval — dùng cho MỌI
+% tỉ lệ trong paper (per-hop survival, ASR, R_0, retention).
+
+@article{Brown2001,
+  title        = {Interval Estimation for a Binomial Proportion},
+  author       = {Brown, Lawrence D. and Cai, T. Tony and DasGupta, Arindam},
+  journal      = {Statistical Science},
+  volume       = {16},
+  number       = {2},
+  pages        = {101--133},
+  year         = {2001},
+  doi          = {10.1214/ss/1009213286}
+}
+% Đã xác minh qua Crossref. Survey chuẩn về khoảng tin cậy cho tỉ lệ nhị phân;
+% nêu bật các phương pháp (Wald, Wilson, Jeffreys, Agresti-Coull) và chỗ Wilson
+% thắng khi p̂ gần 0 hoặc 1 — đúng vùng mà các tế bào của ta nằm (nhiều ước
+% lượng ở 0.000 / 1.000).
+
+@article{Efron1979,
+  title        = {Bootstrap Methods: Another Look at the Jackknife},
+  author       = {Efron, Bradley},
+  journal      = {The Annals of Statistics},
+  volume       = {7},
+  number       = {1},
+  pages        = {1--26},
+  year         = {1979},
+  doi          = {10.1214/aos/1176344552}
+}
+% Đã xác minh qua Crossref. Nguồn gốc của phép bootstrap — nền tảng cho kiểm
+% định composition \Delta = ASR - \prod_i \hat s_i (Section 3.7) và cho MDE.
 
 @article{BH1995,
   title        = {Controlling the False Discovery Rate: A Practical and Powerful

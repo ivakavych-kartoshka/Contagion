@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{19}
+\begin{thebibliography}{27}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -49,6 +49,23 @@
 \href{https://doi.org/10.19139/soic-2310-5070-3574}{doi:\nolinkurl{10.19139/soic-2310-5070-3574}}
 
 
+\bibitem[An et~al\mbox{.}(2026)]%
+        {An2026ACIARena}
+\bibfield{author}{\bibinfo{person}{Hengyu An}, \bibinfo{person}{Minxi Li},
+  \bibinfo{person}{Jinghuai Zhang}, \bibinfo{person}{Naen Xu},
+  \bibinfo{person}{Chunyi Zhou}, \bibinfo{person}{Changjiang Li},
+  \bibinfo{person}{Xiaogang Xu}, \bibinfo{person}{Tianyu Du}, {and}
+  \bibinfo{person}{Shouling Ji}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{{ACIArena}: Toward Unified Evaluation for Agent
+  Cascading Injection}. In \bibinfo{booktitle}{\emph{Proceedings of the 64th
+  Annual Meeting of the Association for Computational Linguistics (Volume 1:
+  Long Papers)}}. \bibinfo{publisher}{Association for Computational
+  Linguistics}, \bibinfo{address}{San Diego, California, USA},
+  \bibinfo{pages}{10049--10066}.
+\newblock
+\href{https://doi.org/10.18653/v1/2026.acl-long.457}{doi:\nolinkurl{10.18653/v1/2026.acl-long.457}}
+
+
 \bibitem[Benjamini and Hochberg(1995)]%
         {BH1995}
 \bibfield{author}{\bibinfo{person}{Yoav Benjamini} {and} \bibinfo{person}{Yosef
@@ -62,6 +79,18 @@
 \href{https://doi.org/10.1111/j.2517-6161.1995.tb02031.x}{doi:\nolinkurl{10.1111/j.2517-6161.1995.tb02031.x}}
 
 
+\bibitem[Brown et~al\mbox{.}(2001)]%
+        {Brown2001}
+\bibfield{author}{\bibinfo{person}{Lawrence~D. Brown}, \bibinfo{person}{T.~Tony
+  Cai}, {and} \bibinfo{person}{Arindam DasGupta}.}
+  \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Interval Estimation for a Binomial Proportion}.
+\newblock \bibinfo{journal}{\emph{Statist. Sci.}} \bibinfo{volume}{16},
+  \bibinfo{number}{2} (\bibinfo{year}{2001}), \bibinfo{pages}{101--133}.
+\newblock
+\href{https://doi.org/10.1214/ss/1009213286}{doi:\nolinkurl{10.1214/ss/1009213286}}
+
+
 \bibitem[Cemri et~al\mbox{.}(2025)]%
         {Cemri2025MAST}
 \bibfield{author}{\bibinfo{person}{Mert Cemri}, \bibinfo{person}{Melissa~Z.
@@ -71,10 +100,23 @@
   \bibinfo{person}{Dan Klein}, \bibinfo{person}{Kannan Ramchandran},
   \bibinfo{person}{Matei Zaharia}, \bibinfo{person}{Joseph~E. Gonzalez}, {and}
   \bibinfo{person}{Ion Stoica}.} \bibinfo{year}{2025}\natexlab{}.
-\newblock \bibinfo{title}{Why Do Multi-Agent {LLM} Systems Fail?}
-\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock \showarticletitle{Why Do Multi-Agent {LLM} Systems Fail?}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing
+  Systems}}, Vol.~\bibinfo{volume}{38}. \bibinfo{publisher}{Curran Associates,
+  Inc.}
 \newblock
-\showeprint[arxiv]{2503.13657}~[cs.AI]
+
+
+\bibitem[Centola(2010)]%
+        {Centola2010}
+\bibfield{author}{\bibinfo{person}{Damon Centola}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{The Spread of Behavior in an Online Social Network
+  Experiment}.
+\newblock \bibinfo{journal}{\emph{Science}} \bibinfo{volume}{329},
+  \bibinfo{number}{5996} (\bibinfo{year}{2010}), \bibinfo{pages}{1194--1197}.
+\newblock
+\href{https://doi.org/10.1126/science.1185231}{doi:\nolinkurl{10.1126/science.1185231}}
 
 
 \bibitem[Chen et~al\mbox{.}(2025)]%
@@ -100,6 +142,18 @@
   Systems}}, Vol.~\bibinfo{volume}{37}. \bibinfo{publisher}{Curran Associates,
   Inc.}
 \newblock
+
+
+\bibitem[Efron(1979)]%
+        {Efron1979}
+\bibfield{author}{\bibinfo{person}{Bradley Efron}.}
+  \bibinfo{year}{1979}\natexlab{}.
+\newblock \showarticletitle{Bootstrap Methods: Another Look at the Jackknife}.
+\newblock \bibinfo{journal}{\emph{The Annals of Statistics}}
+  \bibinfo{volume}{7}, \bibinfo{number}{1} (\bibinfo{year}{1979}),
+  \bibinfo{pages}{1--26}.
+\newblock
+\href{https://doi.org/10.1214/aos/1176344552}{doi:\nolinkurl{10.1214/aos/1176344552}}
 
 
 \bibitem[Granovetter(1978)]%
@@ -148,6 +202,18 @@
 \tempurl}
 
 
+\bibitem[Keeling and Eames(2005)]%
+        {KeelingEames2005}
+\bibfield{author}{\bibinfo{person}{Matt~J. Keeling} {and}
+  \bibinfo{person}{Ken~T. Eames}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Networks and epidemic models}.
+\newblock \bibinfo{journal}{\emph{Journal of the Royal Society Interface}}
+  \bibinfo{volume}{2}, \bibinfo{number}{4} (\bibinfo{year}{2005}),
+  \bibinfo{pages}{295--307}.
+\newblock
+\href{https://doi.org/10.1098/rsif.2005.0051}{doi:\nolinkurl{10.1098/rsif.2005.0051}}
+
+
 \bibitem[Kempe et~al\mbox{.}(2003)]%
         {Kempe2003}
 \bibfield{author}{\bibinfo{person}{David Kempe}, \bibinfo{person}{Jon
@@ -172,6 +238,19 @@
   \bibinfo{number}{1} (\bibinfo{year}{2026}).
 \newblock
 \href{https://doi.org/10.1186/s42400-026-00628-w}{doi:\nolinkurl{10.1186/s42400-026-00628-w}}
+
+
+\bibitem[Lee et~al\mbox{.}(2026)]%
+        {Lee2025Infection}
+\bibfield{author}{\bibinfo{person}{Donghyun Lee}, \bibinfo{person}{Mo Tiwari},
+  {and} \bibinfo{person}{Brando Miranda}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Prompt Infection: {LLM}-to-{LLM} Prompt Injection
+  within Multi-Agent Systems}. In \bibinfo{booktitle}{\emph{Computer Security.
+  ESORICS 2025 International Workshops}} \emph{(\bibinfo{series}{Lecture Notes
+  in Computer Science})}. \bibinfo{publisher}{Springer},
+  \bibinfo{pages}{511--520}.
+\newblock
+\href{https://doi.org/10.1007/978-3-032-16092-8_28}{doi:\nolinkurl{10.1007/978-3-032-16092-8_28}}
 
 
 \bibitem[Liu et~al\mbox{.}(2024)]%
@@ -236,8 +315,21 @@
 \href{https://doi.org/10.1073/pnas.082090499}{doi:\nolinkurl{10.1073/pnas.082090499}}
 
 
-\bibitem[Wu et~al\mbox{.}(2023)]%
-        {Wu2023AutoGen}
+\bibitem[Wilson(1927)]%
+        {Wilson1927}
+\bibfield{author}{\bibinfo{person}{Edwin~B. Wilson}.}
+  \bibinfo{year}{1927}\natexlab{}.
+\newblock \showarticletitle{Probable Inference, the Law of Succession, and
+  Statistical Inference}.
+\newblock \bibinfo{journal}{\emph{J. Amer. Statist. Assoc.}}
+  \bibinfo{volume}{22}, \bibinfo{number}{158} (\bibinfo{year}{1927}),
+  \bibinfo{pages}{209--212}.
+\newblock
+\href{https://doi.org/10.1080/01621459.1927.10502953}{doi:\nolinkurl{10.1080/01621459.1927.10502953}}
+
+
+\bibitem[Wu et~al\mbox{.}(2024)]%
+        {Wu2024AutoGen}
 \bibfield{author}{\bibinfo{person}{Qingyun Wu}, \bibinfo{person}{Gagan Bansal},
   \bibinfo{person}{Jieyu Zhang}, \bibinfo{person}{Yiran Wu},
   \bibinfo{person}{Beibin Li}, \bibinfo{person}{Erkang Zhu},
@@ -245,12 +337,11 @@
   \bibinfo{person}{Shaokun Zhang}, \bibinfo{person}{Jiale Liu},
   \bibinfo{person}{Ahmed~Hassan Awadallah}, \bibinfo{person}{Ryen~W White},
   \bibinfo{person}{Doug Burger}, {and} \bibinfo{person}{Chi Wang}.}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \bibinfo{title}{{AutoGen}: Enabling Next-Gen {LLM} Applications via
-  Multi-Agent Conversation}.
-\newblock \bibinfo{howpublished}{arXiv preprint}.
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AutoGen}: Enabling Next-Gen {LLM} Applications via
+  Multi-Agent Conversations}. In \bibinfo{booktitle}{\emph{Conference on
+  Language Modeling (COLM)}}.
 \newblock
-\showeprint[arxiv]{2308.08155}~[cs.AI]
 
 
 \bibitem[Yao et~al\mbox{.}(2023)]%
@@ -296,6 +387,24 @@
 \newblock
 \showeprint[arxiv]{2403.02691}~[cs.CR]
 \href{https://doi.org/10.18653/v1/2024.findings-acl.624}{doi:\nolinkurl{10.18653/v1/2024.findings-acl.624}}
+
+
+\bibitem[Zhang et~al\mbox{.}(2025)]%
+        {Zhang2025ASB}
+\bibfield{author}{\bibinfo{person}{Hanrong Zhang}, \bibinfo{person}{Jingyuan
+  Huang}, \bibinfo{person}{Kai Mei}, \bibinfo{person}{Yifei Yao},
+  \bibinfo{person}{Zhenting Wang}, \bibinfo{person}{Chenlu Zhan},
+  \bibinfo{person}{Hongwei Wang}, {and} \bibinfo{person}{Yongfeng Zhang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Agent Security Bench ({ASB}): Formalizing and
+  Benchmarking Attacks and Defenses in {LLM}-based Agents}. In
+  \bibinfo{booktitle}{\emph{The Thirteenth International Conference on Learning
+  Representations}}.
+\newblock
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=V4y0CpX4hK}
+\showURL{%
+\tempurl}
 
 
 \end{thebibliography}

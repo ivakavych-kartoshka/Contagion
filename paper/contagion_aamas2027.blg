@@ -14,6 +14,8 @@ Reallocating 'glb_str_end' (item size: 4) to 20 items.
 Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
 Reallocating 'global_strs' (item size: 1) to 4000000 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--empty address in Cemri2025MAST
+Warning--page numbers missing in both pages and numpages fields in Cemri2025MAST
 Warning--empty address in StrUQ2025
 Warning--page numbers missing in both pages and numpages fields in StrUQ2025
 Warning--empty address in Debenedetti2024AgentDojo
@@ -24,54 +26,61 @@ Warning--empty address in Hong2023MetaGPT
 Warning--page numbers missing in both pages and numpages fields in Hong2023MetaGPT
 Warning--empty address in Kempe2003
 Warning--page numbers missing in both pages and numpages fields in SwarmMarkov2026
+Warning--empty address in Lee2025Infection
 Warning--empty publisher in Perez2022PromptInjection
 Warning--empty address in Perez2022PromptInjection
 Warning--page numbers missing in both pages and numpages fields in Perez2022PromptInjection
+Warning--empty publisher in Wu2024AutoGen
+Warning--empty address in Wu2024AutoGen
+Warning--page numbers missing in both pages and numpages fields in Wu2024AutoGen
 Warning--empty publisher in Yao2023ReAct
 Warning--empty address in Yao2023ReAct
 Warning--page numbers missing in both pages and numpages fields in Yao2023ReAct
 Warning--empty publisher in Zhan2025Adaptive
 Warning--empty address in Zhan2025Adaptive
 Warning--page numbers missing in both pages and numpages fields in Zhan2025Adaptive
-You've used 19 entries,
+Warning--empty publisher in Zhang2025ASB
+Warning--empty address in Zhang2025ASB
+Warning--page numbers missing in both pages and numpages fields in Zhang2025ASB
+You've used 27 entries,
             6273 wiz_defined-function locations,
-            1663 strings with 23437 characters,
-and the built_in function-call counts, 23434 in all, are:
-= -- 2801
-> -- 939
+            1726 strings with 25263 characters,
+and the built_in function-call counts, 33714 in all, are:
+= -- 4179
+> -- 1233
 < -- 0
-+ -- 325
-- -- 332
-* -- 1832
-:= -- 2338
-add.period$ -- 91
-call.type$ -- 19
-change.case$ -- 176
-chr.to.int$ -- 19
-cite$ -- 38
-duplicate$ -- 2006
-empty$ -- 1406
-format.name$ -- 396
-if$ -- 5581
++ -- 423
+- -- 436
+* -- 2544
+:= -- 3258
+add.period$ -- 129
+call.type$ -- 27
+change.case$ -- 234
+chr.to.int$ -- 27
+cite$ -- 55
+duplicate$ -- 2947
+empty$ -- 2065
+format.name$ -- 520
+if$ -- 8188
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 78
-newline$ -- 207
-num.names$ -- 133
-pop$ -- 851
+missing$ -- 123
+newline$ -- 275
+num.names$ -- 189
+pop$ -- 1235
 preamble$ -- 1
-purify$ -- 324
+purify$ -- 448
 quote$ -- 0
-skip$ -- 734
+skip$ -- 1061
 stack$ -- 0
-substring$ -- 1595
-swap$ -- 190
+substring$ -- 2405
+swap$ -- 289
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 472
-warning$ -- 19
-while$ -- 113
+type$ -- 642
+warning$ -- 28
+while$ -- 174
 width$ -- 0
-write$ -- 415
-(There were 19 warnings)
+write$ -- 576
+(There were 28 warnings)

@@ -1,24 +1,30 @@
 Supplementary Material
 =====================
 
-Paper: "Contagion: Per-Hop Prompt-Injection Survival in LLM Agent Networks
-Does Not Compose" (AAMAS 2027, Research Paper Track)
+Paper: "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks
+Does (and Does Not) Compose" (AAMAS 2027, Research Paper Track)
 
 Contents of this archive
 -------------------------
-  supplementary.pdf   Technical appendices A-D referenced from the main paper.
-  README.txt          This file.
+  supplementary.pdf         Technical appendices A-D referenced from the main paper.
+  supplementary.tex         LaTeX source for supplementary.pdf.
+  supplementary_README.txt  This file.
+
+Build: pdflatex supplementary.tex   (run twice; no BibTeX needed)
 
 Mapping to the main paper
 -------------------------
   Appendix A  Multiplicity Control for the Composition Test
-              (main paper: Section 3.8, Section 5.10, Limitations)
+              (main paper: Section 3.7, Section 5.2, Section 5.10, Section 7)
   Appendix B  Context-Clustered Interval on the Weak Edge
-              (main paper: Section 5.10)
+              (main paper: Section 4, Section 5.10)
   Appendix C  Threshold Sensitivity of the Floor Effect
-              (main paper: Section 5.5)
+              (main paper: Section 5.1, Section 5.4)
   Appendix D  Recurrence Makes the Threshold Non-Vacuous
-              (main paper: Section 5.8)
+              (main paper: Section 3.8, Section 5.8)
+
+Cross-references are written as literal section numbers (e.g. "Section 5.10 of the
+main paper") because this document does not share an .aux file with the main paper.
 
 All tables in this supplement are produced offline from stored experimental
 results; no model calls are required to reproduce them. The scripts are:

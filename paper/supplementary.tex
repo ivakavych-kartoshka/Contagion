@@ -1,7 +1,7 @@
 % =====================================================================
 %  SUPPLEMENTARY MATERIAL
-%  "Contagion: Per-Hop Prompt-Injection Survival in LLM Agent Networks
-%   Does Not Compose"
+%  "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks
+%   Does (and Does Not) Compose"
 %
 %  Chứa Appendices A-D được tham chiếu từ bài chính.
 %  Biên dịch:  pdflatex supplementary.tex   (chạy 2 lần)
@@ -19,7 +19,7 @@
 \usepackage[hidelinks]{hyperref}
 
 \title{\vspace{-1.5cm}\textbf{Supplementary Material}\\[0.4em]
-\large Contagion: Per-Hop Prompt-Injection Survival in\\ LLM Agent Networks Does Not Compose}
+\large Contagion: When Per-Hop Prompt-Injection Survival in\\ LLM Agent Networks Does (and Does Not) Compose}
 \author{Anonymous Author(s)}
 \date{}
 
@@ -36,7 +36,7 @@
 \label{app:bh}
 
 Table~\ref{tab:bh} applies a Benjamini--Hochberg correction to the composition
-tests of Section~3.8 of the main paper, using the \emph{default fresh-artefact
+tests of Section~3.7 of the main paper, using the \emph{default fresh-artefact
 protocol} for every cell at the common $n = 40$ grid. Only the Llama cell rejects
 $H_0$; it survives the correction at $q = 0.05$, while the four remaining
 non-degenerate cells---including DeepSeek, whose fixed-artefact deviation is a
@@ -52,7 +52,7 @@ common $n = 40$ grid so the five cells are compared at equal power.
 \centering
 \caption{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells
 (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from
-Section~3.8 of the main paper. Only the Llama rejection survives.}
+Section~3.7 of the main paper. Only the Llama rejection survives.}
 \label{tab:bh}
 \begin{tabular}{clcc}
 \toprule
@@ -71,14 +71,14 @@ Section~3.8 of the main paper. Only the Llama rejection survives.}
 \section{Context-Clustered Interval on the Weak Edge}
 \label{app:cluster}
 
-Section~5 of the main paper reports that a homogeneity test rejects exchangeability
+Section~5.10 of the main paper reports that a homogeneity test rejects exchangeability
 across benign task contexts on the weak Llama edge. Because that violates the
 i.i.d.\ assumption behind Wilson intervals, we recompute the edge rate with a
 cluster bootstrap that resamples \emph{repeats} (seed replications), not individual
 trials. At a fixed temperature ($T = 0.7$, six repeats of twenty trials) the two
 intervals nearly coincide (Table~\ref{tab:cluster}): the design-effect widening is
 $0.99\times$, so within a temperature the Wilson interval is well calibrated. The
-overdispersion $\varphi = 2.93$ reported in Section~5 of the main paper is a
+overdispersion $\varphi = 2.93$ reported in Section~4 of the main paper is a
 \emph{cross-temperature} artefact---temperature is a deliberate systematic factor,
 not trial noise---which is why we compute $\varphi$ within a temperature.
 
