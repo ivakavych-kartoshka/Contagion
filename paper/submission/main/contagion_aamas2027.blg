@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: contagion_aamas2027.aux
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+The style file: ACM-Reference-Format.bst
+Reallocating 'name_of_file' (item size: 1) to 5 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Database file #1: refs.bib
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--empty address in StrUQ2025
+Warning--page numbers missing in both pages and numpages fields in StrUQ2025
+Warning--page numbers missing in both pages and numpages fields in SwarmMarkov2026
+Warning--empty publisher in Zhan2025Adaptive
+Warning--empty address in Zhan2025Adaptive
+Warning--page numbers missing in both pages and numpages fields in Zhan2025Adaptive
+You've used 14 entries,
+            6273 wiz_defined-function locations,
+            1620 strings with 21986 characters,
+and the built_in function-call counts, 16942 in all, are:
+= -- 2030
+> -- 766
+< -- 0
++ -- 267
+- -- 267
+* -- 1412
+:= -- 1783
+add.period$ -- 69
+call.type$ -- 14
+change.case$ -- 144
+chr.to.int$ -- 14
+cite$ -- 20
+duplicate$ -- 1347
+empty$ -- 951
+format.name$ -- 315
+if$ -- 3926
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 40
+newline$ -- 164
+num.names$ -- 98
+pop$ -- 523
+preamble$ -- 1
+purify$ -- 249
+quote$ -- 0
+skip$ -- 503
+stack$ -- 0
+substring$ -- 1163
+swap$ -- 127
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 350
+warning$ -- 6
+while$ -- 76
+width$ -- 0
+write$ -- 314
+(There were 6 warnings)
