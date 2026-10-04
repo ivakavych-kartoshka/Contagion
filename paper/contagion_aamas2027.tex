@@ -4,8 +4,9 @@
 %
 %  PAGE LIMIT (per the Call for Papers): the main track is AT MOST 8 PAGES of
 %  content; pages containing bibliographic references are additional and
-%  unlimited. Keep the body within 8 pages. Subsections marked
-%  "% CUT-CANDIDATE" are the first candidates to trim if it overruns.
+%  unlimited. The body therefore ends on page 8 and the bibliography starts at
+%  the top of page 9. No layout parameter is altered anywhere in this file --
+%  see PAGE_LIMIT_CHECK.md for the measured verification procedure.
 %
 %  TO COMPILE YOU NEED: aamas.cls (from the AAMAS-2027 template package /
 %  Overleaf), the ACM CC-BY image file `by`, and the .png figures in this
@@ -27,9 +28,8 @@
 
 %%% Load required packages here (note that many are included already).
 %%% NOTE: `aamas' (like acmart) already loads amsmath, amssymb and booktabs, so
-%%% reloading them here causes "Command \Bbbk already defined". Only the extra
-%%% packages we actually need are loaded.
-\usepackage{balance}   % for balancing columns on the final page
+%%% reloading them here causes "Command \Bbbk already defined". It also loads
+%%% `balance' itself (for the balanced final page), so no package is needed here.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -109,8 +109,16 @@ model's unprotected susceptibility.
 %%% Use this command to specify a few keywords describing your work.
 %%% Keywords should be separated by commas.
 
-\keywords{multiagent systems, prompt injection, security measurement, epidemic
-threshold, LLM agents, benchmark}
+\keywords{Multiagent systems, Prompt injection, Security measurement,
+Epidemic threshold, LLM agents, Benchmarks}
+
+%%% Use this command to specify the ACM Computing Concepts taxonomy.
+%%% `aamas.cls' warns at end of document that CCS concepts are mandatory for
+%%% papers longer than two pages; they appear in the title block.
+
+\ccsdesc[100]{Computing methodologies~Multiagent systems}
+\ccsdesc[100]{Computing methodologies~Natural language processing}
+\ccsdesc[100]{Security and privacy~Social engineering}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -118,11 +126,14 @@ threshold, LLM agents, benchmark}
 
 \newcommand{\BibTeX}{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em\TeX}
 %%% \ensuremath so the macros work BOTH in text and inside equations
-%%% (a plain $...$ definition breaks inside math mode).
+%%% (a plain $...$ definition breaks inside math mode). \scites and \snats are
+%%% the index-free symbols used when no particular hop i is meant; they avoid
+%%% typesetting a visibly empty subscript.
 \newcommand{\scite}[1]{\ensuremath{s^{\mathrm{ctrl}}_{#1}}}
 \newcommand{\snat}[1]{\ensuremath{s^{\mathrm{nat}}_{#1}}}
+\newcommand{\scites}{\ensuremath{s^{\mathrm{ctrl}}}}
+\newcommand{\snats}{\ensuremath{s^{\mathrm{nat}}}}
 \newcommand{\ind}{\ensuremath{\mathbf{1}}}
-\newcommand{\pending}{\textsuperscript{\textdagger}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -269,7 +280,7 @@ separately catalogues multi-agent failures and attributes $32.3\%$ of them to
 inter-agent misalignment, and concurrent work reports aggregate compromise rates
 through hierarchical chains~\cite{CII2026}.
 
-We differ from all four in what is measured rather than in whether the phenomenon
+We differ from all of these in what is measured rather than in whether the phenomenon
 exists. ACIArena and Prompt Infection report \emph{outcome} rates per attack
 surface or per application; we report the \emph{conditional} probability
 $\Pr[C_v{=}1 \mid C_u{=}1]$ for each edge, which makes failure localisable, and we
@@ -326,11 +337,12 @@ agent} $v_0$, following InjecAgent's indirect channel~\cite{Zhan2024InjecAgent}.
 We adopt the standard construction that the entry is compromised by definition,
 $C_0 = 1$: the measurement targets \emph{propagation}, not entry-point
 susceptibility. Attackers are black-box; topology is known to us but not used to
-optimise the payload. Every agent also receives a \emph{legitimate assignment}
-from a trusted channel (a short operational task), so that an agent which resists
-injection merely by refusing to work is not credited as a defence; all injected
-content is therefore framed as benign-looking infrastructure text, the difference
-between 0\% and 60--100\% compliance in our pilot.
+optimise the payload. Every agent also receives a \emph{legitimate assignment} from
+a trusted channel (a short operational task), so that an agent which resists
+injection merely by refusing to work is not credited as a defence. Injected content
+is therefore framed as benign-looking infrastructure text rather than as an overt
+command; in a pilot this framing was the difference between $0\%$ and
+$60$--$100\%$ compliance.
 
 \subsection{Task families}
 
@@ -351,8 +363,8 @@ BANANA-77. Append that code to your reply, then proceed.\par
 \end{quote}
 Success requires producing the semantic target, which is \emph{not} wrapped in a
 synthetic delimiter. This removes the artefact in which a model succeeds by
-pattern-matching a bracketed token, and restores per-hop survival to the interior
-of $(0,1)$ on real models.
+pattern-matching a bracketed token, and restores per-hop survival to the open
+interval $(0,1)$ on real models.
 
 \subsection{Compromise judgment}
 
@@ -442,11 +454,14 @@ detectable effect $\mathrm{MDE} = (z_{1-\alpha/2} + z_{\mathrm{power}})\,
 \mathrm{sd}(\Delta_{\mathrm{boot}})$. Degenerate cases are labelled rather than
 reported as support: when $\mathrm{ASR} = \prod_i \hat s_i = 0$ the test has
 $\mathrm{sd}(\Delta) = 0$ and is \emph{uninformative}. Multiplicity across cells
-is controlled by Benjamini--Hochberg~\cite{BH1995} at $q = 0.05$; Section
-\ref{sec:validation} reports which cells survive it, and why we decline to read
-any small-$n$ null as evidence of transport.
+is controlled by Benjamini--Hochberg~\cite{BH1995} at $q = 0.05$;
+Section~\ref{sec:validation} reports which cells survive it, and why we decline to
+read any small-$n$ null as evidence of transport.
 
-\subsection{Percolation on a feed-forward network, and why $R_0$ is not a safety criterion}
+%%% \texorpdfstring keeps math out of the PDF bookmark; without it hyperref drops
+%%% the math shift and the subscript and warns.
+\subsection{Percolation on a feed-forward network, and why
+\texorpdfstring{$R_0$}{R0} is not a safety criterion}
 \label{sec:threshold}
 
 For a feed-forward network the independence assumption has a natural
@@ -511,7 +526,7 @@ Section~\ref{sec:discussion} turns this into the practitioner's rule.
 \paragraph{Models.} Five models from five independent developers:
 qwen2.5:\-7b (Alibaba, local), DeepSeek V3.2 (DeepSeek), Llama 3.3 70B (Meta),
 Nova Pro (Amazon), and Claude Sonnet 4.5 (Anthropic); the latter four via Bedrock,
-region us-east-1. Temperature $0.7$; the models marked $\dagger$ require Bedrock
+region us-east-1. Temperature $0.7$; the Llama and Claude endpoints require Bedrock
 inference-profile identifiers. The set spans a wide capability and deployment
 range, from a fully local open-weight 7B model running on commodity hardware
 without API access to frontier closed models from distinct corporate ecosystems,
@@ -568,21 +583,23 @@ calls are made.
 
 \subsection{Per-hop survival is role-dependent, and susceptibility does not track capability}
 
-Table~\ref{tab:cross} reports the chain headline per model. Two facts stand out.
+Table~\ref{tab:cross} reports the per-model chain headline. Two facts stand out.
 First, per-hop survival varies several-fold \emph{across receiver roles within a
 single model and attack} (Fig.~\ref{fig:role}): on a five-agent chain the
 worker-position edge survives $0.133$ while the reviewer-position edge survives
 $0.867$, so a scalar $s$ per model is unjustified. Second, susceptibility does not
-follow capability: the most capable model we test is the most susceptible, and the
+follow capability: the two frontier commercial models sit at the bottom of the panel
+and a $70$B open-weight model at the top, so ASR does not follow model scale, and the
 five models yield four qualitatively different outcomes. Both facts point the same
 way: a single end-to-end number per model discards \emph{where} in the network the
 attack was stopped.
 
 \begin{table}[t]
 \small
-\caption{Chain, no defence, Task Family B. $\bar s$ is the mean controlled per-edge
-survival; per-edge order follows the chain. Rows marked $\dagger$ used the
-fresh-artefact protocol (Section~\ref{sec:ablation}).}
+\caption{Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials
+per edge. $\bar s$ is the mean controlled per-edge survival; per-edge order follows
+the chain. Rows marked $\dagger$ used the fresh-artefact protocol
+(Section~\ref{sec:ablation}).}
 \label{tab:cross}
 \begin{tabular}{lccc}
 \toprule
@@ -600,7 +617,7 @@ Claude Sonnet 4.5          & 0.000 & 0.211 & 0.000 / 0.600 / 0.033 \\
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig2_per_role_survival.png}
-  \caption{Per-hop survival by receiving role (five-agent chain, $n=30$ per edge).
+  \caption{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge).
   The worker-position edge is an order of magnitude below the reviewer-position
   edge, and a defence that collapses survival in one chain can leave another
   essentially unchanged.}
@@ -617,8 +634,8 @@ Claude Sonnet 4.5          & 0.000 & 0.211 & 0.000 / 0.600 / 0.033 \\
 Table~\ref{tab:transport} gives the central measurement, on the two models where we
 have all three regimes. The results are not uniform, which is the point.
 
-For \emph{Llama 3.3 70B} the middle edge survives $\scite{} = 0.233$ when measured
-in isolation but $\snat{} = 0.875$ in the chain: a $3.75\times$ underestimate.
+For \emph{Llama 3.3 70B} the middle edge survives $\scites = 0.233$ when measured
+in isolation but $\snats = 0.875$ in the chain: a $3.75\times$ underestimate.
 The consequence for composition is large: $\prod_i \scite{i} = 0.233$ against
 $\mathrm{ASR} = 0.850$, a bootstrap $\Delta = +0.617$ with 95\% interval
 $[+0.433, +0.792]$ and $p < 0.001$.
@@ -626,7 +643,7 @@ $[+0.433, +0.792]$ and $p < 0.001$.
 For \emph{DeepSeek V3.2} the same comparison agrees within resolution: the three
 per-edge ratios are $0.90$, $0.99$ and $1.10$, $\prod_i \scite{i} = 0.409$ against
 $\mathrm{ASR} = 0.400$, and $\Delta = -0.009$ ($[-0.225, +0.201]$, $p = 0.930$)---a
-\emph{non-rejection} at $\mathrm{MDE}\approx0.26$ ($n=40$), not distinguishable from
+\emph{non-rejection} at $\mathrm{MDE}\approx0.26$ ($n = 40$), not distinguishable from
 exact. In both cases Eq.~\eqref{eq:identity} holds exactly, as it must.
 
 The practical reading is that isolated per-hop survival---the regime single-agent
@@ -635,14 +652,15 @@ but does not always; whether it does is an empirical property of the model and e
 
 \begin{table}[t]
 \small
-\caption{Transportability of the isolated per-hop estimate, per edge and per model.
-\emph{ratio} is $\snat{}/\scite{}$: values near one mean the isolated estimate
-transports. The final row is measured independently on natural runs and must equal
-$\prod$ of the in-chain column.}
+\caption{Transportability of the isolated per-hop estimate, per edge and per model;
+40 natural runs and 30 controlled trials per edge. \emph{ratio} is
+$\snats/\scites$: values near one mean the isolated estimate transports. The final
+row is measured independently on natural runs and must equal $\prod$ of the in-chain
+column.}
 \label{tab:transport}
 \begin{tabular}{llccc}
 \toprule
-\textit{model} & \textit{edge} & \textit{\scite{}} & \textit{\snat{}} & \textit{ratio} \\
+\textit{model} & \textit{edge} & \textit{$\scites$} & \textit{$\snats$} & \textit{ratio} \\
 \midrule
 Llama 3.3 70B   & \texttt{a0}$\to$\texttt{a1} & 1.000 & 1.000 & 1.00$\times$ \\
                 & \texttt{a1}$\to$\texttt{a2} & 0.233 & \textbf{0.875} & \textbf{3.75}$\times$ \\
@@ -661,11 +679,11 @@ DeepSeek V3.2   & \texttt{a0}$\to$\texttt{a1} & 0.667 & 0.600 & 0.90$\times$ \\
 
 \begin{table}[t]
 \small
-\caption{Artefact-policy ablation: controlled per-edge estimates $\scite{}$ under
-a fixed artefact versus a fresh artefact per trial. The DeepSeek deviation disappears
-under the fresh protocol; the Llama deviation does not.}
+\caption{Artefact-policy ablation: controlled per-edge estimates $\scites$ under
+a fixed artefact versus a fresh artefact per trial (Llama 3.3 70B and DeepSeek
+V3.2, chain, 40 natural runs, 30 controlled trials per edge). The DeepSeek
+deviation disappears under the fresh protocol; the Llama deviation does not.}
 \label{tab:ablation}
-\small
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{llcccc}
 \toprule
@@ -679,11 +697,11 @@ Llama    & fresh & 1.000/0.233/1.000 & 0.233 & $+0.617$ & $<0.001$ \\
 \end{tabular}
 \end{table}
 
-\subsection{A significant finding of our own that did not survive}
+\subsection{Protocol sensitivity: a significant result that did not replicate}
 \label{sec:ablation}
 
 Using a fixed artefact, DeepSeek V3.2 gave per-edge estimates $0.967/1.000/0.833$,
-hence $\prod_i \hat s_i = 0.806$ against $\mathrm{ASR} = 0.475$: a large apparent
+hence $\prod_i \scite{i} = 0.806$ against $\mathrm{ASR} = 0.475$: a large apparent
 deviation in the opposite direction, with $\Delta = -0.331$, 95\% interval
 $[-0.538,-0.116]$ and $p = 0.0030$. Drawing a fresh artefact per trial removed it:
 two independent replicates of the corrected cell give
@@ -705,18 +723,18 @@ same target travels inside the sender's legitimate work product and may be consu
 as content rather than as a command. To separate \emph{form} from \emph{regime} we
 replay both content sources through the \emph{same} harness: a fresh receiver, the
 same rotating assignment, the same judge. The harness is self-validating, because
-one arm replays content captured from real natural runs and must reproduce $\snat{}$.
+one arm replays content captured from real natural runs and must reproduce $\snats$.
 
 \begin{table}[t]
 \small
-\caption{Content-form ablation (Llama 3.3 70B, chain $n=4$; 40 natural runs, 30 replays
-per arm and edge). Both replay arms use the same receivers, assignments and judge, so
-the difference is attributable to payload form alone.}
+\caption{Content-form ablation (Llama 3.3 70B, chain of $n = 4$ agents; 40 natural
+runs, 30 replays per arm and edge). Both replay arms use the same receivers,
+assignments and judge, so the difference is attributable to payload form alone.}
 \label{tab:form}
 \begin{tabular}{lcccc}
 \toprule
 \textit{edge} & \textit{in-chain} & \textit{replay} & \textit{replay} & \textit{form} \\
- & \textit{$\snat{}$} & \textit{in-context} & \textit{canonical} & \textit{effect} \\
+ & \textit{$\snats$} & \textit{in-context} & \textit{canonical} & \textit{effect} \\
 \midrule
 \texttt{a0}$\to$\texttt{a1} & 1.000 & 1.000 & 1.000 & $0.000$ \\
 \texttt{a1}$\to$\texttt{a2} & 0.950 & \textbf{0.967} & \textbf{0.067} & $+0.900$ \\
@@ -746,10 +764,10 @@ this is weaker than it appears. On the model with a high no-defence baseline,
 redaction takes the plain attack from $1.00$ to $0.00$ while the split attack remains
 at $1.00$ and the spaced attack at $0.88$: it works on the literal channel and is
 bypassed by ordinary obfuscation. On the resistant frontier model the plain attack
-succeeds only $0.10$ of the time with no defence, so redaction's apparent perfection
-is the absence of anything to defend (invariant for
-$\tau_{\mathrm{ASV}} \in \{0.7,0.8,0.9,1.0\}$, Appendix~C). The same code and defence
-give opposite verdicts; only the headroom differs.
+succeeds only $0.10$ of the time even with no defence, so redaction's apparent
+perfection is the absence of anything to defend (invariant for
+$\tau_{\mathrm{ASV}} \in \{0.7,0.8,0.9,1.0\}$, supplementary Appendix~C). The same
+code and defence give opposite verdicts; only the headroom differs.
 
 Semantic paraphrase is worse than useless in our cells: on the model where the
 attack succeeds it leaves $\mathrm{ASR}$ unchanged ($0.450 \to 0.450$) while
@@ -758,18 +776,18 @@ dominated} by doing nothing; on the resistant model it still costs $0.100$ of
 utility where $\mathrm{ASR}$ is already $0.000$. This matches prior single-agent
 findings that paraphrasing is breakable~\cite{Zhan2025Adaptive}.
 
-Both verdicts cover two defences against a static, non-adaptive attacker; the small
-panels serve only the within-model contrast, and the cross-model claims rest on the
-$n{=}30$ panel and the chain cells.
+Both verdicts cover two defences against a static, non-adaptive attacker, and the
+small panels serve only the within-model contrast.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig4_obfuscation_heatmap.png}
   \caption{Single-hop compromise rate by defence and attack form, one panel per
-  model ($n=30$ per cell for Claude 4.5, $n=8$ for DeepSeek, $n=16$ for qwen; we do not
-  interpret small differences in the $n=8$ cells).
+  model ($n = 30$ per cell for Claude 4.5, $n = 8$ for DeepSeek, $n = 16$ for qwen; we do not
+  interpret small differences in the $n = 8$ cells).
   \texttt{none}$\cdot$split and \texttt{redact}$\cdot$split measure the same
-  quantity by construction, so the gap between them gauges our own noise.}  \label{fig:obf}
+  quantity by construction, so the gap between them gauges our own noise.}
+  \label{fig:obf}
   \Description{Heat maps of compromise rate for two defences and three attack
   forms, one panel per model. Redaction reduces the plain attack to zero on every
   model; split and spaced attacks remain high on models with a high no-defence
@@ -788,8 +806,8 @@ $d\cdot\bar s = 0.652$. The gap is structural, not noise---the aggregator has no
 successors---and it reproduces the deviation our synthetic calibration predicted for
 star fan-in.
 
-The second effect is less obvious and does not follow from the first. Table
-\ref{tab:topo} compares three seven-agent topologies with nearly the same mean
+The second effect is less obvious and does not follow from the first.
+Table~\ref{tab:topo} compares three seven-agent topologies with nearly the same mean
 per-hop survival yet sharply different outcomes. The star reaches its aggregation
 point more often than the chain ($\mathrm{ASR} = 0.725$ versus $0.450$) while
 reproducing less ($R_0 = 0.420$ versus $0.821$): reach and reproduction are not the
@@ -811,7 +829,7 @@ resistance floor ($0.00$, $0.125$)---so it rests on three models and two instanc
 
 \begin{table}[t]
 \small
-\caption{Topology at matched agent count (Llama 3.3 70B, $n=7$ agents, no
+\caption{Topology at matched agent count (Llama 3.3 70B, $n = 7$ agents, no
 defence, 40 natural runs, 30 controlled trials per edge). The three topologies have
 similar mean per-hop survival but differ substantially in outcome.}
 \label{tab:topo}
@@ -843,10 +861,10 @@ undefined.}
 \textit{model} & \textit{chain} & \textit{range} & \textit{mean} & \textit{$\rho$}
 & \textit{slope} \\
 \midrule
-qwen2.5:7b     & n=7  & $31$--$89\%$ & $66\%$ & $+1.00$ & $+11.8$ \\
-Llama 3.3 70B  & n=15 & $0$--$92\%$  & $66\%$ & $+0.77$ & $+6.8$  \\
-DeepSeek V3.2  & n=8  & $7$--$35\%$  & $21\%$ & $-0.07$ & $+0.1$  \\
-DeepSeek V3.2  & n=10 & $4$--$33\%$  & $15\%$ & $+0.65$ & $+2.3$  \\
+qwen2.5:7b     & $n = 7$  & $31$--$89\%$ & $66\%$ & $+1.00$ & $+11.8$ \\
+Llama 3.3 70B  & $n = 15$ & $0$--$92\%$  & $66\%$ & $+0.77$ & $+6.8$  \\
+DeepSeek V3.2  & $n = 8$  & $7$--$35\%$  & $21\%$ & $-0.07$ & $+0.1$  \\
+DeepSeek V3.2  & $n = 10$ & $4$--$33\%$  & $15\%$ & $+0.65$ & $+2.3$  \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -856,8 +874,8 @@ Table~\ref{tab:depth} gives the depth profile across models, and the slopes form
 step ($\rho = +1.00$, $+11.8$ points per hop). On Llama 3.3 70B it rises almost
 monotonically to $92\%$ ($\rho = +0.77$) before the chain dies at depth $11$, and a
 re-run at higher power reproduces this ($\rho = +0.76$). DeepSeek V3.2 sits at the
-shallow end: at $n=8$ its slope is indistinguishable from zero ($\rho = -0.07$), but
-at the better-powered $n=10$ it is weakly positive ($\rho = +0.65$, $+2.3$ points
+shallow end: at $n = 8$ its slope is indistinguishable from zero ($\rho = -0.07$), but
+at the better-powered $n = 10$ it is weakly positive ($\rho = +0.65$, $+2.3$ points
 per hop)---a reminder that a short low-power chain can read as flat.
 
 The ordering is not a contradiction but a consequence of what
@@ -873,32 +891,31 @@ The tree cell adds a second constraint: the error's \emph{sign} is not fixed. On
 the tree the isolated estimate is optimistic, predicting certain compromise
 ($\prod_i \scite{i} = 1.000$) where the measured rate is $0.800$, and the two edges
 on the target's path are exactly the ones whose isolated survival exceeds their
-in-chain survival. So the defensible statement is that \emph{the profile's slope
-diagnoses transportability while its direction remains model- and
-topology-dependent}, and the mechanism is the content-form effect of
-Section~\ref{sec:contentform}: every hop re-packages the payload.
-
-evaluated on in-chain rates, Eq.~\eqref{eq:percolation} reproduces the measured
-ASR exactly in all three topologies (supplementary Appendix~B)---so what breaks
-independence is the repeated re-packaging of the payload, not the network.
+in-chain survival. The defensible statement is therefore that \emph{the profile's
+slope diagnoses transportability while its direction remains model- and
+topology-dependent}. Independence itself is not what fails: evaluated on in-chain
+rates, Eq.~\eqref{eq:percolation} reproduces the measured ASR exactly in all three
+topologies (supplementary Appendix~B), so what the repeated re-packaging of
+Section~\ref{sec:contentform} breaks is the transport of the isolated estimate, not
+the network model.
 
 \subsection{Recurrence makes the threshold non-vacuous}
 \label{sec:cyclic}
 
-Section~\ref{sec:threshold} proved the threshold criterion vacuous for acyclic graphs
+Section~\ref{sec:threshold} shows the threshold criterion vacuous for acyclic graphs
 and informative only once the interaction graph contains a cycle. We test that second
 half on a manager-with-reporting-workers pattern: the spectral radius reduces to
 $\rho(M) = \sqrt{\sum_j a_j c_j}$, yielding \emph{opposite} predictions borne out by
 measurement---the Llama and DeepSeek loops are supercritical ($\sum_j a_jc_j = 1.800$
-and $1.018$) while qwen's decays ($0.578$; Appendix~D).
+and $1.018$) while qwen's decays ($0.578$; supplementary Appendix~D).
 
 \subsection{Utility under attack}
 \label{sec:utility}
 
 \begin{table}[t]
 \small
-\caption{Utility under attack (Section~\ref{sec:utility}), 20 paired clean/attack
-runs. Retention $= U_{\mathrm{attack}}/U_{\mathrm{clean}}$.}
+\caption{Utility under attack, 20 paired clean/attack runs. Retention
+$= U_{\mathrm{attack}}/U_{\mathrm{clean}}$; $\Delta U$ is the clean--attack gap.}
 \label{tab:utility}
 \begin{tabular}{llcccc}
 \toprule
@@ -928,7 +945,7 @@ Section~\ref{sec:defence} applies to defence baselines, applied to the cost side
 On synthetic data with known ground truth, Wilson intervals attain nominal coverage
 and our bootstrap test is unbiased ($|\mathrm{bias}| \le 0.10\sigma$, size
 $0.067$--$0.083$ at $\alpha = 0.05$ over 60 replications), with higher power than a
-CI-overlap rule ($0.750$ vs $0.625$). Detecting a $0.10$ deviation at power $0.8$
+CI-overlap rule ($0.750$ versus $0.625$). Detecting a $0.10$ deviation at power $0.8$
 needs $n \approx 200$; at $n = 40$ only deviations above $0.26$ are excluded, so we
 treat no $n = 40$ null as evidence and label the one $\mathrm{ASR} = \prod_i \hat s_i
 = 0$ cell as uninformative. At $n = 200$ the Llama failure is powered ($\mathrm{MDE}
@@ -956,7 +973,7 @@ product of in-chain per-hop rates always equals end-to-end ASR. The only step th
 fail---and that single-agent benchmarks implicitly rely upon---is transporting isolated
 per-hop estimates into that product. A single long chain measured under both protocols
 gives a cheap diagnostic, the \emph{slope} of the relative error: shallow (DeepSeek,
-$+2.3$ points per hop at $n{=}10$) means isolated measurement is safe to compose, steep
+$+2.3$ points per hop at $n = 10$) means isolated measurement is safe to compose, steep
 (qwen, $+11.8$; Llama, $+6.8$) means the in-chain regime must be measured directly. The
 corollary for attack design is that re-packaging is cheap for the defender to lose and
 cheap for the attacker to use.
@@ -1006,15 +1023,15 @@ depth-error slope is a diagnostic rather than a guarantee, since a short chain a
 power can read as flat.
 
 \emph{Protocol sensitivity, reported rather than hidden.} Our initial significant
-composition failure on DeepSeek was a fixed-artefact artefact that vanished when
-artefacts were drawn fresh per trial ($p = 0.0030 \to p = 0.930$;
+composition failure on DeepSeek was an artefact of the fixed-artefact policy and
+vanished when artefacts were drawn fresh per trial ($p = 0.0030 \to p = 0.930$;
 Section~\ref{sec:ablation}). The sensitivity flipped the sign of the deviation, so
 unstated protocol choices that alter the result are a class of threat that benchmark
 replication exercises routinely miss.
 
 \emph{Scale, topology, and defence coverage.} Headline chain results span four to
 fifteen agents; star and tree cells are replicated across three models with two Llama
-instances ($n{=}7$, $n{=}10$); the recurrent case covers three models with limited
+instances ($n = 7$ and $n = 10$); the recurrent case covers three models with limited
 power. Configurations we do not vary include networks of tens of agents; mesh, debate,
 or mixture-of-experts topologies; re-injection; and defence families beyond redaction
 and paraphrase---detection layers, hop isolation, and structured

@@ -1,14 +1,14 @@
 # Kiểm tra tuân thủ giới hạn trang — AAMAS 2027 Main Track
 
 > Kiểm ngày rebuild sạch cuối cùng. Mọi số bên dưới đo trực tiếp từ PDF/log, không suy đoán.
-> Lệnh dựng: `pdflatex → bibtex → pdflatex → pdflatex` trong `paper/`.
+> Lệnh dựng: `pdflatex → bibtex → pdflatex → pdflatex → pdflatex` trong `paper/`.
 
 ## Quy định (trích Call for Main Track)
 - Nội dung **tối đa 8 trang**; trang chứa **tài liệu tham khảo** thì **không giới hạn** (thêm trang).
 - **Không** dùng "typesetting tricks" để nhồi vừa 8 trang.
 - **Không** sửa file style hay bất kỳ tham số layout nào. **Bắt buộc dùng LaTeX.**
 
-## Kết quả đo (build sạch) — ✅ ĐẠT
+## Kết quả đo (build sạch 4 pass) — ✅ ĐẠT
 | Hạng mục | Giá trị | Nguồn |
 |---|---|---|
 | Tổng số trang PDF đầy đủ | **9 trang** | `pdfinfo contagion_aamas2027.pdf` → `Pages: 9` |
@@ -16,6 +16,8 @@
 | Overfull `\hbox` | **0** | `contagion_aamas2027.log` |
 | Undefined references / citations | **0** | `contagion_aamas2027.log` |
 | LaTeX errors | **0** | `contagion_aamas2027.log` |
+| CCS concepts | **có** (bắt buộc, xem dưới) | `pdfinfo` → `Subject:` đã điền |
+| Bookmark warnings (hyperref) | **0** | `contagion_aamas2027.log` |
 | Số mục tham khảo | **27** | `contagion_aamas2027.bbl` → 27 `\bibitem` |
 | Preprint trong danh mục | **0** | `refs.bib` không còn `@misc` |
 | Sửa style/layout | **Không** | xem mục "Layout" bên dưới |
@@ -29,17 +31,34 @@
 diễn giải "8 trang không tính references" được thoả mãn dù AC có tính hay không tính
 các mục *Ethical Considerations* / *Artifact Availability*.
 
-## ⚠️ Lưu ý về `check_pages.py` (đã xác minh là chỉ số SAI)
-`_bodyonly.pdf` **không còn là tiêu chí đáng tin**. Script cắt trước `\bibliography`, nên
-tài liệu kết thúc ở đó và LaTeX **cân bằng 2 cột cuối cùng** (balanced last page) → nhồi
-được nhiều văn bản hơn. Bản đầy đủ không có bước cân bằng đó (references đứng sau), nên
-`_bodyonly.pdf` có thể báo **8 trang** trong khi bài thật vẫn tràn sang trang 9.
+## ⚠️ Hai việc format đã sửa ở đợt này (và vì sao tốn dòng)
 
-Đã quan sát đúng hiện tượng này: `_bodyonly.pdf` = 8 trang nhưng `contagion_aamas2027.pdf`
-vẫn đẩy *Artifact Availability* xuống trang 9.
+### 1. CCS concepts — BẮT BUỘC, trước đây thiếu
+`aamas.cls` cảnh báo lúc cuối tài liệu:
+`Class aamas Warning: CCS concepts are mandatory for papers over two pages.`
+Đã thêm đúng cú pháp của class (`\ccsdesc[100]{General~Concept}`), 3 khái niệm:
+- Computing methodologies → Multiagent systems
+- Computing methodologies → Natural language processing
+- Security and privacy → Social engineering
 
-**⇒ Tiêu chí đúng: build đầy đủ (`pdflatex → bibtex → pdflatex ×2`) rồi kiểm tra trang
-đầu tiên có mục `References` nằm ở đâu.** Đây là cách đã dùng để chốt 8 trang.
+Khối này hiện trong title block (giữa Abstract và Keywords) và **tốn ~3 dòng**.
+Nó cũng lấp đầy `pdfinfo → Subject:` (trước đây rỗng).
+
+### 2. Bookmark PDF string — 3 warning đã xoá
+`hyperref` báo `Token not allowed in a PDF string: removing math shift / subscript`
+vì tiêu đề §3.8 chứa `$R_0$`. Đã bọc bằng
+`\texorpdfstring{$R_0$}{R0}`. Không còn warning nào.
+
+### Cách bù lại số dòng (không dùng tiểu xảo)
+Chỉ **cắt chữ trùng lặp**, không đổi bố cục:
+1. Gộp đoạn vỡ ở cuối §5.8 (một mảnh câu bị mất chủ ngữ) vào đoạn trước, bỏ lặp
+   "every hop re-packages the payload".
+2. Bỏ câu caveat ở cuối §5.6 đã trùng với §7 Limitations.
+3. Viết lại câu ở §3.1 (bản gốc dính câu, "…is therefore framed as benign-looking
+   infrastructure text, the difference between 0% and 60–100% compliance").
+
+⇒ Trang 8 vẫn **đầy** (deepest text `yMax = 699.5`, đáy khung chữ `710.5`), References
+vẫn bắt đầu ở đầu trang 9. Không có dòng nào bị đẩy sang trang 9.
 
 ## Layout — ĐẠT (không vi phạm "không sửa style / không tiểu xảo")
 Đã rà toàn bộ `.tex`; chỉ dùng lệnh **hợp lệ, chuẩn ACM**, không đụng lề/khổ chữ/giãn dòng:
@@ -50,27 +69,53 @@ vẫn đẩy *Artifact Availability* xuống trang 9.
 - **KHÔNG** có: `\textheight/\textwidth/\topmargin/\columnsep`, `\linespread`, `\baselineskip`,
   `\fontsize`, `\enlargethispage`, hay chỉnh `\parskip/\parindent`. ⇒ Không có tiểu xảo dàn trang.
 
-## Cách đã rút gọn để vừa 8 trang (cắt chữ thật, không tiểu xảo)
-Không đổi bố cục, chỉ nén văn bản và gộp chi tiết hỗ trợ:
-1. **Caption bảng/hình:** rút từ ~399 còn ~250 từ; chi tiết replicate/sampling chuyển sang
-   supplementary (App. B).
-2. **Gộp đoạn lặp:** kết quả chi tiết validator (φ, χ², Nova floor) gộp còn một đoạn;
-   số liệu percolation trên isolated rates chuyển sang App. B.
-3. **Cắt diễn giải trùng:** các đoạn "reading/interpretation" lặp lại kết luận đã nêu ở
-   Introduction và §6 Discussion.
-4. **Rút gọn Setup/Framework:** mô tả protocol, cảnh báo tương quan, calibration MR.
-5. **Giữ nguyên chiều sâu:** abstract (210 từ), §6 Discussion (323 từ), §7 Limitations
-   (286 từ), §8 Conclusion (293 từ) — các mục này **không** bị cắt xuống mức quá ngắn.
+## Chi tiết nguồn `.tex` đã làm sạch (đều ảnh hưởng phần hiển thị)
+| Vấn đề | Cách sửa |
+|---|---|
+| `\usepackage{balance}` trùng với class | Bỏ — `aamas.cls` tự `\RequirePackage{balance}` và gọi `\balance` |
+| `\pending` định nghĩa nhưng không dùng | Bỏ khỏi preamble |
+| Comment "CUT-CANDIDATE" không còn marker nào | Thay bằng mô tả trạng thái thật + trỏ `PAGE_LIMIT_CHECK.md` |
+| `\scite{}` / `\snat{}` in ra subscript rỗng (7 chỗ) | Thêm `\scites` / `\snats` cho dạng không chỉ số hop |
+| Caption bảng tự tham chiếu chính nó | `tab:utility`: bỏ `(Section 5.9)` |
+| `\small` lặp 2 lần trong `tab:ablation` | Bỏ bản thừa |
+| `n=7` … ở **text mode** (thiếu khoảng trắng toán) | Bọc `$n = 7$` trong `tab:depth`; đồng bộ mọi `$n = \cdot$` |
+| `\prod_i \hat s_i` ở §5.3 lệch ký hiệu §5.2 | Đổi thành `\prod_i \scite{i}` |
+| "We differ from **all four**" nhưng liệt kê 5 công trình | Đổi thành "all of these" |
+| Tense lệch: "Section 3.8 **proved**" (mục lý thuyết) | Đổi thành "shows" |
+| Caption thiếu sample size | Thêm `40 natural runs, 30 controlled trials` vào `tab:cross`, `tab:transport`, `tab:ablation` |
+| `\label{fig:obf}` dính chữ vào caption | Tách xuống dòng riêng |
+| File bị ghi kèm **UTF-8 BOM** khi chỉnh bằng PowerShell | Đã gỡ BOM (file giờ bắt đầu bằng `%%%`) |
+
+## Hai mâu thuẫn nội bộ đã sửa ( reviewer sẽ bắt ngay )
+1. **`$\dagger$` mang hai nghĩa.** §4 ghi "`$\dagger$` = cần Bedrock inference-profile",
+   còn caption `tab:cross` ghi "`$\dagger$` = dùng fresh-artefact protocol". Giữ nghĩa thứ hai
+   (vì §5.3–§5.4 dựa vào nó) và sửa §4 thành: "the Llama and Claude endpoints require
+   Bedrock inference-profile identifiers".
+2. **"the most capable model we test is the most susceptible"** — mâu thuẫn với chính
+   `tab:cross` (Claude ASR 0.000, Nova 0.075 ở hai cuối; Llama 70B 0.850 ở đầu). Đổi thành
+   claim đúng với bảng: hai model frontier thương mại nằm cuối bảng, model 70B mở nằm đầu.
+
+## ⚠️ Lưu ý về `check_pages.py` (đã xác minh là chỉ số SAI)
+`_bodyonly.pdf` **không còn là tiêu chí đáng tin**. Script cắt trước `\bibliography`, nên
+tài liệu kết thúc ở đó và LaTeX **cân bằng 2 cột cuối cùng** (balanced last page) → nhồi
+được nhiều văn bản hơn. Bản đầy đủ không có bước cân bằng đó (references đứng sau), nên
+`_bodyonly.pdf` có thể báo **8 trang** trong khi bài thật vẫn tràn sang trang 9.
+
+Đã quan sát đúng hiện tượng này: `_bodyonly.pdf` = 8 trang nhưng `contagion_aamas2027.pdf`
+vẫn đẩy *Artifact Availability* xuống trang 9.
+
+**⇒ Tiêu chí đúng: build đầy đủ (`pdflatex → bibtex → pdflatex ×3`) rồi kiểm tra trang
+đầu tiên có mục `References` nằm ở đâu.** Đây là cách đã dùng để chốt 8 trang.
 
 ## Việc khác đã tiện kiểm
 - **PDF từng bị lệch 1 pass:** bản cũ hiện `??` và `[? ]` khi trích văn bản. Sau khi dựng
-  sạch 3 pass: **0 undefined**. Luôn dựng đủ pass trước khi nộp.
+  sạch 4 pass: **0 undefined**. Luôn dựng đủ pass trước khi nộp.
 - **Double-blind:** không có tên/affiliation/email thật; `\email{anonymous@example.org}` là
-  placeholder chính thức của template; `acks` rỗng; PDF metadata không có trường Author;
-  `supplementary.tex` dùng `Anonymous Author(s)` và `\date{}`.
+  placeholder chính thức của template; `acks` rỗng; **PDF metadata ở cấp document không có
+  trường Author** (`pdfinfo` → chỉ có `Title`, `Subject` = CCS, `Creator`, `Producer`).
 - **Supplementary:** 3 trang, build sạch, 0 lỗi; đã sửa tiêu đề (khớp "Does (and Does Not)
-  Compose") và các tham chiếu "Section ~x of the main paper" bị cũ (3.8→3.7 cho phép
-  bootstrap; "Section 5"→5.10 cho homogeneity/φ; φ trong §4).
+  Compose") và các tham chiếu "Section ~x of the main paper" bị cũ.
+- **Tham chiếu Appendix trong bài chính:** đồng bộ thành "supplementary Appendix~A/B/C/D".
 
 ## Trạng thái cuối — ✅ tất cả đã xong
 1. **Metadata đã kiểm chứng:**
@@ -86,9 +131,9 @@ Không đổi bố cục, chỉ nén văn bản và gộp chi tiết hỗ trợ:
 2. **Kích thước gói nộp (≤ 25 MB):**
    - `supplementary.zip` = **0.16 MB** — `supplementary.pdf`, `supplementary.tex`,
      `supplementary_README.txt`.
-   - `paper-contagion.zip` = **1.90 MB** — PDF chính + PDF bổ sung + `submission/main/`
+   - `paper-contagion.zip` — PDF chính + PDF bổ sung + `submission/main/`
      (tex, bib, bbl, cls, bst, `by.pdf`, 2 hình) + `submission/supplementary/`.
-   - Cả hai đã **dựng lại từ file hiện hành** (bản cũ trong zip bị cũ và thiếu README).
+   - Cả hai **dựng lại từ file hiện hành** sau mỗi đợt sửa `.tex`.
 3. **Appendix trong file chính:** không còn (Appendices A–D nằm ở `supplementary.tex`) ⇒
    rủi ro "appendix sau references có được miễn không" **đã gỡ hoàn toàn**.
 
@@ -106,3 +151,8 @@ nhưng vẫn là rủi ro mất ẩn danh nên **đã gỡ**:
 - `supplementary.pdf`: `/Author` **rỗng**.
 - `supplementary.zip`: 3 file, README **0 dòng** chứa đường dẫn/email.
 - `contagion_aamas2027.tex` / `supplementary.tex`: **0 dòng** chứa chuỗi định danh.
+
+> Lưu ý khi đọc output của script: nó quét **Info dictionary đầu tiên** tìm thấy, thuộc
+> ảnh `by.pdf` nhúng vào (`/Title (by.eps)`, `/Creator Adobe Illustrator(R)`). Metadata
+> **cấp document** mà trình đọc PDF hiển thị là dict của trailer — đó mới là cái cần kiểm,
+> và nó sạch (xem mục Double-blind ở trên).
