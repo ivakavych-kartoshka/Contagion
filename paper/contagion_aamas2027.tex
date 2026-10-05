@@ -160,8 +160,9 @@ Epidemic threshold, LLM agents, Benchmarks}
 
 LLM agents are deployed as \emph{organisations}, not as singletons: a planner
 decomposes a task, workers execute subtasks, a reviewer checks output, an
-aggregator merges results. Frameworks such as MetaGPT~\cite{Hong2023MetaGPT} and
-AutoGen~\cite{Wu2024AutoGen} route free text between these agents, and tool
+aggregator merges results. Frameworks such as MetaGPT~\cite{Hong2023MetaGPT},
+AutoGen~\cite{Wu2024AutoGen} and AgentVerse~\cite{Chen2024AgentVerse} route free
+text between these agents, and tool
 responses or retrieved documents flow directly into prompts. Every hand-off is a
 \emph{trust boundary}: the receiving agent must consume text produced by another
 agent, and that text may have been shaped by content the upstream agent read from
@@ -258,7 +259,10 @@ ReAct~\cite{Yao2023ReAct} GPT-4 agent, with the \emph{content-freedom} of the
 injected field dominating vulnerability. AgentDojo~\cite{Debenedetti2024AgentDojo}
 provides a dynamic evaluation environment for one agent over one hop, and
 Agent Security Bench~\cite{Zhang2025ASB} broadens this to ten application
-scenarios with an average attack success rate above $84\%$.
+scenarios with an average attack success rate above $84\%$. Tool calls are prompted
+or learned~\cite{Schick2023Toolformer,Shinn2023Reflexion}; agent
+benchmarks~\cite{Liu2024AgentBench,Jimenez2024SWEBench,Andriushchenko2025AgentHarm}
+report the same scalar.
 Liu and Gong~\cite{LiuGong2024} formalise injection as
 $\tilde{x} = \mathcal{A}(x_{\mathrm{target}}, s_{\mathrm{inj}}, x_{\mathrm{inj}})$
 and introduce the ASV/MR metrics we reuse. All of these terminate at one hop: they
@@ -280,42 +284,45 @@ separately catalogues multi-agent failures and attributes $32.3\%$ of them to
 inter-agent misalignment, and concurrent work reports aggregate compromise rates
 through hierarchical chains~\cite{CII2026}.
 
-We differ from all of these in what is measured rather than in whether the phenomenon
-exists. ACIArena and Prompt Infection report \emph{outcome} rates per attack
+ACIArena and
+Prompt Infection report \emph{outcome} rates per attack
 surface or per application; we report the \emph{conditional} probability
-$\Pr[C_v{=}1 \mid C_u{=}1]$ for each edge, which makes failure localisable, and we
-additionally test whether an edge's isolated rate predicts its in-chain rate---a
-question an aggregate rate cannot pose. ACIArena also reports that narrowly scoped
-defences fail to transfer; we make the mechanism explicit as the \emph{floor effect}
-(Section~\ref{sec:defence}) and show that the fix is a matched no-defence baseline.
+$\Pr[C_v{=}1 \mid C_u{=}1]$ for each edge, which makes failure localisable, and
+test whether an isolated rate predicts its in-chain rate---a question an aggregate
+rate cannot pose. ACIArena also reports that narrowly scoped defences fail to
+transfer; we make the mechanism explicit as the \emph{floor effect}
+(Section~\ref{sec:defence}), fixed by a matched no-defence baseline.
 
 \paragraph{Defences.}
 Adaptive attacks against single-agent injection defences break eight defences at
 $>50\%$ ASR, including paraphrasing, using token-level
 optimisation~\cite{Zhan2025Adaptive}; our negative result on semantic paraphrasing
 inside a chain is consistent with that finding. Structured
-queries~\cite{StrUQ2025} instead constrain how untrusted content is presented to
-the model. Our attacker uses \emph{natural-language structural obfuscation}
-(splitting or spacing a literal target) that any user of a tool could produce,
-rather than white-box token optimisation.
+queries~\cite{StrUQ2025}, encoding~\cite{Hines2024CAMLIS}, and removing the
+agent's authority to act on untrusted text~\cite{Debenedetti2026CaMeL} instead
+constrain how such content reaches the model. Our attacker instead uses
+\emph{natural-language structural obfuscation} (splitting or spacing a literal
+target), not white-box token optimisation.
 
 \paragraph{Contagion and thresholds in networks.}
-Treating propagation as contagion over a graph is classical.
+Treating propagation as contagion over a graph is classical, beginning with the
+SIR formulation~\cite{KermackMcKendrick1927}.
 Threshold models make an individual's adoption a function of how many neighbours
 have already adopted~\cite{Granovetter1978,Watts2002}; epidemic models supply the
 complementary criterion that spread is subcritical when the spectral radius of the
 next-generation matrix falls below one, a threshold that can vanish on heavy-tailed
-topologies~\cite{PastorSatorras2001,Newman2002,KeelingEames2005}. Controlled
-experiments show that \emph{complex} contagions---those requiring several
-concurrent exposures---spread more slowly and reach fewer nodes than simple
-ones~\cite{Centola2010}, which is the network-level reason to expect per-edge
-survival, not per-agent susceptibility, to govern reach. The problem of choosing
-which nodes to seed to maximise reachability~\cite{Kempe2003} is NP-hard on general
-graphs but tractable in linear time on acyclic topologies by topological traversal,
-which is why Eq.~\eqref{eq:percolation} gives exact answers on our feed-forward
-networks. This is the lens recent theory work on multiplex Markov contagion in agent
-swarms adopts~\cite{SwarmMarkov2026}. Our results sharpen where the analogy
-fails for LLM agent networks: the spectral criterion is \emph{identically}
+topologies~\cite{PastorSatorras2001,Newman2002,KeelingEames2005}; small-world
+structure~\cite{WattsStrogatz1998} makes cascades tractable, and robustness to node
+failure follows from the error-tolerance literature~\cite{Albert2000ErrorTolerance}. Controlled
+experiments show that \emph{complex} contagions---requiring several concurrent
+exposures---spread more slowly and reach fewer nodes~\cite{Centola2010}: the
+network-level reason to expect per-edge survival, not per-agent susceptibility, to
+govern reach. Seeding nodes to maximise
+reachability is NP-hard in general~\cite{Kempe2003} but linear-time on acyclic
+graphs by topological traversal, which is why Eq.~\eqref{eq:percolation} is exact
+on our networks. This is the lens recent theory work on multiplex Markov contagion
+in agent swarms adopts~\cite{SwarmMarkov2026}. Our results sharpen where the
+analogy fails for LLM agent networks: the spectral criterion is \emph{identically}
 satisfied on any acyclic graph (Section~\ref{sec:threshold}); the empirical
 reproduction number can be below one while reachability stays high; and the per-hop
 rates such an analysis consumes do not transport from isolated measurement.
@@ -541,7 +548,8 @@ receives a fixed system prompt encoding that role's responsibilities: the planne
 (\texttt{agent\_1}) executes a delegated sub-task, the reviewer (\texttt{agent\_2})
 inspects and summarises incoming content, and the aggregator (\texttt{agent\_3})
 synthesises a final answer. These roles reflect the structural positions that appear
-in real orchestration frameworks~\cite{Hong2023MetaGPT,Wu2024AutoGen} without
+in real orchestration frameworks~\cite{Hong2023MetaGPT,Wu2024AutoGen,Du2024MultiagentDebate}
+without
 over-specifying the prompt engineering. All role prompts are held fixed across
 models and attacks; only the underlying model identifier changes, so cross-model
 differences in per-hop survival are attributable to the model, not to prompt

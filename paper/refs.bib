@@ -173,12 +173,10 @@
   pages        = {10471--10506},
   address      = {Bangkok, Thailand},
   publisher    = {Association for Computational Linguistics},
-  doi          = {10.18653/v1/2024.findings-acl.624},
-  eprint       = {2403.02691},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.CR}
+  doi          = {10.18653/v1/2024.findings-acl.624}
 }
 % Tác giả + số trang lấy từ BibTeX chính thức của ACL Anthology
+% Bỏ eprint vì đã có DOI proceedings làm định vị chính.
 % (2024.findings-acl.624), không suy đoán.
 
 @inproceedings{Debenedetti2024AgentDojo,
@@ -226,12 +224,14 @@
   title        = {Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on {LLM} Agents},
   author       = {Zhan, Qiusi and Fang, Richard and Panchal, Henil Shalin and Kang, Daniel},
   booktitle    = {Findings of the Association for Computational Linguistics: NAACL 2025},
+  pages        = {7116--7132},
   year         = {2025},
-  eprint       = {2503.00061},
-  archivePrefix= {arXiv},
-  primaryClass = {cs.CR}
+  doi          = {10.18653/v1/2025.findings-naacl.395}
 }
-% arXiv comment ghi "(NAACL 2025 Findings)". TODO: số trang proceedings.
+% Số trang, địa điểm, publisher, DOI lấy từ BibTeX chính thức của ACL Anthology
+% (2025.findings-naacl.395). LƯU Ý: Crossref ghi sai là 7101--7117; trang Anthology
+% xác nhận 7116--7132 ở cả BibTeX, MODS và EndNote nên lấy theo publisher.
+% Bỏ eprint vì đã có DOI proceedings làm định vị chính.
 
 @article{CII2026,
   title        = {Cascading Instruction Influence: Indirect Prompt Injection in Hierarchical Multi-Agent Systems},
@@ -423,3 +423,194 @@
 % Đã xác minh qua Wiley Online Library / JSTOR.
 % Phương pháp BH được Section 3.7 áp dụng để kiểm soát FDR qua
 % năm ô chain không suy biến (five non-degenerate cells, q = 0.05).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BỔ SUNG 2026-10-05 — lấp "khoảng trống" của Related Work (Section 2).
+% Nhóm A: nền tảng agent + benchmark. ReAct (Yao2023ReAct) và ASB
+% (Zhang2025ASB) đã có sẵn ở trên nên không lặp lại.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{Schick2023Toolformer,
+  title        = {Toolformer: Language Models Can Teach Themselves to Use Tools},
+  author       = {Schick, Timo and Dwivedi-Yu, Jane and Dessi, Roberto and
+                  Raileanu, Roberta and Lomeli, Maria and Hambro, Eric and
+                  Zettlemoyer, Luke and Cancedda, Nicola and Scialom, Thomas},
+  booktitle    = {Advances in Neural Information Processing Systems},
+  volume       = {36},
+  pages        = {68539--68551},
+  publisher    = {Curran Associates, Inc.},
+  year         = {2023},
+  doi          = {10.52202/075280-2997}
+}
+
+@inproceedings{Shinn2023Reflexion,
+  title        = {Reflexion: language agents with verbal reinforcement learning},
+  author       = {Shinn, Noah and Cassano, Federico and Gopinath, Ashwin and
+                  Narasimhan, Karthik and Yao, Shunyu},
+  booktitle    = {Advances in Neural Information Processing Systems},
+  volume       = {36},
+  pages        = {8634--8652},
+  publisher    = {Curran Associates, Inc.},
+  year         = {2023},
+  doi          = {10.52202/075280-0377}
+}
+% Tên lấy nguyên văn: NeurIPS ghi "language agents" (chữ thường), không hoa/thường.
+
+@inproceedings{Liu2024AgentBench,
+  title        = {{AgentBench}: Evaluating {LLM}s as Agents},
+  author       = {Liu, Xiao and Yu, Hao and Zhang, Hanchen and Xu, Yifan and
+                  Lei, Xuanyu and Lai, Hanyu and Gu, Yu and Ding, Hangliang and
+                  Men, Kaiwen and Yang, Kejuan and Zhang, Shudan and
+                  Deng, Xiang and Zeng, Aohan and Du, Zhengxiao and
+                  Zhang, Chenhui and Shen, Sheng and Zhang, Tianjun and Su, Yu and
+                  Sun, Huan and Huang, Minlie and Dong, Yuxiao and Tang, Jie},
+  booktitle    = {International Conference on Learning Representations},
+  volume       = {2024},
+  pages        = {52989--53046},
+  year         = {2024}
+}
+% 22 tác giả, đúng theo BibTeX chính thức ICLR 2024. Bản ICLR không có
+% publisher/doi nên không đưa vào.
+
+@inproceedings{Jimenez2024SWEBench,
+  title        = {{SWE-bench}: Can Language Models Resolve Real-world Github Issues?},
+  author       = {Jimenez, Carlos E. and Yang, John and Wettig, Alexander and
+                  Yao, Shunyu and Pei, Kexin and Press, Ofir and
+                  Narasimhan, Karthik},
+  booktitle    = {International Conference on Learning Representations},
+  volume       = {2024},
+  pages        = {54107--54157},
+  year         = {2024}
+}
+% Tên lấy nguyên văn BibTeX ICLR: "Real-world" (w thường) và "Github"
+% (h thường) — không sửa hoa/thường thành "Real-World"/"GitHub".
+
+@inproceedings{Du2024MultiagentDebate,
+  title        = {Improving Factuality and Reasoning in Language Models through Multiagent Debate},
+  author       = {Du, Yilun and Li, Shuang and Torralba, Antonio and
+                  Tenenbaum, Joshua B. and Mordatch, Igor},
+  booktitle    = {Proceedings of the 41st International Conference on Machine Learning},
+  series       = {Proceedings of Machine Learning Research},
+  volume       = {235},
+  pages        = {11733--11763},
+  year         = {2024}
+}
+% PMLR không cấp DOI cho bài này; 10.5555/3692070.3692537 không phải DOI
+% xuất bản, không dùng.
+
+@inproceedings{Chen2024AgentVerse,
+  title        = {{AgentVerse}: Facilitating Multi-Agent Collaboration and Exploring Emergent Behaviors},
+  author       = {Chen, Weize and Su, Yusheng and Zuo, Jingwei and Yang, Cheng and
+                  Yuan, Chenfei and Chan, Chi-Min and Yu, Heyang and Lu, Yaxi and
+                  Hung, Yi-Hsin and Qian, Chen and Qin, Yujia and Cong, Xin and
+                  Xie, Ruobing and Liu, Zhiyuan and Sun, Maosong and Zhou, Jie},
+  booktitle    = {International Conference on Learning Representations},
+  volume       = {2024},
+  pages        = {20094--20136},
+  year         = {2024}
+}
+
+@inproceedings{Andriushchenko2025AgentHarm,
+  title        = {{AgentHarm}: A Benchmark for Measuring Harmfulness of {LLM} Agents},
+  author       = {Andriushchenko, Maksym and Souly, Alexandra and Dziemian, Mateusz and
+                  Duenas, Derek and Lin, Maxwell and Wang, Justin and
+                  Hendrycks, Dan and Zou, Andy and Kolter, Zico and
+                  Fredrikson, Matt and Gal, Yarin and Davies, Xander},
+  booktitle    = {International Conference on Learning Representations},
+  volume       = {2025},
+  pages        = {79185--79220},
+  year         = {2025}
+}
+% ICLR 2025 (không phải 2024).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nhóm B: phòng thủ. CaMeL đã có VOR IEEE SaTML 2026; Spotlighting vẫn ghi dạng
+% arXiv vì chưa xác minh được venue.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{Debenedetti2026CaMeL,
+  title        = {Defeating Prompt Injections by Design},
+  author       = {Debenedetti, Edoardo and Shumailov, Ilia and Fan, Tianqi and
+                  Hayes, Jamie and Carlini, Nicholas and Fabian, Daniel and
+                  Kern, Christoph and Shi, Chongyang and Terzis, Andreas and
+                  Tram{\`e}r, Florian},
+  booktitle    = {2026 IEEE Conference on Secure and Trustworthy Machine Learning
+                  (SaTML)},
+  pages        = {587--618},
+  year         = {2026},
+  doi          = {10.1109/satml68715.2026.00040}
+}
+% VOR do IEEE ban tai thang 3/2026 tai Munich, trang 587--618, DOI 10.1109/satml68715.2026.00040
+% Tra ve doi trong Crossref (type proceedings-article) va IEEE Xplore 11691650.
+% Trang abs cua arXiv (2503.18813) van chua cap nhat venue, chi ghi "Updated version
+% with newer models and link to the code". Bo eprint/doi-arXiv vi da co DOI
+% proceedings lam dinh vi chinh, va de tiet kiem dong cho trang References.
+% Phan biet voi AgentDojo (cung tac gia dau): CaMeL co dung 10 tac gia, khong co
+% Sehwag; danh sach lay nguyen van tu Crossref va trang abs.
+
+@inproceedings{Hines2024CAMLIS,
+  title        = {Defending Against Indirect Prompt Injection Attacks With Spotlighting},
+  author       = {Hines, Keegan and Lopez, Gary and Hall, Matthew and
+                  Zarfati, Federico and Zunger, Yonatan and Kiciman, Emre},
+  booktitle    = {Conference on Applied Machine Learning in Information Security
+                  (CAMLIS 2024)},
+  series       = {CEUR Workshop Proceedings},
+  volume       = {3920},
+  pages        = {48--62},
+  year         = {2024}
+}
+% ĐÃ NÂNG TỪ PREPRINT → PROCEEDINGS: CAMLIS'24 workshop, Arlington VA, 24--25/10/2024.
+% Toàn soạn CEUR Vol-3920 (urn:nbn:de:0074:3920-X, ISSN 1613-0073, CC BY 4.0) liệt kê
+% bài này ở trang 48--62; PDF là paper03.pdf. DBLP ghi conf/camlis/HinesLHZZK24.
+% Bản workshop và arXiv 2403.14720 cùng tác giả, cùng tiêu đề, cùng nội dung.
+% CEUR không cấp DOI nên không có trường doi; định vị bằng series + volume + pages
+% (bài là paper03.pdf trong Vol-3920). Không đưa URL vào howpublished vì
+% ACM-Reference-Format sẽ in nó chen giữa title và "In <booktitle>".
+% Trang abs arXiv không có comment/journal-ref, không suy đoán được gì thêm.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nhóm C: nền mả lan truyền / ngưỡng dịch — bổ sung gốc SIR, cấu trúc
+% small-world và sức chịu lỗi của mạng phức tạp. KeelingEames2005,
+% Newman2002, PastorSatorras2001, Kempe2003, Granovetter1978, Watts2002
+% đã có sẵn ở trên nên không lặp lại.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{KermackMcKendrick1927,
+  title        = {A contribution to the mathematical theory of epidemics},
+  author       = {Kermack, William Ogilvy and McKendrick, A. G.},
+  journal      = {Proceedings of the Royal Society of London. Series A, Containing Papers of a Mathematical and Physical Character},
+  volume       = {115},
+  number       = {772},
+  pages        = {700--721},
+  year         = {1927},
+  doi          = {10.1098/rspa.1927.0118}
+}
+% Bản gốc của mô hình SIS/SIR trên mạng. Crossref: Proc. R. Soc. A 115(772),
+% tr. 700-721, xuất bản 01-08-1927, doi trả 7015 lần.
+% KHÁC Wilson1927 ở trên: đó là Edwin B. Wilson về xác suất thống kê, không
+% phải Kermack-McKendrick.
+
+@article{WattsStrogatz1998,
+  title        = {Collective dynamics of `small-world' networks},
+  author       = {Watts, Duncan J. and Strogatz, Steven H.},
+  journal      = {Nature},
+  volume       = {393},
+  number       = {6684},
+  pages        = {440--442},
+  year         = {1998},
+  doi          = {10.1038/30918}
+}
+
+@article{Albert2000ErrorTolerance,
+  title        = {Error and attack tolerance of complex networks},
+  author       = {Albert, R{\'e}ka and Jeong, Hawoong and Barab{\'a}s, Albert-L{\'a}szl{\'o}},
+  journal      = {Nature},
+  volume       = {406},
+  number       = {6794},
+  pages        = {378--382},
+  year         = {2000},
+  doi          = {10.1038/35019019}
+}
+% DOI đúng là 10.1038/35019019, tr. 378-382 (từ nhớ nhầm 35025117 / 895-896).
+% Nature cảnh báo ngày 25-01-2001. KHÔNG dùng trang của bản in lỗi
+% Physica A 2004 (doi 10.1016/j.physa.2004.04.031).

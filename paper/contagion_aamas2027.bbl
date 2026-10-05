@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{27}
+\begin{thebibliography}{39}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -49,6 +49,18 @@
 \href{https://doi.org/10.19139/soic-2310-5070-3574}{doi:\nolinkurl{10.19139/soic-2310-5070-3574}}
 
 
+\bibitem[Albert et~al\mbox{.}(2000)]%
+        {Albert2000ErrorTolerance}
+\bibfield{author}{\bibinfo{person}{R{\'e}ka Albert}, \bibinfo{person}{Hawoong
+  Jeong}, {and} \bibinfo{person}{Albert-L{\'a}szl{\'o} Barab{\'a}s}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Error and attack tolerance of complex networks}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{406},
+  \bibinfo{number}{6794} (\bibinfo{year}{2000}), \bibinfo{pages}{378--382}.
+\newblock
+\href{https://doi.org/10.1038/35019019}{doi:\nolinkurl{10.1038/35019019}}
+
+
 \bibitem[An et~al\mbox{.}(2026)]%
         {An2026ACIARena}
 \bibfield{author}{\bibinfo{person}{Hengyu An}, \bibinfo{person}{Minxi Li},
@@ -64,6 +76,22 @@
   \bibinfo{pages}{10049--10066}.
 \newblock
 \href{https://doi.org/10.18653/v1/2026.acl-long.457}{doi:\nolinkurl{10.18653/v1/2026.acl-long.457}}
+
+
+\bibitem[Andriushchenko et~al\mbox{.}(2025)]%
+        {Andriushchenko2025AgentHarm}
+\bibfield{author}{\bibinfo{person}{Maksym Andriushchenko},
+  \bibinfo{person}{Alexandra Souly}, \bibinfo{person}{Mateusz Dziemian},
+  \bibinfo{person}{Derek Duenas}, \bibinfo{person}{Maxwell Lin},
+  \bibinfo{person}{Justin Wang}, \bibinfo{person}{Dan Hendrycks},
+  \bibinfo{person}{Andy Zou}, \bibinfo{person}{Zico Kolter},
+  \bibinfo{person}{Matt Fredrikson}, \bibinfo{person}{Yarin Gal}, {and}
+  \bibinfo{person}{Xander Davies}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{AgentHarm}: A Benchmark for Measuring Harmfulness
+  of {LLM} Agents}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations}}, Vol.~\bibinfo{volume}{2025}.
+  \bibinfo{pages}{79185--79220}.
+\newblock
 
 
 \bibitem[Benjamini and Hochberg(1995)]%
@@ -130,6 +158,40 @@
 \newblock
 
 
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {Chen2024AgentVerse}
+\bibfield{author}{\bibinfo{person}{Weize Chen}, \bibinfo{person}{Yusheng Su},
+  \bibinfo{person}{Jingwei Zuo}, \bibinfo{person}{Cheng Yang},
+  \bibinfo{person}{Chenfei Yuan}, \bibinfo{person}{Chi-Min Chan},
+  \bibinfo{person}{Heyang Yu}, \bibinfo{person}{Yaxi Lu},
+  \bibinfo{person}{Yi-Hsin Hung}, \bibinfo{person}{Chen Qian},
+  \bibinfo{person}{Yujia Qin}, \bibinfo{person}{Xin Cong},
+  \bibinfo{person}{Ruobing Xie}, \bibinfo{person}{Zhiyuan Liu},
+  \bibinfo{person}{Maosong Sun}, {and} \bibinfo{person}{Jie Zhou}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AgentVerse}: Facilitating Multi-Agent
+  Collaboration and Exploring Emergent Behaviors}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations}}, Vol.~\bibinfo{volume}{2024}.
+  \bibinfo{pages}{20094--20136}.
+\newblock
+
+
+\bibitem[Debenedetti et~al\mbox{.}(2026)]%
+        {Debenedetti2026CaMeL}
+\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti}, \bibinfo{person}{Ilia
+  Shumailov}, \bibinfo{person}{Tianqi Fan}, \bibinfo{person}{Jamie Hayes},
+  \bibinfo{person}{Nicholas Carlini}, \bibinfo{person}{Daniel Fabian},
+  \bibinfo{person}{Christoph Kern}, \bibinfo{person}{Chongyang Shi},
+  \bibinfo{person}{Andreas Terzis}, {and} \bibinfo{person}{Florian
+  Tram{\`e}r}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Defeating Prompt Injections by Design}. In
+  \bibinfo{booktitle}{\emph{2026 IEEE Conference on Secure and Trustworthy
+  Machine Learning (SaTML)}}. \bibinfo{pages}{587--618}.
+\newblock
+\href{https://doi.org/10.1109/satml68715.2026.00040}{doi:\nolinkurl{10.1109/satml68715.2026.00040}}
+
+
 \bibitem[Debenedetti et~al\mbox{.}(2024)]%
         {Debenedetti2024AgentDojo}
 \bibfield{author}{\bibinfo{person}{Edoardo Debenedetti}, \bibinfo{person}{Jie
@@ -141,6 +203,19 @@
   \bibinfo{booktitle}{\emph{Advances in Neural Information Processing
   Systems}}, Vol.~\bibinfo{volume}{37}. \bibinfo{publisher}{Curran Associates,
   Inc.}
+\newblock
+
+
+\bibitem[Du et~al\mbox{.}(2024)]%
+        {Du2024MultiagentDebate}
+\bibfield{author}{\bibinfo{person}{Yilun Du}, \bibinfo{person}{Shuang Li},
+  \bibinfo{person}{Antonio Torralba}, \bibinfo{person}{Joshua~B. Tenenbaum},
+  {and} \bibinfo{person}{Igor Mordatch}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Improving Factuality and Reasoning in Language
+  Models through Multiagent Debate}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 41st International Conference on Machine Learning}}
+  \emph{(\bibinfo{series}{Proceedings of Machine Learning Research},
+  Vol.~\bibinfo{volume}{235})}. \bibinfo{pages}{11733--11763}.
 \newblock
 
 
@@ -182,6 +257,20 @@
 \href{https://doi.org/10.1145/3605764.3623985}{doi:\nolinkurl{10.1145/3605764.3623985}}
 
 
+\bibitem[Hines et~al\mbox{.}(2024)]%
+        {Hines2024CAMLIS}
+\bibfield{author}{\bibinfo{person}{Keegan Hines}, \bibinfo{person}{Gary Lopez},
+  \bibinfo{person}{Matthew Hall}, \bibinfo{person}{Federico Zarfati},
+  \bibinfo{person}{Yonatan Zunger}, {and} \bibinfo{person}{Emre Kiciman}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Defending Against Indirect Prompt Injection Attacks
+  With Spotlighting}. In \bibinfo{booktitle}{\emph{Conference on Applied
+  Machine Learning in Information Security (CAMLIS 2024)}}
+  \emph{(\bibinfo{series}{CEUR Workshop Proceedings},
+  Vol.~\bibinfo{volume}{3920})}. \bibinfo{pages}{48--62}.
+\newblock
+
+
 \bibitem[Hong et~al\mbox{.}(2024)]%
         {Hong2023MetaGPT}
 \bibfield{author}{\bibinfo{person}{Sirui Hong}, \bibinfo{person}{Mingchen
@@ -200,6 +289,19 @@
 \url{https://openreview.net/forum?id=bhMk4f2pUj}
 \showURL{%
 \tempurl}
+
+
+\bibitem[Jimenez et~al\mbox{.}(2024)]%
+        {Jimenez2024SWEBench}
+\bibfield{author}{\bibinfo{person}{Carlos~E. Jimenez}, \bibinfo{person}{John
+  Yang}, \bibinfo{person}{Alexander Wettig}, \bibinfo{person}{Shunyu Yao},
+  \bibinfo{person}{Kexin Pei}, \bibinfo{person}{Ofir Press}, {and}
+  \bibinfo{person}{Karthik Narasimhan}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{SWE-bench}: Can Language Models Resolve Real-world
+  Github Issues?}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations}}, Vol.~\bibinfo{volume}{2024}.
+  \bibinfo{pages}{54107--54157}.
+\newblock
 
 
 \bibitem[Keeling and Eames(2005)]%
@@ -225,6 +327,20 @@
   \bibinfo{publisher}{ACM}, \bibinfo{pages}{137--146}.
 \newblock
 \href{https://doi.org/10.1145/956750.956769}{doi:\nolinkurl{10.1145/956750.956769}}
+
+
+\bibitem[Kermack and McKendrick(1927)]%
+        {KermackMcKendrick1927}
+\bibfield{author}{\bibinfo{person}{William~Ogilvy Kermack} {and}
+  \bibinfo{person}{A.~G. McKendrick}.} \bibinfo{year}{1927}\natexlab{}.
+\newblock \showarticletitle{A contribution to the mathematical theory of
+  epidemics}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the Royal Society of London.
+  Series A, Containing Papers of a Mathematical and Physical Character}}
+  \bibinfo{volume}{115}, \bibinfo{number}{772} (\bibinfo{year}{1927}),
+  \bibinfo{pages}{700--721}.
+\newblock
+\href{https://doi.org/10.1098/rspa.1927.0118}{doi:\nolinkurl{10.1098/rspa.1927.0118}}
 
 
 \bibitem[Le et~al\mbox{.}(2026)]%
@@ -253,11 +369,32 @@
 \href{https://doi.org/10.1007/978-3-032-16092-8_28}{doi:\nolinkurl{10.1007/978-3-032-16092-8_28}}
 
 
-\bibitem[Liu et~al\mbox{.}(2024)]%
+\bibitem[Liu et~al\mbox{.}(2024b)]%
+        {Liu2024AgentBench}
+\bibfield{author}{\bibinfo{person}{Xiao Liu}, \bibinfo{person}{Hao Yu},
+  \bibinfo{person}{Hanchen Zhang}, \bibinfo{person}{Yifan Xu},
+  \bibinfo{person}{Xuanyu Lei}, \bibinfo{person}{Hanyu Lai},
+  \bibinfo{person}{Yu Gu}, \bibinfo{person}{Hangliang Ding},
+  \bibinfo{person}{Kaiwen Men}, \bibinfo{person}{Kejuan Yang},
+  \bibinfo{person}{Shudan Zhang}, \bibinfo{person}{Xiang Deng},
+  \bibinfo{person}{Aohan Zeng}, \bibinfo{person}{Zhengxiao Du},
+  \bibinfo{person}{Chenhui Zhang}, \bibinfo{person}{Sheng Shen},
+  \bibinfo{person}{Tianjun Zhang}, \bibinfo{person}{Yu Su},
+  \bibinfo{person}{Huan Sun}, \bibinfo{person}{Minlie Huang},
+  \bibinfo{person}{Yuxiao Dong}, {and} \bibinfo{person}{Jie Tang}.}
+  \bibinfo{year}{2024}\natexlab{b}.
+\newblock \showarticletitle{{AgentBench}: Evaluating {LLM}s as Agents}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations}}, Vol.~\bibinfo{volume}{2024}.
+  \bibinfo{pages}{52989--53046}.
+\newblock
+
+
+\bibitem[Liu et~al\mbox{.}(2024a)]%
         {LiuGong2024}
 \bibfield{author}{\bibinfo{person}{Yupei Liu}, \bibinfo{person}{Yuqi Jia},
   \bibinfo{person}{Runpeng Geng}, \bibinfo{person}{Jinyuan Jia}, {and}
-  \bibinfo{person}{Neil~Zhenqiang Gong}.} \bibinfo{year}{2024}\natexlab{}.
+  \bibinfo{person}{Neil~Zhenqiang Gong}.} \bibinfo{year}{2024}\natexlab{a}.
 \newblock \showarticletitle{Formalizing and Benchmarking Prompt Injection
   Attacks and Defenses}. In \bibinfo{booktitle}{\emph{33rd USENIX Security
   Symposium (USENIX Security 24)}}. \bibinfo{publisher}{USENIX Association},
@@ -302,6 +439,35 @@
 \newblock
 
 
+\bibitem[Schick et~al\mbox{.}(2023)]%
+        {Schick2023Toolformer}
+\bibfield{author}{\bibinfo{person}{Timo Schick}, \bibinfo{person}{Jane
+  Dwivedi-Yu}, \bibinfo{person}{Roberto Dessi}, \bibinfo{person}{Roberta
+  Raileanu}, \bibinfo{person}{Maria Lomeli}, \bibinfo{person}{Eric Hambro},
+  \bibinfo{person}{Luke Zettlemoyer}, \bibinfo{person}{Nicola Cancedda}, {and}
+  \bibinfo{person}{Thomas Scialom}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Toolformer: Language Models Can Teach Themselves to
+  Use Tools}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
+  Processing Systems}}, Vol.~\bibinfo{volume}{36}. \bibinfo{publisher}{Curran
+  Associates, Inc.}, \bibinfo{pages}{68539--68551}.
+\newblock
+\href{https://doi.org/10.52202/075280-2997}{doi:\nolinkurl{10.52202/075280-2997}}
+
+
+\bibitem[Shinn et~al\mbox{.}(2023)]%
+        {Shinn2023Reflexion}
+\bibfield{author}{\bibinfo{person}{Noah Shinn}, \bibinfo{person}{Federico
+  Cassano}, \bibinfo{person}{Ashwin Gopinath}, \bibinfo{person}{Karthik
+  Narasimhan}, {and} \bibinfo{person}{Shunyu Yao}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Reflexion: language agents with verbal
+  reinforcement learning}. In \bibinfo{booktitle}{\emph{Advances in Neural
+  Information Processing Systems}}, Vol.~\bibinfo{volume}{36}.
+  \bibinfo{publisher}{Curran Associates, Inc.}, \bibinfo{pages}{8634--8652}.
+\newblock
+\href{https://doi.org/10.52202/075280-0377}{doi:\nolinkurl{10.52202/075280-0377}}
+
+
 \bibitem[Watts(2002)]%
         {Watts2002}
 \bibfield{author}{\bibinfo{person}{Duncan~J. Watts}.}
@@ -313,6 +479,17 @@
   \bibinfo{pages}{5766--5771}.
 \newblock
 \href{https://doi.org/10.1073/pnas.082090499}{doi:\nolinkurl{10.1073/pnas.082090499}}
+
+
+\bibitem[Watts and Strogatz(1998)]%
+        {WattsStrogatz1998}
+\bibfield{author}{\bibinfo{person}{Duncan~J. Watts} {and}
+  \bibinfo{person}{Steven~H. Strogatz}.} \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Collective dynamics of `small-world' networks}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{393},
+  \bibinfo{number}{6684} (\bibinfo{year}{1998}), \bibinfo{pages}{440--442}.
+\newblock
+\href{https://doi.org/10.1038/30918}{doi:\nolinkurl{10.1038/30918}}
 
 
 \bibitem[Wilson(1927)]%
@@ -368,9 +545,9 @@
 \newblock \showarticletitle{Adaptive Attacks Break Defenses Against Indirect
   Prompt Injection Attacks on {LLM} Agents}. In
   \bibinfo{booktitle}{\emph{Findings of the Association for Computational
-  Linguistics: NAACL 2025}}.
+  Linguistics: NAACL 2025}}. \bibinfo{pages}{7116--7132}.
 \newblock
-\showeprint[arxiv]{2503.00061}~[cs.CR]
+\href{https://doi.org/10.18653/v1/2025.findings-naacl.395}{doi:\nolinkurl{10.18653/v1/2025.findings-naacl.395}}
 
 
 \bibitem[Zhan et~al\mbox{.}(2024)]%
@@ -385,7 +562,6 @@
   Linguistics}, \bibinfo{address}{Bangkok, Thailand},
   \bibinfo{pages}{10471--10506}.
 \newblock
-\showeprint[arxiv]{2403.02691}~[cs.CR]
 \href{https://doi.org/10.18653/v1/2024.findings-acl.624}{doi:\nolinkurl{10.18653/v1/2024.findings-acl.624}}
 
 

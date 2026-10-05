@@ -1,14 +1,18 @@
 # Kiểm tra tuân thủ giới hạn trang — AAMAS 2027 Main Track
 
 > Kiểm ngày rebuild sạch cuối cùng. Mọi số bên dưới đo trực tiếp từ PDF/log, không suy đoán.
-> Lệnh dựng: `pdflatex → bibtex → pdflatex → pdflatex → pdflatex` trong `paper/`.
+> Lệnh dựng: `latexmk -g -pdf -interaction=nonstopmode contagion_aamas2027.tex` trong `paper/`.
+>
+> **Nguồn chân lý duy nhất: `paper/contagion_aamas2027.tex` + `paper/refs.bib`.**
+> Thư mục `paper/submission/` đã bị xóa (2026-10-05) vì là bản cũ lệch với bản nộp:
+> nó thiếu `\ccsdesc` và thiếu mục "Protocol sensitivity". Đừng tạo lại.
 
 ## Quy định (trích Call for Main Track)
 - Nội dung **tối đa 8 trang**; trang chứa **tài liệu tham khảo** thì **không giới hạn** (thêm trang).
 - **Không** dùng "typesetting tricks" để nhồi vừa 8 trang.
 - **Không** sửa file style hay bất kỳ tham số layout nào. **Bắt buộc dùng LaTeX.**
 
-## Kết quả đo (build sạch 4 pass) — ✅ ĐẠT
+## Kết quả đo (build sạch) — ✅ ĐẠT
 | Hạng mục | Giá trị | Nguồn |
 |---|---|---|
 | Tổng số trang PDF đầy đủ | **9 trang** | `pdfinfo contagion_aamas2027.pdf` → `Pages: 9` |
@@ -16,22 +20,48 @@
 | Overfull `\hbox` | **0** | `contagion_aamas2027.log` |
 | Undefined references / citations | **0** | `contagion_aamas2027.log` |
 | LaTeX errors | **0** | `contagion_aamas2027.log` |
-| CCS concepts | **có** (bắt buộc, xem dưới) | `pdfinfo` → `Subject:` đã điền |
+| CCS concepts | **có** (bắt buộc) | 0 warning; `pdfinfo → Subject:` đã điền |
 | Bookmark warnings (hyperref) | **0** | `contagion_aamas2027.log` |
-| Số mục tham khảo | **27** | `contagion_aamas2027.bbl` → 27 `\bibitem` |
-| Preprint trong danh mục | **0** | `refs.bib` không còn `@misc` |
+| **Số mục tham khảo** | **39** | `contagion_aamas2027.bbl` → 39 `\bibitem` |
+| Preprint (`@misc`) trong danh mục | **0** | Cả 39 entry đều là bản proceedings đã xác minh |
 | Sửa style/layout | **Không** | xem mục "Layout" bên dưới |
 
 ## Bố cục thực tế theo trang (PDF đầy đủ, 9 trang)
-- **Trang 1–8:** toàn bộ phần thân §1–§8, 8 bảng, 2 hình, kết thúc bằng
-  **Ethical Considerations** và **Artifact Availability**.
-- **Trang 9:** **References** (27 mục) — bắt đầu từ **đầu trang 9**, tràn hết trang 9.
+- **Trang 1–8:** toàn bộ phần thân §1–§8, 7 bảng, 2 hình, kết thúc bằng
+  **Conclusion**, **Ethical Considerations** và **Artifact Availability**.
+- **Trang 9:** **References** (39 mục), bắt đầu từ **đầu trang 9**.
 
-⇒ Không còn văn bản nội dung nào nằm sau trang 8. Đây là trạng thái an toàn nhất:
-diễn giải "8 trang không tính references" được thoả mãn dù AC có tính hay không tính
+⇒ Không có văn bản nội dung nào nằm sau trang 8. Đây là trạng thái an toàn nhất:
+diễn giải "8 trang không tính references" được thoả mãy dù AC có tính hay không tính
 các mục *Ethical Considerations* / *Artifact Availability*.
 
-## ⚠️ Hai việc format đã sửa ở đợt này (và vì sao tốn dòng)
+## ⚠️ Bài học từ đợt 2026-10-05 (đừng lặp lại)
+
+### 1. Hai bản paper đã tồn tại song song — đã xóa bản cũ
+`paper/contagion_aamas2027.tex` (bản nộp, **có** `\ccsdesc`) và
+`paper/submission/main/contagion_aamas2027.tex` (bản cũ) đã lệch nhau:
+bản cũ **thiếu** 3 khái niệm CCS và **thiếu** mục "Protocol sensitivity".
+Cả hai đều biên dịch được và đều đạt 9 trang, nên chỉ nhìn PDF sẽ không thấy —
+phải kiểm `\ccsdesc` và `pdfinfo → Subject:`.
+
+⇒ Dấu hiệu nhận biết: `aamas.cls:1924` phát
+`Class aamas Warning: CCS concepts are mandatory for papers over two pages.`
+Khi thấy dòng này là thiếu CCS, **không phải** bản nộp được.
+
+### 2. Hai bản `refs.bib` dùng tên key khác nhau
+Bản cũ dùng `Hong2024MetaGPT` / `Kempe2003InfluenceMaximization`; bản nộp dùng
+`Hong2023MetaGPT` / `Kempe2003`. Khi chuyển entry phải theo tên key của
+`paper/refs.bib`, không copy thẳng từ bản cũ.
+
+### 3. Trang 8 vốn đã **đầy** — thêm citation phải bù bằng cách nén chữ
+`paper/contagion_aamas2027.tex` trước đợt này đã dùng 113/113 dòng ở trang 8.
+Thêm 12 ref tốn ~7 dòng, phải nén §2 (bỏ câu dẫn lặp, rút những vế không mang
+thông tin mới) để lấy lại đúng số dòng đó. Cách dùng: **gắn citation vào câu
+có sẵn** thay vì viết câu mới — ví dụ thêm `Chen2024AgentVerse` vào câu kể
+MetaGPT/AutoGen, thêm `Hines2024CAMLIS`+`Debenedetti2026CaMeL` vào câu về
+structured queries. Như vậy phần lớn ref mới gần như **không tốn dòng nào**.
+
+## ⚠️ Hai việc format đã sửa ở đợt trước (và vì sao tốn dòng)
 
 ### 1. CCS concepts — BẮT BUỘC, trước đây thiếu
 `aamas.cls` cảnh báo lúc cuối tài liệu:
@@ -129,11 +159,11 @@ vẫn đẩy *Artifact Availability* xuống trang 9.
      `refs.bib`** vì URL đó in ra trong danh mục. Ba URL OpenReview còn lại
      (MetaGPT/ICLR'24, ReAct/ICLR'24, ASB/ICLR'25) là hợp lệ.
 2. **Kích thước gói nộp (≤ 25 MB):**
-   - `supplementary.zip` = **0.16 MB** — `supplementary.pdf`, `supplementary.tex`,
-     `supplementary_README.txt`.
-   - `paper-contagion.zip` — PDF chính + PDF bổ sung + `submission/main/`
-     (tex, bib, bbl, cls, bst, `by.pdf`, 2 hình) + `submission/supplementary/`.
-   - Cả hai **dựng lại từ file hiện hành** sau mỗi đợt sửa `.tex`.
+   - `supplementary.zip` = **0,16 MB** — `supplementary.pdf` (3 trang, build lại
+     2026-10-05), `supplementary.tex`, `supplementary_README.txt`.
+   - `paper-contagion.zip` **đã xóa** (2026-10-05): nó là bundle thừa, chứa bản
+     `.tex`/`.pdf` cũ ở `paper/submission/`. Không nộp file này.
+   - Không còn thư mục `paper/submission/`.
 3. **Appendix trong file chính:** không còn (Appendices A–D nằm ở `supplementary.tex`) ⇒
    rủi ro "appendix sau references có được miễn không" **đã gỡ hoàn toàn**.
 
