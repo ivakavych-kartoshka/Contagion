@@ -124,9 +124,12 @@ own initially significant findings that proved to be a protocol artefact.
 
 %%% Use this command to specify a few keywords describing your work.
 %%% Keywords should be separated by commas.
+%%% NOTE: \keywords is \def (aamas.cls:1781), i.e. it OVERWRITES \@@keywords --
+%%% two \keywords blocks in a row do NOT concatenate, the later one silently
+%%% wins. Keep exactly one.
 
-\keywords{multiagent systems, prompt injection, security measurement, epidemic
-threshold, LLM agents, benchmark}
+\keywords{multiagent systems, LLM agents, prompt injection, security measurement,
+multi-hop propagation, epidemic threshold, benchmark}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -165,8 +168,8 @@ threshold, LLM agents, benchmark}
 
 LLM agents are deployed as \emph{organisations}, not as singletons: a planner
 decomposes a task, workers execute subtasks, a reviewer checks output, an
-aggregator merges results. Frameworks such as MetaGPT~\cite{Hong2023MetaGPT} and
-AutoGen~\cite{Wu2023AutoGen} route free text between these agents, and tool
+aggregator merges results. Frameworks such as MetaGPT~\cite{Hong2024MetaGPT} and
+AutoGen~\cite{Wu2024AutoGen} route free text between these agents, and tool
 responses or retrieved documents flow directly into prompts. Every hand-off is a
 \emph{trust boundary}: the receiving agent must consume text produced by another
 agent, and that text may have been shaped by content the upstream agent read from
@@ -254,7 +257,11 @@ result.
 \section{Related Work and Positioning}
 
 \paragraph{Single-agent indirect injection.}
-The foundational measurement work evaluates \emph{one} agent with tool access.
+Tool calls are prompted or learned~\cite{Yao2023ReAct,Schick2023Toolformer,Shinn2023Reflexion}
+and multi-agent frameworks multiply those hand-offs~\cite{Chen2024AgentVerse,Du2024MultiagentDebate};
+reliability is reported as task-level scalars~\cite{Liu2024AgentBench,Jimenez2024SWEBench,Andriushchenko2025AgentHarm,Zhang2025ASB}.
+The foundational injection work evaluates \emph{one} agent with tool access.
+Liu and co-authors~\cite{Liu2023PromptInjection} formalise the attack;
 InjecAgent~\cite{Zhan2024InjecAgent} builds 1{,}054 test cases across 30 LLMs and
 reports an attack success rate of 24\% for a ReAct GPT-4 agent, with the
 \emph{content-freedom} of the injected field dominating vulnerability.
@@ -273,36 +280,37 @@ Greshake et al.~\cite{Greshake2023} demonstrate a self-replicating injection
 topology-dependent spread. MAST~\cite{Cemri2025MAST} studies multi-agent failure
 modes and attributes $32.3\%$ of them to inter-agent misalignment---but
 non-adversarially: it catalogues failures rather than modelling an attacker
-propagating one. Concurrent work on cascading instruction influence reports
-aggregate compromise rates through hierarchical agent chains~\cite{CII2026}; it
-shows the phenomenon is real and deployment-relevant, but an aggregate rate does
-not decompose into per-hop conditional survival, does not say which hand-off
-fails, and does not test whether per-hop rates compose.
+propagating one. Concurrent work reports aggregate compromise rates through hierarchical agent
+chains~\cite{CII2026}: an aggregate rate does not decompose into per-hop
+conditional survival, nor test whether per-hop rates compose.
 
 \paragraph{Defences.}
-Adaptive attacks against single-agent injection defences break eight defences at
-$>50\%$ ASR, including paraphrasing, using token-level
-optimisation~\cite{Zhan2025Adaptive}; our negative result on semantic paraphrasing
-inside a chain is consistent with that finding. We differ in threat model: our
-attacker uses \emph{natural-language structural obfuscation} (splitting or spacing
-a literal target) that any user of a tool could produce, rather than white-box
-token optimisation.
+Adaptive attacks break eight single-agent injection defences at
+$>50\%$ ASR~\cite{Zhan2025Adaptive}; our negative result on semantic paraphrasing
+inside a chain is consistent with that. Design-level defences instead
+remove the agent's authority to act on untrusted text~\cite{Debenedetti2025CaMeL};
+Spotlighting encodes untrusted data before the model reads
+it~\cite{Hines2024Spotlighting}. We differ in threat model: our attacker uses
+\emph{natural-language structural obfuscation} (splitting or spacing a literal
+target), not white-box token optimisation.
 
 \paragraph{Contagion and thresholds in networks.}
-Treating propagation as contagion over a graph is classical. Threshold models make an
+It originates with the SIR formulation~\cite{KermackMcKendrick1927} and its network generalisations~\cite{KeelingEames2005,Newman2002}.
+Threshold models make an
 individual's adoption a function of how many neighbours have already
 adopted~\cite{Granovetter1978,Watts2002}; epidemic models supply the complementary
 criterion that spread is subcritical when the spectral radius of the next-generation
 matrix falls below one, a threshold that can vanish on heavy-tailed
-topologies~\cite{PastorSatorras2001}. This is the lens the recent theory work on
+topologies~\cite{PastorSatorras2001}; small-world structure, percolation and
+influence maximisation~\cite{WattsStrogatz1998,Albert2000ErrorTolerance,Kempe2003InfluenceMaximization}
+complete the picture. This is the lens the recent theory work on
 multiplex Markov contagion in agent swarms adopts~\cite{SwarmMarkov2026}. Our results
 sharpen where the analogy fails for LLM agent networks: the spectral criterion is
 \emph{identically} satisfied on any acyclic graph (Section~\ref{sec:threshold}), so it
 cannot discriminate; the empirical reproduction number can be below one while
 reachability stays high; and the per-hop rates such an analysis consumes do not
-transport from isolated measurement---the classical pipeline of estimating edge
-parameters and composing them is what our depth result shows to be unreliable. We keep
-the network-contagion framing but report which instruments transfer.
+transport from isolated measurement---composing estimated edge parameters is what
+our depth result shows to be unreliable.
 
 \paragraph{Gap.} No prior work, to our knowledge, provides all of: conditional
 per-hop survival under a controlled protocol; end-to-end ASR under an independent
