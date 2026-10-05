@@ -1,0 +1,212 @@
+% =====================================================================
+%  SUPPLEMENTARY MATERIAL
+%  "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks
+%   Does (and Does Not) Compose"
+%
+%  Chứa Appendices A-D được tham chiếu từ bài chính.
+%  Biên dịch:  pdflatex supplementary.tex   (chạy 2 lần)
+%
+%  LƯU Ý: file này KHÔNG dùng \ref tới file chính (không phụ thuộc .aux của bài
+%  chính). Mọi tham chiếu tới bài chính đều ghi thẳng số mục, ví dụ
+%  "Section 3.8 of the main paper".
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\title{\vspace{-1.5cm}\textbf{Supplementary Material}\\[0.4em]
+\large Contagion: When Per-Hop Prompt-Injection Survival in\\ LLM Agent Networks Does (and Does Not) Compose}
+\author{Anonymous Author(s)}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-1.2cm}
+
+
+
+\appendix
+
+% =====================================================================
+\section{Multiplicity Control for the Composition Test}
+\label{app:bh}
+
+Table~\ref{tab:bh} applies a Benjamini--Hochberg correction to the composition
+tests of Section~3.7 of the main paper, using the \emph{default fresh-artefact
+protocol} for every cell at the common $n = 40$ grid. Only the Llama cell rejects
+$H_0$; it survives the correction at $q = 0.05$, while the four remaining
+non-degenerate cells---including DeepSeek, whose fixed-artefact deviation is a
+protocol artefact that disappears under the fresh protocol (Section~5.3 of the main
+paper)---stay non-significant. The Claude cell is degenerate
+($\mathrm{ASR} = \prod_i \hat s_i = 0$, $\mathrm{sd}(\Delta) = 0$) and is excluded
+from the correction. At the higher $n = 200$ resolution the Nova cell also crosses
+into rejection (Section~5.10 of the main paper); we keep the correction at the
+common $n = 40$ grid so the five cells are compared at equal power.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells
+(fresh-artefact protocol). $p$-values are the bootstrap two-sided values from
+Section~3.7 of the main paper. Only the Llama rejection survives.}
+\vspace{10pt} % <--- Đã sửa thành 10pt
+\label{tab:bh}
+\begin{tabular}{clcc}
+\toprule
+\textit{rank} & \textit{cell} & \textit{$p$} & \textit{BH thr.\ ($q{=}0.05$)} \\
+\midrule
+1 & Llama $\cdot$ none            & $0.0002$ & $0.010$ \\
+2 & Nova $\cdot$ none             & $0.0840$ & $0.020$ \\
+3 & qwen $\cdot$ none             & $0.3165$ & $0.030$ \\
+4 & DeepSeek $\cdot$ none (fresh) & $0.6300$ & $0.040$ \\
+5 & qwen $\cdot$ paraphrase       & $0.7775$ & $0.050$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Context-Clustered Interval on the Weak Edge}
+\label{app:cluster}
+
+Section~5.10 of the main paper reports that a homogeneity test rejects exchangeability
+across benign task contexts on the weak Llama edge. Because that violates the
+i.i.d.\ assumption behind Wilson intervals, we recompute the edge rate with a
+cluster bootstrap that resamples \emph{repeats} (seed replications), not individual
+trials. At a fixed temperature ($T = 0.7$, six repeats of twenty trials) the two
+intervals nearly coincide (Table~\ref{tab:cluster}): the design-effect widening is
+$0.99\times$, so within a temperature the Wilson interval is well calibrated. The
+overdispersion $\varphi = 2.93$ reported in Section~4 of the main paper is a
+\emph{cross-temperature} artefact---temperature is a deliberate systematic factor,
+not trial noise---which is why we compute $\varphi$ within a temperature.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Weak edge $\texttt{a1}\to\texttt{a2}$ (Llama, $T = 0.7$, $n = 120$):
+i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples).}
+\vspace{10pt} % <--- Đã sửa thành 10pt
+\label{tab:cluster}
+\begin{tabular}{lccc}
+\toprule
+\textit{interval} & \textit{$\hat s$} & \textit{95\% CI} & \textit{width} \\
+\midrule
+Wilson (i.i.d.)              & $0.242$ & $[0.174, 0.326]$ & $0.152$ \\
+cluster bootstrap (by repeat) & $0.242$ & $[0.167, 0.317]$ & $0.150$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Threshold Sensitivity of the Floor Effect}
+\label{app:tau}
+
+A referee may ask whether the ``resistant'' verdict on the frontier model is an
+artefact of the compromise threshold $\tau_{\mathrm{ASV}} = 0.9$. We re-score the
+single-hop obfuscation cells (Claude, $n = 30$ per cell) at
+$\tau \in \{0.7, 0.8, 0.9, 1.0\}$ directly from the stored ASV scores---a
+deterministic re-thresholding, no new model calls. The compromise rate is
+\emph{invariant} across $\tau$ in every cell (Table~\ref{tab:tau}): the no-defence
+baseline stays at $0.17$ and redaction at $0.00$ regardless of the threshold. The
+reason is that the ASV distribution is bimodal---of $180$ trials, $158$ score $0.0$
+and $14$ score $1.0$; the only eight intermediate trials all score $\le 0.667$, i.e.\
+below the lowest threshold tested. The floor effect is therefore a property of the
+model, not of where the judge's cut is placed.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Single-hop compromise rate versus $\tau_{\mathrm{ASV}}$ (Claude, $n = 30$
+per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}
+\vspace{10pt} % <--- Đã sửa thành 10pt (Bảng 3 trong hình)
+\label{tab:tau}
+\begin{tabular}{llcccc}
+\toprule
+\textit{defence} & \textit{form} & \textit{$\tau{=}0.7$} & \textit{$0.8$}
+& \textit{$0.9$} & \textit{$1.0$} \\
+\midrule
+none   & plain      & $0.17$ & $0.17$ & $0.17$ & $0.17$ \\
+none   & spaced     & $0.17$ & $0.17$ & $0.17$ & $0.17$ \\
+none   & split-word & $0.13$ & $0.13$ & $0.13$ & $0.13$ \\
+redact & plain      & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
+redact & spaced     & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
+redact & split-word & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Recurrence Makes the Threshold Non-Vacuous}
+\label{app:cyclic}
+
+This appendix gives the full treatment of the recurrent (cyclic) case summarised in
+Section~5.8 of the main paper. We test a pattern real frameworks use: a manager
+broadcasting to workers that report back.
+
+For a manager with $w$ reporting workers, the infection matrix has
+$M[m\!\to\! w_j] = a_j$ and $M[w_j\!\to\! m] = c_j$, and its characteristic
+polynomial is $\lambda^{w-1}(\lambda^2 - \sum_j a_j c_j)$. Hence
+\begin{equation}
+  \rho(M) = \sqrt{\textstyle\sum_j a_j\,c_j}
+  \label{eq:cyclicrho}
+\end{equation}
+for every $w$ (checked numerically against the eigenvalues to machine precision on
+$320$ random configurations). Two consequences follow. A feed-forward reading sets
+every $c_j = 0$, so $\rho = 0$ however strong the edges are---the vacuity of
+Section~3.8 of the main paper again, now with the feedback edges removed. And the
+system is supercritical exactly when $\sum_j a_j c_j > 1$; for symmetric edges
+$a_j = c_j = s$ this is $w\,s^2 > 1$. That is a \emph{design rule} rather than a
+diagnostic: at $s = 0.5$ a manager needs five reporting workers to sustain an
+endemic injection, at $s = 0.7$ three, at $s = 0.9$ two.
+
+Applied to measured survivals, Eq.~\eqref{eq:cyclicrho} makes opposite
+predictions, which is the test a criterion has to pass to be worth using
+(Table~\ref{tab:cyclic}). On Llama the sum is $1.800$ and on DeepSeek $1.018$, so both
+frontier loops should be supercritical; on qwen2.5:7b it is $0.578$, so the same loop
+should decay.
+
+\begin{table}[h]
+\small
+\centering
+\caption{One criterion, three models, opposite predictions. $\sum_j a_jc_j$ uses
+the measured per-hop survivals of the same three-agent recurrent pattern; the
+feed-forward column is the same survivals with the two feedback edges removed.}
+\vspace{10pt} % <--- Đã sửa thành 10pt
+\label{tab:cyclic}
+\begin{tabular}{lcccc}
+\toprule
+\textit{model} & \textit{$\sum_j a_jc_j$} & \textit{$\rho$ rec.}
+& \textit{$\rho$ fwd.} & \textit{prediction} \\
+\midrule
+Llama 3.3 70B & $1.800$ & $\mathbf{1.342}$ & $0.000$ & supercritical \\
+DeepSeek V3.2 & $1.018$ & $\mathbf{1.009}$ & $0.000$ & supercritical (marginal) \\
+qwen2.5:7b    & $0.578$ & $0.760$ & $0.000$ & subcritical \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The measured dynamics follow. On Llama the recurrent manager is re-compromised by
+its own workers' reports in $0.725$ $[0.572, 0.839]$ of runs and does not die out:
+at round five it is still compromised in $0.700$ of runs with the workers near
+saturation ($0.925$, $0.975$), as $\rho > 1$ predicts; extending the same loop to
+eight rounds leaves it endemic (manager $0.583$, workers $0.900$). DeepSeek, whose
+$\sum_j a_jc_j = 1.018$ sits just above criticality, behaves the same way over eight
+rounds---the manager settles at $0.567$ with workers at $0.767$ and $0.700$ rather
+than decaying---so the recurrent verdict is not a single-model artefact. On qwen the
+same loop decays: the manager's re-compromise rate falls from $0.775$
+$[0.625, 0.877]$ to $0.650$ and the workers plateau ($0.475$, $0.525$). One
+criterion, opposite predictions, all borne out.
+
+Two caveats. First, $\rho$ is computed from \emph{isolated} survivals that
+Sections~5.2--5.7 of the main paper show to be unreliable; the Llama and
+qwen verdicts survive because neither $\sum_j a_jc_j$ is marginal ($1.80$, $0.58$),
+whereas DeepSeek's $1.018$ sits close enough to the critical value that its
+supercritical label should be read together with its measured dynamics (endemic over
+eight rounds) rather than from the point estimate alone. Second, we study a single
+recurrent pattern at one temperature; the three models span five to eight rounds,
+enough to separate decay from saturation, not to demonstrate extinction.
+
+\end{document}

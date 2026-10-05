@@ -23,12 +23,20 @@ def main(argv=None) -> int:
     m = result["metrics"]
     print(f"[done] topology={config.topology.value} n={config.num_agents} "
           f"attack={config.attack.value} defense={config.defense.value}")
-    print(f"  survival={m['survival'].get('overall', {}).get('mean')} "
-          f"asr={m['asr']['mean']:.3f} r0={m['r0']['mean']:.3f}")
-    ut = m.get("utility")
-    if ut:
-        print(f"  utility: U_clean={ut['u_clean']:.3f} U_attack={ut['u_attack']:.3f} "
-              f"retention={ut['retention']}")
+    if config.dry_run or not m:
+        est = result.get("call_estimate")
+        if est:
+            print(f"  [dry-run] estimated LLM calls: "
+                  f"natural={est['natural']} per_edge={est['per_edge']} "
+                  f"utility={est['utility']} direct_ref={est['direct_reference']} "
+                  f"total_max={est['total_max']}")
+    else:
+        print(f"  survival={m['survival'].get('overall', {}).get('mean')} "
+              f"asr={m['asr']['mean']:.3f} r0={m['r0']['mean']:.3f}")
+        ut = m.get("utility")
+        if ut:
+            print(f"  utility: U_clean={ut['u_clean']:.3f} U_attack={ut['u_attack']:.3f} "
+                  f"retention={ut['retention']}")
     print(f"  -> {base}")
     return 0
 

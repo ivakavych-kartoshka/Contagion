@@ -1,0 +1,586 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{39}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Abdellah and Aziz(2026)]%
+        {CII2026}
+\bibfield{author}{\bibinfo{person}{Mohamed Refaat~Mohamed Abdellah} {and}
+  \bibinfo{person}{Alber~S. Aziz}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Cascading Instruction Influence: Indirect Prompt
+  Injection in Hierarchical Multi-Agent Systems}.
+\newblock \bibinfo{journal}{\emph{Statistics, Optimization \& Information
+  Computing}} \bibinfo{volume}{15}, \bibinfo{number}{6} (\bibinfo{year}{2026}),
+  \bibinfo{pages}{5445--5458}.
+\newblock
+\href{https://doi.org/10.19139/soic-2310-5070-3574}{doi:\nolinkurl{10.19139/soic-2310-5070-3574}}
+
+
+\bibitem[Albert et~al\mbox{.}(2000)]%
+        {Albert2000ErrorTolerance}
+\bibfield{author}{\bibinfo{person}{R{\'e}ka Albert}, \bibinfo{person}{Hawoong
+  Jeong}, {and} \bibinfo{person}{Albert-L{\'a}szl{\'o} Barab{\'a}s}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Error and attack tolerance of complex networks}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{406},
+  \bibinfo{number}{6794} (\bibinfo{year}{2000}), \bibinfo{pages}{378--382}.
+\newblock
+\href{https://doi.org/10.1038/35019019}{doi:\nolinkurl{10.1038/35019019}}
+
+
+\bibitem[An et~al\mbox{.}(2026)]%
+        {An2026ACIARena}
+\bibfield{author}{\bibinfo{person}{Hengyu An}, \bibinfo{person}{Minxi Li},
+  \bibinfo{person}{Jinghuai Zhang}, \bibinfo{person}{Naen Xu},
+  \bibinfo{person}{Chunyi Zhou}, \bibinfo{person}{Changjiang Li},
+  \bibinfo{person}{Xiaogang Xu}, \bibinfo{person}{Tianyu Du}, {and}
+  \bibinfo{person}{Shouling Ji}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{{ACIArena}: Toward Unified Evaluation for Agent
+  Cascading Injection}. In \bibinfo{booktitle}{\emph{Proceedings of the 64th
+  Annual Meeting of the Association for Computational Linguistics (Volume 1:
+  Long Papers)}}. \bibinfo{publisher}{Association for Computational
+  Linguistics}, \bibinfo{address}{San Diego, California, USA},
+  \bibinfo{pages}{10049--10066}.
+\newblock
+\href{https://doi.org/10.18653/v1/2026.acl-long.457}{doi:\nolinkurl{10.18653/v1/2026.acl-long.457}}
+
+
+\bibitem[Andriushchenko et~al\mbox{.}(2025)]%
+        {Andriushchenko2025AgentHarm}
+\bibfield{author}{\bibinfo{person}{Maksym Andriushchenko},
+  \bibinfo{person}{Alexandra Souly}, \bibinfo{person}{Mateusz Dziemian},
+  \bibinfo{person}{Derek Duenas}, \bibinfo{person}{Maxwell Lin},
+  \bibinfo{person}{Justin Wang}, \bibinfo{person}{Dan Hendrycks},
+  \bibinfo{person}{Andy Zou}, \bibinfo{person}{Zico Kolter},
+  \bibinfo{person}{Matt Fredrikson}, \bibinfo{person}{Yarin Gal}, {and}
+  \bibinfo{person}{Xander Davies}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{AgentHarm}: A Benchmark for Measuring Harmfulness
+  of {LLM} Agents}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations}}, Vol.~\bibinfo{volume}{2025}.
+  \bibinfo{pages}{79185--79220}.
+\newblock
+
+
+\bibitem[Benjamini and Hochberg(1995)]%
+        {BH1995}
+\bibfield{author}{\bibinfo{person}{Yoav Benjamini} {and} \bibinfo{person}{Yosef
+  Hochberg}.} \bibinfo{year}{1995}\natexlab{}.
+\newblock \showarticletitle{Controlling the False Discovery Rate: A Practical
+  and Powerful Approach to Multiple Testing}.
+\newblock \bibinfo{journal}{\emph{Journal of the Royal Statistical Society:
+  Series {B} (Methodological)}} \bibinfo{volume}{57}, \bibinfo{number}{1}
+  (\bibinfo{year}{1995}), \bibinfo{pages}{289--300}.
+\newblock
+\href{https://doi.org/10.1111/j.2517-6161.1995.tb02031.x}{doi:\nolinkurl{10.1111/j.2517-6161.1995.tb02031.x}}
+
+
+\bibitem[Brown et~al\mbox{.}(2001)]%
+        {Brown2001}
+\bibfield{author}{\bibinfo{person}{Lawrence~D. Brown}, \bibinfo{person}{T.~Tony
+  Cai}, {and} \bibinfo{person}{Arindam DasGupta}.}
+  \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Interval Estimation for a Binomial Proportion}.
+\newblock \bibinfo{journal}{\emph{Statist. Sci.}} \bibinfo{volume}{16},
+  \bibinfo{number}{2} (\bibinfo{year}{2001}), \bibinfo{pages}{101--133}.
+\newblock
+\href{https://doi.org/10.1214/ss/1009213286}{doi:\nolinkurl{10.1214/ss/1009213286}}
+
+
+\bibitem[Cemri et~al\mbox{.}(2025)]%
+        {Cemri2025MAST}
+\bibfield{author}{\bibinfo{person}{Mert Cemri}, \bibinfo{person}{Melissa~Z.
+  Pan}, \bibinfo{person}{Shuyi Yang}, \bibinfo{person}{Lakshya~A. Agrawal},
+  \bibinfo{person}{Bhavya Chopra}, \bibinfo{person}{Rishabh Tiwari},
+  \bibinfo{person}{Kurt Keutzer}, \bibinfo{person}{Aditya Parameswaran},
+  \bibinfo{person}{Dan Klein}, \bibinfo{person}{Kannan Ramchandran},
+  \bibinfo{person}{Matei Zaharia}, \bibinfo{person}{Joseph~E. Gonzalez}, {and}
+  \bibinfo{person}{Ion Stoica}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Why Do Multi-Agent {LLM} Systems Fail?}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing
+  Systems}}, Vol.~\bibinfo{volume}{38}. \bibinfo{publisher}{Curran Associates,
+  Inc.}
+\newblock
+
+
+\bibitem[Centola(2010)]%
+        {Centola2010}
+\bibfield{author}{\bibinfo{person}{Damon Centola}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{The Spread of Behavior in an Online Social Network
+  Experiment}.
+\newblock \bibinfo{journal}{\emph{Science}} \bibinfo{volume}{329},
+  \bibinfo{number}{5996} (\bibinfo{year}{2010}), \bibinfo{pages}{1194--1197}.
+\newblock
+\href{https://doi.org/10.1126/science.1185231}{doi:\nolinkurl{10.1126/science.1185231}}
+
+
+\bibitem[Chen et~al\mbox{.}(2025)]%
+        {StrUQ2025}
+\bibfield{author}{\bibinfo{person}{Sizhe Chen}, \bibinfo{person}{Julien Piet},
+  \bibinfo{person}{Chawin Sitawarin}, {and} \bibinfo{person}{David Wagner}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{StruQ}: Defending Against Prompt Injection with
+  Structured Queries}. In \bibinfo{booktitle}{\emph{34th USENIX Security
+  Symposium (USENIX Security 25)}}. \bibinfo{publisher}{USENIX Association}.
+\newblock
+
+
+\bibitem[Chen et~al\mbox{.}(2024)]%
+        {Chen2024AgentVerse}
+\bibfield{author}{\bibinfo{person}{Weize Chen}, \bibinfo{person}{Yusheng Su},
+  \bibinfo{person}{Jingwei Zuo}, \bibinfo{person}{Cheng Yang},
+  \bibinfo{person}{Chenfei Yuan}, \bibinfo{person}{Chi-Min Chan},
+  \bibinfo{person}{Heyang Yu}, \bibinfo{person}{Yaxi Lu},
+  \bibinfo{person}{Yi-Hsin Hung}, \bibinfo{person}{Chen Qian},
+  \bibinfo{person}{Yujia Qin}, \bibinfo{person}{Xin Cong},
+  \bibinfo{person}{Ruobing Xie}, \bibinfo{person}{Zhiyuan Liu},
+  \bibinfo{person}{Maosong Sun}, {and} \bibinfo{person}{Jie Zhou}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AgentVerse}: Facilitating Multi-Agent
+  Collaboration and Exploring Emergent Behaviors}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations}}, Vol.~\bibinfo{volume}{2024}.
+  \bibinfo{pages}{20094--20136}.
+\newblock
+
+
+\bibitem[Debenedetti et~al\mbox{.}(2026)]%
+        {Debenedetti2026CaMeL}
+\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti}, \bibinfo{person}{Ilia
+  Shumailov}, \bibinfo{person}{Tianqi Fan}, \bibinfo{person}{Jamie Hayes},
+  \bibinfo{person}{Nicholas Carlini}, \bibinfo{person}{Daniel Fabian},
+  \bibinfo{person}{Christoph Kern}, \bibinfo{person}{Chongyang Shi},
+  \bibinfo{person}{Andreas Terzis}, {and} \bibinfo{person}{Florian
+  Tram{\`e}r}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Defeating Prompt Injections by Design}. In
+  \bibinfo{booktitle}{\emph{2026 IEEE Conference on Secure and Trustworthy
+  Machine Learning (SaTML)}}. \bibinfo{pages}{587--618}.
+\newblock
+\href{https://doi.org/10.1109/satml68715.2026.00040}{doi:\nolinkurl{10.1109/satml68715.2026.00040}}
+
+
+\bibitem[Debenedetti et~al\mbox{.}(2024)]%
+        {Debenedetti2024AgentDojo}
+\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti}, \bibinfo{person}{Jie
+  Zhang}, \bibinfo{person}{Mislav Balunovi{\'{c}}}, \bibinfo{person}{Luca
+  Beurer-Kellner}, \bibinfo{person}{Marc Fischer}, {and}
+  \bibinfo{person}{Florian Tram{\`{e}}r}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AgentDojo}: A Dynamic Environment to Evaluate
+  Prompt Injection Attacks and Defenses for {LLM} Agents}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing
+  Systems}}, Vol.~\bibinfo{volume}{37}. \bibinfo{publisher}{Curran Associates,
+  Inc.}
+\newblock
+
+
+\bibitem[Du et~al\mbox{.}(2024)]%
+        {Du2024MultiagentDebate}
+\bibfield{author}{\bibinfo{person}{Yilun Du}, \bibinfo{person}{Shuang Li},
+  \bibinfo{person}{Antonio Torralba}, \bibinfo{person}{Joshua~B. Tenenbaum},
+  {and} \bibinfo{person}{Igor Mordatch}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Improving Factuality and Reasoning in Language
+  Models through Multiagent Debate}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 41st International Conference on Machine Learning}}
+  \emph{(\bibinfo{series}{Proceedings of Machine Learning Research},
+  Vol.~\bibinfo{volume}{235})}. \bibinfo{pages}{11733--11763}.
+\newblock
+
+
+\bibitem[Efron(1979)]%
+        {Efron1979}
+\bibfield{author}{\bibinfo{person}{Bradley Efron}.}
+  \bibinfo{year}{1979}\natexlab{}.
+\newblock \showarticletitle{Bootstrap Methods: Another Look at the Jackknife}.
+\newblock \bibinfo{journal}{\emph{The Annals of Statistics}}
+  \bibinfo{volume}{7}, \bibinfo{number}{1} (\bibinfo{year}{1979}),
+  \bibinfo{pages}{1--26}.
+\newblock
+\href{https://doi.org/10.1214/aos/1176344552}{doi:\nolinkurl{10.1214/aos/1176344552}}
+
+
+\bibitem[Granovetter(1978)]%
+        {Granovetter1978}
+\bibfield{author}{\bibinfo{person}{Mark Granovetter}.}
+  \bibinfo{year}{1978}\natexlab{}.
+\newblock \showarticletitle{Threshold Models of Collective Behavior}.
+\newblock \bibinfo{journal}{\emph{Amer. J. Sociology}} \bibinfo{volume}{83},
+  \bibinfo{number}{6} (\bibinfo{year}{1978}), \bibinfo{pages}{1420--1443}.
+\newblock
+\href{https://doi.org/10.1086/226707}{doi:\nolinkurl{10.1086/226707}}
+
+
+\bibitem[Greshake et~al\mbox{.}(2023)]%
+        {Greshake2023}
+\bibfield{author}{\bibinfo{person}{Kai Greshake}, \bibinfo{person}{Sahar
+  Abdelnabi}, \bibinfo{person}{Shailesh Mishra}, \bibinfo{person}{Christoph
+  Endres}, \bibinfo{person}{Thorsten Holz}, {and} \bibinfo{person}{Mario
+  Fritz}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Not What You've Signed Up For: Compromising
+  Real-World {LLM}-Integrated Applications with Indirect Prompt Injection}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 16th {ACM} Workshop on
+  Artificial Intelligence and Security ({AISec} 2023)}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{79--92}.
+\newblock
+\href{https://doi.org/10.1145/3605764.3623985}{doi:\nolinkurl{10.1145/3605764.3623985}}
+
+
+\bibitem[Hines et~al\mbox{.}(2024)]%
+        {Hines2024CAMLIS}
+\bibfield{author}{\bibinfo{person}{Keegan Hines}, \bibinfo{person}{Gary Lopez},
+  \bibinfo{person}{Matthew Hall}, \bibinfo{person}{Federico Zarfati},
+  \bibinfo{person}{Yonatan Zunger}, {and} \bibinfo{person}{Emre Kiciman}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Defending Against Indirect Prompt Injection Attacks
+  With Spotlighting}. In \bibinfo{booktitle}{\emph{Conference on Applied
+  Machine Learning in Information Security (CAMLIS 2024)}}
+  \emph{(\bibinfo{series}{CEUR Workshop Proceedings},
+  Vol.~\bibinfo{volume}{3920})}. \bibinfo{pages}{48--62}.
+\newblock
+
+
+\bibitem[Hong et~al\mbox{.}(2024)]%
+        {Hong2023MetaGPT}
+\bibfield{author}{\bibinfo{person}{Sirui Hong}, \bibinfo{person}{Mingchen
+  Zhuge}, \bibinfo{person}{Jiaqi Chen}, \bibinfo{person}{Xiawu Zheng},
+  \bibinfo{person}{Yuheng Cheng}, \bibinfo{person}{Ceyao Zhang},
+  \bibinfo{person}{Jinlin Wang}, \bibinfo{person}{Zili Wang},
+  \bibinfo{person}{Steven Ka~Shing Yau}, \bibinfo{person}{Zijuan Lin},
+  \bibinfo{person}{Liyang Zhou}, \bibinfo{person}{Chenyu Ran},
+  \bibinfo{person}{Lingfeng Xiao}, \bibinfo{person}{Chenglin Wu}, {and}
+  \bibinfo{person}{J{\"u}rgen Schmidhuber}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{MetaGPT}: Meta Programming for a Multi-Agent
+  Collaborative Framework}. In \bibinfo{booktitle}{\emph{The Twelfth
+  International Conference on Learning Representations}}.
+\newblock
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=bhMk4f2pUj}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Jimenez et~al\mbox{.}(2024)]%
+        {Jimenez2024SWEBench}
+\bibfield{author}{\bibinfo{person}{Carlos~E. Jimenez}, \bibinfo{person}{John
+  Yang}, \bibinfo{person}{Alexander Wettig}, \bibinfo{person}{Shunyu Yao},
+  \bibinfo{person}{Kexin Pei}, \bibinfo{person}{Ofir Press}, {and}
+  \bibinfo{person}{Karthik Narasimhan}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{SWE-bench}: Can Language Models Resolve Real-world
+  Github Issues?}. In \bibinfo{booktitle}{\emph{International Conference on
+  Learning Representations}}, Vol.~\bibinfo{volume}{2024}.
+  \bibinfo{pages}{54107--54157}.
+\newblock
+
+
+\bibitem[Keeling and Eames(2005)]%
+        {KeelingEames2005}
+\bibfield{author}{\bibinfo{person}{Matt~J. Keeling} {and}
+  \bibinfo{person}{Ken~T. Eames}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Networks and epidemic models}.
+\newblock \bibinfo{journal}{\emph{Journal of the Royal Society Interface}}
+  \bibinfo{volume}{2}, \bibinfo{number}{4} (\bibinfo{year}{2005}),
+  \bibinfo{pages}{295--307}.
+\newblock
+\href{https://doi.org/10.1098/rsif.2005.0051}{doi:\nolinkurl{10.1098/rsif.2005.0051}}
+
+
+\bibitem[Kempe et~al\mbox{.}(2003)]%
+        {Kempe2003}
+\bibfield{author}{\bibinfo{person}{David Kempe}, \bibinfo{person}{Jon
+  Kleinberg}, {and} \bibinfo{person}{{\'{E}}va Tardos}.}
+  \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Maximizing the Spread of Influence through a Social
+  Network}. In \bibinfo{booktitle}{\emph{Proceedings of the Ninth {ACM}
+  {SIGKDD} International Conference on Knowledge Discovery and Data Mining}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{137--146}.
+\newblock
+\href{https://doi.org/10.1145/956750.956769}{doi:\nolinkurl{10.1145/956750.956769}}
+
+
+\bibitem[Kermack and McKendrick(1927)]%
+        {KermackMcKendrick1927}
+\bibfield{author}{\bibinfo{person}{William~Ogilvy Kermack} {and}
+  \bibinfo{person}{A.~G. McKendrick}.} \bibinfo{year}{1927}\natexlab{}.
+\newblock \showarticletitle{A contribution to the mathematical theory of
+  epidemics}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the Royal Society of London.
+  Series A, Containing Papers of a Mathematical and Physical Character}}
+  \bibinfo{volume}{115}, \bibinfo{number}{772} (\bibinfo{year}{1927}),
+  \bibinfo{pages}{700--721}.
+\newblock
+\href{https://doi.org/10.1098/rspa.1927.0118}{doi:\nolinkurl{10.1098/rspa.1927.0118}}
+
+
+\bibitem[Le et~al\mbox{.}(2026)]%
+        {SwarmMarkov2026}
+\bibfield{author}{\bibinfo{person}{Tran~Duc Le}, \bibinfo{person}{Truong~Duy
+  Dinh}, \bibinfo{person}{Thi Le~Quyen Nguyen}, {and}
+  \bibinfo{person}{Cong~Danh Nguyen}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Cross-layer contagion of prompt injections in
+  multi-agent swarms: a multiplex microscopic {Markov} chain approach}.
+\newblock \bibinfo{journal}{\emph{Cybersecurity}} \bibinfo{volume}{9},
+  \bibinfo{number}{1} (\bibinfo{year}{2026}).
+\newblock
+\href{https://doi.org/10.1186/s42400-026-00628-w}{doi:\nolinkurl{10.1186/s42400-026-00628-w}}
+
+
+\bibitem[Lee et~al\mbox{.}(2026)]%
+        {Lee2025Infection}
+\bibfield{author}{\bibinfo{person}{Donghyun Lee}, \bibinfo{person}{Mo Tiwari},
+  {and} \bibinfo{person}{Brando Miranda}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Prompt Infection: {LLM}-to-{LLM} Prompt Injection
+  within Multi-Agent Systems}. In \bibinfo{booktitle}{\emph{Computer Security.
+  ESORICS 2025 International Workshops}} \emph{(\bibinfo{series}{Lecture Notes
+  in Computer Science})}. \bibinfo{publisher}{Springer},
+  \bibinfo{pages}{511--520}.
+\newblock
+\href{https://doi.org/10.1007/978-3-032-16092-8_28}{doi:\nolinkurl{10.1007/978-3-032-16092-8_28}}
+
+
+\bibitem[Liu et~al\mbox{.}(2024b)]%
+        {Liu2024AgentBench}
+\bibfield{author}{\bibinfo{person}{Xiao Liu}, \bibinfo{person}{Hao Yu},
+  \bibinfo{person}{Hanchen Zhang}, \bibinfo{person}{Yifan Xu},
+  \bibinfo{person}{Xuanyu Lei}, \bibinfo{person}{Hanyu Lai},
+  \bibinfo{person}{Yu Gu}, \bibinfo{person}{Hangliang Ding},
+  \bibinfo{person}{Kaiwen Men}, \bibinfo{person}{Kejuan Yang},
+  \bibinfo{person}{Shudan Zhang}, \bibinfo{person}{Xiang Deng},
+  \bibinfo{person}{Aohan Zeng}, \bibinfo{person}{Zhengxiao Du},
+  \bibinfo{person}{Chenhui Zhang}, \bibinfo{person}{Sheng Shen},
+  \bibinfo{person}{Tianjun Zhang}, \bibinfo{person}{Yu Su},
+  \bibinfo{person}{Huan Sun}, \bibinfo{person}{Minlie Huang},
+  \bibinfo{person}{Yuxiao Dong}, {and} \bibinfo{person}{Jie Tang}.}
+  \bibinfo{year}{2024}\natexlab{b}.
+\newblock \showarticletitle{{AgentBench}: Evaluating {LLM}s as Agents}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations}}, Vol.~\bibinfo{volume}{2024}.
+  \bibinfo{pages}{52989--53046}.
+\newblock
+
+
+\bibitem[Liu et~al\mbox{.}(2024a)]%
+        {LiuGong2024}
+\bibfield{author}{\bibinfo{person}{Yupei Liu}, \bibinfo{person}{Yuqi Jia},
+  \bibinfo{person}{Runpeng Geng}, \bibinfo{person}{Jinyuan Jia}, {and}
+  \bibinfo{person}{Neil~Zhenqiang Gong}.} \bibinfo{year}{2024}\natexlab{a}.
+\newblock \showarticletitle{Formalizing and Benchmarking Prompt Injection
+  Attacks and Defenses}. In \bibinfo{booktitle}{\emph{33rd USENIX Security
+  Symposium (USENIX Security 24)}}. \bibinfo{publisher}{USENIX Association},
+  \bibinfo{address}{Philadelphia, PA}, \bibinfo{pages}{1831--1847}.
+\newblock
+\urldef\tempurl%
+\url{https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Newman(2002)]%
+        {Newman2002}
+\bibfield{author}{\bibinfo{person}{M.~E.~J. Newman}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Spread of epidemic disease on networks}.
+\newblock \bibinfo{journal}{\emph{Physical Review E}} \bibinfo{volume}{66},
+  \bibinfo{number}{1} (\bibinfo{year}{2002}), \bibinfo{pages}{016128}.
+\newblock
+\href{https://doi.org/10.1103/PhysRevE.66.016128}{doi:\nolinkurl{10.1103/PhysRevE.66.016128}}
+
+
+\bibitem[Pastor-Satorras and Vespignani(2001)]%
+        {PastorSatorras2001}
+\bibfield{author}{\bibinfo{person}{Romualdo Pastor-Satorras} {and}
+  \bibinfo{person}{Alessandro Vespignani}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Epidemic Spreading in Scale-Free Networks}.
+\newblock \bibinfo{journal}{\emph{Physical Review Letters}}
+  \bibinfo{volume}{86}, \bibinfo{number}{14} (\bibinfo{year}{2001}),
+  \bibinfo{pages}{3200--3203}.
+\newblock
+\href{https://doi.org/10.1103/PhysRevLett.86.3200}{doi:\nolinkurl{10.1103/PhysRevLett.86.3200}}
+
+
+\bibitem[P{\'{e}}rez and Ribeiro(2022)]%
+        {Perez2022PromptInjection}
+\bibfield{author}{\bibinfo{person}{F{\'{a}}bio P{\'{e}}rez} {and}
+  \bibinfo{person}{Ian Ribeiro}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Ignore Previous Prompt: Attack Techniques for
+  Language Models}. In \bibinfo{booktitle}{\emph{Proceedings of the 2022
+  {NeurIPS} Workshop on Machine Learning Safety}}.
+\newblock
+
+
+\bibitem[Schick et~al\mbox{.}(2023)]%
+        {Schick2023Toolformer}
+\bibfield{author}{\bibinfo{person}{Timo Schick}, \bibinfo{person}{Jane
+  Dwivedi-Yu}, \bibinfo{person}{Roberto Dessi}, \bibinfo{person}{Roberta
+  Raileanu}, \bibinfo{person}{Maria Lomeli}, \bibinfo{person}{Eric Hambro},
+  \bibinfo{person}{Luke Zettlemoyer}, \bibinfo{person}{Nicola Cancedda}, {and}
+  \bibinfo{person}{Thomas Scialom}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Toolformer: Language Models Can Teach Themselves to
+  Use Tools}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
+  Processing Systems}}, Vol.~\bibinfo{volume}{36}. \bibinfo{publisher}{Curran
+  Associates, Inc.}, \bibinfo{pages}{68539--68551}.
+\newblock
+\href{https://doi.org/10.52202/075280-2997}{doi:\nolinkurl{10.52202/075280-2997}}
+
+
+\bibitem[Shinn et~al\mbox{.}(2023)]%
+        {Shinn2023Reflexion}
+\bibfield{author}{\bibinfo{person}{Noah Shinn}, \bibinfo{person}{Federico
+  Cassano}, \bibinfo{person}{Ashwin Gopinath}, \bibinfo{person}{Karthik
+  Narasimhan}, {and} \bibinfo{person}{Shunyu Yao}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Reflexion: language agents with verbal
+  reinforcement learning}. In \bibinfo{booktitle}{\emph{Advances in Neural
+  Information Processing Systems}}, Vol.~\bibinfo{volume}{36}.
+  \bibinfo{publisher}{Curran Associates, Inc.}, \bibinfo{pages}{8634--8652}.
+\newblock
+\href{https://doi.org/10.52202/075280-0377}{doi:\nolinkurl{10.52202/075280-0377}}
+
+
+\bibitem[Watts(2002)]%
+        {Watts2002}
+\bibfield{author}{\bibinfo{person}{Duncan~J. Watts}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{A simple model of global cascades on random
+  networks}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the National Academy of
+  Sciences}} \bibinfo{volume}{99}, \bibinfo{number}{9} (\bibinfo{year}{2002}),
+  \bibinfo{pages}{5766--5771}.
+\newblock
+\href{https://doi.org/10.1073/pnas.082090499}{doi:\nolinkurl{10.1073/pnas.082090499}}
+
+
+\bibitem[Watts and Strogatz(1998)]%
+        {WattsStrogatz1998}
+\bibfield{author}{\bibinfo{person}{Duncan~J. Watts} {and}
+  \bibinfo{person}{Steven~H. Strogatz}.} \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Collective dynamics of `small-world' networks}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{393},
+  \bibinfo{number}{6684} (\bibinfo{year}{1998}), \bibinfo{pages}{440--442}.
+\newblock
+\href{https://doi.org/10.1038/30918}{doi:\nolinkurl{10.1038/30918}}
+
+
+\bibitem[Wilson(1927)]%
+        {Wilson1927}
+\bibfield{author}{\bibinfo{person}{Edwin~B. Wilson}.}
+  \bibinfo{year}{1927}\natexlab{}.
+\newblock \showarticletitle{Probable Inference, the Law of Succession, and
+  Statistical Inference}.
+\newblock \bibinfo{journal}{\emph{J. Amer. Statist. Assoc.}}
+  \bibinfo{volume}{22}, \bibinfo{number}{158} (\bibinfo{year}{1927}),
+  \bibinfo{pages}{209--212}.
+\newblock
+\href{https://doi.org/10.1080/01621459.1927.10502953}{doi:\nolinkurl{10.1080/01621459.1927.10502953}}
+
+
+\bibitem[Wu et~al\mbox{.}(2024)]%
+        {Wu2024AutoGen}
+\bibfield{author}{\bibinfo{person}{Qingyun Wu}, \bibinfo{person}{Gagan Bansal},
+  \bibinfo{person}{Jieyu Zhang}, \bibinfo{person}{Yiran Wu},
+  \bibinfo{person}{Beibin Li}, \bibinfo{person}{Erkang Zhu},
+  \bibinfo{person}{Li Jiang}, \bibinfo{person}{Xiaoyun Zhang},
+  \bibinfo{person}{Shaokun Zhang}, \bibinfo{person}{Jiale Liu},
+  \bibinfo{person}{Ahmed~Hassan Awadallah}, \bibinfo{person}{Ryen~W White},
+  \bibinfo{person}{Doug Burger}, {and} \bibinfo{person}{Chi Wang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{AutoGen}: Enabling Next-Gen {LLM} Applications via
+  Multi-Agent Conversations}. In \bibinfo{booktitle}{\emph{Conference on
+  Language Modeling (COLM)}}.
+\newblock
+
+
+\bibitem[Yao et~al\mbox{.}(2023)]%
+        {Yao2023ReAct}
+\bibfield{author}{\bibinfo{person}{Shunyu Yao}, \bibinfo{person}{Jeffrey Zhao},
+  \bibinfo{person}{Dian Yu}, \bibinfo{person}{Nan Du}, \bibinfo{person}{Izhak
+  Shafran}, \bibinfo{person}{Karthik Narasimhan}, {and} \bibinfo{person}{Yuan
+  Cao}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{ReAct}: Synergizing Reasoning and Acting in
+  Language Models}. In \bibinfo{booktitle}{\emph{The Eleventh International
+  Conference on Learning Representations}}.
+\newblock
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=WE_vluYUL-X}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Zhan et~al\mbox{.}(2025)]%
+        {Zhan2025Adaptive}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan}, \bibinfo{person}{Richard Fang},
+  \bibinfo{person}{Henil~Shalin Panchal}, {and} \bibinfo{person}{Daniel Kang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Adaptive Attacks Break Defenses Against Indirect
+  Prompt Injection Attacks on {LLM} Agents}. In
+  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: NAACL 2025}}. \bibinfo{pages}{7116--7132}.
+\newblock
+\href{https://doi.org/10.18653/v1/2025.findings-naacl.395}{doi:\nolinkurl{10.18653/v1/2025.findings-naacl.395}}
+
+
+\bibitem[Zhan et~al\mbox{.}(2024)]%
+        {Zhan2024InjecAgent}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan}, \bibinfo{person}{Zhixiang
+  Liang}, \bibinfo{person}{Zifan Ying}, {and} \bibinfo{person}{Daniel Kang}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{{InjecAgent}: Benchmarking Indirect Prompt
+  Injections in Tool-Integrated Large Language Model Agents}. In
+  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: ACL 2024}}. \bibinfo{publisher}{Association for Computational
+  Linguistics}, \bibinfo{address}{Bangkok, Thailand},
+  \bibinfo{pages}{10471--10506}.
+\newblock
+\href{https://doi.org/10.18653/v1/2024.findings-acl.624}{doi:\nolinkurl{10.18653/v1/2024.findings-acl.624}}
+
+
+\bibitem[Zhang et~al\mbox{.}(2025)]%
+        {Zhang2025ASB}
+\bibfield{author}{\bibinfo{person}{Hanrong Zhang}, \bibinfo{person}{Jingyuan
+  Huang}, \bibinfo{person}{Kai Mei}, \bibinfo{person}{Yifei Yao},
+  \bibinfo{person}{Zhenting Wang}, \bibinfo{person}{Chenlu Zhan},
+  \bibinfo{person}{Hongwei Wang}, {and} \bibinfo{person}{Yongfeng Zhang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Agent Security Bench ({ASB}): Formalizing and
+  Benchmarking Attacks and Defenses in {LLM}-based Agents}. In
+  \bibinfo{booktitle}{\emph{The Thirteenth International Conference on Learning
+  Representations}}.
+\newblock
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=V4y0CpX4hK}
+\showURL{%
+\tempurl}
+
+
+\end{thebibliography}

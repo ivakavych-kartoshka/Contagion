@@ -88,13 +88,18 @@ class Agent:
 Mỗi hop diễn ra trong đúng hàm này:
 
 ```python
-def steps(self, incoming: List[Message]) -> str:
+def steps(self, incoming: List[Message], task: Optional[str] = None) -> str:
 ```
+
+Tham số `task` (optional, task realism — xem `runner/explain.md`): legitimate
+task context được đưa vào prompt như **trusted block** `[assigned task]` (KHÔNG
+qua defense, không tạo HopOutcome) đặt TRƯỚC untrusted blocks — mô hình deployment
+thực: agent "bận" làm task thật khi nhận untrusted content. `None` → hành vi cũ.
 
 Quy trình một hop:
 
 ```
-nhận upstream messages
+nhận upstream messages (+ task context nếu có)
         │
         ▼
 msg.to_untrusted_field()   → lấy nội dung content
@@ -103,7 +108,7 @@ msg.to_untrusted_field()   → lấy nội dung content
 defense.sanitize(content)  → phòng vệ tại trust boundary
         │                     (Paraphrase tách marker, Delimiter wrap tag,
         ▼                      HopIsolation drop toàn bộ, NoDefense không làm gì)
-ghép các message sạch thành prompt
+ghép [assigned task] (nếu có) + các message sạch thành prompt
         │
         ▼
 _client.complete(prompt, system_prompt)  → chạy LLM → response

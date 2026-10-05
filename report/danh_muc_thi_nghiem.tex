@@ -1,0 +1,350 @@
+% =====================================================================
+%  DANH MỤC THỰC NGHIỆM — trả lời câu hỏi "em đã làm những thí nghiệm gì?"
+%  Biên dịch: xelatex danh_muc_thi_nghiem.tex
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=2.2cm}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=1.3em}
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries\color{blue!55!black}}{\thesection.}{0.5em}{}
+\titlespacing{\section}{0pt}{12pt}{5pt}
+\usepackage{longtable}
+\usepackage{array}
+
+\newcommand{\nhan}[1]{\textbf{#1}}
+
+\title{\textbf{DANH MỤC THỰC NGHIỆM}\\ \large
+Dự án Contagion --- lan truyền prompt injection trong mạng LLM agent}
+\author{Người báo cáo: \underline{\hspace{5cm}} \quad Ngày: \underline{\hspace{3.5cm}}}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\vspace{-0.8cm}
+
+\begin{center}
+\fbox{\parbox{0.94\textwidth}{
+\textbf{Cách dùng.} Tài liệu này trả lời câu hỏi ``em đã làm những thí nghiệm gì''.
+Mục~1 là bảng tóm tắt 10 nhóm thực nghiệm mang nội dung bài báo --- dùng để nói nhanh.
+Mục~2 đi vào từng nhóm. Mục~3 là giai đoạn thăm dò (không dùng số trong bài) để giải
+thích nếu thầy/cô hỏi vì sao có nhiều thư mục kết quả. Mục~4 là các phân tích chạy lại
+từ dữ liệu đã có, \emph{không} tốn thêm chi phí gọi model.
+}}
+\end{center}
+
+% =====================================================================
+\section{Bảng tóm tắt 10 nhóm thực nghiệm}
+
+\small
+\begin{longtable}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{4.3cm}|>{\raggedright\arraybackslash}p{6.3cm}|}
+\hline
+\textbf{\#} & \textbf{Nhóm thí nghiệm} & \textbf{Quy mô} & \textbf{Kết quả chính}\\
+\hline
+\endhead
+1 & Đo lan truyền trên 5 model (ô chuẩn) & 5 model $\times$ (40 trial tự nhiên $+$ 30 trial/cạnh) & ASR: Llama $0{,}800$ · DeepSeek $0{,}475$ · qwen $0{,}300$ · Nova $0{,}075$ · Claude $0{,}000$\\
+\hline
+2 & Tính chuyển được (transportability) & 2 model, giao thức \texttt{fresh-artifact} & Llama lệch \textbf{$3{,}75\times$} ở cạnh giữa; DeepSeek khớp \textbf{$2{,}2\%$}\\
+\hline
+3 & Đối chứng chính sách artefact & 2 model $\times$ 2 chế độ & DeepSeek: $p$ từ $\mathbf{0{,}0030}$ (sai) $\to$ $\mathbf{0{,}630}$ (đúng) --- tự rút lại kết quả\\
+\hline
+4 & Hình thức thông điệp & 40 trial tự nhiên $+$ 30 phát lại/arm/cạnh & cùng mục tiêu, cùng cách chấm: $0{,}067$ vs $\mathbf{0{,}967}$ (\textbf{14 lần})\\
+\hline
+5 & Biến hình tấn công $\times$ defense & 3 model $\times$ 2 defense $\times$ 3 kiểu $\times$ 30 mẫu & redact chặn literal $1{,}00\to 0{,}00$ nhưng tách chuỗi qua mặt\\
+\hline
+6 & Topology & 3 topology $\times$ $n=7$ & ASR $0{,}450$ / $0{,}725$ / $0{,}800$; $R_0$ $0{,}821$ / $0{,}420$ / $0{,}831$\\
+\hline
+7 & Đường cong chiều sâu & 3 model $\times$ (60 trial $+$ 30/cạnh) & độ dốc $\rho$: $+1{,}00$ · $+0{,}77$ · $-0{,}07$\\
+\hline
+8 & Mô hình có vòng lặp & 2 model $\times$ 40 trial $\times$ 5 vòng & dự đoán $\rho$ đúng \emph{cả hai chiều}: bền (Llama) và yếu dần (qwen)\\
+\hline
+9 & Ảnh hưởng lên công việc hợp lệ (utility) & 2 model $\times$ 3 defense $\times$ 20 cặp & redact: ASR $0{,}450\to 0$, giữ được $1{,}000$; paraphrase: giữ được $0{,}400$ (tệ hơn không làm gì)\\
+\hline
+10 & Độ nhạy \& kiểm định giả định thống kê & 8 seed $\times$ 20 trial/cạnh; $+$ dữ liệu tổng hợp & $\varphi=0{,}58$ (i.i.d. đạt); $\chi^2=13{,}40$, $p=0{,}0014$ (phụ thuộc ngữ cảnh)\\
+\hline
+\end{longtable}
+
+\normalsize
+\textbf{Tổng khối lượng:} $\approx$ 9.070 lượt gọi model (cận dưới) · 2.342 trial tự nhiên ·
+46 thư mục kết quả (25 có cấu trúc chuẩn) · $\approx$ 4,3 giờ máy ghi lại được.
+
+% =====================================================================
+\section{Chi tiết từng nhóm}
+
+\subsection{Nhóm 1 --- Đo lan truyền trên 5 model (ô chuẩn của bài)}
+\nhan{Mục đích:} trả lời ``model nào dễ bị lây, và xác suất sống sót qua mỗi lần chuyển
+giao là bao nhiêu''.\\
+\nhan{Thiết lập:} chuỗi 4 agent, đầu vào ở \texttt{agent\_0}; 40 lần chạy tự nhiên để đo
+tỉ lệ thành công đầu-cuối; 30 lần cho \emph{mỗi} cạnh theo giao thức có kiểm soát để đo
+xác suất sống sót có điều kiện; 3 ngữ cảnh công việc hợp lệ xoay vòng.\\
+\nhan{Kết quả:} Llama 3.3 70B $0{,}800$; DeepSeek V3.2 $0{,}475$; qwen2.5:7b $0{,}300$;
+Nova Pro $0{,}075$; Claude Sonnet 4.5 $0{,}000$. Xác suất sống sót chênh nhau
+\textbf{6,5 lần} giữa các vai trò agent (worker $0{,}133$ so với reviewer $0{,}867$).\\
+\nhan{Ý nghĩa:} ``dễ bị lây'' \emph{không} đi theo ``model mạnh hơn'' --- phải đo, không
+suy từ bảng xếp hạng.
+
+\subsection{Nhóm 2 --- Tính chuyển được: con số đo cách ly có dùng được không?}
+\nhan{Mục đích:} đây là \textbf{câu hỏi trung tâm} của dự án. Các benchmark hiện nay đo
+một agent rồi người ta nhân các con số đó lên để dự đoán cho pipeline --- phép nhân đó có
+đúng không?\\
+\nhan{Thiết lập:} chạy thêm giao thức \texttt{fresh-artifact} (mỗi trial rút một artefact
+mới) và đo đồng thời xác suất sống sót \emph{trong chuỗi thật}, để so trực tiếp hai con
+số.\\
+\nhan{Kết quả:} DeepSeek: tích cách ly $0{,}409$ so với ASR $0{,}400$ --- khớp tới
+\textbf{2,2\%}. Llama: cạnh giữa đo cách ly $0{,}233$ nhưng trong chuỗi thật $0{,}875$ ---
+\textbf{thấp hơn $3{,}75$ lần}.\\
+\nhan{Ý nghĩa:} giả định ngầm của mọi benchmark một-agent \emph{thất bại trên một số
+model}, và mức thất bại phụ thuộc model.
+
+\subsection{Nhóm 3 --- Đối chứng chính sách artefact (một kết quả của chính em đã bị rút lại)}
+\nhan{Mục đích:} kiểm xem kết quả có phải do \emph{cách đo} mà ra không.\\
+\nhan{Thiết lập:} chạy cùng một ô hai lần: một lần \emph{giữ cố định} artefact đã bị nhiễm
+dùng lại cho mọi trial, một lần rút artefact mới cho từng trial.\\
+\nhan{Kết quả:} với chế độ giữ cố định, DeepSeek cho $p=\mathbf{0{,}0030}$ --- nhìn như
+bác bỏ giả thuyết Markov. Khi rút artefact mới: $p=\mathbf{0{,}630}$, \emph{không} bác bỏ
+được gì. Ngược lại, bất thường của Llama \emph{đứng vững} qua cả hai chế độ.\\
+\nhan{Ý nghĩa:} em giữ cả cái sai và cách sửa trong bài, vì với nghiên cứu đo lường thì
+\textbf{cách đo là một phần của kết quả}.
+
+\subsection{Nhóm 4 --- Hình thức thông điệp quyết định sự sống sót}
+\nhan{Mục đích:} tìm \emph{cơ chế} giải thích vì sao phép đo cách ly sai.\\
+\nhan{Thiết lập:} giữ nguyên mục tiêu, agent nhận, cách chấm và phân công; chỉ đổi cách
+trình bày thông điệp: một câu khẳng định trần, so với nhúng trong một sản phẩm công việc.\\
+\nhan{Kết quả:} $0{,}067$ so với $\mathbf{0{,}967}$ --- chênh \textbf{14 lần}. Tự kiểm tra
+lại bằng cách phát lại nội dung bắt được: khớp \textbf{2/3} cạnh (báo cáo đúng 2/3, không
+làm tròn thành ``khớp hoàn toàn'').\\
+\nhan{Ý nghĩa:} artefact ``chuẩn hoá'' mà phép đo cách ly dùng \emph{không đại diện} cho
+thông điệp thật.
+
+\subsection{Nhóm 5 --- Biến hình tấn công $\times$ cơ chế phòng thủ}
+\nhan{Mục đích:} đo xem một cơ chế phòng thủ có thật sự tác dụng, và nó bị lách thế nào.\\
+\nhan{Thiết lập:} 3 model $\times$ 2 defense (không / redaction) $\times$ 3 kiểu trình bày
+(thường, chèn khoảng trắng, tách chuỗi), 30 mẫu mỗi ô.\\
+\nhan{Kết quả:} redaction chặn sạch dạng literal ($1{,}00 \to 0{,}00$) nhưng dạng tách
+chuỗi lách qua được (tới $1{,}00$ trên DeepSeek). Trên Claude, khi \emph{không} phòng thủ
+tỉ lệ đã chỉ $0{,}10$ --- nên ``redaction giảm về 0'' ở đó không chứng minh được gì.\\
+\nhan{Ý nghĩa:} đây là \textbf{hiệu ứng sàn}: thiếu baseline ``không phòng thủ'' thì
+không xác định được hiệu quả của defense.
+
+\subsection{Nhóm 6 --- Topology: hình dạng mạng thay đổi cách rủi ro thể hiện}
+\nhan{Thiết lập:} 3 topology cùng 7 agent (chuỗi, hình sao fan-in, hình cây), mỗi topology
+40 trial tự nhiên $+$ 30 trial/cạnh.\\
+\nhan{Kết quả:} ba topology có xác suất sống sót trung bình gần như nhau
+($\bar s \approx 0{,}76$) nhưng: ASR $0{,}450$ / $0{,}725$ / $0{,}800$ và
+$R_0$ $0{,}821$ / $0{,}420$ / $0{,}831$.\\
+\nhan{Ý nghĩa:} \textbf{độ lan tới} và \textbf{khả năng tái lây} là hai rủi ro \emph{khác
+nhau}; một topology có thể làm chúng tách rời. Hình sao tới đích nhiều hơn nhưng tái lây
+ít hơn.
+
+\subsection{Nhóm 7 --- Đường cong chiều sâu: sai số có tích luỹ không?}
+\nhan{Thiết lập:} chạy \emph{một} chuỗi dài, mỗi nút là một mốc độ sâu; so tích các con số
+đo cách ly với xác suất bị nhiễm thật ở độ sâu đó. Llama 15 agent, DeepSeek 8, qwen 7;
+mỗi model 60 trial tự nhiên $+$ 30 trial/cạnh.\\
+\nhan{Kết quả:} qwen sai số tăng \emph{đơn điệu} ($\rho=+1{,}00$, $+11{,}8$ điểm \%/hop);
+Llama tăng ($+0{,}77$, $+6{,}8$); DeepSeek \emph{phẳng} ($-0{,}07$, $+0{,}1$). Bốn điểm
+cuối của Llama bị \emph{loại} vì chuỗi chết hẳn, không gán sai số 100\%.\\
+\nhan{Ý nghĩa:} \textbf{độ dốc của đường cong tự nó là phép chẩn đoán}: một chuỗi dài,
+một lần chạy, biết ngay model đó có cộng dồn được các con số đo cách ly hay không.
+
+\subsection{Nhóm 8 --- Mô hình có vòng lặp: tiêu chí ngưỡng và quy tắc thiết kế}
+\nhan{Mục đích:} tiêu chí ``$R_0<1$ là an toàn'' vô hiệu trên mạng không có vòng (em
+chứng minh bằng toán). Vậy khi mạng \emph{có} vòng thì sao?\\
+\nhan{Thiết lập:} mô hình thật trong các framework: một manager giao việc cho 2 worker,
+worker báo cáo ngược lại. Hai model (Llama, qwen), 40 trial $\times$ 5 vòng, cộng 30
+trial/cạnh để đo các xác suất sống sót.\\
+\nhan{Kết quả:} công thức $\rho=\sqrt{\sum_j a_jc_j}$ (kiểm bằng số tới
+$4{,}4\times10^{-16}$ trên 320 cấu hình ngẫu nhiên) đưa ra \textbf{hai dự đoán ngược nhau}
+và \emph{cả hai đều đúng}: Llama $\rho=1{,}342>1$, manager bị tái nhiễm $0{,}725$, tới
+vòng 5 vẫn $0{,}700$ (bền); qwen $\rho=0{,}760<1$, manager từ $0{,}775$ giảm còn
+$\mathbf{0{,}650}$ (yếu dần). Từ đó ra \textbf{quy tắc thiết kế}: vượt ngưỡng khi
+$\sum_j a_jc_j>1$; đối xứng thì $w\,s^2>1$ --- ở $s=0{,}5$ cần 5 worker, $0{,}7$ cần 3,
+$0{,}9$ cần 2.\\
+\nhan{Giới hạn đã ghi trong bài:} mới 5 vòng --- đủ phân biệt ``yếu dần'' với ``bão hoà'',
+\emph{chưa} đủ để khẳng định tắt hẳn.
+
+\subsection{Nhóm 9 --- Ảnh hưởng lên công việc hợp lệ (utility)}
+\nhan{Thiết lập:} mỗi cơ chế phòng thủ chạy 20 cặp: một lần sạch, một lần bị tấn công; đo
+mạng còn hoàn thành đúng công việc hợp lệ được bao nhiêu phần.\\
+\nhan{Kết quả:} trên DeepSeek, redaction chặn sạch tấn công ($0{,}450 \to 0$) mà
+\emph{không} mất công việc hợp lệ (giữ được $1{,}000$); cơ chế viết lại ngữ nghĩa
+(paraphrase) \emph{không giảm} lan truyền mà còn làm mất thêm ($0{,}400 < 0{,}600$ của
+không làm gì).\\
+\nhan{Ý nghĩa:} phải báo cáo \emph{cặp} (tỉ lệ tấn công, mức mất công việc hợp lệ); nếu
+chỉ báo tỉ lệ tấn công thì paraphrase trông ``trung tính''.
+\nhan{Hạn chế:} đại lượng này đang là \emph{proxy} (mức nhiễm bẩn sản phẩm), chưa phải độ
+đúng thật.
+
+\subsection{Nhóm 10 --- Độ nhạy và kiểm định giả định thống kê}
+\nhan{Mục đích:} khoảng tin cậy dựa trên giả định các lần chạy độc lập --- giả định đó có
+đúng với LLM không?\\
+\nhan{Thiết lập:} 6 seed $\times$ 3 temperature, và một lần chạy riêng 8 seed ở một
+temperature; cộng thêm kiểm định công cụ thống kê trên dữ liệu tổng hợp có đáp án biết
+trước (60 lần lặp).\\
+\nhan{Kết quả:} hệ số phân tán $\varphi=0{,}58$ trong cùng một temperature $\Rightarrow$
+giả định độc lập \emph{được ủng hộ}. Nhưng kiểm định $\chi^2$ theo 3 ngữ cảnh công việc
+\emph{bác bỏ} tính đồng nhất trên đúng cạnh yếu ($\chi^2=13{,}40$, $df=2$, $p=0{,}0014$;
+$18/56$ so với $3/56$ so với $13/48$).\\
+\nhan{Ý nghĩa:} xác suất sống sót \emph{phụ thuộc nội dung công việc hợp lệ} --- cùng cơ
+chế mà nhóm 4 chỉ ra từ hướng khác. Các con số trong bài là trung bình trên ngữ cảnh.
+Đây cũng là chỗ em báo cáo thẳng một kết quả \emph{bất lợi} cho giả định của chính mình.
+
+% =====================================================================
+\section{Giai đoạn thăm dò (không dùng số trong bài)}
+
+Trước khi chốt thiết kế, em chạy 12 thư mục thí nghiệm nhỏ để trả lời các câu hỏi kỹ thuật.
+Số liệu của chúng \textbf{không} xuất hiện trong bài báo --- mục đích chỉ là chốt cách đo:
+
+\begin{sloppypar}
+\begin{itemize}
+  \item \textbf{Chấm điểm:} \texttt{asv\_dist\_probe}, \texttt{judge\_calib},
+        \texttt{judge\_calib\_7b}, \texttt{judge\_calib\_smoke}, \texttt{judge\_calib\_smoke2}
+        --- chọn ngưỡng và kiểm phân bố của công cụ chấm.
+  \item \textbf{Chốt họ nhiệm vụ:} \texttt{mini\_study\_7b}, \texttt{mini\_study\_7b\_ctx},
+        \texttt{mini\_study\_7b\_v2}, \texttt{task\_b\_pilot}, \texttt{semantic\_probe}
+        --- thử nhiệm vụ ``đọc lại chuỗi'' (bão hoà ở $1{,}0$, không phân biệt được
+        defense) rồi chuyển sang nhiệm vụ ``cạnh tranh ngữ nghĩa''.
+  \item \textbf{Thăm dò defense:} \texttt{defense\_diag}, \texttt{defense\_reinj\_probe},
+        \texttt{taskb\_obfuscation}, \texttt{task\_b\_redact\_nlarge},
+        \texttt{rerun\_chain\_n40}, \texttt{rerun\_chain\_paraphrase\_n40}.
+  \item \textbf{Kiểm kết nối:} \texttt{smoke\_bedrock} (2 trial, chỉ để chắc API chạy được).
+\end{itemize}
+\end{sloppypar}
+
+\nhan{Vì sao phải nói phần này:} nếu chỉ đưa ra con số ``46 thư mục'', người nghe dễ hiểu
+nhầm là 46 thí nghiệm đều dùng trong bài. Thực tế \textbf{25 thư mục} có cấu trúc chuẩn
+được dùng, phần còn lại là chạy thử để chốt thiết kế. Một bài đo lường tử tế thì phải có
+giai đoạn này, và nó cũng là thứ giúp phát hiện ra hai lỗi thiết kế lớn (xem nhóm 3).
+
+% =====================================================================
+\section{Các phân tích chạy lại từ dữ liệu đã có (0 lần gọi model)}
+
+Đây là điểm em muốn thầy/cô lưu ý: \textbf{không phải việc gì cũng cần gọi model}. Một
+phần đáng kể đóng góp của bài là phân tích lại dữ liệu đã đo, không tốn thêm chi phí:
+
+\begin{itemize}
+  \item \texttt{threshold\_analysis.py} --- tính bán kính phổ, kết luận về tiêu chí ngưỡng,
+        và bài toán đặt phòng thủ ở đâu (Nhóm 6, §3.8 của bài).
+  \item \texttt{isolation\_validity.py} --- đối chiếu xác suất sống sót đo cách ly với
+        trong chuỗi (Nhóm 2).
+  \item \texttt{markov\_formal\_all.py} --- kiểm định composition có khoảng tin cậy và
+        độ lệch nhỏ nhất phát hiện được.
+  \item \texttt{depth\_trend.py} --- thống kê hình dạng đường cong chiều sâu: tương quan
+        hạng và độ dốc, có loại tường minh các điểm không xác định (Nhóm 7).
+  \item \texttt{cyclic\_design\_rule.py} --- kiểm chứng công thức
+        $\rho=\sqrt{\sum_j a_jc_j}$ và quy tắc thiết kế (Nhóm 8).
+  \item \texttt{utility\_from\_outputs.py} --- chấm lại phần ảnh hưởng lên công việc hợp lệ
+        từ đầu ra thô, \emph{không} cần gọi lại model (Nhóm 9).
+  \item \texttt{audit\_numbers.py}, \texttt{scale\_report.py},
+        \texttt{check\_results\_complete.py} --- tự kiểm: số trong bài có khớp file kết quả
+        không, quy mô thực nghiệm, và có mất kết quả nào không.
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{center}
+\fbox{\parbox{0.94\textwidth}{
+\textbf{Nếu chỉ có 3 phút để nói về thực nghiệm:} em đã chạy
+\textbf{10 nhóm thực nghiệm} trên \textbf{5 model / 5 nhà phát triển}, tổng
+$\approx$ \textbf{9.070 lượt gọi model} và \textbf{2.342 trial tự nhiên}; trong đó có
+\textbf{1 nhóm đối chứng} cho thấy một kết quả ban đầu của chính em là lỗi thiết kế đo và
+đã bị rút lại. Ngoài ra có \textbf{7 phân tích} chạy lại từ dữ liệu đã có mà không tốn
+thêm chi phí gọi model.
+}}
+\end{center}
+
+% =====================================================================
+\section{Lời nói gợi ý --- nói gì với giảng viên}
+
+\subsection*{Nếu chỉ được nói 30 giây}
+``Thưa thầy/cô, em làm thực nghiệm theo \emph{hai giao thức độc lập}: một giao thức đo
+xác suất lây qua \emph{từng cạnh} một cách có kiểm soát, và một giao thức chạy cả mạng
+\emph{tự nhiên} để đo tỉ lệ thành công đầu-cuối. Em chạy trên \textbf{5 model của 5 nhà
+phát triển}, tổng khoảng \textbf{9 nghìn lượt gọi model}. Trong đó có một thí nghiệm đối
+chứng cho thấy một kết quả ban đầu của chính em là do lỗi thiết kế đo, và em đã rút lại.''
+
+\subsection*{Nếu được nói khoảng 3 phút --- nói theo 10 câu này, mỗi câu một thí nghiệm}
+
+\begin{enumerate}
+  \item \nhan{Đo lan truyền cơ bản (5 model):} mỗi model em chạy 40 lần tự nhiên và 30
+        lần cho mỗi cạnh. Kết quả: Llama dễ lây nhất ($0{,}8$), rồi DeepSeek ($0{,}475$),
+        qwen ($0{,}3$), Nova ($0{,}075$), Claude gần như không lây ($0$). Đáng chú ý là
+        thứ tự này \emph{không} theo độ mạnh của model.
+  \item \nhan{Thí nghiệm quan trọng nhất --- con số đo riêng lẻ có dùng được không:} em
+        kiểm xem xác suất đo \emph{cách ly} từng cạnh có bằng xác suất \emph{trong chuỗi
+        thật} không. Trên DeepSeek thì khớp (lệch $2{,}2\%$); trên Llama thì lệch
+        \textbf{3,75 lần}. Nghĩa là cách làm quen thuộc ``đo một agent rồi nhân lên'' là
+        \emph{không đáng tin}.
+  \item \nhan{Thí nghiệm đối chứng về cách đo:} em chạy cùng một ô hai lần --- một lần
+        dùng lại một mẫu cố định, một lần rút mẫu mới cho từng lần chạy. Lần đầu cho kết
+        quả rất mạnh ($p = 0{,}003$), nhưng đó là \emph{lỗi do cách đo}; sửa lại thì
+        $p = 0{,}63$, không kết luận được gì. Em rút lại kết quả đó và ghi cả cái sai lẫn
+        cách sửa vào bài.
+  \item \nhan{Tìm cơ chế --- vì sao sai:} giữ nguyên mục tiêu, agent nhận và cách chấm,
+        chỉ đổi \emph{cách trình bày} thông điệp. Một câu khẳng định trần lây được
+        $0{,}067$; nhúng trong một sản phẩm công việc lây được $0{,}967$ --- chênh
+        \textbf{14 lần}.
+  \item \nhan{Thử cơ chế phòng thủ:} redaction xóa chuỗi bí mật thì chặn được $100\%$
+        dạng tấn công thường, nhưng nếu kẻ tấn công \emph{tách chuỗi} ra thì lách qua được.
+        Và trên model vốn đã kháng tốt thì ``chặn được'' không chứng minh được gì.
+  \item \nhan{So ba cách bố trí mạng cùng 7 agent:} chuỗi, hình sao, hình cây. Xác suất
+        lây trung bình gần như nhau nhưng kết cục khác hẳn: hình sao tới đích nhiều hơn
+        nhưng \emph{tái lây ít hơn}.
+  \item \nhan{Chạy một chuỗi dài để xem sai số có tích luỹ:} Llama 15 agent, DeepSeek 8,
+        qwen 7. Trên qwen sai số tăng đều từng bước, trên Llama cũng tăng, còn DeepSeek thì
+        \emph{phẳng}. Nên độ dốc của đường cong tự nó là cách chẩn đoán.
+  \item \nhan{Làm mô hình có vòng:} một manager giao việc cho hai worker rồi worker báo
+        cáo ngược lại. Em tính ra công thức ngưỡng, công thức đó dự đoán \emph{hai chiều
+        ngược nhau} trên hai model --- và em chạy cả hai: Llama thì lây dai dẳng, qwen thì
+        yếu dần. \emph{Cả hai đều đúng như dự đoán.}
+  \item \nhan{Đo ảnh hưởng lên công việc hợp lệ:} redaction chặn sạch tấn công mà không
+        làm mất việc; còn cơ chế viết lại ngữ nghĩa không giảm được lây mà còn làm mất
+        thêm --- \emph{tệ hơn cả không làm gì}.
+  \item \nhan{Kiểm giả định thống kê:} các lần chạy có độc lập không. Trong cùng một
+        temperature thì đạt, nhưng khi kiểm theo \emph{nội dung công việc} thì phát hiện
+        xác suất lây phụ thuộc vào việc agent đang làm.
+\end{enumerate}
+
+\subsection*{Câu kết}
+``Tổng lại: khoảng \textbf{9 nghìn lượt gọi model}, \textbf{5 model của 5 nhà phát triển},
+\textbf{10 nhóm thực nghiệm}, và một kết quả của chính em đã bị \emph{rút lại} sau khi em
+phát hiện lỗi trong thiết kế đo.''
+
+\subsection*{Ba điều KHÔNG nên nói (dễ bị bắt lỗi)}
+\begin{itemize}
+  \item \textbf{Đừng nói ``em làm 46 thí nghiệm''.} Con số 46 là \emph{số thư mục kết quả};
+        chỉ \textbf{25} thư mục có cấu trúc dùng cho bài. Nói: ``23 thí nghiệm chính, phần
+        còn lại là chạy thử để chốt thiết kế''.
+  \item \textbf{Đừng nói ``em bác bỏ được giả thuyết Markov''.} Kết quả đó đã bị rút lại
+        ($p$ từ $0{,}003$ thành $0{,}63$). Nói đúng: ``em tưởng bác bỏ được, nhưng kiểm lại
+        thì đó là lỗi thiết kế đo, nên em rút lại''.
+  \item \textbf{Đừng nói vòng lặp ``tắt hẳn''.} Mới chạy 5 vòng --- chỉ đủ để nói
+        ``yếu dần''. Nói ``yếu dần'' hoặc ``có dấu hiệu tắt dần''.
+\end{itemize}
+
+\subsection*{Nếu thầy/cô hỏi thêm}
+\begin{itemize}
+  \item \textbf{``Sao biết kết quả không phải do lỗi code?''} --- Em có hai giao thức độc
+        lập cho hai con số phải khớp nhau theo một đẳng thức đã chứng minh; công cụ thống
+        kê được kiểm trên dữ liệu tổng hợp có đáp án; và có một script đối chiếu từng con số
+        trong bài với file kết quả gốc.
+  \item \textbf{``Cỡ mẫu 40 có đủ không?''} --- Ở $n = 40$ chỉ phát hiện được lệch lớn hơn
+        $0{,}26$. Em công bố con số này trong bài và \emph{không} coi kết quả ``không bác
+        bỏ'' là bằng chứng.
+  \item \textbf{``Tốn bao nhiêu tiền / thời gian?''} --- Phần chạy trên model cloud dùng
+        kinh phí của bộ môn; phần qwen chạy tại máy nên miễn phí. Thời gian máy ghi lại
+        được $\approx 4{,}3$ giờ, nhưng đây là cận dưới.
+  \item \textbf{``Bước tiếp theo là gì?''} --- Mở rộng sang mạng lưới và mạng tranh luận
+        (có đường song song --- nơi bài toán đặt phòng thủ thành bài toán tối ưu thật sự),
+        và xây họ nhiệm vụ có đáp án kiểm chứng được để đo ảnh hưởng lên công việc chính xác
+        hơn.
+\end{itemize}
+
+\end{document}

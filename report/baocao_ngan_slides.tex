@@ -1,0 +1,282 @@
+% =====================================================================
+%  SLIDE CHIẾU — BẢN NGẮN (10 slide nội dung)
+%  Biên dịch:  xelatex baocao_ngan_slides.tex
+%  Lời nói đầy đủ cho bản ngắn: baocao_ngan.pdf
+% =====================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usefonttheme{professionalfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamerfont{frametitle}{size=\large}
+
+\title[Contagion: lan truyền prompt injection]{Contagion: đo lan truyền prompt injection trong mạng LLM agent}
+\subtitle{Báo cáo tiến độ --- bản ngắn}
+\author[Người báo cáo]{Người báo cáo: \underline{\hspace{3.2cm}}}
+\institute[Lớp/Đơn vị]{Lớp/Đơn vị: \underline{\hspace{4cm}}}
+\date{\underline{\hspace{3.5cm}}}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Bối cảnh và câu hỏi nghiên cứu}
+  \begin{itemize}
+    \item LLM agent triển khai như một \textbf{tổ chức}: planner $\to$ worker $\to$
+          reviewer $\to$ aggregator. Mỗi lần chuyển giao là một \textbf{ranh giới tin cậy}.
+    \item Kẻ tấn công chèn chỉ dẫn độc hại vào nguồn dữ liệu agent đọc; đầu ra của agent
+          bị nhiễm thành đầu vào của agent sau.
+    \item Benchmark hiện có chỉ đo \textbf{một agent, một bước}.
+    \item \textbf{Câu hỏi:} một agent bị nhiễm thì lan được bao xa, và cái gì quyết định
+          nó sống sót qua mỗi lần chuyển giao?
+    \item \textbf{Cách làm:} khung đo \emph{hai protocol độc lập}; 5 model / 5 nhà phát triển;
+          3 topology.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Phương pháp: hai protocol độc lập}
+  \begin{block}{A --- đo từng cạnh có kiểm soát}
+    \emph{ép} đầu ra agent nguồn thành ``đã nhiễm'' $\to$ đưa cho agent nhận $\to$ chấm
+    $\Rightarrow s_i=\Pr[C_i{=}1 \mid C_{i-1}{=}1]$.
+  \end{block}
+  \begin{block}{B --- chạy tự nhiên}
+    Chạy cả mạng $\Rightarrow$ tỉ lệ thành công đầu-cuối (ASR) và chỉ số lây nhiễm $R_0$.
+  \end{block}
+  \begin{itemize}
+    \item \textbf{Vì sao hai?} Một cách đo thì khi hai con số lệch nhau, không phân biệt
+          được ``\emph{đo sai}'' với ``\emph{hiểu sai hệ thống}''.
+    \item Chấm \textbf{tất định}, \emph{không} dùng LLM làm giám khảo; 3 ngữ cảnh công
+          việc hợp lệ xoay vòng.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Quy mô thực nghiệm: đã chạy bao nhiêu?}
+  \begin{itemize}
+    \item \textbf{$\approx$ 9.070 lượt gọi model} (cận dưới) · \textbf{2.342} trial tự
+          nhiên · 46 thư mục kết quả · \textbf{4,3 giờ} máy (cận dưới)
+    \item \textbf{5 model / 5 nhà phát triển · 2 protocol · 3 topology · 3 defense ·
+          3 kiểu biến hình}
+  \end{itemize}
+  \begin{center}
+  \scriptsize
+  \begin{tabular}{|l|l|}
+  \hline
+  \textbf{Loại thí nghiệm} & \textbf{Số lần chạy}\\
+  \hline
+  Ô chuẩn (mọi model) & chuỗi $n{=}4$: 40 trial tự nhiên $+$ 30 trial/cạnh\\
+  Đường cong chiều sâu & 60 trial; 30/cạnh; $n{=}15$ / $n{=}8$ / $n{=}7$\\
+  Mô hình có vòng & 40 trial $\times$ 5 vòng $\times$ 3 agent\\
+  Utility (công việc hợp lệ) & 20 cặp sạch/tấn công cho mỗi defense\\
+  Độ nhạy (seed $\times$ temp) & 8 seed $\times$ 20 trial/cạnh\\
+  Biến hình $\times$ defense & 6 ô $\times$ 30 mẫu/ô\\
+  Topology & 3 topology $\times$ $n{=}7$\\
+  \hline
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item Lượt gọi là \textbf{ước lượng cận dưới} --- chưa tính lần thử lại và lần chạy hỏng.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kết quả 1 + 2: đẳng thức, và nó \emph{thất bại}}
+  \begin{itemize}
+    \item $C_i{=}1 \Rightarrow C_{i-1}{=}1$ $\Rightarrow$
+          $\mathrm{ASR}=\prod_i s_i^{\mathrm{nat}}$ là \textbf{đẳng thức}, không phải giả
+          định (kiểm: $0{,}850=0{,}850$; $0{,}450=0{,}450$).
+    \item Câu hỏi thật: con số đo \emph{cách ly} có bằng con số \emph{trong chuỗi}?
+          $\Rightarrow$ \textbf{tuỳ model}: DeepSeek khớp $2{,}2\%$; Llama cạnh giữa
+          $0{,}233$ vs $0{,}875$ (\textbf{lệch $3{,}75\times$}).
+  \end{itemize}
+  \begin{center}
+  \small
+  \begin{tabular}{|l|c|c|c|c|}
+  \hline
+  \textbf{Sai số theo độ sâu} & \textbf{Chuỗi} & \textbf{Sai số} & \textbf{$\rho$} & \textbf{Dốc (\%/hop)}\\
+  \hline
+  qwen2.5:7b & n=7 & $31\%\to 89\%$ & $+1{,}00$ & $+11{,}8$\\
+  Llama 3.3 70B & n=15 & $0\%\to 92\%$ & $+0{,}77$ & $+6{,}8$\\
+  DeepSeek V3.2 & n=8 & $7\%$--$35\%$ & $-0{,}07$ & $+0{,}1$\\
+  \hline
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item $\Rightarrow$ \textbf{độ dốc đường cong là phép chẩn đoán}: một chuỗi dài, một
+          lần chạy, biết ngay model đó có cộng dồn được hay không.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Cơ chế: hình thức thông điệp quyết định --- chênh $\mathbf{14}$ lần}
+  \begin{center}
+  \small
+  \begin{tabular}{|l|c|}
+  \hline
+  \textbf{Cách trình bày} (cùng mục tiêu, cùng agent nhận, cùng cách chấm)
+  & \textbf{Xác suất sống sót}\\
+  \hline
+  Một câu khẳng định trần & $0{,}067$\\
+  Nhúng trong một sản phẩm công việc & $\mathbf{0{,}967}$\\
+  \hline
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item Giải thích vì sao đo cách ly lệch: artefact ``chuẩn hoá'' \emph{không đại diện}
+          cho thông điệp thật trong mạng.
+    \item Tự kiểm tra lại: phát lại nội dung bắt được khớp \textbf{2/3} cạnh --- báo cáo
+          đúng $2/3$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kết quả 3: tiêu chí ngưỡng dịch tễ \emph{vô hiệu} với mạng agent}
+  \begin{itemize}
+    \item \textbf{Định lý:} ma trận lây nhiễm của \emph{mọi} mạng không có vòng, sắp theo
+          topology, là \textbf{tam giác chặt} $\Rightarrow$ mọi giá trị riêng bằng $0$
+          $\Rightarrow \rho(M)=0$ \textbf{luôn luôn}, bất kể cạnh mạnh cỡ nào.
+    \item Nghĩa là ``$R_0<1$ $\Rightarrow$ an toàn'' được thoả mãn \emph{tầm thường}:
+          không phân biệt được hệ an toàn với hệ nguy hiểm.
+    \item Thực nghiệm:
+      \begin{itemize}
+        \item chuỗi 7 agent: $R_0=0{,}821<1$ nhưng ASR $=0{,}450$
+        \item hình sao: $R_0=0{,}420<1$ nhưng ASR $=0{,}725$
+      \end{itemize}
+    \item \textbf{Độ lan tới} và \textbf{khả năng tái lây} là hai rủi ro khác nhau.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kết quả 3 (tiếp): có vòng lặp thì thành \emph{quy tắc thiết kế}}
+  \begin{itemize}
+    \item Manager $+$ $w$ worker báo cáo ngược (kiểm bằng số tới $4{,}4{\times}10^{-16}$):
+          $\rho=\sqrt{\sum_j a_jc_j}$; không có báo cáo ngược $\Rightarrow \rho=0$.
+    \item \textbf{Vượt ngưỡng} $\iff \sum_j a_jc_j>1$; đối xứng $w\,s^2>1$:
+          ở $s{=}0{,}5$ cần \textbf{5} worker, $0{,}7$ cần \textbf{3}, $0{,}9$ cần \textbf{2}.
+  \end{itemize}
+  \begin{center}
+  \small
+  \begin{tabular}{|l|c|c|l|}
+  \hline
+  \textbf{Model} & $\sum_j a_jc_j$ & $\rho$ & \textbf{Dự đoán $\to$ Đo được}\\
+  \hline
+  Llama 3.3 70B & $1{,}800$ & $\mathbf{1{,}342}$ & bền $\to$ manager $0{,}725$; vòng 5 còn $0{,}700$ \checkmark\\
+  qwen2.5:7b & $0{,}578$ & $0{,}760$ & yếu dần $\to$ manager $0{,}775\to\mathbf{0{,}650}$ \checkmark\\
+  \hline
+  \end{tabular}
+  \end{center}
+  \begin{itemize}
+    \item \textbf{Hai dự đoán ngược nhau, cả hai đều đúng.}
+    \item Giới hạn: mới 5 vòng --- đủ phân biệt ``yếu dần'' với ``bão hoà'', \emph{chưa}
+          đủ chứng minh tắt hẳn.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kết quả 4: đánh giá phòng thủ cần baseline}
+  \begin{itemize}
+    \item Cùng defense, cùng tấn công, cùng code chấm, chỉ đổi model:
+      \begin{itemize}
+        \item Claude: không phòng thủ đã chỉ $0{,}10$; redaction $\to 0{,}00$
+              $\Rightarrow$ ``trông hoàn hảo'' nhưng chỉ có $10\%$ để bảo vệ.
+        \item DeepSeek: $1{,}00 \to 0{,}00$ $\Rightarrow$ defense làm hết việc.
+      \end{itemize}
+    \item \textbf{Thiếu baseline ``không phòng thủ'' thì không xác định được hiệu quả.}
+    \item Phải báo \emph{cặp} (ASR, mất công việc hợp lệ): trên DeepSeek,
+          \texttt{paraphrase} \textbf{không giảm} ASR mà còn mất thêm công việc hợp lệ
+          --- tệ hơn cả không làm gì.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kết quả phụ: vai trò agent, năng lực model, topology}
+  \begin{columns}
+  \begin{column}{0.53\textwidth}
+    \begin{itemize}
+      \item Cùng model, cùng tấn công: xác suất sống sót chênh \textbf{$6{,}5\times$}
+            (worker $0{,}133$ vs reviewer $0{,}867$).
+      \item Dễ bị lây \emph{không} theo ``model mạnh hơn''.
+      \item Topology cùng 7 agent, cùng $\bar s\approx0{,}76$: ASR $0{,}450$ / $0{,}725$ /
+            $0{,}800$.
+      \item \textbf{Đặt phòng thủ ở đâu:} chỉ agent trên đường tới mục tiêu, và mọi agent
+            trên đường đó \emph{hiệu quả như nhau} $\Rightarrow$ bài toán \emph{cấu trúc}.
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \begin{center}
+    \scriptsize
+    \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Model} & \textbf{ASR} & \textbf{$\bar s$}\\
+    \hline
+    Llama 3.3 70B & $0{,}800$ & $0{,}722$\\
+    DeepSeek V3.2 & $0{,}475$ & $0{,}933$\\
+    qwen2.5:7b & $0{,}300$ & $0{,}611$\\
+    Nova Pro & $0{,}075$ & $0{,}178$\\
+    Claude Sonnet 4.5 & $0{,}000$ & $0{,}211$\\
+    \hline
+    \end{tabular}
+    \end{center}
+  \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Trung thực phương pháp: một phát hiện của chính em đã bị rút lại}
+  \begin{itemize}
+    \item Ban đầu: trên DeepSeek, kiểm định bác bỏ giả thuyết Markov với
+          $p=\mathbf{0{,}0030}$ --- tưởng là phát hiện lớn.
+    \item Nguyên nhân thật: protocol \emph{giữ cố định} artefact đã nhiễm, dùng lại cho
+          mọi trial $\Rightarrow$ các trial phụ thuộc nhau, độ lệch bị phóng đại.
+    \item Sửa: thêm chế độ \texttt{--fresh-artifact} $\Rightarrow$ chạy lại:
+          $p=\mathbf{0{,}630}$, \emph{không} bác bỏ được gì.
+    \item Giữ cả cái sai và cách sửa trong bài: \textbf{cách đo là một phần của kết quả}.
+    \item Ngược lại, bất thường của Llama \emph{đứng vững} qua cả hai chế độ.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sản phẩm, hạn chế, kế hoạch}
+  \begin{itemize}
+    \item \textbf{Sản phẩm:} bản thảo AAMAS 2027 --- \textbf{8 trang} nội dung $+$ 1 trang
+          tài liệu tham khảo; 8 bảng $+$ 2 hình; mọi số sinh tự động, \emph{không nhập tay};
+          có tài liệu tái lập và script đối chiếu từng con số với kết quả gốc.
+    \item \textbf{Hạn chế:} utility đo bằng proxy; $n=30$--$40$ (chỉ phát hiện lệch
+          $>0{,}26$); chưa có topology lưới/tranh luận; mô hình có vòng mới 1 instance;
+          transportability mới chứng minh \emph{tồn tại} thất bại; chưa hiệu chỉnh đa so sánh.
+    \item \textbf{Kế hoạch:} mở rộng topology (lưới, tranh luận); nhiệm vụ có đáp án kiểm
+          chứng được để đo utility thật; chạy lại ô quan trọng ở cỡ mẫu lớn hơn.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kết luận}
+  \begin{itemize}
+    \item Lan truyền prompt injection trong mạng agent là hiện tượng \textbf{đa tác nhân}:
+          tầm với là thuộc tính của \emph{đồ thị, vai trò và thông điệp}.
+    \item \textbf{Ba thông điệp:}
+      \begin{enumerate}
+        \item ASR của benchmark một-agent \textbf{không} dùng được như tham số để nhân lên
+              thành dự đoán pipeline; sai số \emph{tăng theo độ dài pipeline}, và độ dốc
+              đó là phép chẩn đoán.
+        \item ``$R_0<1$ là an toàn'' \textbf{không} dùng được cho mạng không vòng; khi có
+              vòng thì thành \emph{quy tắc thiết kế} $\sum_j a_jc_j>1$, đã kiểm hai chiều.
+        \item Đánh giá defense thiếu baseline ``không phòng thủ'' thì
+              \textbf{không xác định được} hiệu quả.
+      \end{enumerate}
+    \item Sản phẩm: khung đo tái lập được $+$ bản thảo 8 trang $+$ toàn bộ dữ liệu thô.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Xin cảm ơn --- câu hỏi}
+  \begin{center}
+    \Large Sẵn sàng nhận câu hỏi của thầy/cô.
+  \end{center}
+  \vspace{0.8cm}
+  \begin{itemize}
+    \item Lời nói đầy đủ cho bản ngắn: \texttt{baocao\_ngan.pdf}
+    \item Bản chi tiết (17 slide + phụ lục): \texttt{baocao\_noidung.pdf}
+  \end{itemize}
+\end{frame}
+
+\end{document}

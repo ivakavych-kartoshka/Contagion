@@ -1,0 +1,101 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: contagion_aamas2027.aux
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+The style file: ACM-Reference-Format.bst
+Reallocating 'name_of_file' (item size: 1) to 5 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Database file #1: refs.bib
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--empty publisher in Andriushchenko2025AgentHarm
+Warning--empty address in Andriushchenko2025AgentHarm
+Warning--empty address in Cemri2025MAST
+Warning--page numbers missing in both pages and numpages fields in Cemri2025MAST
+Warning--empty address in StrUQ2025
+Warning--page numbers missing in both pages and numpages fields in StrUQ2025
+Warning--empty publisher in Chen2024AgentVerse
+Warning--empty address in Chen2024AgentVerse
+Warning--empty publisher in Debenedetti2026CaMeL
+Warning--empty address in Debenedetti2026CaMeL
+Warning--empty address in Debenedetti2024AgentDojo
+Warning--page numbers missing in both pages and numpages fields in Debenedetti2024AgentDojo
+Warning--empty publisher in Du2024MultiagentDebate
+Warning--empty address in Du2024MultiagentDebate
+Warning--empty address in Greshake2023
+Warning--empty publisher in Hines2024CAMLIS
+Warning--empty address in Hines2024CAMLIS
+Warning--empty publisher in Hong2023MetaGPT
+Warning--empty address in Hong2023MetaGPT
+Warning--page numbers missing in both pages and numpages fields in Hong2023MetaGPT
+Warning--empty publisher in Jimenez2024SWEBench
+Warning--empty address in Jimenez2024SWEBench
+Warning--empty address in Kempe2003
+Warning--page numbers missing in both pages and numpages fields in SwarmMarkov2026
+Warning--empty address in Lee2025Infection
+Warning--empty publisher in Liu2024AgentBench
+Warning--empty address in Liu2024AgentBench
+Warning--empty publisher in Perez2022PromptInjection
+Warning--empty address in Perez2022PromptInjection
+Warning--page numbers missing in both pages and numpages fields in Perez2022PromptInjection
+Warning--empty address in Schick2023Toolformer
+Warning--empty address in Shinn2023Reflexion
+Warning--empty publisher in Wu2024AutoGen
+Warning--empty address in Wu2024AutoGen
+Warning--page numbers missing in both pages and numpages fields in Wu2024AutoGen
+Warning--empty publisher in Yao2023ReAct
+Warning--empty address in Yao2023ReAct
+Warning--page numbers missing in both pages and numpages fields in Yao2023ReAct
+Warning--empty publisher in Zhan2025Adaptive
+Warning--empty address in Zhan2025Adaptive
+Warning--empty publisher in Zhang2025ASB
+Warning--empty address in Zhang2025ASB
+Warning--page numbers missing in both pages and numpages fields in Zhang2025ASB
+You've used 39 entries,
+            6273 wiz_defined-function locations,
+            1809 strings with 28954 characters,
+and the built_in function-call counts, 52422 in all, are:
+= -- 6348
+> -- 2124
+< -- 0
++ -- 743
+- -- 749
+* -- 4089
+:= -- 5198
+add.period$ -- 190
+call.type$ -- 39
+change.case$ -- 379
+chr.to.int$ -- 38
+cite$ -- 82
+duplicate$ -- 4462
+empty$ -- 3110
+format.name$ -- 880
+if$ -- 12591
+int.to.chr$ -- 3
+int.to.str$ -- 1
+missing$ -- 180
+newline$ -- 367
+num.names$ -- 272
+pop$ -- 1867
+preamble$ -- 1
+purify$ -- 689
+quote$ -- 0
+skip$ -- 1647
+stack$ -- 0
+substring$ -- 3830
+swap$ -- 478
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 954
+warning$ -- 43
+while$ -- 257
+width$ -- 0
+write$ -- 811
+(There were 43 warnings)

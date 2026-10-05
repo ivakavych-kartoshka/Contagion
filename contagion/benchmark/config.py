@@ -38,11 +38,14 @@ def load_config(path: Path) -> ContagionConfig:
         max_hops=int(data.get("max_hops", 10)),
         seed=data.get("seed"),
         model_id=data.get("model_id", "mock"),
-        tau_asv=float(data.get("tau_asv", 0.8)),
-        tau_mr=float(data.get("tau_mr", 1.0)),
+        tau_asv=float(data.get("tau_asv", 0.9)),
+        tau_mr=float(data.get("tau_mr", 0.6)),
         per_edge_trials=int(data.get("per_edge_trials", 30)),
         measure_utility=bool(data.get("measure_utility", False)),
         utility_trials=data.get("utility_trials"),
+        provider=data.get("provider", "mock"),
+        marker=data.get("marker", "INJECTED_PAYLOAD"),
+        dry_run=bool(data.get("dry_run", False)),
         extra=data.get("extra", {}),
     )
 

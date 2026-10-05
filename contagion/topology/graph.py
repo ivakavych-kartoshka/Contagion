@@ -256,3 +256,24 @@ def _tree(n: int) -> AgentGraph:
         parent = (i - 1) // 2
         g.add_edge(f"agent_{parent}", f"agent_{i}")
     return g
+
+
+def default_targets(topology: TopologyType, n: int) -> List[str]:
+    """Target set cho ASR (metric.md §2) theo topology.
+
+    Cần thiết vì heuristic "agent cuối trong ``node_order``" của engine CHỈ đúng
+    cho chain:
+
+    - **chain**: ``agent_{n-1}`` (cuối chain) — trùng mặc định cũ, nên mọi kết
+      quả chain đã chạy KHÔNG đổi.
+    - **star** : **CENTER ``agent_0``** — leaf không có downstream nên nếu để
+      mặc định (agent cuối = một leaf) thì ASR luôn = 0 một cách vô nghĩa; điểm
+      đến thực sự của cuộc tấn công là aggregator trung tâm (super-spreader).
+      Khớp ``experiments/configs/star_static_colluding.yaml`` (``target_agents:
+      [agent_0]``).
+    - **tree** : leaf sâu nhất ``agent_{n-1}`` — khớp
+      ``experiments/configs/tree_static_paraphrase.yaml`` (``[agent_6]`` với n=7).
+    """
+    if topology == TopologyType.STAR:
+        return ["agent_0"]
+    return [f"agent_{n - 1}"]
