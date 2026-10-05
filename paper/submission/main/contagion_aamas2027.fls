@@ -1,6 +1,6 @@
-PWD E:\NCKH\Contagion\paper\submission\main
+PWD e:\NCKH\Contagion\paper\submission\main
 INPUT C:\Users\ASUS\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT contagion_aamas2027.tex
+INPUT e:\NCKH\Contagion\paper\submission\main\contagion_aamas2027.tex
 OUTPUT contagion_aamas2027.log
 INPUT .\aamas.cls
 INPUT aamas.cls
