@@ -99,8 +99,7 @@ can underestimate by $3.75\times$ ($p=0.0002$) or transport within noise ($p=0.9
 and the depth-error slope distinguishes the two cases. \textbf{(ii)}~The
 mechanism is payload \emph{form}: the same target survives at $0.067$ arriving
 as a bare assertion and at $0.967$ embedded in a work product. \textbf{(iii)}~The
-epidemic threshold $\rho(M)<1$ is identically satisfied on any acyclic graph and
-cannot certify safety; we measure $R_0<1$ alongside ASR of $0.45$--$0.73$.
+epidemic threshold view: on strictly acyclic (feed-forward) graphs the next-generation matrix is nilpotent in the standard linearized form ($\rho(M)=0<1$) as a structural property of acyclicity rather than an empirical safety guarantee. Accordingly, we treat $R_0$ as a descriptive, finite-horizon reproduction statistic (with its definition, denominator, generation convention, and scope stated in the theory) and report $R_0<1$ alongside ASR of $0.45$--$0.73$.
 \textbf{(iv)}~Defence efficacy is unidentifiable without a no-defence baseline:
 the same redaction code is essential or irrelevant depending solely on the
 model's unprotected susceptibility.
@@ -219,24 +218,15 @@ changes what a practitioner should do.
 
 \begin{enumerate}
 \item \textbf{Do not compose isolated injection results into pipeline
-predictions without first checking that they transport.} Where the isolated rate
-fails to transport, its error \emph{grows with distance} ($+11.8$ points per hop,
-rank correlation $+1.00$); on a model that does transport the slope is an order of
-magnitude shallower---so the depth profile's slope is itself the diagnostic
-(Section~\ref{sec:depth}).
+predictions without first checking that they transport.} Transportability is not guaranteed: where it fails, error \emph{grows with distance} ($+11.8$ points per hop, rank correlation $+1.00$), and the depth-error slope is the diagnostic (Section~\ref{sec:depth}); where it transports (within noise), $\prod s^{\mathrm{ctrl}} \approx \mathrm{ASR}^{\mathrm{nat}}$. Composition of isolated estimates should state graph assumptions (e.g.\ no unmodelled shared ancestors/correlations invalidating product-of-complements) and be supported by a transport check for the target graph class (Section~\ref{sec:transport}, Section~\ref{sec:theory}).
 \item \textbf{Report per-hop survival conditioned on the receiving role, together
 with ASR and legitimate-task retention, and always include the no-defence
 baseline.} Per-hop survival varies $6.5\times$ across receiver roles within one
 model and attack (Section~\ref{sec:results}), and a defence's efficacy is otherwise
 unidentifiable (the floor effect, Section~\ref{sec:defence}).
 \item \textbf{Do not use $R_0 < 1$ as a safety criterion for a feed-forward agent
-network.} The spectral threshold is identically satisfied on any acyclic graph, and
-we measure $R_0 < 1$ alongside end-to-end success of $0.45$--$0.73$
-(Section~\ref{sec:threshold}). Reach and reproduction are distinct risks.
-\item \textbf{Treat defence placement as a structural question.} Only nodes on an
-entry--target path matter, and among those all are equally effective, so placement
-is decided by the graph and by instrumentation cost---not by measured per-hop
-survival (Section~\ref{sec:threshold}).
+network.} For strictly acyclic graphs the standard linearized next-generation matrix is nilpotent ($\rho(M)=0<1$) as a structural property; accordingly we treat $R_0$ as a descriptive, finite-horizon reproduction statistic (with its denominator, generation convention, scope, and limitations stated) and report $R_0<1$ alongside end-to-end success of $0.45$--$0.73$ (Section~\ref{sec:threshold}). Reach and reproduction are distinct risks.
+\item \textbf{Treat defence placement as a structural question.} Effectiveness depends on paths and cut sets: a hardened node is not equally effective when parallel $s$-$t$ paths exist (removing one path may leave others open). For unique-path graphs the effect is path-specific; we do not generalise equal effectiveness to multi-path DAGs. Placement should be justified by graph structure (paths/cuts) and by a matched no-defence baseline, not inferred solely from per-hop survival (Section~\ref{sec:threshold}).
 \end{enumerate}
 
 We also report one of our own initially significant results that proved to be an
@@ -322,10 +312,8 @@ reachability is NP-hard in general~\cite{Kempe2003} but linear-time on acyclic
 graphs by topological traversal, which is why Eq.~\eqref{eq:percolation} is exact
 on our networks. This is the lens recent theory work on multiplex Markov contagion
 in agent swarms adopts~\cite{SwarmMarkov2026}. Our results sharpen where the
-analogy fails for LLM agent networks: the spectral criterion is \emph{identically}
-satisfied on any acyclic graph (Section~\ref{sec:threshold}); the empirical
-reproduction number can be below one while reachability stays high; and the per-hop
-rates such an analysis consumes do not transport from isolated measurement.
+analogy fails for LLM agent networks: for strictly acyclic feed-forward graphs the standard linearized next-generation matrix is nilpotent ($\rho(M)=0<1$) as a structural property of acyclicity rather than an empirical safety guarantee (Section~\ref{sec:threshold}); the empirical reproduction number can be below one while reachability stays high; and the per-hop
+rates such an analysis consumes do not transport from isolated measurement (the transportability depends on graph structure and role/context as discussed in Section~\ref{sec:theory}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -386,7 +374,7 @@ refusing outputs alike---assigning credit precisely to the outputs a defence is
 supposed to produce---whereas the ASV-only rule separates them cleanly
 (calibration accuracy $1.000$ versus $0.795$; supplementary Appendix~A). Being
 deterministic, the rule admits no LLM-judge variance and needs no per-model
-recalibration.
+recalibration. We note that ASV measures textual propagation (presence of target string/code fragments); distinguishing instruction adoption from verbatim transmission is addressed via outcome definitions and targeted validation as detailed in the supplementary materials.
 
 \subsection{Two independent protocols}
 
@@ -485,10 +473,7 @@ On a chain, Eq.~\eqref{eq:percolation} reduces exactly to the product of
 Eq.~\eqref{eq:identity}: the chain identity is the degenerate case of a general
 model rather than a special property of chains. It also makes the independence
 hypothesis testable on \emph{any} acyclic topology, not only chains
-(Section~\ref{sec:depth}). The independence assumed here is between \emph{edge
-activations}; per-context heterogeneity of a single edge does not contradict it,
-since Eq.~\eqref{eq:identity} is a marginal statement and heterogeneity affects only
-the estimate's \emph{variance}.
+(Section~\ref{sec:depth}). The independence assumption underlying the product-of-complements form is between \emph{edge activations} (conditional on graph structure); this assumption does not hold in general when different parent edges share common ancestors (due to path correlation). Accordingly, we treat Eq.~\eqref{eq:percolation} as applying under the stated independence/graph assumptions or as the marginal percolation approximation used for the topologies we evaluate; we do not claim it holds for arbitrary DAGs with shared ancestors without adjustment (Section~\ref{sec:theory}). Per-context heterogeneity of a single edge does not by itself invalidate a marginal formulation, but variance and clustering are accounted for in estimation.
 
 Now consider the branching-process criterion that the contagion framing suggests:
 spread is subcritical when the spectral radius of the mean-offspring matrix $M$,
@@ -510,20 +495,9 @@ that matters, while the centre it reaches has no successors and so contributes
 nothing to $R_0$. Reach and reproduction are different risks and can move in
 opposite directions (Section~\ref{sec:topology}).
 
-We therefore use $R_0$ as a \emph{descriptive amplification statistic}, not a safety
-certificate: reachability, the quantity a practitioner cares about, is given by
-Eq.~\eqref{eq:percolation}, not by $R_0$.
+We therefore use $R_0$ as a \emph{descriptive, finite-horizon amplification statistic}, not a safety certificate; its scope (denominator, generation convention, finite acyclic setting) is specified below. Reachability---the quantity a practitioner cares about---is given by Eq.~\eqref{eq:percolation}, not by $R_0$.
 
-A corollary concerns defence placement. In a feed-forward network a node can
-affect end-to-end propagation only if it lies on some path from the entry to the
-target, and among the nodes that do, hardening any one is equally effective.
-Evaluated on our measured rates this is exact: on the seven-agent chain all five
-interior nodes reduce the predicted ASR by $0.450$, i.e.\ to zero, and on the tree
-hardening \texttt{agent\_2}, which lies on the entry--target path, reduces
-predicted ASR from $1.000$ to $0.000$, while hardening \texttt{agent\_1}, a node of
-\emph{identical} out-degree on a different branch, changes nothing. Placement is
-therefore decided by the graph, not by the measured survivals;
-Section~\ref{sec:discussion} turns this into the practitioner's rule.
+A corollary concerns defence placement. In feed-forward graphs, effectiveness depends on paths/cut sets: hardening a single node does not yield equal effectiveness when parallel $s$-$t$ paths exist (removing one path may leave others open). Where only a single path exists, the effect is path-specific to that node; we do not generalise to graphs with multiple independent paths. Evaluated on our measured rates for the single-path chain case, all interior nodes on that path reduce the predicted ASR by $0.450$ (to zero); on the tree, hardening \texttt{agent\_2} (on the entry--target path) reduces predicted ASR from $1.000$ to $0.000$, while hardening \texttt{agent\_1} (on a different branch) changes nothing---illustrating path dependence rather than uniform effectiveness. Placement is therefore decided by graph structure (paths/cut sets), not by measured survivals alone; Section~\ref{sec:discussion} turns this into the practitioner's rule.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

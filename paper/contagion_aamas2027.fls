@@ -1,6 +1,6 @@
-PWD E:\NCKH\Contagion\paper
+PWD e:\NCKH\Contagion\paper
 INPUT C:\Users\ASUS\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT contagion_aamas2027.tex
+INPUT e:\NCKH\Contagion\paper\contagion_aamas2027.tex
 OUTPUT contagion_aamas2027.log
 INPUT .\aamas.cls
 INPUT aamas.cls
@@ -497,10 +497,6 @@ INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\vf\public\libertine\LinL
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\libertine\LinLibertineT-tlf-ot1--base.tfm
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\vf\public\newtx\ntxexx.vf
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\txexs.tfm
-INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\vf\public\newtx\nxlmia.vf
-INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\LibertineMathRM.tfm
-INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\txmiaSTbb.tfm
-INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\txmiaX.tfm
 INPUT .\fig4_obfuscation_heatmap.png
 INPUT .\fig4_obfuscation_heatmap.png
 INPUT .\fig4_obfuscation_heatmap.png
@@ -509,6 +505,10 @@ INPUT .\fig4_obfuscation_heatmap.png
 INPUT .\fig4_obfuscation_heatmap.png
 INPUT .\fig4_obfuscation_heatmap.png
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\inconsolata\t1-zi4b-4.tfm
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\vf\public\newtx\nxlmia.vf
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\LibertineMathRM.tfm
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\txmiaSTbb.tfm
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\txmiaX.tfm
 INPUT .\contagion_aamas2027.bbl
 INPUT .\contagion_aamas2027.bbl
 INPUT contagion_aamas2027.bbl

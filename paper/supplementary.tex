@@ -139,6 +139,52 @@ redact & split-word & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
 \end{table}
 
 % =====================================================================
+\section{Theory Assumptions: Independence, Correlation, and $R_0$}
+\label{app:theory-assumptions}
+
+This appendix clarifies the theoretical assumptions invoked in Section 3.8 of the
+main paper.
+
+\paragraph{Product-of-complements and correlation.} The percolation recurrence
+\[
+\Pr[v] = 1 - \prod_{u \to v}\!\bigl(1 - s_{u\to v}\,\Pr[u]\bigr)
+\]
+assumes \emph{edge activations} (and the corresponding parent-reach events relevant to the
+product form) are conditionally independent given the graph structure. When multiple
+parents $u_1,\ldots,u_k$ of $v$ share a common ancestor, the events $\{\Pr[u_i]\}$ may be
+correlated, so $\Pr[\bigwedge_i (\text{not reached via }u_i)] \neq \prod_i (1 - s_{u_i\to v}\Pr[u_i])$
+in general. For the specific topologies evaluated in this work (chains, trees, star,
+and the small manager/worker loop), we do not rely on that product form across shared
+ancestors; where we use it, we treat it as the marginal approximation under the stated
+conditions or restrict claims to graph classes where the independence holds. For
+arbitrary DAGs with shared ancestors, a path-based (inclusion--exclusion) formulation
+or explicit correlation modelling is required.
+
+\paragraph{$R_0$ definition and scope.} For strictly acyclic (feed-forward) graphs, the
+standard linearized next-generation matrix $M$ with $M_{uv}=s_{u\to v}$ is strictly
+triangular in a topological ordering, hence $\rho(M)=0$. This is a structural property of
+acyclicity, not an empirical safety guarantee. We therefore report $R_0$ as a
+\emph{descriptive, finite-horizon} reproduction statistic: specifically, we define
+$R_0$ as the mean number of newly compromised neighbours produced per compromised agent
+instance over the observed finite horizon (generation convention as stated in
+Section 4.2 of the main paper), with its denominator clearly specified. We do not
+interpret $\rho(M)<1$ as a threshold for safety on finite acyclic graphs; reachability
+is given by the percolation (Eq.~3 in the main paper), not by $R_0$ alone.
+
+\paragraph{Parallel paths and defence placement.} Hardening a single node is not
+equally effective when there exist multiple $s$-$t$ paths: effectiveness depends on
+whether that node lies on all paths (a cut). For unique-path graphs the effect is
+path-specific; we do not generalise equal effectiveness to multi-path DAGs. Placement
+claims are limited to the graph classes we evaluate.
+
+\paragraph{Transportability and product composition.} The chain identity
+$\mathrm{ASR}=\prod_i s_i^{\mathrm{nat}}$ is algebraic given the Markov/chain
+structure. However, composing \emph{isolated} per-edge estimates $s^{\mathrm{ctrl}}$
+requires that $s^{\mathrm{ctrl}}_i \approx s^{\mathrm{nat}}_i$ (transportability). We do
+not assume this holds in general; we test it empirically and use the depth-error slope
+as a diagnostic (Section 5.2 of the main paper).
+
+% =====================================================================
 \section{Recurrence Makes the Threshold Non-Vacuous}
 \label{app:cyclic}
 
@@ -210,3 +256,27 @@ recurrent pattern at one temperature; the three models span five to eight rounds
 enough to separate decay from saturation, not to demonstrate extinction.
 
 \end{document}
+% =====================================================================
+\section{Reproducibility, Artifact Claims, and Replication Details}
+\label{app:repro}
+
+We explicitly align reproducibility with the materials supplied. The claims about
+reproducibility must match the actual artifact/package provided with the submission.
+If code, per-cell outputs, and a manifest are included as an anonymized artifact, a
+manifest (table \(	o\) data file \(	o\) script) should specify how to regenerate each
+table without live model calls. If the artifact is not yet included, the reproducibility
+statement should reflect partial reproducibility rather than claiming reproduction of
+`every table.''
+
+\paragraph{Minimum replication details.} Any released artifact or reported configuration
+should include: full prompts and payload templates (anonymized where necessary); exact
+model identifiers (vendor+model ID), API/provider+version, collection dates/time window,
+platform; decoding parameters (temperature, top\_p/top\_k, max\_tokens, stop sequences,
+seed if any, frequency/presence penalties); execution details (retries, error handling,
+timeouts, rate limits, failed calls with counts, token budgets, call counts per
+condition); fresh-artifact sampling/randomization/order/stratification; non-determinism
+handling (temperature>0); and a machine-readable experiment inventory (condition
+\(\to\) protocol, topology, model, defence, payload form, context/task,
+\(n,N_{success},N_{total},\) call counts). All estimates should include
+numerator/denominator and appropriate uncertainty (clustered where trials repeat within
+contexts/runs), with confirmatory vs. exploratory analyses clearly labeled.
