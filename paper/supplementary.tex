@@ -3,20 +3,40 @@
 %  "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks
 %   Does (and Does Not) Compose"
 %
-%  Chứa Appendices A-D được tham chiếu từ bài chính.
+%  Chứa các Appendix được tham chiếu từ bài chính (A--M).
 %  Biên dịch:  pdflatex supplementary.tex   (chạy 2 lần)
+%
+%  ĐỊNH DẠNG: dùng ĐÚNG template AAMAS-2027 (aamas.cls, sigconf, anonymous) ⇒
+%  hai cột, cùng font/layout với bài chính. KHÔNG sửa tham số layout nào.
 %
 %  LƯU Ý: file này KHÔNG dùng \ref tới file chính (không phụ thuộc .aux của bài
 %  chính). Mọi tham chiếu tới bài chính đều ghi thẳng số mục, ví dụ
 %  "Section 3.8 of the main paper".
 % =====================================================================
-\documentclass[11pt,a4paper]{article}
+\documentclass[sigconf,anonymous]{aamas}
 
-\usepackage{amsmath,amssymb}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage[margin=2.4cm]{geometry}
-\usepackage[hidelinks]{hyperref}
+% Khối copyright bắt buộc của AAMAS-2027 (giống hệt bài chính).
+\makeatletter
+\gdef\@copyrightpermission{
+  \begin{minipage}{0.2\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{by}}
+  \end{minipage}\hfill
+  \begin{minipage}{0.8\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+  \end{minipage}
+  \vspace{5pt}
+}
+\makeatother
+
+\setcopyright{ifaamas}
+\acmConference[AAMAS 2027]{Proc.\@ of the 26th International Conference
+on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, Vietnam}{M.~Baldoni, F.~Fang, W.~Yeoh, N.~Yorke-Smith (eds.)}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmISBN{}
+\acmSubmissionID{2419}
+\submissionType{Research Paper Track}
 
 % \ind là macro của bài chính (indicator function); phụ lục không \input bài chính
 % nên phải định nghĩa lại, nếu không sẽ lỗi "Undefined control sequence".
@@ -27,19 +47,32 @@
 \newcommand{\scites}{\ensuremath{s^{\mathrm{ctrl}}}}
 \newcommand{\snats}{\ensuremath{s^{\mathrm{nat}}}}
 
-\title{\vspace{-1.5cm}\textbf{Supplementary Material}\\[0.4em]
-\large Contagion: When Per-Hop Prompt-Injection Survival in\\ LLM Agent Networks Does (and Does Not) Compose\\[0.6em]
-\normalsize Submission Id: 2419}
+\title[Supplementary Material]{Supplementary Material for\\ ``Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose''}
+
 \author{Anonymous Author(s)}
-\date{}
+\affiliation{
+  \institution{Anonymous Institution}
+  \city{Anonymous City}
+  \country{Anonymous Country}}
+\email{anonymous@example.org}
+
+\begin{abstract}
+This supplement supports the main paper with appendices on multiplicity control
+and the clustered interval on the weak edge (A--B), threshold sensitivity (C),
+the theory assumptions behind the percolation form and the reproduction number (D),
+the recurrent case (E), the calibration, scope and failure modes of the compromise
+judge together with the adjudication of a labelled subset (F), utilities and
+estimator validation (G), the practical implications and the full limitations (H--I),
+the depth-profile table (J), ethical and artifact statements (K), the disclosure of
+AI-assisted technologies (L), and replication details (M). Table and appendix numbers
+here are independent of the main paper; references to the main paper are given by
+section number in words.
+\end{abstract}
+
+\keywords{Prompt injection, LLM agent networks, measurement validity, reproducibility}
 
 \begin{document}
 \maketitle
-\vspace{-1.2cm}
-
-
-
-\appendix
 
 % =====================================================================
 \section{Multiplicity Control for the Composition Test}
@@ -127,11 +160,10 @@ below the lowest threshold tested. The floor effect is therefore a property of t
 model, not of where the judge's cut is placed.
 
 \begin{table}[h]
-\small
+\scriptsize
 \centering
 \caption{Single-hop compromise rate versus $\tau_{\mathrm{ASV}}$ (Claude, $n = 30$
 per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}
-\vspace{10pt} % <--- Đã sửa thành 10pt (Bảng 3 trong hình)
 \label{tab:tau}
 \begin{tabular}{llcccc}
 \toprule
@@ -280,15 +312,15 @@ target; \emph{propagating} outputs are retained only when the target appears, an
 \emph{direct} outputs come from the injected instruction alone.
 
 \begin{table}[h]
-\small
+\scriptsize
 \centering
 \caption{Calibration of the two continuous scores on labelled qwen2.5:7b outputs
 (mean $\pm$ sd). ASV separates the two compromised classes ($1.000$) from both
 benign classes ($0.000$) with no overlap; the full-containment variant instead
 scores benign outputs as high as $0.459$, which is what motivated the switch
 (reported in the main paper).}
-\vspace{6pt}
 \label{tab:judge-calib}
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{lcccc}
 \toprule
 \textit{score} & \textit{benign} & \textit{refusing} & \textit{propagating} & \textit{direct} \\

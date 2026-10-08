@@ -2,67 +2,77 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Multiplicity Control for the Composition Test}{1}{appendix.A}\protected@file@percent }
-\newlabel{app:bh}{{A}{1}{Multiplicity Control for the Composition Test}{appendix.A}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from Section~3.7 of the main paper. Only the Llama rejection survives.}}{1}{table.1}\protected@file@percent }
-\newlabel{tab:bh}{{1}{1}{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from Section~3.7 of the main paper. Only the Llama rejection survives}{table.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Context-Clustered Interval on the Weak Edge}{1}{appendix.B}\protected@file@percent }
-\newlabel{app:cluster}{{B}{1}{Context-Clustered Interval on the Weak Edge}{appendix.B}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Weak edge $\texttt  {a1}\to \texttt  {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples).}}{1}{table.2}\protected@file@percent }
-\newlabel{tab:cluster}{{2}{1}{Weak edge $\texttt {a1}\to \texttt {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples)}{table.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Threshold Sensitivity of the Floor Effect}{2}{appendix.C}\protected@file@percent }
-\newlabel{app:tau}{{C}{2}{Threshold Sensitivity of the Floor Effect}{appendix.C}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Single-hop compromise rate versus $\tau _{\mathrm  {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}}{2}{table.3}\protected@file@percent }
-\newlabel{tab:tau}{{3}{2}{Single-hop compromise rate versus $\tau _{\mathrm {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant}{table.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Theory Assumptions: Independence, Correlation, and $R_0$}{2}{appendix.D}\protected@file@percent }
-\newlabel{app:theory-assumptions}{{D}{2}{Theory Assumptions: Independence, Correlation, and $R_0$}{appendix.D}{}}
-\@writefile{toc}{\contentsline {paragraph}{Product-of-complements and correlation.}{2}{section*.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{$R_0$ definition and scope.}{2}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Parallel paths and defence placement.}{3}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Transportability and product composition.}{3}{section*.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {E}Recurrence Makes the Threshold Non-Vacuous}{3}{appendix.E}\protected@file@percent }
-\newlabel{app:cyclic}{{E}{3}{Recurrence Makes the Threshold Non-Vacuous}{appendix.E}{}}
-\newlabel{eq:cyclicrho}{{1}{3}{Recurrence Makes the Threshold Non-Vacuous}{equation.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces One criterion, three models, opposite predictions. $\DOTSB \sum@ \slimits@ _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed.}}{3}{table.4}\protected@file@percent }
-\newlabel{tab:cyclic}{{4}{3}{One criterion, three models, opposite predictions. $\sum _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed}{table.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {F}Judge Calibration, Scope, and Known Failure Modes}{4}{appendix.F}\protected@file@percent }
-\newlabel{app:judge-validation}{{F}{4}{Judge Calibration, Scope, and Known Failure Modes}{appendix.F}{}}
-\@writefile{toc}{\contentsline {paragraph}{What was measured.}{4}{section*.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Calibration of the two continuous scores on labelled qwen2.5:7b outputs (mean $\pm $ sd). ASV separates the two compromised classes ($1.000$) from both benign classes ($0.000$) with no overlap; the full-containment variant instead scores benign outputs as high as $0.459$, which is what motivated the switch (reported in the main paper).}}{4}{table.5}\protected@file@percent }
-\newlabel{tab:judge-calib}{{5}{4}{Calibration of the two continuous scores on labelled qwen2.5:7b outputs (mean $\pm $ sd). ASV separates the two compromised classes ($1.000$) from both benign classes ($0.000$) with no overlap; the full-containment variant instead scores benign outputs as high as $0.459$, which is what motivated the switch (reported in the main paper)}{table.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{Agreement at the deployed threshold.}{4}{section*.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Scope of this validation, and what it does not establish.}{4}{section*.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Outcome levels.}{5}{section*.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Replay procedure.}{5}{section*.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Behaviour on replayed activations (local model).}{5}{section*.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Protocol for a full validation (not yet executed).}{5}{section*.11}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Adjudication of the 24-activation subset against the three outcome levels (level (a) textual propagation, (b) instruction adoption, (c) harmful action). Labels were assigned by reading the full outputs, before the judge score was consulted, with the help of an automated string-matching assistant and with review by one of the authors; the labelling was not independent of the paper's authors, so these numbers are a consistency check on the rule, not an independent validation of it.}}{6}{table.6}\protected@file@percent }
-\newlabel{tab:judge-adjud}{{6}{6}{Adjudication of the 24-activation subset against the three outcome levels (level (a) textual propagation, (b) instruction adoption, (c) harmful action). Labels were assigned by reading the full outputs, before the judge score was consulted, with the help of an automated string-matching assistant and with review by one of the authors; the labelling was not independent of the paper's authors, so these numbers are a consistency check on the rule, not an independent validation of it}{table.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {G}Utility under Attack, and Estimator Validation}{6}{appendix.G}\protected@file@percent }
-\newlabel{app:utility}{{G}{6}{Utility under Attack, and Estimator Validation}{appendix.G}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Utility under attack, 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$; $\Delta U$ is the clean--attack gap.}}{6}{table.7}\protected@file@percent }
-\newlabel{tab:utility}{{7}{6}{Utility under attack, 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$; $\Delta U$ is the clean--attack gap}{table.7}{}}
-\@writefile{toc}{\contentsline {paragraph}{Estimator validation.}{6}{section*.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {H}Practical Implications, in Full}{6}{appendix.H}\protected@file@percent }
-\newlabel{app:discussion}{{H}{6}{Practical Implications, in Full}{appendix.H}{}}
-\@writefile{toc}{\contentsline {paragraph}{Composition is safe once transportability is checked.}{7}{section*.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defence evaluation requires headroom.}{7}{section*.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Graph structure decides placement, not per-hop survival.}{7}{section*.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {I}Limitations and Threats to Validity, in Full}{7}{appendix.I}\protected@file@percent }
-\newlabel{app:limits}{{I}{7}{Limitations and Threats to Validity, in Full}{appendix.I}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {J}Depth Profile: Per-Model Table and Rank Statistics}{8}{appendix.J}\protected@file@percent }
-\newlabel{app:depth}{{J}{8}{Depth Profile: Per-Model Table and Rank Statistics}{appendix.J}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Shape of the depth profile: relative error of the isolated product, $|\DOTSB \prod@ \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry. \emph  {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph  {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined.}}{8}{table.8}\protected@file@percent }
-\newlabel{tab:depth}{{8}{8}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry. \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined}{table.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {K}Ethical Considerations and Artifact Availability}{8}{appendix.K}\protected@file@percent }
-\newlabel{app:ethics}{{K}{8}{Ethical Considerations and Artifact Availability}{appendix.K}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {L}Disclosure of AI-Assisted Technologies}{8}{appendix.L}\protected@file@percent }
-\newlabel{app:ai-disclosure}{{L}{8}{Disclosure of AI-Assisted Technologies}{appendix.L}{}}
-\@writefile{toc}{\contentsline {paragraph}{Tool and version.}{8}{section*.16}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Where it was used.}{9}{section*.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Prompts.}{9}{section*.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Accountability.}{9}{section*.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {M}Reproducibility, Artifact Claims, and Replication Details}{9}{appendix.M}\protected@file@percent }
-\newlabel{app:repro}{{M}{9}{Reproducibility, Artifact Claims, and Replication Details}{appendix.M}{}}
-\@writefile{toc}{\contentsline {paragraph}{Minimum replication details.}{10}{section*.20}\protected@file@percent }
-\gdef \@abspage@last{10}
+\@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Multiplicity Control for the Composition Test}{1}{section.1}\protected@file@percent }
+\newlabel{app:bh}{{1}{1}{Multiplicity Control for the Composition Test}{section.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Context-Clustered Interval on the Weak Edge}{1}{section.2}\protected@file@percent }
+\newlabel{app:cluster}{{2}{1}{Context-Clustered Interval on the Weak Edge}{section.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from Section\nonbreakingspace 3.7 of the main paper. Only the Llama rejection survives.}}{1}{table.caption.4}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:bh}{{1}{1}{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from Section~3.7 of the main paper. Only the Llama rejection survives}{table.caption.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Weak edge $\texttt  {a1}\to \texttt  {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples).}}{1}{table.caption.5}\protected@file@percent }
+\newlabel{tab:cluster}{{2}{1}{Weak edge $\texttt {a1}\to \texttt {a2}$ (Llama, $T = 0.7$, $n = 120$): i.i.d.\ Wilson versus a repeat-clustered bootstrap ($10^4$ resamples)}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Threshold Sensitivity of the Floor Effect}{1}{section.3}\protected@file@percent }
+\newlabel{app:tau}{{3}{1}{Threshold Sensitivity of the Floor Effect}{section.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Single-hop compromise rate versus $\tau _{\mathrm  {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}}{2}{table.caption.6}\protected@file@percent }
+\newlabel{tab:tau}{{3}{2}{Single-hop compromise rate versus $\tau _{\mathrm {ASV}}$ (Claude, $n = 30$ per cell), re-scored offline from stored ASV. Rates are threshold-invariant}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Theory Assumptions: Independence, Correlation, and $R_0$}{2}{section.4}\protected@file@percent }
+\newlabel{app:theory-assumptions}{{4}{2}{Theory Assumptions: Independence, Correlation, and $R_0$}{section.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Product-of-complements and correlation.}{2}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{$R_0$ definition and scope.}{2}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Parallel paths and defence placement.}{2}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Transportability and product composition.}{2}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Recurrence Makes the Threshold Non-Vacuous}{2}{section.5}\protected@file@percent }
+\newlabel{app:cyclic}{{5}{2}{Recurrence Makes the Threshold Non-Vacuous}{section.5}{}}
+\newlabel{eq:cyclicrho}{{1}{2}{Recurrence Makes the Threshold Non-Vacuous}{equation.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces One criterion, three models, opposite predictions. $\DOTSI \sumop \slimits@ _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed.}}{2}{table.caption.11}\protected@file@percent }
+\newlabel{tab:cyclic}{{4}{2}{One criterion, three models, opposite predictions. $\sum _j a_jc_j$ uses the measured per-hop survivals of the same three-agent recurrent pattern; the feed-forward column is the same survivals with the two feedback edges removed}{table.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Judge Calibration, Scope, and Known Failure Modes}{3}{section.6}\protected@file@percent }
+\newlabel{app:judge-validation}{{6}{3}{Judge Calibration, Scope, and Known Failure Modes}{section.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{What was measured.}{3}{section*.12}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Calibration of the two continuous scores on labelled qwen2.5:7b outputs (mean $\pm $ sd). ASV separates the two compromised classes ($1.000$) from both benign classes ($0.000$) with no overlap; the full-containment variant instead scores benign outputs as high as $0.459$, which is what motivated the switch (reported in the main paper).}}{3}{table.caption.13}\protected@file@percent }
+\newlabel{tab:judge-calib}{{5}{3}{Calibration of the two continuous scores on labelled qwen2.5:7b outputs (mean $\pm $ sd). ASV separates the two compromised classes ($1.000$) from both benign classes ($0.000$) with no overlap; the full-containment variant instead scores benign outputs as high as $0.459$, which is what motivated the switch (reported in the main paper)}{table.caption.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Agreement at the deployed threshold.}{3}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Scope of this validation, and what it does not establish.}{3}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Outcome levels.}{3}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Replay procedure.}{3}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Behaviour on replayed activations (local model).}{3}{section*.18}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Adjudication of the 24-activation subset against the three outcome levels (level (a) textual propagation, (b) instruction adoption, (c) harmful action). Labels were assigned by reading the full outputs, before the judge score was consulted, with the help of an automated string-matching assistant and with review by one of the authors; the labelling was not independent of the paper's authors, so these numbers are a consistency check on the rule, not an independent validation of it.}}{4}{table.caption.19}\protected@file@percent }
+\newlabel{tab:judge-adjud}{{6}{4}{Adjudication of the 24-activation subset against the three outcome levels (level (a) textual propagation, (b) instruction adoption, (c) harmful action). Labels were assigned by reading the full outputs, before the judge score was consulted, with the help of an automated string-matching assistant and with review by one of the authors; the labelling was not independent of the paper's authors, so these numbers are a consistency check on the rule, not an independent validation of it}{table.caption.19}{}}
+\@writefile{toc}{\contentsline {paragraph}{Protocol for a full validation (not yet executed).}{4}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Utility under Attack, and Estimator Validation}{4}{section.7}\protected@file@percent }
+\newlabel{app:utility}{{7}{4}{Utility under Attack, and Estimator Validation}{section.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Estimator validation.}{4}{section*.22}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Utility under attack, 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$; $\Delta U$ is the clean--attack gap.}}{4}{table.caption.21}\protected@file@percent }
+\newlabel{tab:utility}{{7}{4}{Utility under attack, 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$; $\Delta U$ is the clean--attack gap}{table.caption.21}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Practical Implications, in Full}{4}{section.8}\protected@file@percent }
+\newlabel{app:discussion}{{8}{4}{Practical Implications, in Full}{section.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Composition is safe once transportability is checked.}{4}{section*.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Defence evaluation requires headroom.}{4}{section*.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Graph structure decides placement, not per-hop survival.}{4}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Limitations and Threats to Validity, in Full}{5}{section.9}\protected@file@percent }
+\newlabel{app:limits}{{9}{5}{Limitations and Threats to Validity, in Full}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Depth Profile: Per-Model Table and Rank Statistics}{5}{section.10}\protected@file@percent }
+\newlabel{app:depth}{{10}{5}{Depth Profile: Per-Model Table and Rank Statistics}{section.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Shape of the depth profile: relative error of the isolated product, $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry. \emph  {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph  {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined.}}{5}{table.caption.26}\protected@file@percent }
+\newlabel{tab:depth}{{8}{5}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry. \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined}{table.caption.26}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Ethical Considerations and Artifact Availability}{5}{section.11}\protected@file@percent }
+\newlabel{app:ethics}{{11}{5}{Ethical Considerations and Artifact Availability}{section.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {12}Disclosure of AI-Assisted Technologies}{5}{section.12}\protected@file@percent }
+\newlabel{app:ai-disclosure}{{12}{5}{Disclosure of AI-Assisted Technologies}{section.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{Tool and version.}{5}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Where it was used.}{5}{section*.28}\protected@file@percent }
+\newlabel{tocindent-1}{0pt}
+\newlabel{tocindent0}{0pt}
+\newlabel{tocindent1}{8.37pt}
+\newlabel{tocindent2}{0pt}
+\newlabel{tocindent3}{0pt}
+\newlabel{tocindent4}{0pt}
+\newlabel{tocindent5}{0pt}
+\@writefile{toc}{\contentsline {paragraph}{Prompts.}{6}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Accountability.}{6}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}Reproducibility, Artifact Claims, and Replication Details}{6}{section.13}\protected@file@percent }
+\newlabel{app:repro}{{13}{6}{Reproducibility, Artifact Claims, and Replication Details}{section.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Minimum replication details.}{6}{section*.31}\protected@file@percent }
+\newlabel{TotPages}{{6}{6}{}{page.6}{}}
+\gdef \@abspage@last{6}
