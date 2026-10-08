@@ -375,7 +375,8 @@ hijacked output. For family B we use the ASV branch only ($\tau_{\mathrm{asv}} =
 full-containment MR variant scored high similarity on clean benign outputs and on
 refusing outputs alike---assigning credit precisely to the outputs a defence is
 supposed to produce---whereas the ASV-only rule separates them cleanly
-(calibration accuracy $1.000$ versus $0.795$; supplementary Appendix~A). Being
+(calibration accuracy $1.000$ versus $0.795$ on one local model; supplementary
+Appendix~E, Table~5, states the scope of that calibration). Being
 deterministic, the rule admits no LLM-judge variance and needs no per-model
 recalibration. We clarify outcome levels: (a) \emph{textual propagation}---the target string/code fragments appear (measured by ASV); (b) \emph{instruction adoption/compliance}---the agent acts in accordance with the injected instruction (not merely quoting); (c) \emph{harmful action}---the agent performs the corresponding harmful action. ASV primarily measures (a). In this paper we report (a) as the main propagation outcome; we do not automatically equate (a) with (b) or (c), and we distinguish these levels in terminology throughout. Targeted validation of a subset (to separate adoption from verbatim transmission/benign references) and the judge's scope and limitations are detailed in the supplementary materials.
 

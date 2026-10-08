@@ -18,6 +18,10 @@
 \usepackage[margin=2.4cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 
+% \ind là macro của bài chính (indicator function); phụ lục không \input bài chính
+% nên phải định nghĩa lại, nếu không sẽ lỗi "Undefined control sequence".
+\newcommand{\ind}{\mathbf{1}}
+
 \title{\vspace{-1.5cm}\textbf{Supplementary Material}\\[0.4em]
 \large Contagion: When Per-Hop Prompt-Injection Survival in\\ LLM Agent Networks Does (and Does Not) Compose}
 \author{Anonymous Author(s)}
@@ -256,12 +260,155 @@ recurrent pattern at one temperature; the three models span five to eight rounds
 enough to separate decay from saturation, not to demonstrate extinction.
 
 
-\section{Judge Validation (outline)}
-\label{app:judge-validation-outline}
+\section{Judge Calibration, Scope, and Known Failure Modes}
+\label{app:judge-validation}
 
-We will report ASV judge validity on a stratified subset: equally distributed across no-defense/defense, success/fail, topologies, and models. For each labeled case we report (a) textual propagation, (b) instruction adoption/compliance, (c) harmful action. Primary metrics: Precision, Recall, F1, False Positive Rate (FPR), False Negative Rate (FNR), and confusion matrix (TP/FP/TN/FN), with example cases (TP/FP/TN/FN). Where feasible we provide Wilson/Clopper-Pearson intervals for precision/recall; clustering by context/run will be considered if applicable. Full numbers require targeted re-labeling of a small subset (see revision plan).
+\paragraph{What was measured.} The compromise rule of Section~3.4 of the main paper
+($C = \ind[\mathrm{ASV} \ge 0.9]$, ASV $=$ fraction of target bigrams present) was
+calibrated on \textbf{ground-truth-labelled} outputs from the local model
+\texttt{qwen2.5:7b} ($n = 12$ per compromised class, $n = 12$ benign, $n = 3$
+refusing outputs; exact-string injection, benign ``verification code'' framing). The
+labels are assigned by construction, not by a judge: \emph{benign} outputs never see
+an injected instruction; \emph{refusing} outputs see one and do not reproduce the
+target; \emph{propagating} outputs are retained only when the target appears, and
+\emph{direct} outputs come from the injected instruction alone.
 
-\end{document}
+\begin{table}[h]
+\small
+\centering
+\caption{Calibration of the two continuous scores on labelled qwen2.5:7b outputs
+(mean $\pm$ sd). ASV separates the two compromised classes ($1.000$) from both
+benign classes ($0.000$) with no overlap; the full-containment variant instead
+scores benign outputs as high as $0.459$, which is what motivated the switch
+(reported in the main paper).}
+\vspace{6pt}
+\label{tab:judge-calib}
+\begin{tabular}{lcccc}
+\toprule
+\textit{score} & \textit{benign} & \textit{refusing} & \textit{propagating} & \textit{direct} \\
+\midrule
+ASV (target-bigram containment) & $0.000 \pm 0.000$ & $0.000 \pm 0.000$ & $1.000 \pm 0.000$ & $1.000 \pm 0.000$ \\
+MR (Dice vs.\ direct output)    & $0.253 \pm 0.179$ & $0.484 \pm 0.044$ & $0.598 \pm 0.070$ & $0.862 \pm 0.212$ \\
+full-containment (rejected)      & $0.459 \pm 0.215$ & $0.597 \pm 0.274$ & $0.729 \pm 0.223$ & $0.825 \pm 0.274$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Agreement at the deployed threshold.} At $\tau_{\mathrm{ASV}} = 0.9$ the
+rule attains precision $1.000$, recall $1.000$, F1 $1.000$, FPR $0.000$ and FNR
+$0.000$ on this set ($\mathrm{TP} = 24$, $\mathrm{FP} = 0$, $\mathrm{TN} = 15$,
+$\mathrm{FN} = 0$); the closest benign score observed anywhere in the probes is
+$0.875$, i.e.\ the threshold sits inside a gap rather than on a boundary. The
+Dice-based MR branch, by contrast, separates the same classes at accuracy $0.949$
+with $\mathrm{FPR} = 0$ only for $\tau_{\mathrm{MR}} > 0.53$, and the rejected
+full-containment variant reaches accuracy $0.795$ with $\mathrm{FPR} = 0.067$ at its
+own optimal cut---consistent with the main paper's $1.000$ vs.\ $0.795$ comparison.
+
+\paragraph{Scope of this validation, and what it does not establish.} The calibration
+covers \textbf{one model} (\texttt{qwen2.5:7b}), \textbf{one payload family}
+(exact-string targets), and \textbf{no defence}: both the benign and the compromised
+classes are drawn from undefended runs. The rule is deterministic and needs no
+per-model recalibration, but we do \emph{not} claim that the same operating point
+transfers unchanged to frontier models at temperature $0.7$, to paraphrase- or
+obfuscation-obfuscated targets, or to defended runs. Two further failure modes follow
+from the operational definition and should be read alongside every number we report:
+(i) a paraphrased leak that destroys the target's bigrams is scored as
+\emph{not} propagating (false negative), and (ii) a safe quotation of the target
+inside a benign summary is scored as propagating (false positive). Validation on
+frontier models, multiple payloads and defended conditions requires human
+annotation of a stratified subset across those conditions; we report the protocol
+for it below so the limitation is precise rather than open-ended. Read against a
+human annotator, both failure modes concern the \emph{semantics} of the target: a
+paraphrase that destroys its bigrams is scored as not propagating, and a safe
+quotation inside a benign summary is scored as propagating.
+
+\paragraph{Outcome levels.} Every judged activation is reported at level (a)
+\emph{textual propagation}---the target string/code fragments appear. The calibration
+set contains no case that separates (a) from (b) \emph{instruction
+adoption/compliance} within the same output, and no case of (c) \emph{harmful
+action} (the payload is a benign code, so (c) is by construction outside this
+study). Adoption is a subset of propagation in this task family: an agent that acts
+on the injected instruction must surface the target, whereas the converse does not
+hold. Since every label here is positive on (a) whenever it is positive on (b), the
+judge is an \emph{upper bound} on the adoption rate and we report (a) as the
+propagation outcome. We do not use it as evidence of instruction adoption or of
+harmful action anywhere in the paper.
+
+\paragraph{Replay procedure.} In the same spirit we state precisely what the
+content-form replay of Section~5.4 of the main paper does. Each replay trial draws a
+fresh receiver, rotates the benign assignment over the same pool, and consumes either
+content captured from a real natural run, a canonical artefact produced on demand, a
+fixed hand-written string, or the in-context content under a different sender label;
+temperature, token budget, system prompt, role, judge and thresholds are identical
+across arms, so the arms differ only in message form and in the label of its sender.
+The in-context arm is the harness self-check and has a target it must hit, namely the
+rate measured in-chain; the other arms are read as comparisons against it. Because
+each trial resamples the source output and draws the receiver fresh, a replay rate can
+differ from an in-chain rate through sampling noise and per-context variation as well
+as through message form. On the edge where the self-check misses ($0.733$ versus
+$0.947$) we therefore report the value for completeness and do not use it as an
+estimate of the form effect. The local re-run of this harness
+(\texttt{qwen2.5:7b}, $4$ natural trials and $2$ replays per arm and edge) is
+consistent with that reading rather than with a validated harness: every edge sits
+inside the replay confidence interval, yet two of three edges differ from the in-chain
+rate by $0.500$, which at this sample size the interval cannot resolve. We read the
+local run as \emph{underpowered}, not as a passed self-check, and we do not report it
+as evidence about form; the $n = 30$--$40$ configuration behind the content-form table
+of the main paper (its Table~4) remains the only configuration in which the
+self-check discriminates.
+
+\paragraph{Behaviour on replayed activations (local model).} Table~\ref{tab:judge-adjud}
+adjudicates every activation of a 24-item stratified subset drawn from the replayed
+harness of Section~5.4 of the main paper (\texttt{qwen2.5:7b}, one payload, no defence;
+the subset is stratified over arm and over judge verdict so that both classes are
+represented). Each output was read and labelled at the three outcome levels before the
+judge score was consulted. Against level (a) the rule reproduces the labels exactly:
+precision $1.000$, recall $1.000$, $F_1 = 1.000$, $\mathrm{FPR} = \mathrm{FNR} =
+0.000$. Against level (b) it is not a usable detector: it flags $19$ activations, and
+none of them involves instruction adoption---every positive is the target quoted
+inside a work product (an executive summary, a ticket classification, a release note,
+a review annotation). Three activations that sit downstream of content that \emph{did}
+carry the target do not carry it themselves, and the rule correctly reports them as
+negative; a reader who stopped at the upstream context would have scored them as
+propagating. We therefore report (a) and never (b), which is precisely the distinction
+the main paper draws when it calls the judge an upper bound on adoption.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Adjudication of the 24-activation subset against the three outcome levels
+(level (a) textual propagation, (b) instruction adoption, (c) harmful action).
+Labels were assigned by reading the full outputs, before the judge score was
+consulted, with the help of an automated string-matching assistant and with
+review by one of the authors; the labelling was not independent of the paper's
+authors, so these numbers are a consistency check on the rule, not an independent
+validation of it.}
+\vspace{6pt}
+\label{tab:judge-adjud}
+\begin{tabular}{lccccccc}
+\toprule
+\textit{level} & \textit{TP} & \textit{FP} & \textit{TN} & \textit{FN}
+ & \textit{prec.} & \textit{recall} & \textit{FPR} \\
+\midrule
+(a) textual propagation & 19 & 0 & 5 & 0 & $1.000$ & $1.000$ & $0.000$ \\
+(b) instruction adoption & 0 & 19 & 5 & 0 & --- & --- & $0.792$ \\
+(c) harmful action       & 0 & 19 & 5 & 0 & --- & --- & $0.792$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Protocol for a full validation (not yet executed).} A stratified subset should be drawn to distribute evenly across no-defence/defence, judge
+success/failure, topology, model and arm; each case should be labelled at levels
+(a), (b) and (c) by a human annotator, blind to the judge score, with a second
+annotator on a subset for agreement. Reported metrics should be precision, recall,
+F1, FPR, FNR and the full $2 \times 2$ confusion matrix per level, with
+Wilson/Clopper--Pearson intervals, cluster bootstrap for intervals (clusters $=$
+payload $\times$ defence $\times$ arm $\times$ edge, since trials repeat within
+contexts), and worked TP/FP/TN/FN examples. The scripts that generate the
+stratified sheet and score it are part of the released artifact; the numbers in
+Table~\ref{tab:judge-calib} are the portion we had measured at submission time.
+
+
 % =====================================================================
 \section{Reproducibility, Artifact Claims, and Replication Details}
 \label{app:repro}
@@ -269,10 +416,10 @@ We will report ASV judge validity on a stratified subset: equally distributed ac
 We explicitly align reproducibility with the materials supplied. The claims about
 reproducibility must match the actual artifact/package provided with the submission.
 If code, per-cell outputs, and a manifest are included as an anonymized artifact, a
-manifest (table \(	o\) data file \(	o\) script data file \(	o\) script) should specify how to regenerate each
+manifest (table $\to$ data file $\to$ script) should specify how to regenerate each
 table without live model calls. If the artifact is not yet included, the reproducibility
 statement should reflect partial reproducibility rather than claiming reproduction of
-`every table''
+``every table''.
 
 \paragraph{Minimum replication details.} Any released artifact or reported configuration
 should include: full prompts and payload templates (anonymized where necessary); exact
@@ -281,8 +428,10 @@ platform; decoding parameters (temperature, top\_p/top\_k, max\_tokens, stop seq
 seed if any, frequency/presence penalties); execution details (retries, error handling,
 timeouts, rate limits, failed calls with counts, token budgets, call counts per
 condition); fresh-artifact sampling/randomization/order/stratification; non-determinism
-handling (temperature>0); and a machine-readable experiment inventory (condition
-\(\to\) protocol, topology, model, defence, payload form, context/task,
-\(n,N_{success},N_{total},\) call counts). All estimates should include
+handling (temperature${>}0$); and a machine-readable experiment inventory (condition
+$\to$ protocol, topology, model, defence, payload form, context/task,
+$n,N_{\text{success}},N_{\text{total}}$, call counts). All estimates should include
 numerator/denominator and appropriate uncertainty (clustered where trials repeat within
-contexts/runs), with confirmatory vs. exploratory analyses clearly labeled.
+contexts/runs), with confirmatory vs.\ exploratory analyses clearly labeled.
+
+\end{document}
