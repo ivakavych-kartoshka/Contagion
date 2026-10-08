@@ -255,6 +255,12 @@ eight rounds) rather than from the point estimate alone. Second, we study a sing
 recurrent pattern at one temperature; the three models span five to eight rounds,
 enough to separate decay from saturation, not to demonstrate extinction.
 
+
+\section{Judge Validation (outline)}
+\label{app:judge-validation-outline}
+
+We will report ASV judge validity on a stratified subset: equally distributed across no-defense/defense, success/fail, topologies, and models. For each labeled case we report (a) textual propagation, (b) instruction adoption/compliance, (c) harmful action. Primary metrics: Precision, Recall, F1, False Positive Rate (FPR), False Negative Rate (FNR), and confusion matrix (TP/FP/TN/FN), with example cases (TP/FP/TN/FN). Where feasible we provide Wilson/Clopper-Pearson intervals for precision/recall; clustering by context/run will be considered if applicable. Full numbers require targeted re-labeling of a small subset (see revision plan).
+
 \end{document}
 % =====================================================================
 \section{Reproducibility, Artifact Claims, and Replication Details}
@@ -263,10 +269,10 @@ enough to separate decay from saturation, not to demonstrate extinction.
 We explicitly align reproducibility with the materials supplied. The claims about
 reproducibility must match the actual artifact/package provided with the submission.
 If code, per-cell outputs, and a manifest are included as an anonymized artifact, a
-manifest (table \(	o\) data file \(	o\) script) should specify how to regenerate each
+manifest (table \(	o\) data file \(	o\) script data file \(	o\) script) should specify how to regenerate each
 table without live model calls. If the artifact is not yet included, the reproducibility
 statement should reflect partial reproducibility rather than claiming reproduction of
-`every table.''
+`every table''
 
 \paragraph{Minimum replication details.} Any released artifact or reported configuration
 should include: full prompts and payload templates (anonymized where necessary); exact

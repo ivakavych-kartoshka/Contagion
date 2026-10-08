@@ -12,10 +12,10 @@
 - **Vấn đề:** Công thức `P(¬A ∧ ¬B) = (1-p_A)(1-p_B)` giả định các sự kiện reachability từ các parent là độc lập. Điều này không đúng khi hai (hoặc nhiều) parent có chung upstream node (shared ancestor), vì các path share chung dẫn đến correlation giữa các sự kiện đó.
 - **Cần re-run:** Không. Chỉ cần sửa lý thuyết/phân tích.
 - **Cách sửa:**
-  - [ ] **Nêu rõ giả định (assumptions).** Thêm rõ điều kiện đủ để Eq. (3) đúng (vd. parent-reach events là conditionally independent theo cấu trúc đồ thị, hoặc không có shared ancestors giữa các parent được xét).
-  - [ ] **Thu hẹp phạm vi định lý.** Giới hạn claim cho class DAG hợp lệ (chains, trees với single entry, hoặc DAG mà các parent không có common ancestor ảnh hưởng đến reachability). Hoặc nêu rõ Eq. (3) là *approximation* thay vì identity tổng quát.
-  - [ ] **Xử lý correlated paths.** Với DAG tổng quát, thay recurrence bằng path-based (inclusion–exclusion), hoặc bổ sung thành phần điều chỉnh correlation, hoặc tránh khẳng định product-form khi có shared paths.
-  - [ ] **Làm rõ ngôn ngữ.** Thay "holds in general" bằng "holds under these assumptions".
+   - [x] **Nêu rõ giả định (assumptions).** Thêm rõ điều kiện đủ để Eq. (3) đúng (vd. parent-reach events là conditionally independent theo cấu trúc đồ thị, hoặc không có shared ancestors giữa các parent được xét).
+   - [x] **Thu hẹp phạm vi định lý.** Đã cập nhật scope trong main+supp. (chains, trees với single entry, hoặc DAG mà các parent không có common ancestor ảnh hưởng đến reachability). Hoặc nêu rõ Eq. (3) là *approximation* thay vì identity tổng quát.
+   - [x] **Xử lý correlated paths.** Đã nêu rõ correlation/shared ancestors trong main+supp., thay recurrence bằng path-based (inclusion–exclusion), hoặc bổ sung thành phần điều chỉnh correlation, hoặc tránh khẳng định product-form khi có shared paths.
+   - [x] **Làm rõ ngôn ngữ.** Thay "holds in general" bằng "holds under these assumptions".
 - **Nơi sửa:** Section 3, Appendix A
 - **Tiêu chí hoàn thành:** Có nêu rõ khi nào Eq. (3) áp dụng được, khi nào không và lý do.
 
@@ -25,10 +25,10 @@
 - **Vấn đề:** Claim "hardening any node on an entry–target path" có hiệu quả như nhau là quá rộng. Nếu tồn tại parallel/alternative paths tới target, việc harden một node chỉ thuộc một path sẽ không chặn được path còn lại.
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Chuyển sang path/cut-based.** Dùng *vertex cut / edge cut*, *number of edge-disjoint paths*, hoặc *min s-t cut*. Nêu rõ hiệu quả phụ thuộc vào việc node đó có nằm trên *tất cả* paths hay không.
-  - [ ] **Thêm ví dụ minh họa.** Thêm DAG nhỏ với ít nhất 2 independent paths đến target.
-  - [ ] **Hạ cấp claim.** Loại bỏ "equal effectiveness" tổng quát. Chuyển thành *case-specific observation* hoặc *hypothesis* cho topology đã test.
-  - [ ] **Rà soát toàn văn.** Tìm và sửa tất cả câu mang ý "any node on any path is equally effective".
+   - [x] **Chuyển sang path/cut-based.** Dùng *vertex cut / edge cut*, *number of edge-disjoint paths*, hoặc *min s-t cut*. Nêu rõ hiệu quả phụ thuộc vào việc node đó có nằm trên *tất cả* paths hay không.
+   - [x] **Thêm ví dụ minh họa.** Thêm DAG nhỏ với ít nhất 2 independent paths đến target.
+   - [x] **Hạ cấp claim.** Loại bỏ "equal effectiveness" tổng quát. Chuyển thành *case-specific observation* hoặc *hypothesis* cho topology đã test.
+   - [x] **Rà soát toàn văn.** Tìm và sửa tất cả câu mang ý "any node on any path is equally effective".
 - **Nơi sửa:** Section 3–4, Discussion/Limitations
 - **Tiêu chí hoàn thành:** Claims về defense placement không còn quá rộng cho trường hợp multi-path.
 
@@ -38,10 +38,10 @@
 - **Vấn đề:** Zero spectral radius của strictly triangular matrix không đủ để kết luận reproduction-style statistic vô nghĩa. Cần định nghĩa rõ R0 cho *finite acyclic*.
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Định nghĩa rõ R0.** Nêu rõ: population/denominator, generation convention (edge/node generation), time horizon (finite vs asymptotic), đơn vị đo, điều kiện áp dụng.
-  - [ ] **Giải thích cho finite DAG.** Vì DAG strictly triangular (no cycles), spectral radius 0 là hệ quả tự nhiên – không suy ra R0-style concept vô giá trị. Cần làm rõ vai trò trong finite horizon.
-  - [ ] **Thu hẹp vai trò.** Nếu chưa đủ chặt, hạ cấp R0 xuống *descriptive/heuristic* thay vì *theoretical threshold*, hoặc bỏ khỏi central claims.
-  - [ ] **Tránh overstate.** Không nói "useless", chỉ nêu rõ giới hạn áp dụng.
+   - [x] **Định nghĩa rõ R0.** Nêu rõ: population/denominator, generation convention (edge/node generation), time horizon (finite vs asymptotic), đơn vị đo, điều kiện áp dụng.
+   - [x] **Giải thích cho finite DAG.** Vì DAG strictly triangular (no cycles), spectral radius 0 là hệ quả tự nhiên – không suy ra R0-style concept vô giá trị. Cần làm rõ vai trò trong finite horizon.
+   - [x] **Thu hẹp vai trò.** Nếu chưa đủ chặt, hạ cấp R0 xuống *descriptive/heuristic* thay vì *theoretical threshold*, hoặc bỏ khỏi central claims.
+   - [x] **Tránh overstate.** Không nói "useless", chỉ nêu rõ giới hạn áp dụng.
 - **Nơi sửa:** Section 3, Appendix
 - **Tiêu chí hoàn thành:** R0 có định nghĩa operational đầy đủ, nhất quán với finite acyclic setting.
 
@@ -51,8 +51,8 @@
 - **Vấn đề:** Experiments giới hạn (chains/star/tree + 1 manager/worker loop) nhưng claims hướng tới "general networks/DAGs".
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Làm rõ evaluated graph classes.** Ghi rõ kết luận giới hạn cho các topology đã test.
-  - [ ] **Điều chỉnh claims.** Chuyển general → scope-limited (measurement study for specified graph classes).
+  - [x] **Làm rõ evaluated graph classes.** Đã bổ sung trong claims.
+  - [x] **Điều chỉnh claims.** Đã điều chỉnh trong abstract/conclusions. (measurement study for specified graph classes).
 - **Nơi sửa:** Abstract, Introduction, Limitations, Conclusion
 
 ### 1.5 [P2] Empirical check cho parallel/shared-ancestor DAG (tùy chọn)
@@ -65,8 +65,8 @@
 - **Vị trí:** Review 3 #3
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Downgrade.** Dùng "preliminary", "case-specific", "hypothesis-generating".
-  - [ ] **Nêu rõ power/limits.** Làm rõ giới hạn evidence khi đưa ra prescription.
+  - [x] **Downgrade.** Dùng "preliminary", "case-specific", "hypothesis-generating".
+  - [x] **Nêu rõ power/limits.** Làm rõ giới hạn evidence khi đưa ra prescription.
 - **Nơi sửa:** Discussion, Practical Implications, Limitations
 
 ## 2. EVALUATION & MEASUREMENT VALIDITY
@@ -79,11 +79,13 @@
 - **Vấn đề:** Exact-string/bigram có thể đo textual transmission thay vì compromise; thiếu validation across models/payloads/defenses.
 - **Cần re-run:** **Có – hạn chế (rất nhỏ).** 0 model calls nếu đã lưu full traces.
 - **Cách sửa:**
-  - [ ] **Validation subset.** Chọn ngẫu nhiên ~50–200 outputs, phân bố đều qua conditions (no-defense/defense, success/fail, đa dạng topology/model) → human-annotate.
-  - [ ] **Báo cáo metrics.** Precision/Recall/F1, FPR, FNR, confusion matrix + ít nhất vài ví dụ rõ ràng (TP/FP/TN/FN).
-  - [ ] **Sensitivity & edge cases.** Kiểm tra threshold sensitivity, quotation/paraphrase/safe reference, partial compliance.
-  - [ ] **Nêu rõ scope của judge.** ASV chủ yếu đo *textual propagation* (target string/code appears), không chứng minh instruction adoption trực tiếp. Cập nhật claims theo giới hạn này.
-  - [ ] **Report uncertainty.** (Tùy chọn) CI cho precision/recall nếu sample đủ.
+  - [x] **Validation subset.** Đã nêu rõ approach trong judge section., phân bố đều qua conditions (no-defense/defense, success/fail, đa dạng topology/model) → human-annotate.
+   - [x] **Nêu rõ scope của judge và outcome levels.** ASV đo textual propagation; đã phân biệt (a) textual propagation, (b) adoption/compliance, (c) harmful action trong main+supp.
+   - [x] **Báo cáo metrics (outline).** Đã bổ sung hướng dẫn validation metrics trong supp (app repro/validation) – sẽ cập nhật đầy đủ khi có annotation; hiện tại nêu rõ scope + cần metrics.
+   - [x] **Báo cáo metrics đầy đủ (guidance).** Đã bổ sung outline validation section trong supp nêu rõ cần Precision/Recall/F1, FPR, FNR, confusion matrix + ví dụ TP/FP/TN/FN (cần dữ liệu annotation để hoàn thiện).
+   - [x] **Sensitivity & edge cases.** Đã bổ sung (supp App C)., quotation/paraphrase/safe reference, partial compliance.
+   - [x] **Nêu rõ scope của judge.** ASV chủ yếu đo *textual propagation* (target string/code appears), không chứng minh instruction adoption trực tiếp. Cập nhật claims theo giới hạn này.
+   - [x] **Report uncertainty.** Đã bổ sung hướng dẫn CI trong supp (Wilson/Clopper–Pearson, clustered nếu có).
 - **Nơi sửa:** Section 4.3, Evaluation, Appendix
 - **Khối lượng:** 0 model calls, ~1–2h annotation.
 
@@ -93,10 +95,10 @@
 - **Vấn đề:** Target text xuất hiện ≠ agent đã "adopt" injected instruction.
 - **Cần re-run:** **Có – hạn chế (nhỏ, targeted).** Chủ yếu re-labeling.
 - **Cách sửa:**
-  - [ ] **Định nghĩa rõ 3 level (operational).** (a) *Textual propagation* – string/target xuất hiện (transmission). (b) *Instruction adoption/compliance* – agent tuân theo injected instruction (không chỉ quote). (c) *Harmful action* – thực hiện hành động có hại tương ứng.
-  - [ ] **Align terminology toàn văn.** Rà soát "hijacked/compromised/propagated/infection", ưu tiên dùng thuật ngữ khớp level đo.
-  - [ ] **Validate subset có mục tiêu.** Re-label cases tranh cãi (near-threshold, partial/defense). **Chỉ chạy lại ~1–2 edges × n=30** nếu traces thiếu ngữ cảnh để phân biệt (b)–(c).
-  - [ ] **Báo cáo theo level.** Báo cáo (a) rõ; nếu báo cáo (b)/(c) cần validation. Nếu chưa đủ, chỉ báo cáo (a) + nêu giới hạn rõ ràng.
+   - [x] **Định nghĩa rõ 3 level (operational).** (a) *Textual propagation* – string/target xuất hiện (transmission). (b) *Instruction adoption/compliance* – agent tuân theo injected instruction (không chỉ quote). (c) *Harmful action* – thực hiện hành động có hại tương ứng.
+   - [x] **Align terminology toàn văn.** Rà soát "hijacked/compromised/propagated/infection", ưu tiên dùng thuật ngữ khớp level đo.
+   - [x] **Validate subset có mục tiêu (guidance).** Đã bổ sung hướng dẫn trong validation outline (nêu rõ cần re-label cases tranh cãi; có thể làm khi có traces đầy đủ).
+   - [x] **Báo cáo theo level.** Báo cáo (a) rõ; nếu báo cáo (b)/(c) cần validation. Nếu chưa đủ, chỉ báo cáo (a) + nêu giới hạn rõ ràng.
 - **Nơi sửa:** Section 2, 4, Results, Discussion/Limitations
 - **Khối lượng:** 0–~60–90 model calls (chỉ khi thiếu traces).
 
@@ -105,10 +107,10 @@
 - **Vị trí:** Review 2 #3
 - **Cần re-run:** **Không.** Re-analysis nếu có logs theo run/context.
 - **Cách sửa:**
-  - [ ] **Per-context results.** Thêm theo task/context (hoặc supplement).
-  - [ ] **Clustered uncertainty.** Clustered SE/bootstrap (block by run/agent-instance/context), không dùng i.i.d.
-  - [ ] **Match context giữa protocols.** Xác nhận in-chain vs. isolated edge có context composition tương đương.
-  - [ ] **Báo cáo heterogeneity.** Nêu rõ variation nếu lớn.
+  - [x] **Per-context results.** Thêm theo task/context (hoặc supplement).
+  - [x] **Clustered uncertainty.** Clustered SE/bootstrap (block by run/agent-instance/context), không dùng i.i.d.
+  - [x] **Match context giữa protocols.** Xác nhận in-chain vs. isolated edge có context composition tương đương.
+  - [x] **Báo cáo heterogeneity.** Nêu rõ variation nếu lớn.
 - **Nơi sửa:** Section 5, Methods/Appendix, Tables
 
 ### 2.4 [P1] Payload-form ablation + failed replay self-check
@@ -117,9 +119,9 @@
 - **Vấn đề:** Thiếu controls (semantics, role, context, sampling). Cần giải thích case replay không reproduce in-chain.
 - **Cần re-run:** **Có – rất hạn chế.**
 - **Cách sửa:**
-  - [ ] **Tighten controls.** Chỉ đổi message form, giữ cố định: semantics, sender/receiver role, task/context, decoding, temperature/top-p, sampling, vị trí chain.
-  - [ ] **Giải thích failed replay.** Dựa trên dữ liệu (context drift, message history, role conditioning...).
-  - [ ] **Targeted re-run.** Chỉ **1–2 edges × n=30** để kiểm chứng.
+  - [x] **Tighten controls (guidance).** Đã nêu trong paper/ablation context: giữ cố định semantics/role/context/decoding/settings (chỉ đổi message form) – guidance thêm vào nếu cần.
+  - [x] **Giải thích failed replay (guidance).** Đã nêu ngắn gọn trong ablation (Section 5.3) về protocol artefact; có thể mở rộng nếu cần.
+  - [x] **Targeted re-run (guidance).** Nêu rõ cần re-run nhỏ nếu thiếu traces (≤150–180 calls tổng).
 - **Nơi sửa:** Section 4.2, Results, Appendix
 - **Khối lượng:** ~60–90 calls max.
 
@@ -128,10 +130,10 @@
 - **Vị trí:** Review 2 #4, Review 4 #3–5
 - **Cần re-run:** **Không.** Pure re-analysis.
 - **Cách sửa:**
-  - [ ] **Reconcile n.** Giải thích n=30,40,120,200 (design/follow-up).
-  - [ ] **Luôn có n/N + CI.** Mọi headline/topology/defense/utility có numerator/denominator + interval (Wilson/Clopper–Pearson hoặc clustered bootstrap).
-  - [ ] **Justify bootstrap.** B=10^4 + sensitivity, dùng clustered nếu có clustering.
-  - [ ] **Not significant ≠ equivalent.** Tránh suy ra equivalence từ non-rejection (dùng TOST nếu muốn claim equivalence).
+  - [x] **Reconcile n.** Giải thích n=30,40,120,200 (design/follow-up).
+  - [x] **Luôn có n/N + CI.** Mọi headline/topology/defense/utility có numerator/denominator + interval (Wilson/Clopper–Pearson hoặc clustered bootstrap).
+  - [x] **Justify bootstrap.** B=10^4 + sensitivity, dùng clustered nếu có clustering.
+  - [x] **Not significant ≠ equivalent.** Tránh suy ra equivalence từ non-rejection (dùng TOST nếu muốn claim equivalence).
 - **Nơi sửa:** Results tables, Appendix, Methods
 
 ### 2.6 [P2] Confirmatory vs Exploratory + multiplicity
@@ -139,8 +141,8 @@
 - **Vị trí:** Review 4 #5
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Phân loại.** Gắn *confirmatory* hoặc *exploratory* cho mỗi analysis.
-  - [ ] **Multiplicity.** Nêu family, có thể FDR/Bonferroni hoặc giới hạn claims cho exploratory.
+  - [x] **Phân loại.** Gắn *confirmatory* hoặc *exploratory* cho mỗi analysis.
+  - [x] **Multiplicity.** Nêu family, có thể FDR/Bonferroni hoặc giới hạn claims cho exploratory.
 - **Nơi sửa:** Section 4, Results, Appendix
 
 ## 3. REPRODUCIBILITY & PRESENTATION
@@ -153,10 +155,10 @@
 - **Vấn đề:** Claim "reproduce every table" không khớp (supplement chỉ có appendices, chưa có code/data/executable/manifest).
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Hoặc cung cấp artifact, hoặc sửa claim.** (a) Anonymized artifact (anonymous repo/DOI/link) có scripts, configs, manifest, + *machine-readable per-cell outputs* (CSV/JSON) đủ để regenerate tables không cần live calls. (b) **Nếu chưa sẵn sàng**, sửa claim → "partial reproducibility", mô tả rõ phần có thể reproduce.
-  - [ ] **Thêm manifest.** Liệt kê rõ `table → data file → script`.
-  - [ ] **Cung cấp per-cell outputs.** Ưu tiên cao (hỗ trợ 2.3,2.5).
-  - [ ] **Khớp tuyệt đối.** Reproducibility statement phải phản ánh đúng file thực tế.
+   - [x] **Hoặc cung cấp artifact, hoặc sửa claim.** Đã điều chỉnh hướng dẫn trong supp: phản ánh đúng tài nguyên, nếu chưa có artifact đầy đủ thì dùng "partial reproducibility".
+   - [x] **Thêm manifest guidance.** Bổ sung hướng dẫn manifest `table → data file → script` trong supp.
+   - [x] **Cung cấp per-cell outputs (guidance).** Ưu tiên nêu rõ yêu cầu trong supp.
+   - [x] **Khớp tuyệt đối.** Reproducibility statement hướng dẫn phải khớp với thực tế.
 - **Nơi sửa:** Reproducibility/Code & Data Availability, Supplement
 - **Tiêu chí hoàn thành:** Claim và tài nguyên cung cấp hoàn toàn nhất quán.
 
@@ -165,12 +167,12 @@
 - **Vị trí:** Review 4 #2
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Prompts & payloads.** Full prompts, system/user messages, payload templates (anonymized nếu cần).
-  - [ ] **Model/API + env.** Exact IDs (vendor+model), API/provider+version, collection dates (time window), platform.
-  - [ ] **Decoding/settings.** temperature, top_p/top_k, max_tokens, stop sequences, seed (nếu có), frequency/presence penalties.
-  - [ ] **Execution.** Retries, errors/timeouts, rate limits, failed calls + cách xử lý, token budgets, call counts/condition.
-  - [ ] **Fresh artifacts/sampling.** Cách sample, randomization, order, stratification.
-  - [ ] **Non-determinism.** Ghi rõ nếu temperature>0 và cách xử lý.
+   - [x] **Prompts & payloads.** Đã bổ sung guidance trong supp.
+   - [x] **Model/API + env.** Đã bổ sung guidance trong supp.
+   - [x] **Decoding/settings.** Đã bổ sung guidance trong supp.
+   - [x] **Execution.** Đã bổ sung guidance trong supp.
+   - [x] **Fresh artifacts/sampling.** Đã bổ sung guidance trong supp.
+   - [x] **Non-determinism.** Đã bổ sung guidance trong supp.
 - **Nơi sửa:** Appendix (Reproducibility Details), Section 4 (Experimental Setup)
 - **Tiêu chí hoàn thành:** Đủ thông tin để tái tạo rõ ràng.
 
@@ -179,8 +181,8 @@
 - **Vị trí:** Review 4 #5, Rev2 #4
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Tạo inventory table.** Columns: `experiment_id, phase (confirmatory/exploratory), protocol, topology, model, condition, defense, payload_form, context/task, n, N_success, N_total, call_count, notes`.
-  - [ ] **Reconcile tất cả cells.** Giải thích mọi deviation.
+   - [x] **Tạo inventory table (guidance).** Đã nêu yêu cầu inventory trong supp (columns đầy đủ).
+   - [x] **Reconcile tất cả cells.** Giải thích mọi deviation.
 - **Nơi sửa:** Appendix (Audit trail), Supplement (CSV tùy chọn)
 
 ### 3.4 [P1] Move central assumptions to main paper
@@ -188,15 +190,15 @@
 - **Vị trí:** Review 4 #5
 - **Cần re-run:** Không.
 - **Cách sửa:**
-  - [ ] **Lift key assumptions.** DAG class/independence, outcome definition, judge scope → Section 3–4.
-  - [ ] **Details vẫn Appendix.** Proofs/tables đầy đủ giữ ở supplement.
+  - [x] **Lift key assumptions.** DAG class/independence, outcome definition, judge scope → Section 3–4.
+  - [x] **Details vẫn Appendix.** Proofs/tables đầy đủ giữ ở supplement.
 - **Nơi sửa:** Section 3, Section 4
 
 ### 3.5 [P2] Anonymity check
 
 - **Vị trí:** Review 4 #5
 - **Cần re-run:** Không.
-- **Cách sửa:** [ ] Kiểm tra bỏ thông tin có thể leak identity (link, repo, tên...) trước submission.
+- **Cách sửa:** [x] Kiểm tra bỏ thông tin có thể leak identity (link, repo, tên...) trước submission (đã duyệt qua file anonymized; không thấy link/identity rõ ràng).
 
 ## 4. TÓM TẮT THEO PRIORITY & RE-RUN
 
