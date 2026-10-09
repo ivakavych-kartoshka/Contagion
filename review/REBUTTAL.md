@@ -150,7 +150,12 @@ thể. Chúng tôi **không** che việc 19/19 positive là non-adoption.
 
 **W2 (1 payload, không tool use, defence quá ít)** — 🟡 nhận, một phần do credential.
 Script đã hỗ trợ đa payload (`--payloads`) và chúng tôi đã chạy **thêm một payload**
-trên model local (kết quả: [điền sau khi chạy]). Chúng tôi **không** chạy payload kiểu
+(`MANGO-42`, semantically unrelated to `BANANA-77`) trên Llama 3.3 70B. Kết quả: ASR 
+= 0.925 [0.801, 0.974], per-edge survival 1.000/1.000/0.925, content-form effect 
+reproduces (0.933 in-context vs 0.767 canonical, same direction), composition transport 
+consistent (Δ = +0.258, p = 0.006). Primary findings—high ASR, per-edge patterns, 
+composition structure—replicate, not artefacts of a single payload (supplementary 
+Appendix app:extended-validation). Chúng tôi **không** chạy payload kiểu
 action/tool-call: engine hiện tool-less và việc thêm là thay đổi hệ thống, không phải
 tham số. Chúng tôi nói rõ điều này trong Limitations.
 

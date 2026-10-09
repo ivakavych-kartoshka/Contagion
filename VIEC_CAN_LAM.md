@@ -1,7 +1,7 @@
 # DANH SÁCH VIỆC CẦN LÀM — AAMAS 2027, Submission 2419
 ## "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose"
 
-> **Cập nhật:** 2026-10-09 18:00 — **Nhóm 3 đã hoàn thành 5/8 tasks** (3.1, 3.3, 3.4, 3.6, 3.8) và đã cập nhật vào cả 2 file LaTeX. Nhóm 1 còn 4 tasks chưa xong.
+> **Cập nhật:** 2026-10-09 18:15 — **Nhóm 3 đã hoàn thành 5/8 tasks** (3.1, 3.3, 3.4, 3.6, 3.8) và đã cập nhật vào cả 2 file LaTeX. **Nhóm 1 hoàn thành thêm task 1.6** (điền REBUTTAL.md). Nhóm 1 còn 3 tasks chưa xong.
 > 
 > **Trạng thái nộp hiện tại:** main PDF 10 trang = content 1–8 + References từ trang 9;
 > phụ lục 8 trang; `supplementary_material.zip` 2.2 MB / 308 file; 0 undefined ref.
@@ -20,7 +20,7 @@
 | 1.3 | **Worked example** cho AutoGen/MetaGPT | **R4 Q1** | ✅ **XONG** | `supplementary.tex` dòng 690–720: `\paragraph{Worked example: an AutoGen/MetaGPT-style pipeline.}` — 3 prescription với số cụ thể (Llama 0.850 vs dự đoán 0.233, R₀ star/chain, filter placement). |
 | 1.4 | **Verify 3 tham chiếu 2026** ([1], [23], [24]) | R4 W5 | ✅ **XONG** | `refs.bib` dòng 7–8: "ĐÃ ĐỐI CHIẾU TOÀN BỘ + chốt ngày xuất bản cho 3 mục 2026 từ Crossref/nhà xuất bản chính thức" (lần 3, 2026-10-09). |
 | 1.5 | **Family-wise correction** cho topology/obf/loop | **R3 W6** | ✅ **XONG** | `supplementary.tex` §B "Family-Wise Control Extended to the Remaining Families" (dòng 132) + `scripts/familywise_extended.py`. BH control q=0.05, mọi family giữ ít nhất 1 rejection. |
-| 1.6 | **Điền 1 chỗ trống** trong `REBUTTAL.md` dòng 153 | — | ❌ chưa | `review/REBUTTAL.md` dòng 153 vẫn còn `[điền sau khi chạy]` — chờ kết quả payload thứ 2 (mục 2.1) |
+| 1.6 | **Điền 1 chỗ trống** trong `REBUTTAL.md` dòng 153 | — | ✅ **XONG** | `review/REBUTTAL.md` dòng 151–160: đã điền kết quả payload MANGO-42 từ task 3.1 (ASR=0.925, per-edge 1.000/1.000/0.925, content-form effect replicates). |
 | 1.7 | **Ghép qwen fresh (0.375/0.733) vào Table 1** | R3 Q1 | ❌ chưa | **cần bạn quyết định** — Table 1 hiện: `qwen2.5:7b & 0.300 & 0.611` (số cũ fixed-artefact). Fresh results có tại `experiments/results/frontier_qwen_fresh/report.md` (ASR=0.375, surv=0.733, Markov consistent). Nếu ghép vào phải thêm `†` và đổi caption. |
 | 1.8 | **Mở rộng estimator validation** (nhiều replication hơn) | R3 W5 | ❌ chưa | `supplementary.tex` dòng 637: hiện chỉ 60 replication. Cần chạy thêm synthetic (không cần API). |
 | 1.9 | **Rà nhất quán toàn bài** lần cuối | — | ❌ chưa | ~1 giờ |
