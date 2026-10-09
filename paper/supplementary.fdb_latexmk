@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1791537879.91158 "e:/NCKH/Contagion/paper/supplementary.tex" "supplementary.pdf" "supplementary" 1791537881.93321 0
+["pdflatex"] 1791541672.19537 "e:/NCKH/Contagion/paper/supplementary.tex" "supplementary.pdf" "supplementary" 1791541673.94956 0
   "C:/Users/ASUS/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1790592165 195305 37f765246b3c456718999cd8698f42eb ""
   "C:/Users/ASUS/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1790592280 13333003 6f74b29cab212c39108e07f9f9661672 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4-t1-4.enc" 1557958141 7693 0f2dce6d313c82989ec3a67fc24df2a0 ""
@@ -81,6 +81,7 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb" 1736607166 32409 70669e52221234457749adcf327540bc ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb" 1736607166 33424 8b2b99d9d7571201cc7eece13c492c55 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb" 1736607166 65081 1217ccf27de85b7db49806ee29c16745 ""
+  "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsym.pfb" 1736607166 44726 4b73c75a3c0ddaf1e8552a98de81766e ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb" 1736607166 45985 fd5f8adcc4f0e93e9a95469e12126723 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/libertine/LinBiolinumT-tlf-t1.vf" 1732620847 1728 e76e04a950024a95b620698b679c9810 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/libertine/LinBiolinumTB-tlf-t1.vf" 1732620847 1728 4ae633ddccb76ba8d0a0906a5e2e8fdf ""
@@ -93,6 +94,7 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/libertine/LinLibertineTZ-tlf-ot1.vf" 1732620847 928 e309451f0d164a7f91077df077a91ecc ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/newtx/ntxexx.vf" 1736607166 1716 73c8d39d4c3ace9ec98a8f066bb3b494 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/newtx/ntxsy.vf" 1736607166 1792 7cf99effbd74f7851ca7683a6d12b685 ""
+  "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/newtx/ntxsy5.vf" 1736607166 1856 05afd1fb7a543fb973348907ffdabf53 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/newtx/ntxsy7.vf" 1736607166 1940 bf4bac1135a7513fb45cfd9280176019 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/newtx/nxlmi.vf" 1736607166 2744 3e5ba39e1559219ae379b7645e2f9524 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/vf/public/newtx/nxlmi5.vf" 1736607166 2740 c8b5f27ae076b0aa71375fdbd19167ca ""
@@ -215,10 +217,10 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/xstring/xstring.sty" 1693735632 123 a302f2c651a95033260db60e51527ae8 ""
   "aamas.cls" 1784725464 122209 65113db2770441df189925e574f1dbe2 ""
   "by.pdf" 1791037787 5004 83a9f153ab784a9a9bdbcca40fe5bcc3 ""
-  "e:/NCKH/Contagion/paper/supplementary.tex" 1791537877 60556 b93bbf7997542c23d2d895fe8d0f70ef ""
-  "supplementary.aux" 1791537881 19437 54cefb48a8bd7c08d5475f4707a39473 "pdflatex"
-  "supplementary.out" 1791537881 4808 51e8e4072766fa552761ff0a353b8657 "pdflatex"
-  "supplementary.tex" 1791537877 60556 b93bbf7997542c23d2d895fe8d0f70ef ""
+  "e:/NCKH/Contagion/paper/supplementary.tex" 1791541617 68082 d1d187777fee8742b5a8564f6e3a6088 ""
+  "supplementary.aux" 1791541673 20840 ac4adc54cd0a75eaa3e891cc24b945af "pdflatex"
+  "supplementary.out" 1791541673 5154 6b1d181f45923a88ccf34b4a1f61a76a "pdflatex"
+  "supplementary.tex" 1791541617 68082 d1d187777fee8742b5a8564f6e3a6088 ""
   (generated)
   "supplementary.aux"
   "supplementary.log"

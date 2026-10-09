@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex contagion_aamas2027"] 1791518506.05282 "contagion_aamas2027.aux" "contagion_aamas2027.bbl" "contagion_aamas2027" 1791518508.88661 0
+["bibtex contagion_aamas2027"] 1791541384.96395 "contagion_aamas2027.aux" "contagion_aamas2027.bbl" "contagion_aamas2027" 1791541686.11614 0
   "./ACM-Reference-Format.bst" 1784725464 93560 7091f2b0543d2c8bfe2e82ce5d54a029 ""
-  "./refs.bib" 1791467894 34280 14659845d734a411f9b81078d738d0d7 ""
-  "contagion_aamas2027.aux" 1791518508 16879 027809566285a86f5bed5ffee8b80923 "pdflatex"
+  "./refs.bib" 1791539060 34563 e91e1fc52c25d46ecdf5c36200864596 ""
+  "contagion_aamas2027.aux" 1791541685 17948 114270d249453b9dd7db4cdbcc772210 "pdflatex"
   (generated)
   "contagion_aamas2027.bbl"
   "contagion_aamas2027.blg"
   (rewritten before read)
-["pdflatex"] 1791518506.37086 "e:/NCKH/Contagion/paper/contagion_aamas2027.tex" "contagion_aamas2027.pdf" "contagion_aamas2027" 1791518508.88723 0
+["pdflatex"] 1791541683.59404 "e:/NCKH/Contagion/paper/contagion_aamas2027.tex" "contagion_aamas2027.pdf" "contagion_aamas2027" 1791541686.11672 0
   "C:/Users/ASUS/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1790592165 195305 37f765246b3c456718999cd8698f42eb ""
   "C:/Users/ASUS/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1790592280 13333003 6f74b29cab212c39108e07f9f9661672 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4-t1-4.enc" 1557958141 7693 0f2dce6d313c82989ec3a67fc24df2a0 ""
@@ -172,6 +172,7 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/nameref.sty" 1752319040 11027 0fe7ce2c6b5291fd809c2de7bbdca37e ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/pd1enc.def" 1752319041 14249 e14b403fb70abdf1f6742598a63b0e2a ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/puenc.def" 1752319041 117118 e2f5f7983a43f89e2ffcd709fc59d37c ""
+  "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/hyperref/xr-hyper.sty" 1752319041 3379 ef91b8e0632c5bdde82b37aabb253be7 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/hyperxmp/hyperxmp.sty" 1711466241 62205 a7f89f92229cfedbace009eb0e06c099 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/ifmtarg/ifmtarg.sty" 1523852445 318 019510c713feab56160631df4423d2aa ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/inconsolata/t1zi4.fd" 1515982652 1021 03341d1cf7f388bbac1915f944d5d128 ""
@@ -220,13 +221,15 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/xstring/xstring.sty" 1693735632 123 a302f2c651a95033260db60e51527ae8 ""
   "aamas.cls" 1784725464 122209 65113db2770441df189925e574f1dbe2 ""
   "by.pdf" 1791037787 5004 83a9f153ab784a9a9bdbcca40fe5bcc3 ""
-  "contagion_aamas2027.aux" 1791518508 16879 027809566285a86f5bed5ffee8b80923 "pdflatex"
-  "contagion_aamas2027.bbl" 1791518506 29741 2ce447d1a601edc903c7ccaa0a1f175e "bibtex contagion_aamas2027"
-  "contagion_aamas2027.out" 1791518508 6296 c03c6387fee8f22a2d04081ce26ff288 "pdflatex"
-  "contagion_aamas2027.tex" 1791517836 62972 623e8056877b10d644369f2b46c405d7 ""
-  "e:/NCKH/Contagion/paper/contagion_aamas2027.tex" 1791517836 62972 623e8056877b10d644369f2b46c405d7 ""
+  "contagion_aamas2027.aux" 1791541685 17948 114270d249453b9dd7db4cdbcc772210 "pdflatex"
+  "contagion_aamas2027.bbl" 1791541385 29741 2ce447d1a601edc903c7ccaa0a1f175e "bibtex contagion_aamas2027"
+  "contagion_aamas2027.out" 1791541685 6322 d7a17a7dc69cfcdcc9be3a3e6c54c8f9 "pdflatex"
+  "contagion_aamas2027.tex" 1791539935 64756 f70c2b16dbcc2bb921c0fe2b9620f5d0 ""
+  "e:/NCKH/Contagion/paper/contagion_aamas2027.tex" 1791539935 64756 f70c2b16dbcc2bb921c0fe2b9620f5d0 ""
   "fig2_per_role_survival.png" 1789114788 64297 a2a33c774b619989307f530813c2d8c6 ""
   "fig4_obfuscation_heatmap.png" 1789114789 112966 6b4d64eb89cd8c5cd57333fa8721dccc ""
+  "supplementary.aux" 1791541673 20840 ac4adc54cd0a75eaa3e891cc24b945af ""
+  "supplementary.tex" 1791541617 68082 d1d187777fee8742b5a8564f6e3a6088 ""
   (generated)
   "contagion_aamas2027.aux"
   "contagion_aamas2027.log"

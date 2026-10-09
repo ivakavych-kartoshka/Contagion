@@ -129,6 +129,88 @@ Section~5.9 of the main paper. Only the Llama rejection survives.}
 \end{table}
 
 % =====================================================================
+\section{Family-Wise Control Extended to the Remaining Families}
+\label{app:mult}
+
+Appendix~\ref{app:bh} accounted for multiplicity among the five composition
+cells; the topology, content-form, obfuscation and loop comparisons that the main
+paper reports as outcomes were previously labelled exploratory without any
+family-wise accounting. We now extend the same Benjamini--Hochberg control to
+every null among those families that is testable from the stored artefact,
+without any new model call (\texttt{scripts/familywise\_extended.py}).
+
+Table~\ref{tab:mult} lists the $m = 12$ tests, the exact $p$-values (Fisher's
+exact test on the observed counts; exact two-sided binomial against the
+point prediction for the loop), the within-family BH threshold at $q = 0.05$,
+and the verdict. Every family keeps at least one surviving rejection, and the
+Claude floor comparison honestly fails (Section~\ref{app:tau} shows there is
+almost nothing to defend). Three findings deserve to be stated explicitly:
+
+\begin{enumerate}
+  \item \textbf{The star--tree ASR gap is not significant.} At $n = 7$ (Llama,
+  40 natural runs per cell) the tree reaches its target in $0.800$ of runs
+  versus $0.725$ for the star; the difference is $p = 0.60$, within the noise the
+  caption already flags. What \emph{is} supported---and survives the correction---
+  is the chain--tree gap ($0.450$ vs.\ $0.800$, $p = 0.0024$) and the
+  chain--star gap ($0.450$ vs.\ $0.725$, $p = 0.022$). We therefore read the
+  main paper's ``most permissive'' as a \emph{numerical} ordering only, and the
+  star--tree reversal with scale rests on the $n = 10$ and DeepSeek replicates
+  (Section~\ref{app:topology}), not on the $n = 7$ gap alone.
+  \item \textbf{The content-form effect survives anything we can correct for.}
+  On Llama's middle edge the same target survives $29/30$ embedded versus
+  $2/30$ canonical ($p = 2.3 \times 10^{-13}$).
+  \item \textbf{The loop falsifications all survive.} The exact finite chain
+  (Section~\ref{app:cyclic}) is rejected in every model against the observed
+  last-round manager rate ($p \le 1.6\times 10^{-4}$ even for the marginal
+  DeepSeek cell).
+\end{enumerate}
+
+A pooled, claim-level BH over all $22$ tests that yield a $p$-value anywhere in
+the paper ($5$ composition + $5$ depth + $3$ topology + $1$ content form +
+$5$ obfuscation + $3$ loop) leaves the same fourteen rejections as the
+within-family passes: the composition family's Llama cell, the depth trends of
+qwen and both Llama replicates, the two topology gaps named above, the
+content-form effect, the four non-floor obfuscation tests, and the three loop
+tests. Nothing that is claimed as significant in the main text is an artefact of
+unchecked multiplicity, and nothing that fails here is claimed there. The $R_0$
+point comparisons ($0.831$ vs.\ $0.821$ and $0.420$) remain descriptive because, as
+the topology caption states, their numerator and denominator are not recoverable
+from the per-cell files we archived, so a test on them would not be reproducible
+from the release.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Exact tests across the formerly uncorrected families, with within-family
+Benjamini--Hochberg control at $q = 0.05$. Counts are read from the archived
+per-cell files; no model was called. $\checkmark$ = survives the family
+threshold; $\times$ = fails.}
+\vspace{4pt}
+\label{tab:mult}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccc}
+\toprule
+\textit{family} & \textit{comparison} & \textit{counts} & \textit{exact $p$}
+& \textit{verdict} \\
+\midrule
+topology        & chain vs.\ tree   & 18/40 vs.\ 32/40 & $0.0024$ & $\checkmark$ \\
+topology        & chain vs.\ star   & 18/40 vs.\ 29/40 & $0.0225$ & $\checkmark$ \\
+topology        & star vs.\ tree    & 29/40 vs.\ 32/40 & $0.60$   & $\times$ \\
+content form    & embedded vs.\ canonical (Llama a1$\to$a2) &
+                $29/30$ vs.\ $2/30$ & $2.3\times10^{-13}$ & $\checkmark$ \\
+obfuscation     & qwen: redaction removes plain  & $15/16 \to 0/16$ & $5.7\times10^{-8}$ & $\checkmark$ \\
+obfuscation     & qwen: split bypasses redaction & $16/16$ vs.\ $0/16$ & $3.3\times10^{-9}$ & $\checkmark$ \\
+obfuscation     & DeepSeek: redaction removes plain & $8/8 \to 0/8$ & $1.6\times10^{-4}$ & $\checkmark$ \\
+obfuscation     & DeepSeek: split bypasses redaction & $8/8$ vs.\ $0/8$ & $1.6\times10^{-4}$ & $\checkmark$ \\
+obfuscation     & Claude: redaction removes plain & $3/30 \to 0/30$ & $0.24$ & $\times$ \\
+loop            & qwen: observed vs.\ prediction & $26/40$ vs.\ $0.048$ & $5.0\times10^{-25}$ & $\checkmark$ \\
+loop            & Llama: observed vs.\ prediction & $28/40$ vs.\ $0.989$ & $1.3\times10^{-14}$ & $\checkmark$ \\
+loop            & DeepSeek: observed vs.\ prediction & $34/60$ vs.\ $0.328$ & $1.6\times10^{-4}$ & $\checkmark$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
 \section{Context-Clustered Interval on the Weak Edge}
 \label{app:cluster}
 
@@ -605,6 +687,38 @@ among the nodes they contain pick the one with lowest instrumentation cost. Per-
 survival answers only the prior question of whether deploying a defence is worthwhile
 at all; redundant paths are what promote placement to a genuine optimisation problem.
 
+\paragraph{Worked example: an AutoGen/MetaGPT-style pipeline.} R4 Q1 asks for a worked
+example in which the four prescriptions change an engineering decision that an aggregate
+ASR alone would not. Consider the ``software-company'' pattern of MetaGPT or an AutoGen
+group chat wired as planner $\to$ worker $\to$ reviewer $\to$ aggregator, with a content
+filter to be placed at one hand-off. A single end-to-end ASR distorts this decision in
+three concrete ways, all measurable from the numbers reported in the main paper.
+
+\emph{Prescription 1 (do not compose isolated estimates):} suppose the team benchmarks
+the worker role in isolation, as a single-agent injection benchmark would, and obtains
+the Llama weak-edge value $\scites = 0.233$. Composing it with the other two edges gives
+$\prod_i \scite{i} = 0.233$, and the team concludes the attack dies early and needs no
+defence. The measured chain ASR is $0.850$, because inside the network the same edge
+survives $\snats = 0.875$ (a $3.75\times$ underestimate); the depth-error slope would
+have flagged exactly this kind of non-transport before deployment.
+
+\emph{Prescription 4 (placement is structural):} on the chain every interior node lies
+on the single entry--target path, so a filter at the reviewer is as effective as at the
+worker (each brings predicted ASR to $0.000$). On a fan-in star, however, a hardened
+branch node is useless while the centre (the node on every path) is decisive. The
+aggregate ASR cannot tell these apart; only paths and cut sets can.
+
+\emph{Prescription 3 (R$_0$ is not a safety criterion):} the seven-agent chain has
+$R_0 = 0.821$ and the star $R_0 = 0.420$, both ``subcritical'', yet the target is
+reached in $0.450$ and $0.725$ of runs respectively. Relying on $R_0 < 1$ would licence
+skipping the filter on the star---the topology where the attack reaches the target most
+often.
+
+The aggregate ASR answers ``did this run fail?''; the per-hop transport check, the
+structural placement view and the no-defence baseline together answer ``where, and
+where should we intervene?''---which is the question that changes the engineering
+decision.
+
 % =====================================================================
 \section{Limitations and Threats to Validity, in Full}
 \label{app:limits}
@@ -947,8 +1061,10 @@ correction.
 \caption{Topology at matched agent count (Llama 3.3 70B, $n = 7$ agents, no defence,
 40 natural runs, 30 controlled trials per edge, fixed-artefact protocol throughout).
 The three topologies have similar mean per-hop survival but differ substantially in
-outcome. This comparison is exploratory and carries no multiplicity correction. $R_0$
-is reported without an interval: its numerator and denominator are formed per
+outcome. The star--tree ASR gap is within noise at this size ($p = 0.60$); the
+chain--tree and chain--star gaps survive the family-wise control of
+Appendix~\ref{app:mult}, so the ``most permissive'' ordering is numerical only.
+$R_0$ is reported without an interval: its numerator and denominator are formed per
 agent-instance and are not recoverable from the per-cell files we archived, so the
 interval we would have to print would not be reproducible from the release.}
 \label{tab:topo}
@@ -964,12 +1080,13 @@ tree           & 6 & 0.928 & \textbf{0.800} & \textbf{0.831} \\
 \end{table}
 
 The star--tree relation reverses with scale rather than merely shrinking: at
-$n = 7$ the tree exceeds the star ($0.800$ vs.\ $0.725$), whereas repeating the
-comparison at $n = 10$ puts the star above the tree on Llama ($0.675$ vs.\ $0.650$)
-and, at $n = 7$, on DeepSeek ($0.750$ vs.\ $0.475$). Nova sits at the resistance
-floor in both (star $0.000$, tree $0.125$). The direction of the topology effect is
-thus itself scale-dependent, which is a further reason not to summarise a network
-with a single per-hop scalar.
+$n = 7$ the tree exceeds the star numerically ($0.800$ vs.\ $0.725$;
+Appendix~\ref{app:mult} shows the gap is within noise, Fisher $p = 0.60$),
+whereas repeating the comparison at $n = 10$ puts the star above the tree on
+Llama ($0.675$ vs.\ $0.650$) and, at $n = 7$, on DeepSeek ($0.750$ vs.\ $0.475$).
+Nova sits at the resistance floor in both (star $0.000$, tree $0.125$). The
+direction of the topology effect is thus itself scale-dependent, which is a
+further reason not to summarise a network with a single per-hop scalar.
 
 % =====================================================================
 \section{What the Artifact Contains, and What It Does Not}
@@ -1021,12 +1138,11 @@ bundle.}
 \end{tabular}
 \end{table}
 
-\paragraph{Where the bundle is.} The code, the per-cell outputs and the manifest are
-available at \url{https://anonymous.4open.science/r/Contagion-F4B8/}, with the
-machine-readable inventory at \texttt{artifacts/MANIFEST.json} (one row per cell) and
-the table-to-command map at \texttt{REPRODUCE.md}. The code is released under MIT and
-the measurement data and per-cell outputs under CC-BY-4.0, matching the licence on the
-first page of the paper.
+\paragraph{Where the bundle is.} The code, per-cell outputs, and manifest are submitted
+as supplementary material alongside this paper. The machine-readable inventory is at
+\texttt{artifacts/MANIFEST.json} (one row per cell) and the table-to-command map is at
+\texttt{REPRODUCE.md}. The code is released under MIT and the measurement data and
+per-cell outputs under CC-BY-4.0, matching the licence on the first page of the paper.
 
 \paragraph{Not supplied, and therefore not claimed.} In particular we do
 not supply: per-condition call counts and failure counts, wall-clock collection times
@@ -1046,9 +1162,11 @@ row per cell: model, defence, payload, topology, context pool, protocol
 (fixed or fresh artefacts), number of natural runs, controlled trials per edge,
 evaluated $n$, and the script that produced it. Analyses are labelled
 \emph{confirmatory} (the composition tests of Section~5.2 and the multiplicity
-correction of Appendix~\ref{app:bh}) or \emph{exploratory} (topology, obfuscation,
-payload form, the recurrent loop and the depth profile), and the exploratory analyses
-carry no family-wise correction; the intervals we report use Wilson bounds, with a
-cluster bootstrap where trials repeat within contexts or runs.
+correction of Appendix~\ref{app:bh}) or \emph{exploratory}; the exploratory
+analyses---topology, obfuscation, payload form, the recurrent loop and the depth
+profile---carry family-wise control within their own family at $q = 0.05$
+(Appendix~\ref{app:mult}), and every test stated in the paper is covered by that
+accounting rather than left uncorrected. The intervals we report use Wilson bounds,
+with a cluster bootstrap where trials repeat within contexts or runs.
 
 \end{document}

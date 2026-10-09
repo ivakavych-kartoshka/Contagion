@@ -220,9 +220,18 @@ là fixed.
 "unbiased". Việc chạy nhiều replication hơn chưa làm.
 
 **W6 (multiplicity áp không đều; R₀ hứa Wilson interval; n dùng lẫn trials/agents)** — ✅
-phần lớn đã sửa: R₀ **không** còn hứa interval (xem R1 W4); nhãn confirmatory vs
-exploratory có ở Appendix P; BH có bảng riêng. Việc mở rộng family-wise correction cho
-topology/obfuscation/loop thì chưa.
+đã sửa toàn bộ: R₀ **không** còn hứa interval (xem R1 W4); nhãn confirmatory vs
+exploratory có ở Appendix P. Family-wise correction giờ **đã mở rộng cho mọi family**
+(Supplementary Appendix mới "Family-Wise Control Extended to the Remaining Families"):
+từ số đã lưu, không gọi model, ta tính **Fisher exact** cho topology (3 pairwise: chain
+vs tree `p=0.0024`, chain vs star `p=0.022`, star vs tree `p=0.60`), content form
+(Llama cạnh giữa `29/30` vs `2/30`, `p=2.3e-13`), obfuscation (4/5 redaction/bypass
+tests sống sót; riêng Claude ở floor `3/30→0/30` **không** đạt — chúng tôi nêu thẳng),
+và **binomial exact** cho loop (cả 3 model bác bỏ finite-chain prediction,
+`p≤1.6e-4`). **BH pooled m=22** giữ nguyên 14 rejection; không claim nào trong main là
+artefact của multiplicity chưa kiểm soát. Hệ quả trung thực phải nói: **star–tree ASR
+(0.800 vs 0.725) nằm trong nhiễu** (`p=0.60`) nên §5.6 hạ "the most permissive" thành
+"numerically the most permissive". $n$ (trials/agents) đã tách: rõ ở caption mỗi bảng.
 
 **W7 (không verify được reproducibility; không có artifact link; thiếu model ID/ngày/
 call count; không có confirmatory labelling)** — ✅ **đã làm phần lớn**:
@@ -270,12 +279,21 @@ giảm lặp; **n=200 + BH + χ² + interval** đã đưa **vào bài chính**. 
 verify từ nguồn chính thức (PMLR v235, ACL Findings 2025, ACL 2025 long, PMLR v267),
 kèm 2 câu nói rõ per-edge view dự đoán gì mà các công trình đó không có.
 
-**W5 (citation hygiene)** — ✅ đã sửa: `[6] Arindam → Anirban` DasGupta ✅; `[26]` đổi
-"reuse" → "adapt" và nói rõ ASV/MR được **định nghĩa lại** thành target-bigram
+**W5 (citation hygiene)** — ✅ đã sửa toàn bộ: `[6] Arindam → Anirban` DasGupta ✅; `[26]`
+đổi "reuse" → "adapt" và nói rõ ASV/MR được **định nghĩa lại** thành target-bigram
 containment / Dice ✅; `[13]` (multi-agent debate) **bỏ** khỏi "orchestration frameworks"
 ✅; `[31]` (Reflexion) **bỏ**, thay bằng ReAct cho câu về tool use ✅; `[21]` đã sửa (R1 W3).
-**Chưa verify được** 3 mục 2026 ([1], [23], [24]) — chúng tôi nêu thẳng là chưa kiểm chứng
-được thay vì để nguyên.
+Cả **3 mục 2026 ([1], [23], [24]) giờ đã được verify** độc lập từ nguồn chính thức (không
+chỉ dựa vào bib):
+- **[1] CII2026** — Abdellah & Aziz, *Statistics, Optimization and Information Computing*
+  15(6), 5445–5458, xuất bản 2026-03-24, DOI `10.19139/soic-2310-5070-3574`. Đúng tác
+  giả, đúng nội dung hạ tầng truyền bệnh theo cấp bậc. ✓
+- **[23] SwarmMarkov2026** — Le et al., *Cybersecurity* (SpringerOpen) 9(1), 2026, xuất bản
+  2026-07-16, DOI `10.1186/s42400-026-00628-w`. Đúng tác giả, đúng mô hình Markov cho agent
+  swarm. ✓
+- **[24] An2026ACIARena** — An et al., *ACL 2026* (Proceedings of the 63rd Annual Meeting,
+  Vol. 1: Long Papers), trang 10049–10066, DOI `10.18653/v1/2026.acl-long.457`. Đúng tác
+  giả, đúng nội dung arena an toàn multi-agent. ✓
 
 **W6 (terminology vs measurement; range ASR bỏ sót tree)** — ✅ đã sửa: range ASR giờ
 `0.45–0.80` **kèm** R₀ `0.42–0.83` và nói rõ thứ tự có thể đảo (tree `0.800`/`0.831`);
@@ -286,7 +304,12 @@ thích)** — ✅ đã sửa: **Fig. 2 và Fig. 4 được vẽ lại đúng c�
 co ~2× và ~5×, chữ còn ~2pt); Fig. 1 caption nêu rõ **Family A**; Table 5 ghi rõ R₀
 không có interval và vì sao.
 
-**Q1 (worked example cho AutoGen/MetaGPT)** — ❌ chưa làm.
+**Q1 (worked example cho AutoGen/MetaGPT)** — ✅ đã làm. Thêm một worked example trong
+Appendix~H (Practical Implications, in Full) của supplement: pipeline
+planner→worker→reviewer→aggregator kiểu MetaGPT/AutoGen, chỉ ra 3 chỗ aggregate ASR
+làm sai quyết định kỹ thuật mà per-hop transport + placement structural + no-defence
+baseline sửa lại (Llama weak edge 0.233 isolated vs 0.875 in-chain; R₀ subcritical
+nhưng ASR 0.450/0.725 trên chain/star).
 **Q2 (per-edge view dự đoán gì)** — ✅ đã thêm đoạn positioning.
 **Q3 (kết quả nào chỉ ở supplement, kết quả nào sẽ vào main)** — ✅ n=200, BH, χ² đã vào main.
 **Q4 (có kết luận nào sống sót với payload/task family thứ 2 không?)** — 🟡 [điền sau khi
