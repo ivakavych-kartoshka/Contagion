@@ -627,6 +627,46 @@ DeepSeek V3.2  & $n = 10$ & $4$--$33\%$  & $15\%$ & $+0.65$ & $+2.3$  \\
 \end{tabular}
 \end{table}
 
+\paragraph{Uncertainty on the slopes.} The main paper quotes a permutation test and a
+bootstrap interval for each slope; Table~\ref{tab:depth-perm} gives them in full. The
+permutation test is two-sided on Spearman's $\rho$: where the number of informative
+depths is at most nine we enumerate all $n!$ relabellings exactly, otherwise we use
+$10^4$ Monte Carlo permutations (seed 7); the intervals are percentile bootstrap
+($10^4$ resamples of the (depth, error) pairs). Two consequences deserve emphasis.
+First, a perfect rank correlation at these sample sizes is still only
+$p = 0.003$: the test is weak by construction, so ``significant'' here means ``not
+explainable by chance at $n = 6$ depths'', not that the slope is precise. Second, the
+DeepSeek profiles do not support a trend at either sample size---at $n = 10$ the
+interval for the slope spans zero ($[-0.3, +4.0]$) and the rank test does not reject
+($p = 0.067$), and at $n = 8$ the estimate is indistinguishable from flat
+($\rho = -0.07$, $p = 0.91$)---which is why the main paper reports the DeepSeek profile
+as shallow rather than as evidence of a positive trend. We therefore describe the
+slope as a diagnostic, not as a calibrated correction.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Permutation test and bootstrap intervals for the depth slopes of
+Table~\ref{tab:depth}. $n$ is the number of informative depths; ``dropped'' counts
+depths excluded because the measured or isolated rate was zero and the relative error
+is undefined.}
+\vspace{4pt}
+\label{tab:depth-perm}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccc}
+\toprule
+\textit{model} & \textit{$n$} & \textit{$\rho$ [CI95]} & \textit{$p_{\mathrm{perm}}$}
+& \textit{slope} & \textit{CI95} \\
+\midrule
+qwen2.5:7b ($n{=}7$)    & 6 & $+1.00$ $[1.00, 1.00]$ & $0.003$ & $+11.8$ & $[+7.8, +14.8]$ \\
+Llama 70B ($n{=}15$)    & 10 & $+0.77$ $[0.30, 0.95]$ & $0.014$ & $+6.8$ & $[+2.7, +11.4]$ \\
+Llama 70B (re-run)      & 10 & $+0.76$ $[0.30, 0.94]$ & $0.014$ & $+6.3$ & $[+2.0, +11.0]$ \\
+DeepSeek V3.2 ($n{=}8$) & 7 & $-0.07$ $[-0.89, 0.88]$ & $0.906$ & $+0.1$ & $[-5.3, +4.5]$ \\
+DeepSeek V3.2 ($n{=}10$) & 9 & $+0.65$ $[-0.07, 0.98]$ & $0.067$ & $+2.3$ & $[-0.3, +4.0]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 The slopes form a spectrum rather than two categories, and the ordering is a
 consequence of what the transportability measurements show directly: where the
 isolated rate transports best (DeepSeek matches its measured ASR to $2.2\%$)

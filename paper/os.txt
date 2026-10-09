@@ -206,23 +206,42 @@ Overfull \hbox (10.3392pt too wide) in paragraph at lines 352--361
 _fygcup.enc}]
 Overfull \hbox (6.14447pt too wide) in paragraph at lines 454--464
  [][] 
-[4.4]
-Overfull \hbox (3.54837pt too wide) in paragraph at lines 654--661
+[4.4] [5.5{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertin
+e/lbtn_ki75ao.enc}]
+Overfull \hbox (3.54837pt too wide) in paragraph at lines 694--701
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Code, per-cell out-puts, tests and of-fli
 ne re-analysis (Ap-pen-dices A--
 
-Overfull \hbox (7.8536pt too wide) in paragraph at lines 666--669
+Overfull \hbox (7.8536pt too wide) in paragraph at lines 706--709
  []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Tool and ver-sion.[] \T1/LinuxLibertine
 T-TLF/b/n/9 (-20) DeepSeek V4.1 Flash\T1/LinuxLibertineT-TLF/m/n/9 (-20) , used
  in-ter-ac-tively through
-[5.5{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn
-_ki75ao.enc}]
-Underfull \vbox (badness 10000) has occurred while \output is active
+
+Underfull \vbox (badness 3407) has occurred while \output is active
+Underfull \hbox (badness 10000) in paragraph at lines 774--774
+[]\T1/LinuxLibertineT-TLF/b/n/9 (+20) Table 10: |Re-con-ver-gent DAG (\T1/zi4/b
+/n/9 a0$\LMS/ntxsy/m/n/9 !$\T1/zi4/b/n/9 a1$\LMS/ntxsy/m/n/9 !$\T1/LinuxLiberti
+neT-TLF/b/n/9 (+20) {\T1/zi4/b/n/9 a2\T1/LinuxLibertineT-TLF/b/n/9 (+20) ,\T1/z
+i4/b/n/9 a3\T1/LinuxLibertineT-TLF/b/n/9 (+20) }$\LMS/ntxsy/m/n/9 !$\T1/zi4/b/n
+/9 a4\T1/LinuxLibertineT-TLF/b/n/9 (+20) ,
+
+Underfull \hbox (badness 3219) in paragraph at lines 774--774
+\T1/zi4/b/n/9 qwen2.5:7b\T1/LinuxLibertineT-TLF/b/n/9 (+20) , 40 nat-u-ral runs
+, 30 re-plays per arm and
+
+Underfull \hbox (badness 2875) in paragraph at lines 774--774
+\T1/LinuxLibertineT-TLF/b/n/9 (+20) edge). Top: per-edge in-chain ver-sus iso-l
+ated sur-vival.
+
+Underfull \hbox (badness 2088) in paragraph at lines 774--774
+\T1/LinuxLibertineT-TLF/b/n/9 (+20) chain prod-uct, un-der the per-co-la-tion r
+e-cur-rence from
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [6.6]
-Overfull \hbox (3.34462pt too wide) in paragraph at lines 815--825
+Underfull \vbox (badness 1859) has occurred while \output is active
+Overfull \hbox (3.34462pt too wide) in paragraph at lines 855--865
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) cell re-sult files that are in-cluded: per-
 cell sum-maries (\T1/zi4/m/n/9 results.json\T1/LinuxLibertineT-TLF/m/n/9 (-20) 
 ),
@@ -259,5 +278,5 @@ s/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb><C:/U
 sers/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/
 Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C
 :/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on supplementary.pdf (7 pages, 650330 bytes).
+Output written on supplementary.pdf (7 pages, 661916 bytes).
 Transcript written on supplementary.log.

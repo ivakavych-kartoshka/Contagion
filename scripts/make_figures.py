@@ -397,7 +397,7 @@ def fig2_per_role():
     x = np.arange(len(edges))
     w = 0.38
 
-    fig, ax = plt.subplots(figsize=(7.2, 4.2))
+    fig, ax = plt.subplots(figsize=(3.45, 2.85))
     for offset, (nm, agg, color) in enumerate(
             [("no defence", a, "#c0504d"), ("paraphrase", b, "#4f81bd")]):
         if not agg:
@@ -414,15 +414,18 @@ def fig2_per_role():
                edgecolor="#333", linewidth=0.6)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(labels)
-    ax.set_ylabel("per-hop survival $\\hat s_i$")
-    ax.set_xlabel("receiving role (chain order)")
+    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=8)
+    ax.set_ylabel("per-hop survival $\\hat s_i$", fontsize=9)
+    ax.set_xlabel("receiving role (chain order)", fontsize=9)
     ax.set_ylim(0, 1.12)
     ax.axhline(0.5, color="#999", ls=":", lw=0.9)
-    ax.set_title("Per-hop survival depends on the receiving role\n"
-                 "Task A, qwen2.5:7b, 5-agent chain, n=30/edge", fontsize=10.5)
-    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.16),
-              ncol=2)
+    ax.set_title("Per-hop survival by receiving role\n"
+                 "Task A, qwen2.5:7b, 5-agent chain, n=30/edge", fontsize=8.5)
+    ax.tick_params(axis="y", labelsize=8)
+    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.44),
+              ncol=2, fontsize=7, columnspacing=1.0, handlelength=1.4,
+              handletextpad=0.4)
+    fig.subplots_adjust(bottom=0.34)
     ax.grid(axis="y", alpha=0.25)
 
     NOTES.append("- `fig2_per_role_survival.png` — nguồn: `rerun_chain_n40/"
@@ -532,6 +535,25 @@ def _obf_sources() -> list:
     return sources
 
 
+def _short_model(label: str) -> str:
+    """Rút nhãn panel cho vừa cột (~1.7 in), tránh đè lên tick của heatmap.
+
+    Nhãn gốc kiểu ``claude-sonnet-4-5 (n=30/cell)`` dài ~25 ký tự; ở cỡ cột AAMAS
+    (2 panel/hàng) nó đè lên nhãn trục bên dưới.
+    """
+    import re as _re
+    m = _re.search(r"\(n\s*=\s*(\d+)/cell\)", label)
+    n = f"\n$n$={m.group(1)}" if m else ""
+    name = label.split("(")[0].strip()
+    for long, short in (("claude-sonnet-4-5", "claude"), ("qwen2.5:7b", "qwen-7B"),
+                        ("deepseek-v3.2", "deepseek"), ("llama3-3-70b", "llama-70B"),
+                        ("nova-pro", "nova")):
+        if name.startswith(long):
+            name = short
+            break
+    return name + n
+
+
 def fig4_obfuscation():
     sources = _obf_sources()
     if not sources:
@@ -542,9 +564,13 @@ def fig4_obfuscation():
                  "split-word": "split"}
     defenses = ["none", "redact"]
 
-    fig, axes = plt.subplots(1, len(sources), figsize=(4.4 * len(sources), 3.9),
+    # 4 panel xếp 2x2 và vẽ ĐÚNG cỡ in (~3.45 in = \linewidth của AAMAS 2 cột).
+    # Trước đây 1x4 ở 17.6 in rồi bị LaTeX co ~5x ⇒ chữ ~2pt, không đọc được (R2).
+    ncol = 2
+    nrow = (len(sources) + ncol - 1) // ncol
+    fig, axes = plt.subplots(nrow, ncol, figsize=(3.45, 1.55 * nrow),
                              squeeze=False)
-    for ax, (label, table) in zip(axes[0], sources):
+    for ax, (label, table) in zip(axes.ravel(), sources):
         grid = np.zeros((len(defenses), len(styles)))
         for i, d in enumerate(defenses):
             for j, s in enumerate(styles):
@@ -552,18 +578,22 @@ def fig4_obfuscation():
                 grid[i, j] = (k / n) if n else 0.0
         im = ax.imshow(grid, cmap="Reds", vmin=0, vmax=1, aspect="auto")
         ax.set_xticks(range(len(styles)))
-        ax.set_xticklabels([style_lab[s] for s in styles])
+        ax.set_xticklabels([style_lab[s] for s in styles], fontsize=7)
         ax.set_yticks(range(len(defenses)))
-        ax.set_yticklabels([f"{d}" for d in defenses])
+        ax.set_yticklabels([f"{d}" for d in defenses], fontsize=7)
         # CHỈ 1 dòng chữ mỗi ô (trước đây 3 dòng → đè nhau)
         for i in range(len(defenses)):
             for j in range(len(styles)):
                 ax.text(j, i, f"{grid[i, j]:.2f}", ha="center", va="center",
-                        fontsize=11, color="#111")
-        ax.set_title(label, fontsize=10)
+                        fontsize=7.5, color="#111")
+        ax.set_title(_short_model(label), fontsize=7.5)
+        ax.tick_params(length=2)
+    for ax in axes.ravel()[len(sources):]:      # tắt panel trống (nếu có)
+        ax.axis("off")
     fig.suptitle("Single-hop compromise rate: obfuscation vs. redaction",
-                 fontsize=11.5)
-    fig.colorbar(im, ax=list(axes[0]), label="compromise rate", shrink=0.8)
+                 fontsize=8.5)
+    fig.colorbar(im, ax=list(axes.ravel()[:len(sources)]), label="compromise rate",
+                 shrink=0.85, fraction=0.04, pad=0.02)
 
     NOTES.append("- `fig4_obfuscation_heatmap.png` — nguồn: "
                  "`taskb_obfuscation/results.json` (qwen) + mọi `*/results.json` có "

@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{43}
+\begin{thebibliography}{41}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -203,19 +203,6 @@
   \bibinfo{booktitle}{\emph{Advances in Neural Information Processing
   Systems}}, Vol.~\bibinfo{volume}{37}. \bibinfo{publisher}{Curran Associates,
   Inc.}
-\newblock
-
-
-\bibitem[Du et~al\mbox{.}(2024)]%
-        {Du2024MultiagentDebate}
-\bibfield{author}{\bibinfo{person}{Yilun Du}, \bibinfo{person}{Shuang Li},
-  \bibinfo{person}{Antonio Torralba}, \bibinfo{person}{Joshua~B. Tenenbaum},
-  {and} \bibinfo{person}{Igor Mordatch}.} \bibinfo{year}{2024}\natexlab{}.
-\newblock \showarticletitle{Improving Factuality and Reasoning in Language
-  Models through Multiagent Debate}. In \bibinfo{booktitle}{\emph{Proceedings
-  of the 41st International Conference on Machine Learning}}
-  \emph{(\bibinfo{series}{Proceedings of Machine Learning Research},
-  Vol.~\bibinfo{volume}{235})}. \bibinfo{pages}{11733--11763}.
 \newblock
 
 
@@ -483,20 +470,6 @@
   Associates, Inc.}, \bibinfo{pages}{68539--68551}.
 \newblock
 \href{https://doi.org/10.52202/075280-2997}{doi:\nolinkurl{10.52202/075280-2997}}
-
-
-\bibitem[Shinn et~al\mbox{.}(2023)]%
-        {Shinn2023Reflexion}
-\bibfield{author}{\bibinfo{person}{Noah Shinn}, \bibinfo{person}{Federico
-  Cassano}, \bibinfo{person}{Ashwin Gopinath}, \bibinfo{person}{Karthik
-  Narasimhan}, {and} \bibinfo{person}{Shunyu Yao}.}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \showarticletitle{Reflexion: language agents with verbal
-  reinforcement learning}. In \bibinfo{booktitle}{\emph{Advances in Neural
-  Information Processing Systems}}, Vol.~\bibinfo{volume}{36}.
-  \bibinfo{publisher}{Curran Associates, Inc.}, \bibinfo{pages}{8634--8652}.
-\newblock
-\href{https://doi.org/10.52202/075280-0377}{doi:\nolinkurl{10.52202/075280-0377}}
 
 
 \bibitem[Wang et~al\mbox{.}(2025)]%

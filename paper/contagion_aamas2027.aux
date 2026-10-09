@@ -20,7 +20,7 @@
 \citation{Yao2023ReAct}
 \citation{Debenedetti2024AgentDojo}
 \citation{Zhang2025ASB}
-\citation{Schick2023Toolformer,Shinn2023Reflexion}
+\citation{Schick2023Toolformer,Yao2023ReAct}
 \citation{Liu2024AgentBench,Jimenez2024SWEBench}
 \citation{Andriushchenko2025AgentHarm}
 \citation{LiuGong2024}
@@ -85,7 +85,7 @@
 \@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{5}{section.4}\protected@file@percent }
 \newlabel{sec:setup}{{4}{5}{Experimental Setup}{section.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{Models.}{5}{section*.17}\protected@file@percent }
-\citation{Hong2023MetaGPT,Wu2024AutoGen,Du2024MultiagentDebate}
+\citation{Hong2023MetaGPT,Wu2024AutoGen}
 \citation{Zhan2025Adaptive,StrUQ2025}
 \@writefile{toc}{\contentsline {paragraph}{Agent roles and network wiring.}{6}{section*.18}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Cells.}{6}{section*.19}\protected@file@percent }
@@ -97,8 +97,8 @@
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials per edge. $\bar  s$ is the mean controlled per-edge survival; per-edge order follows the chain. $\dagger $ marks the two rows re-run under the fresh-artefact protocol; the other three predate that policy and use fixed artefacts, so they are protocol-specific (Section\nonbreakingspace \ref {sec:ablation}).}}{6}{table.caption.22}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:cross}{{1}{6}{Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials per edge. $\bar s$ is the mean controlled per-edge survival; per-edge order follows the chain. $\dagger $ marks the two rows re-run under the fresh-artefact protocol; the other three predate that policy and use fixed artefacts, so they are protocol-specific (Section~\ref {sec:ablation})}{table.caption.22}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged.}}{6}{figure.caption.23}\protected@file@percent }
-\newlabel{fig:role}{{1}{6}{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged}{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge, Wilson intervals). Under no defence the worker-position edge survives at $0.133$ against $0.867$ at the reviewer position---six-fold spread within one model and attack---whereas semantic paraphrase drives every edge in this chain to $0.000$.}}{6}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:role}{{1}{6}{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge, Wilson intervals). Under no defence the worker-position edge survives at $0.133$ against $0.867$ at the reviewer position---six-fold spread within one model and attack---whereas semantic paraphrase drives every edge in this chain to $0.000$}{figure.caption.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The isolated per-hop rate does not transport to the chain}{6}{subsection.5.2}\protected@file@percent }
 \newlabel{sec:transport}{{5.2}{6}{The isolated per-hop rate does not transport to the chain}{subsection.5.2}{}}
 \citation{Zhan2025Adaptive}
@@ -140,38 +140,36 @@
 \bibcite{Chen2024AgentVerse}{{10}{2024}{{Chen et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2026CaMeL}{{11}{2026}{{Debenedetti et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2024AgentDojo}{{12}{2024}{{Debenedetti et~al\mbox  {.}}}{{}}}
-\bibcite{Du2024MultiagentDebate}{{13}{2024}{{Du et~al\mbox  {.}}}{{}}}
-\bibcite{Efron1979}{{14}{1979}{{Efron}}{{}}}
-\bibcite{Granovetter1978}{{15}{1978}{{Granovetter}}{{}}}
-\bibcite{Greshake2023}{{16}{2023}{{Greshake et~al\mbox  {.}}}{{}}}
-\bibcite{Gu2024AgentSmith}{{17}{2024}{{Gu et~al\mbox  {.}}}{{}}}
-\bibcite{Hines2024CAMLIS}{{18}{2024}{{Hines et~al\mbox  {.}}}{{}}}
-\bibcite{Hong2023MetaGPT}{{19}{2024}{{Hong et~al\mbox  {.}}}{{}}}
-\bibcite{Huang2025Resilience}{{20}{2025}{{Huang et~al\mbox  {.}}}{{}}}
-\bibcite{Jimenez2024SWEBench}{{21}{2024}{{Jimenez et~al\mbox  {.}}}{{}}}
-\bibcite{KeelingEames2005}{{22}{2005}{{Keeling and Eames}}{{}}}
-\bibcite{Kempe2003}{{23}{2003}{{Kempe et~al\mbox  {.}}}{{}}}
-\bibcite{KermackMcKendrick1927}{{24}{1927}{{Kermack and McKendrick}}{{}}}
-\bibcite{SwarmMarkov2026}{{25}{2026}{{Le et~al\mbox  {.}}}{{}}}
-\bibcite{Lee2025Infection}{{26}{2026}{{Lee et~al\mbox  {.}}}{{}}}
-\bibcite{Liu2024AgentBench}{{27}{2024b}{{Liu et~al\mbox  {.}}}{{}}}
-\bibcite{LiuGong2024}{{28}{2024a}{{Liu et~al\mbox  {.}}}{{}}}
-\bibcite{Newman2002}{{29}{2002}{{Newman}}{{}}}
-\bibcite{PastorSatorras2001}{{30}{2001}{{Pastor-Satorras and Vespignani}}{{}}}
-\bibcite{Perez2022PromptInjection}{{31}{2022}{{P{\'{e}}rez and Ribeiro}}{{}}}
-\bibcite{Schick2023Toolformer}{{32}{2023}{{Schick et~al\mbox  {.}}}{{}}}
-\bibcite{Shinn2023Reflexion}{{33}{2023}{{Shinn et~al\mbox  {.}}}{{}}}
-\bibcite{Wang2025GSafeguard}{{34}{2025}{{Wang et~al\mbox  {.}}}{{}}}
-\bibcite{Watts2002}{{35}{2002}{{Watts}}{{}}}
-\bibcite{WattsStrogatz1998}{{36}{1998}{{Watts and Strogatz}}{{}}}
-\bibcite{Wilson1927}{{37}{1927}{{Wilson}}{{}}}
-\bibcite{Wu2024AutoGen}{{38}{2024}{{Wu et~al\mbox  {.}}}{{}}}
-\bibcite{Yao2023ReAct}{{39}{2023}{{Yao et~al\mbox  {.}}}{{}}}
+\bibcite{Efron1979}{{13}{1979}{{Efron}}{{}}}
+\bibcite{Granovetter1978}{{14}{1978}{{Granovetter}}{{}}}
+\bibcite{Greshake2023}{{15}{2023}{{Greshake et~al\mbox  {.}}}{{}}}
+\bibcite{Gu2024AgentSmith}{{16}{2024}{{Gu et~al\mbox  {.}}}{{}}}
+\bibcite{Hines2024CAMLIS}{{17}{2024}{{Hines et~al\mbox  {.}}}{{}}}
+\bibcite{Hong2023MetaGPT}{{18}{2024}{{Hong et~al\mbox  {.}}}{{}}}
+\bibcite{Huang2025Resilience}{{19}{2025}{{Huang et~al\mbox  {.}}}{{}}}
+\bibcite{Jimenez2024SWEBench}{{20}{2024}{{Jimenez et~al\mbox  {.}}}{{}}}
+\bibcite{KeelingEames2005}{{21}{2005}{{Keeling and Eames}}{{}}}
+\bibcite{Kempe2003}{{22}{2003}{{Kempe et~al\mbox  {.}}}{{}}}
+\bibcite{KermackMcKendrick1927}{{23}{1927}{{Kermack and McKendrick}}{{}}}
+\bibcite{SwarmMarkov2026}{{24}{2026}{{Le et~al\mbox  {.}}}{{}}}
+\bibcite{Lee2025Infection}{{25}{2026}{{Lee et~al\mbox  {.}}}{{}}}
+\bibcite{Liu2024AgentBench}{{26}{2024b}{{Liu et~al\mbox  {.}}}{{}}}
+\bibcite{LiuGong2024}{{27}{2024a}{{Liu et~al\mbox  {.}}}{{}}}
+\bibcite{Newman2002}{{28}{2002}{{Newman}}{{}}}
+\bibcite{PastorSatorras2001}{{29}{2001}{{Pastor-Satorras and Vespignani}}{{}}}
+\bibcite{Perez2022PromptInjection}{{30}{2022}{{P{\'{e}}rez and Ribeiro}}{{}}}
+\bibcite{Schick2023Toolformer}{{31}{2023}{{Schick et~al\mbox  {.}}}{{}}}
+\bibcite{Wang2025GSafeguard}{{32}{2025}{{Wang et~al\mbox  {.}}}{{}}}
+\bibcite{Watts2002}{{33}{2002}{{Watts}}{{}}}
+\bibcite{WattsStrogatz1998}{{34}{1998}{{Watts and Strogatz}}{{}}}
+\bibcite{Wilson1927}{{35}{1927}{{Wilson}}{{}}}
+\bibcite{Wu2024AutoGen}{{36}{2024}{{Wu et~al\mbox  {.}}}{{}}}
+\bibcite{Yao2023ReAct}{{37}{2023}{{Yao et~al\mbox  {.}}}{{}}}
+\bibcite{Yu2025NetSafe}{{38}{2025}{{Yu et~al\mbox  {.}}}{{}}}
+\bibcite{Zhan2025Adaptive}{{39}{2025}{{Zhan et~al\mbox  {.}}}{{}}}
 \@writefile{toc}{\contentsline {section}{References}{9}{section*.29}\protected@file@percent }
-\bibcite{Yu2025NetSafe}{{40}{2025}{{Yu et~al\mbox  {.}}}{{}}}
-\bibcite{Zhan2025Adaptive}{{41}{2025}{{Zhan et~al\mbox  {.}}}{{}}}
-\bibcite{Zhan2024InjecAgent}{{42}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
-\bibcite{Zhang2025ASB}{{43}{2025}{{Zhang et~al\mbox  {.}}}{{}}}
+\bibcite{Zhan2024InjecAgent}{{40}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
+\bibcite{Zhang2025ASB}{{41}{2025}{{Zhang et~al\mbox  {.}}}{{}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{4.185pt}

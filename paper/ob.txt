@@ -14,8 +14,6 @@ Warning--empty publisher in Debenedetti2026CaMeL
 Warning--empty address in Debenedetti2026CaMeL
 Warning--empty address in Debenedetti2024AgentDojo
 Warning--page numbers missing in both pages and numpages fields in Debenedetti2024AgentDojo
-Warning--empty publisher in Du2024MultiagentDebate
-Warning--empty address in Du2024MultiagentDebate
 Warning--empty address in Greshake2023
 Warning--empty address in Gu2024AgentSmith
 Warning--empty publisher in Hines2024CAMLIS
@@ -35,7 +33,6 @@ Warning--empty publisher in Perez2022PromptInjection
 Warning--empty address in Perez2022PromptInjection
 Warning--page numbers missing in both pages and numpages fields in Perez2022PromptInjection
 Warning--empty address in Schick2023Toolformer
-Warning--empty address in Shinn2023Reflexion
 Warning--empty publisher in Wu2024AutoGen
 Warning--empty address in Wu2024AutoGen
 Warning--page numbers missing in both pages and numpages fields in Wu2024AutoGen
@@ -47,4 +44,4 @@ Warning--empty address in Zhan2025Adaptive
 Warning--empty publisher in Zhang2025ASB
 Warning--empty address in Zhang2025ASB
 Warning--page numbers missing in both pages and numpages fields in Zhang2025ASB
-(There were 45 warnings)
+(There were 42 warnings)

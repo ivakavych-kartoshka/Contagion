@@ -257,8 +257,9 @@ ReAct~\cite{Yao2023ReAct} GPT-4 agent, with the \emph{content-freedom} of the
 injected field dominating vulnerability. AgentDojo~\cite{Debenedetti2024AgentDojo}
 provides a dynamic evaluation environment for one agent over one hop, and
 Agent Security Bench~\cite{Zhang2025ASB} broadens this to ten application
-scenarios with an average attack success rate above $84\%$. Tool calls are prompted
-or learned~\cite{Schick2023Toolformer,Shinn2023Reflexion}, and capability
+scenarios with an average attack success rate above $84\%$. Tool use is taught by
+demonstration or by prompting interaction traces~\cite{Schick2023Toolformer,Yao2023ReAct},
+and capability
 benchmarks~\cite{Liu2024AgentBench,Jimenez2024SWEBench} and harmfulness
 benchmarks~\cite{Andriushchenko2025AgentHarm} each condense a whole system into one
 scalar.
@@ -606,8 +607,7 @@ receives a fixed system prompt encoding that role's responsibilities: the planne
 (\texttt{agent\_1}) executes a delegated sub-task, the reviewer (\texttt{agent\_2})
 inspects and summarises incoming content, and the aggregator (\texttt{agent\_3})
 synthesises a final answer. These roles reflect the structural positions that appear
-in real orchestration frameworks~\cite{Hong2023MetaGPT,Wu2024AutoGen,Du2024MultiagentDebate}
-without
+in deployed orchestration frameworks~\cite{Hong2023MetaGPT,Wu2024AutoGen} without
 over-specifying the prompt engineering. All role prompts are held fixed across
 models and attacks; only the underlying model identifier changes, so cross-model
 differences in per-hop survival are attributable to the model, not to prompt
@@ -684,10 +684,10 @@ Claude Sonnet 4.5          & 0.000 & 0.211 & 0.000 / 0.600 / 0.033 \\
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig2_per_role_survival.png}
-  \caption{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge).
-  The worker-position edge is an order of magnitude below the reviewer-position
-  edge, and a defence that collapses survival in one chain can leave another
-  essentially unchanged.}
+  \caption{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge,
+  Wilson intervals). Under no defence the worker-position edge survives at $0.133$
+  against $0.867$ at the reviewer position---six-fold spread within one model and
+  attack---whereas semantic paraphrase drives every edge in this chain to $0.000$.}
   \label{fig:role}
   \Description{Bar chart with error bars showing per-hop survival rates for four
   chain positions under no defence and under paraphrase. Survival at the
@@ -883,11 +883,14 @@ table is in the supplementary material.
 The relative error of the isolated product grows with depth at a model-specific rate,
 and that rate---not the error at any single depth---is the usable diagnostic. Across
 models the slopes form a \emph{spectrum} rather than two
-categories: $+11.8$ points per hop on qwen2.5:7b ($\rho = +1.00$), $+6.8$ on
-Llama 3.3 70B ($\rho = +0.77$, reproduced at higher power) before its chain dies at
-depth $11$, and $+2.3$ on DeepSeek V3.2 at $n = 10$ ($\rho = +0.65$)---its apparent
-flatness at $n = 8$ ($\rho = -0.07$) is a reminder that a short low-power chain can
-read as flat. The ordering follows from what Section~\ref{sec:transport} measures
+categories: $+11.8$ points per hop on qwen2.5:7b (Spearman $\rho = +1.00$,
+permutation $p = 0.003$ over its six depths, 95\% bootstrap interval $[+7.8, +14.8]$),
+$+6.8$ on Llama 3.3 70B ($\rho = +0.77$, $p = 0.014$, reproduced at higher power)
+before its chain dies at
+depth $11$, and $+2.3$ on DeepSeek V3.2 at $n = 10$ ($\rho = +0.65$, $p = 0.067$)---a
+slope whose interval spans zero, so we do not read it as a trend; its flatness at
+$n = 8$ ($\rho = -0.07$, $p = 0.91$) is a reminder that a short low-power chain can
+read as flat at all. The ordering follows from what Section~\ref{sec:transport} measures
 directly: where the isolated rate transports best (DeepSeek matches its measured ASR
 to $2.2\%$) composing edge estimates adds little systematic error, whereas an edge
 under-estimated by $3.75\times$ (Llama's middle edge) enters every product containing
@@ -899,8 +902,7 @@ is expected rather than informative, since each of these graphs has effectively 
 entry--target path and the recurrence collapses to the chain identity; on a
 reconvergent DAG, where the two can differ, the recurrence built from isolated
 marginals underestimates reachability by $2.6\times$ while the in-chain version does
-not (supplementary Appendix~M). The
-per-model table and rank statistics are in the supplementary material.
+not (supplementary Appendix~M).
 
 \subsection{Recurrence makes the threshold non-vacuous}
 \label{sec:cyclic}
