@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{39}
+\begin{thebibliography}{43}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -110,7 +110,7 @@
 \bibitem[Brown et~al\mbox{.}(2001)]%
         {Brown2001}
 \bibfield{author}{\bibinfo{person}{Lawrence~D. Brown}, \bibinfo{person}{T.~Tony
-  Cai}, {and} \bibinfo{person}{Arindam DasGupta}.}
+  Cai}, {and} \bibinfo{person}{Anirban DasGupta}.}
   \bibinfo{year}{2001}\natexlab{}.
 \newblock \showarticletitle{Interval Estimation for a Binomial Proportion}.
 \newblock \bibinfo{journal}{\emph{Statist. Sci.}} \bibinfo{volume}{16},
@@ -257,6 +257,21 @@
 \href{https://doi.org/10.1145/3605764.3623985}{doi:\nolinkurl{10.1145/3605764.3623985}}
 
 
+\bibitem[Gu et~al\mbox{.}(2024)]%
+        {Gu2024AgentSmith}
+\bibfield{author}{\bibinfo{person}{Xiangming Gu}, \bibinfo{person}{Xiaosen
+  Zheng}, \bibinfo{person}{Tianyu Pang}, \bibinfo{person}{Chao Du},
+  \bibinfo{person}{Qian Liu}, \bibinfo{person}{Ye Wang}, \bibinfo{person}{Jing
+  Jiang}, {and} \bibinfo{person}{Min Lin}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Agent Smith: A Single Image Can Jailbreak One
+  Million Multimodal {LLM} Agents Exponentially Fast}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 41st International Conference on
+  Machine Learning}} \emph{(\bibinfo{series}{Proceedings of Machine Learning
+  Research}, Vol.~\bibinfo{volume}{235})}. \bibinfo{publisher}{PMLR},
+  \bibinfo{pages}{16647--16672}.
+\newblock
+
+
 \bibitem[Hines et~al\mbox{.}(2024)]%
         {Hines2024CAMLIS}
 \bibfield{author}{\bibinfo{person}{Keegan Hines}, \bibinfo{person}{Gary Lopez},
@@ -289,6 +304,22 @@
 \url{https://openreview.net/forum?id=bhMk4f2pUj}
 \showURL{%
 \tempurl}
+
+
+\bibitem[Huang et~al\mbox{.}(2025)]%
+        {Huang2025Resilience}
+\bibfield{author}{\bibinfo{person}{Jen-Tse Huang}, \bibinfo{person}{Jiaxu
+  Zhou}, \bibinfo{person}{Tailin Jin}, \bibinfo{person}{Xuhui Zhou},
+  \bibinfo{person}{Zixi Chen}, \bibinfo{person}{Wenxuan Wang},
+  \bibinfo{person}{Youliang Yuan}, \bibinfo{person}{Michael Lyu}, {and}
+  \bibinfo{person}{Maarten Sap}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{On the Resilience of {LLM}-Based Multi-Agent
+  Collaboration with Faulty Agents}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 42nd International Conference on Machine Learning}}
+  \emph{(\bibinfo{series}{Proceedings of Machine Learning Research},
+  Vol.~\bibinfo{volume}{267})}. \bibinfo{publisher}{PMLR},
+  \bibinfo{pages}{26202--26226}.
+\newblock
 
 
 \bibitem[Jimenez et~al\mbox{.}(2024)]%
@@ -468,6 +499,23 @@
 \href{https://doi.org/10.52202/075280-0377}{doi:\nolinkurl{10.52202/075280-0377}}
 
 
+\bibitem[Wang et~al\mbox{.}(2025)]%
+        {Wang2025GSafeguard}
+\bibfield{author}{\bibinfo{person}{Shilong Wang}, \bibinfo{person}{Guibin
+  Zhang}, \bibinfo{person}{Miao Yu}, \bibinfo{person}{Guancheng Wan},
+  \bibinfo{person}{Fanci Meng}, \bibinfo{person}{Chongye Guo},
+  \bibinfo{person}{Kun Wang}, {and} \bibinfo{person}{Yang Wang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{G-Safeguard}: A Topology-Guided Security Lens and
+  Treatment on {LLM}-based Multi-agent Systems}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 63rd Annual Meeting of the
+  Association for Computational Linguistics (Volume 1: Long Papers)}}.
+  \bibinfo{publisher}{Association for Computational Linguistics},
+  \bibinfo{address}{Vienna, Austria}, \bibinfo{pages}{7261--7276}.
+\newblock
+\href{https://doi.org/10.18653/v1/2025.acl-long.359}{doi:\nolinkurl{10.18653/v1/2025.acl-long.359}}
+
+
 \bibitem[Watts(2002)]%
         {Watts2002}
 \bibfield{author}{\bibinfo{person}{Duncan~J. Watts}.}
@@ -535,6 +583,22 @@
 \url{https://openreview.net/forum?id=WE_vluYUL-X}
 \showURL{%
 \tempurl}
+
+
+\bibitem[Yu et~al\mbox{.}(2025)]%
+        {Yu2025NetSafe}
+\bibfield{author}{\bibinfo{person}{Miao Yu}, \bibinfo{person}{Shilong Wang},
+  \bibinfo{person}{Guibin Zhang}, \bibinfo{person}{Junyuan Mao},
+  \bibinfo{person}{Chenlong Yin}, \bibinfo{person}{Qijiong Liu},
+  \bibinfo{person}{Kun Wang}, \bibinfo{person}{Qingsong Wen}, {and}
+  \bibinfo{person}{Yang Wang}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{NetSafe}: Exploring the Topological Safety of
+  Multi-agent System}. In \bibinfo{booktitle}{\emph{Findings of the Association
+  for Computational Linguistics: ACL 2025}}. \bibinfo{publisher}{Association
+  for Computational Linguistics}, \bibinfo{address}{Vienna, Austria},
+  \bibinfo{pages}{2905--2938}.
+\newblock
+\href{https://doi.org/10.18653/v1/2025.findings-acl.150}{doi:\nolinkurl{10.18653/v1/2025.findings-acl.150}}
 
 
 \bibitem[Zhan et~al\mbox{.}(2025)]%

@@ -113,6 +113,89 @@ PAYLOADS_DEFAULT = ("BANANA-77",)
 PAYLOADS_FULL = ("BANANA-77", "MANGO-42", "ORCA-19")
 BACKENDS = ("mock", "bedrock", "openrouter", "openai")
 
+# ---------------------------------------------------------------------------
+# 0. DAG reconvergent — nơi Eq. (3) (percolation) KHÁC Eq. (1) (tích chuỗi)
+# ---------------------------------------------------------------------------
+# Cấu trúc:   s -> u -> {A, B} -> t
+# Hai parent của t (A và B) có chung upstream u ⇒ hai sự kiện reachability KHÔNG
+# độc lập. Đây chính là ca reviewer yêu cầu (R1 Q2): trên chain/tree/star mỗi nút
+# chỉ có một entry–target path nên Eq. (3) suy biến thành Eq. (1) và không kiểm
+# chứng được gì.
+RECONVERGENT_DAG = {
+    "vertices": ["agent_0", "agent_1", "agent_2", "agent_3", "agent_4"],
+    "edges": [("agent_0", "agent_1"),
+              ("agent_1", "agent_2"), ("agent_1", "agent_3"),
+              ("agent_2", "agent_4"), ("agent_3", "agent_4")],
+    "entry": "agent_0",
+    "target": "agent_4",
+    "roles": {"agent_0": "planner", "agent_1": "worker",
+              "agent_2": "reviewer", "agent_3": "summarizer",
+              "agent_4": "aggregator"},
+}
+
+
+def build_reconvergent_graph(num_agents: int = 5):
+    """AgentGraph cho DAG reconvergent (build_graph() chỉ có chain/star/tree).
+
+    Không có topology enum cho DAG này nên trường ``topology`` chỉ là nhãn hình
+    thức; cấu trúc thật nằm ở danh sách cạnh.
+    """
+    from contagion.core import AgentRole, TopologyType
+    from contagion.topology.graph import AgentGraph, Connection
+
+    spec = RECONVERGENT_DAG
+    n = min(num_agents, len(spec["vertices"]))
+    keep = set(spec["vertices"][:n])
+    g = AgentGraph(topology=TopologyType.CHAIN)
+    for vid in spec["vertices"][:n]:
+        g.add_node(vid, AgentRole(spec["roles"][vid]), 0)
+    for src, dst in spec["edges"]:
+        if src in keep and dst in keep:
+            g.add_edge(src, dst, Connection.FORWARD)
+    return g
+
+
+def percolation_and_exact(s_edge: dict, entry: str, target: str) -> dict:
+    """Eq. (3) percolation vs giá trị path-based, trên DAG reconvergent.
+
+    ``s_edge`` là dict "src->dst" → tỉ lệ. Trả về:
+      - ``percolation``: Pr[t] theo recurrence  Pr[v] = 1 − ∏(1 − s·Pr[u])
+        (ĐÚNG khi các edge activation độc lập, tức các parent không share ancestor);
+      - ``naive_product_indep``: biến thể "hai parent độc lập hoàn toàn"
+        1 − (1 − s_uA·Pr[u])·(1 − s_uB·Pr[u]) — bằng percolation ở đây;
+      - ``exact_shared_ancestor``: giá trị đúng khi hai nhánh share upstream u,
+        tính bằng inclusion–exclusion trên các path (đây là ca Eq. (3) SAI).
+    """
+    def s(a: str, b: str) -> float:
+        return float(s_edge.get(f"{a}->{b}", 0.0))
+
+    # Pr[u] = s(entry->u)
+    pr = {entry: 1.0}
+    order = ["agent_0", "agent_1", "agent_2", "agent_3", "agent_4"]
+    for v in order[1:]:
+        parents = [p for p in order if f"{p}->{v}" in s_edge]
+        if not parents:
+            continue
+        prod = 1.0
+        for p in parents:
+            prod *= (1.0 - s(p, v) * pr.get(p, 0.0))
+        pr[v] = 1.0 - prod
+    p_u = pr.get("agent_1", 0.0)
+    p_A = pr.get("agent_2", 0.0)
+    p_B = pr.get("agent_3", 0.0)
+    # exact khi A,B share u: Pr[A ∧ B] = s_uA · s_uB · p_u  (cùng một lần u thành công)
+    p_A_and_B_shared = s("agent_1", "agent_2") * s("agent_1", "agent_3") * p_u
+    exact = s("agent_2", target) * s("agent_3", target) * p_A_and_B_shared
+    return {
+        "pr_u": round(p_u, 4), "pr_A": round(p_A, 4), "pr_B": round(p_B, 4),
+        "percolation_eq3": round(pr.get(target, float("nan")), 4),
+        "exact_shared_ancestor": round(exact, 4),
+        "gap_eq3_minus_exact": round(pr.get(target, 0.0) - exact, 4),
+        "note": ("Eq. (3) giả định hai nhánh độc lập; khi A,B cùng nhận từ u thì "
+                 "Pr[A∧B] = s_uA·s_uB·p_u (không phải p_A·p_B) ⇒ Eq. (3) ước "
+                 "LƯỢNG CAO reachability."),
+    }
+
 
 # ---------------------------------------------------------------------------
 # 1. Hạ tầng: client có ghi transcript + đếm call (ngân sách cứng)
@@ -370,8 +453,10 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
     elif backend == "openai":
         extra["base_url"] = args.base_url or os.environ.get("OPENAI_BASE_URL")
         extra["api_key"] = os.environ.get("OPENAI_API_KEY")
+    _reconv = getattr(args, "topology", "chain") == "reconvergent"
     topo = TopologyType.CHAIN
-    extra["target_agents"] = default_targets(topo, args.num_agents)
+    extra["target_agents"] = ([RECONVERGENT_DAG["target"]] if _reconv
+                              else default_targets(topo, args.num_agents))
 
     def cfg(trials: int, per_edge: int) -> ContagionConfig:
         return ContagionConfig(
@@ -388,6 +473,21 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
     from contagion.metrics.epidemiology import per_hop_survival
     from contagion.topology.graph import build_graph
 
+    # ---- (0) chọn topology -------------------------------------------------
+    # ``reconvergent`` = DAG s→u→{A,B}→t, ca mà Eq. (3) CÓ THỂ sai (hai parent
+    # share upstream u). build_graph() chỉ biết chain/star/tree nên vá tạm cho
+    # riêng lần chạy này; engine gọi module-level build_graph cho MỖI trial.
+    if _reconv:
+        import contagion.runner.engine as _eng
+        _eng.build_graph = (lambda *a, **k:
+                            build_reconvergent_graph(args.num_agents))
+
+        def _graph_factory(*_a, **_k):
+            return build_reconvergent_graph(args.num_agents)
+    else:
+        def _graph_factory(_topo, _n, seed=0):
+            return build_graph(_topo, _n, seed=seed)
+
     # ---- (1) natural runs → nội dung in-context + s^natural -----------------
     # Thứ tự BẮT BUỘC (đã gây bug khi viết bản đầu):
     #   1. tạo Runner với trials=args.trials (KHÔNG phải 0);
@@ -398,7 +498,7 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
     runner = Runner(cfg(trials=args.trials, per_edge=0))
     rec_natural, _old_client = _install_recorder(
         runner, transcript, args.max_calls, f"{payload}|{defense}|natural")
-    _pre_graph = build_graph(topo, args.num_agents)
+    _pre_graph = _graph_factory(topo, args.num_agents)
     _pre_agents = runner._build_agents(_pre_graph)
     strategy = runner._build_attack()
     assessor = runner.assessor
@@ -439,7 +539,8 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
          for (_cid, sys_p), v in assessor._direct_cache.items()})
     agents = runner2._build_agents(_pre_graph)
     assessor = runner2.assessor
-    edges = sorted(nat, key=lambda e: int(e.split("->")[1].split("_")[1]))
+    edges = sorted(nat, key=lambda e: (int(e.split("->")[1].split("_")[1]),
+                                       e))
     if not edges:
         raise RuntimeError(
             "natural runs không sinh cạnh nào (trials=0? graph rỗng?) — "
@@ -582,6 +683,12 @@ def main() -> int:
     ap.add_argument("--defenses", default=None, help="vd \"none,redact\"")
     ap.add_argument("--arms", default=",".join(ARMS))
     ap.add_argument("--num-agents", type=int, default=4)
+    ap.add_argument("--topology", default="chain",
+                    choices=["chain", "reconvergent"],
+                    help="reconvergent = DAG s→u→{A,B}→t (5 agent): ca DUY NHẤT "
+                         "mà Eq. (3) có thể sai vì hai parent share upstream u. "
+                         "Dùng để trả lời R1 Q2 / metareview (test Eq. (3) ở chỗ "
+                         "nó có thể fail). Cần --num-agents 5.")
     ap.add_argument("--trials", type=int, default=40, help="natural runs")
     ap.add_argument("--per-edge", type=int, default=20, help="replay mỗi arm/cạnh")
     ap.add_argument("--temperature", type=float, default=0.7)
@@ -622,6 +729,11 @@ def main() -> int:
                           (args.defenses.split(",") if args.defenses
                            else default_defenses) if d.strip())
     args.arms = tuple(a.strip() for a in args.arms.split(",") if a.strip())
+    if args.topology == "reconvergent" and args.num_agents != len(
+            RECONVERGENT_DAG["vertices"]):
+        print(f"[x] --topology reconvergent cần --num-agents "
+              f"{len(RECONVERGENT_DAG['vertices'])} (DAG s→u→{{A,B}}→t).")
+        return 2
     bad = [a for a in args.arms if a not in ARMS]
     if bad:
         print(f"[x] arm không hợp lệ: {bad} (chọn trong {ARMS})")
