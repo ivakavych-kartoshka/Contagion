@@ -200,5 +200,5 @@ pData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI7.pfb><C:/Users/ASU
 S/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/AS
 US/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/
 ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on contagion_aamas2027.pdf (10 pages, 813940 bytes).
+Output written on contagion_aamas2027.pdf (10 pages, 815147 bytes).
 Transcript written on contagion_aamas2027.log.

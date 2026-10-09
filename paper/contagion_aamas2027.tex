@@ -812,18 +812,30 @@ one arm replays content captured from real natural runs and must reproduce $\sna
 
 \begin{table}[t]
 \small
-\caption{Content-form ablation (Llama 3.3 70B, chain of $n = 4$ agents; 40 natural
-runs, 30 replays per arm and edge). Both replay arms use the same receivers,
-assignments and judge, so the difference is attributable to payload form alone.}
+\caption{Content-form ablation (chain of $n = 4$ agents; 40 natural runs, 30 replays
+per arm and edge; same receivers, assignments and judge in both replay arms). On Nova
+Pro---the most resistant model in Table~\ref{tab:cross}---the canonical form is at the
+floor on \emph{every} edge ($0$ of $30$) while the in-context form is not, so a
+benchmark using the canonical form reads the model as inert throughout; its self-check
+fails on two of three edges, which we do not conceal.
+Claude propagated past the entry edge in no natural run (\suppref{app:judge-validation}).}
 \label{tab:form}
-\begin{tabular}{lcccc}
+\begin{tabular}{llcccc}
 \toprule
-\textit{edge} & \textit{in-chain} & \textit{replay} & \textit{replay} & \textit{form} \\
- & \textit{$\snats$} & \textit{in-context} & \textit{canonical} & \textit{effect} \\
+\textit{model} & \textit{edge} & \textit{in-chain} & \textit{replay} & \textit{replay}
+& \textit{form} \\
+ & & \textit{$\snats$} & \textit{in-context} & \textit{canonical}
+& \textit{effect} \\
 \midrule
-\texttt{a0}$\to$\texttt{a1} & 1.000 & 1.000 & 1.000 & $0.000$ \\
-\texttt{a1}$\to$\texttt{a2} & 0.950 & \textbf{0.967} & \textbf{0.067} & $+0.900$ \\
-\texttt{a2}$\to$\texttt{a3} & 0.947 & 0.733 & 1.000 & $-0.267$ \\
+Llama & \texttt{a0}$\to$\texttt{a1} & 1.000 & 1.000 & 1.000 & $0.000$ \\
+      & \texttt{a1}$\to$\texttt{a2} & 0.950 & \textbf{0.967} & \textbf{0.067}
+      & $+0.900$ \\
+      & \texttt{a2}$\to$\texttt{a3} & 0.947 & 0.733 & 1.000 & $-0.267$ \\
+\midrule
+Nova  & \texttt{a0}$\to$\texttt{a1} & 0.175 & 0.067 & \textbf{0.000} & $+0.067$ \\
+      & \texttt{a1}$\to$\texttt{a2} & 0.571 & 0.333 & \textbf{0.000} & $+0.333$ \\
+      & \texttt{a2}$\to$\texttt{a3} & 0.250 & \textbf{0.500} & \textbf{0.000}
+      & $+0.500$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -834,7 +846,9 @@ under the same assignment survives at $0.967$ embedded in a work product and at
 $0.067$ as a bare assertion---a $14\times$ difference produced entirely by packaging.
 The effect is not uniform across edges: on the last edge the canonical form is
 \emph{more} effective ($1.000$ versus $0.733$) and the self-check misses ($0.733$
-versus $0.947$), so we do not treat that edge as a clean comparison.
+versus $0.947$), so we do not treat that edge as a clean comparison. The frontier
+model's block in Table~\ref{tab:form} runs against its own headline rate: a benchmark
+using the canonical form reads the most resistant model as inert throughout.
 
 \subsection{Defence: redaction blocks literal attacks, and the bypass depends on headroom}
 \label{sec:defence}
@@ -966,20 +980,12 @@ judge are itemised in \suppref{app:judge-validation} and \suppref{app:limits}.
 
 A compromise's reach is a property of the graph, the roles travelled and the form in
 which the payload is re-packaged at each hand-off: composition holds in-chain, isolated
-estimates need not transport, and payload form is a first-order mechanism ($0.067$ bare
-versus $0.967$ embedded). On acyclic graphs the epidemic threshold is satisfied
-identically, so reachability comes from Eq.~\eqref{eq:percolation} rather than $R_0$, and
-the dynamics we measure are feed-forward: the only recurrent setting is the three-agent
-loop.
-
-\section*{Ethics and Artifact Availability}
-\paragraph{Dual use.} The mechanism is available to attackers as well as defenders, and
-our findings serve payload choice as much as defence choice. We judge the defensive
-reading more actionable---the results say \emph{measure the hand-off you will actually
-run, with an undefended baseline}---and we release no adaptive attacker, action payload
-or tool-calling exploit: the payload is a benign marker and the agents are tool-less.
-Code, per-cell outputs and a manifest accompany the submission as supplementary material,
-and \suppref{app:repro} states the provenance gaps we found rather than hiding them.
+estimates need not transport, and payload form is a first-order mechanism. On acyclic
+graphs the epidemic threshold is satisfied identically, so reachability comes from
+Eq.~\eqref{eq:percolation} rather than $R_0$. The mechanism serves attackers as well as
+defenders, so we judge the defensive reading more actionable---\emph{measure the
+hand-off you will actually run, with an undefended baseline}---and we release no
+adaptive attacker or tool-calling exploit.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
