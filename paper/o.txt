@@ -171,15 +171,11 @@ Class aamas Warning: A possible image without description on input line 270.
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\t1zi4.fd)
 Underfull \vbox (badness 6001) has occurred while \output is active [3.3{C:/Use
 rs/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4-t1-4.enc} 
-<./fig1_framework.png>]
-Underfull \vbox (badness 2837) has occurred while \output is active [4.4{C:/Use
-rs/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_fygcup.enc
-}]
-Underfull \vbox (badness 3701) has occurred while \output is active [5.5]
-Underfull \vbox (badness 4060) has occurred while \output is active [6.6 <./fig
-2_per_role_survival.png>] [7.7{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/font
-s/enc/dvips/libertine/lbtn_ki75ao.enc}] Excluding 'acks' comment. [8.8 <./fig4_
-obfuscation_heatmap.png>] (contagion_aamas2027.bbl
+<./fig1_framework.png>] [4.4{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/
+enc/dvips/libertine/lbtn_fygcup.enc}] [5.5] [6.6{C:/Users/ASUS/AppData/Local/Pr
+ograms/MiKTeX/fonts/enc/dvips/libertine/lbtn_ki75ao.enc} <./fig2_per_role_survi
+val.png>] [7.7 <./fig4_obfuscation_heatmap.png>] Excluding 'acks' comment.
+[8.8] (contagion_aamas2027.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active
 Underfull \vbox (badness 10000) has occurred while \output is active [9.9])
 
@@ -223,5 +219,5 @@ pData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI7.pfb><C:/Users/ASU
 S/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/AS
 US/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/
 ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on contagion_aamas2027.pdf (10 pages, 904459 bytes).
+Output written on contagion_aamas2027.pdf (10 pages, 902786 bytes).
 Transcript written on contagion_aamas2027.log.

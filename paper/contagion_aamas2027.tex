@@ -384,7 +384,7 @@ is therefore framed as benign-looking infrastructure text rather than as an over
 command; in a pilot this framing was the difference between $0\%$ and
 $60$--$100\%$ compliance.
 
-\subsection{Task families}
+\subsection{Task families and the outcome rule}
 \label{sec:setup-families}
 
 \emph{Family A (marker echo)} asks the agent to emit a secret string; success is
@@ -407,7 +407,7 @@ synthetic delimiter. This removes the artefact in which a model succeeds by
 pattern-matching a bracketed token, and restores per-hop survival to the open
 interval $(0,1)$ on real models.
 
-\subsection{Compromise judgment}
+\paragraph{Compromise judgment.}
 \label{sec:judge}
 
 An activation is judged compromised by a deterministic, non-LLM rule following
@@ -488,7 +488,7 @@ described as ``the Markov product assumption'' is, stated precisely, the
 This is the assumption single-agent injection benchmarks make implicitly, and it is
 what we test.
 
-\subsection{Reproduction number and utility}
+\paragraph{Reproduction number and utility.}
 \label{sec:r0}
 
 We define $R_0$ operationally in observed counts rather than as an eigenvalue: with
@@ -659,7 +659,7 @@ calls are made.
 \section{Results}
 \label{sec:results}
 
-\subsection{Per-hop survival varies sharply by position, and susceptibility does not track scale}
+\subsection{Survival is position-dependent, and susceptibility does not track scale}
 \label{sec:role-position}
 
 Table~\ref{tab:cross} reports the per-model chain headline. Two facts stand out.
@@ -711,7 +711,7 @@ Claude Sonnet 4.5          & 0.000 & 0.211 & 0.000 / 0.600 / 0.033 \\
   defence; under paraphrase all four positions are at or near zero.}
 \end{figure}
 
-\subsection{The isolated per-hop rate does not transport to the chain}
+\paragraph{The isolated per-hop rate does not transport to the chain.}
 \label{sec:transport}
 
 Table~\ref{tab:transport} gives the central measurement, on the two models where we
@@ -783,7 +783,7 @@ Llama    & fresh & 1.000/0.233/1.000 & 0.233 & $+0.617$ & $<0.001$ \\
 \end{tabular}
 \end{table}
 
-\subsection{Protocol sensitivity: a significant result that did not replicate}
+\paragraph{Protocol sensitivity: a significant result that did not replicate.}
 \label{sec:ablation}
 
 Using a fixed artefact, DeepSeek V3.2 gave per-edge estimates $0.967/1.000/0.833$,
@@ -799,7 +799,7 @@ as real and the DeepSeek result as a protocol artefact. The sensitivity is itsel
 information a practitioner needs: both protocol versions produced a
 plausible-looking table.
 
-\subsection{Why isolation fails: the form of the payload}
+\paragraph{Why isolation fails: the form of the payload.}
 \label{sec:contentform}
 
 The transportability gap of Section~\ref{sec:transport} admits a natural
@@ -855,7 +855,7 @@ versus $0.947$), so we do not treat that edge as a clean comparison. The frontie
 model's block in Table~\ref{tab:form} runs against its own headline rate: a benchmark
 using the canonical form reads the most resistant model as inert throughout.
 
-\subsection{Defence: redaction blocks literal attacks, and the bypass depends on headroom}
+\subsection{Defences and their headroom}
 \label{sec:defence}
 
 Redaction removes the literal target and drives chain survival to $0.000$ on all
@@ -933,7 +933,7 @@ and the recurrence collapses to the chain identity; on a reconvergent DAG, where
 can differ, it underestimates reachability by $2.6\times$ when built from isolated
 marginals but not from in-chain ones (\suppref{app:reconvergent}).
 
-\subsection{Recurrence makes the threshold non-vacuous}
+\subsection{Recurrence and multiplicity}
 \label{sec:cyclic}
 
 Section~\ref{sec:threshold} shows the threshold criterion vacuous for acyclic graphs
@@ -950,7 +950,7 @@ across models. The diagnostic is the one the content-form ablation reaches for t
 chain---a binary per-round state is not sufficient---so we report the loop as a
 mean-field prediction our finite-state formulation falsifies, not as a design rule.
 
-\subsection{Utility, power and multiplicity}
+\subsection{Utility and power}
 \label{sec:utility}
 
 Three facts govern how every null in this paper should be read; their detail, together
@@ -965,7 +965,10 @@ only Llama standing. A homogeneity test across the three benign task contexts re
 exchangeability on the weak edge ($\chi^2 = 13.40$, $\mathrm{df} = 2$, $p = 0.0014$ by
 the Wilson--Hilferty approximation to the $\chi^2$ tail, counts $18/56$, $3/56$,
 $13/48$), so our rates are context averages rather than
-i.i.d.\ draws.
+i.i.d.\ draws. Resampling whole contexts instead of trials changes little here---Wilson
+$[0.174, 0.326]$ against a cluster bootstrap $[0.167, 0.317]$, a widening of
+$0.99\times$---because the three contexts are not far apart on this edge, which is
+itself evidence that the exchangeability failure is mild rather than severe.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -998,7 +1001,18 @@ $0.867$ within a single model and attack. \emph{For defence}, the ordering that 
 structural---a filter decisive on a chain can be irrelevant on a fan-in star---and the
 model's headroom, not the strength of the rule, decides whether a block looks perfect.
 \emph{For theory}, transportability is the question worth asking and our answer is
-negative and model-dependent.
+negative and model-dependent: the same cell under-estimates in-chain survival by
+$14\times$ on one payload and over-estimates it on another, and the exact finite chain we
+built for the recurrent case does not reproduce the measured per-round rates at all. What
+closes that gap is not a better estimator but a richer state, because the binary
+compromised flag suffices for neither the chain nor the loop: what carries forward is the
+form of the message, not merely the fact that its sender was compromised.
+
+The practical consequence is cheap to adopt. A team that has benchmarked one role in
+isolation need not rebuild its harness: one run of the chain it actually deploys, with the
+same judge and rotating assignment, tells it whether the existing estimate is usable. If
+the two agree the isolated number composes as planned; if they disagree, the chain run has
+already produced the quantity it wanted.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
