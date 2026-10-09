@@ -817,8 +817,9 @@ per arm and edge; same receivers, assignments and judge in both replay arms). On
 Pro---the most resistant model in Table~\ref{tab:cross}---the canonical form is at the
 floor on \emph{every} edge ($0$ of $30$) while the in-context form is not, so a
 benchmark using the canonical form reads the model as inert throughout; its self-check
-fails on two of three edges, which we do not conceal.
-Claude propagated past the entry edge in no natural run (\suppref{app:judge-validation}).}
+fails on two of three edges, which we do not conceal. Claude propagated past the entry
+edge in no natural run (\suppref{app:judge-validation}).}
+
 \label{tab:form}
 \begin{tabular}{llcccc}
 \toprule
@@ -844,6 +845,9 @@ Table~\ref{tab:form} shows that payload form is a first-order determinant of
 per-hop survival. On the middle edge, the same target judged by the same receivers
 under the same assignment survives at $0.967$ embedded in a work product and at
 $0.067$ as a bare assertion---a $14\times$ difference produced entirely by packaging.
+The pattern replicates on a second payload, \texttt{MANGO-42}
+(\suppref{app:extended-validation}).
+
 The effect is not uniform across edges: on the last edge the canonical form is
 \emph{more} effective ($1.000$ versus $0.733$) and the self-check misses ($0.733$
 versus $0.947$), so we do not treat that edge as a clean comparison. The frontier
@@ -901,10 +905,8 @@ $R_0 = 0.420$ against a regular-topology target $d\cdot\bar s = 0.652$---a struc
 gap, since the aggregator has no successors---and comparing three seven-agent
 topologies at nearly equal mean per-hop survival separates \emph{reach} from
 \emph{reproduction}: the star reaches its aggregation point more often than the chain
-($0.725$ vs.\ $0.450$) while reproducing less ($0.420$ vs.\ $0.821$), and the tree is
-numerically the most permissive on both ($0.800$, $0.831$; the star--tree ASR gap is
-within noise at this size, \suppref{app:mult}) and the only cell where $R_0$ approaches
-$d\cdot\bar s$ (within $5\%$). A topology also decides how much role heterogeneity the
+($0.725$ vs.\ $0.450$) while reproducing less ($0.420$ vs.\ $0.821$). A topology also
+decides how much role heterogeneity the
 network averages over---chain survival spans $0.27$--$1.00$ across receiver roles while
 all six star edges are worker-to-aggregator and nearly homogeneous---and the
 star--tree relation itself \emph{reverses with scale} (star above tree on DeepSeek and
@@ -937,6 +939,8 @@ Section~\ref{sec:threshold} shows the threshold criterion vacuous for acyclic gr
 and informative only once the interaction graph contains a cycle. On a
 manager-with-reporting-workers pattern the spectral radius reduces to
 $\rho(M) = \sqrt{\sum_j a_j c_j}$, whose sign separates the models---Llama and DeepSeek
+(a replication with three workers confirms $\rho = 1.351$ supercritical, \suppref{app:cyclic})
+
 are supercritical ($1.800$, $1.018$), qwen decays ($0.578$; \suppref{app:cyclic})---but
 we read the criterion as directional only: the exact finite chain built from the same
 measured rates \emph{fails} to reproduce the per-round manager rates, by $+0.289$,
@@ -982,10 +986,9 @@ A compromise's reach is a property of the graph, the roles travelled and the for
 which the payload is re-packaged at each hand-off: composition holds in-chain, isolated
 estimates need not transport, and payload form is a first-order mechanism. On acyclic
 graphs the epidemic threshold is satisfied identically, so reachability comes from
-Eq.~\eqref{eq:percolation} rather than $R_0$. The mechanism serves attackers as well as
-defenders, so we judge the defensive reading more actionable---\emph{measure the
-hand-off you will actually run, with an undefended baseline}---and we release no
-adaptive attacker or tool-calling exploit.
+Eq.~\eqref{eq:percolation} rather than $R_0$. The defensive reading is the actionable
+one---\emph{measure the hand-off you will actually run, with an undefended
+baseline}---and we release no adaptive attacker or tool-calling exploit.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

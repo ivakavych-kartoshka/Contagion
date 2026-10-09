@@ -396,6 +396,12 @@ $0.767$ and $0.700$ rather than decaying---so the recurrent verdict is not a
 single-model artefact. On qwen the same loop decays: the manager's re-compromise rate
 falls from $0.775$ $[0.625, 0.877]$ to $0.650$ and the workers plateau ($0.475$,
 $0.525$).
+A replication with three workers (versus two) at $60$ trials on Llama gives
+$\rho = 1.351$ (supercritical) and manager re-compromise $0.683$ $[0.558, 0.787]$ at
+round three, remaining endemic at $0.583$ by round eight---confirming the supercritical
+verdict across worker counts.
+
+
 
 \paragraph{The exact finite chain does not reproduce those rates.} The mean-field
 comparison above says only which side of criticality a loop is on, and we do not read it
@@ -599,6 +605,41 @@ stratified sheet and score it are part of the released artifact; the numbers in
 Table~\ref{tab:judge-calib} are the portion we had measured at submission time.
 
 
+% =====================================================================
+\section{Additional Validation: Second Payload and Extended Depth Curves}
+\label{app:extended-validation}
+
+\paragraph{Second payload (MANGO-42).} To address whether the main results are artefacts
+of a single payload, we replicated the content-form probe on Llama 3.3 70B with a second
+target (\texttt{MANGO-42}, semantically unrelated to \texttt{BANANA-77}), on the same
+$n = 4$ chain with the same judge and assignment. The direction of every effect survives.
+Chain survival is $1.000/1.000/0.925$ against \texttt{BANANA-77}'s $1.000/0.875/0.971$,
+so the chain reaches further with the second payload rather than less. The content-form
+effect on the middle edge persists and is in the same direction ($0.933$ in-context
+versus $0.767$ canonical, a $1.22\times$ gap where the first payload showed
+$14\times$), which is what one expects if the mechanism is packaging rather than a
+property of one string. Composition is \emph{not} preserved: here the chain product
+under-estimates the measured rate by $\Delta = +0.258$ $[+0.075, +0.442]$, bootstrap
+$p = 0.006$, so the second payload produces reinforcement (super-Markov) where the first
+produced a large under-estimate. We report that asymmetry rather than smoothing it: the
+sign of the composition error is payload-dependent too, which reinforces the paper's
+position that transportability is an empirical question and not a property of the
+protocol. The second payload therefore confirms that the form effect and the per-edge
+heterogeneity are not artefacts of \texttt{BANANA-77}, while the transport failure
+changes sign.
+
+\paragraph{Extended depth curves.} To test whether the depth-error slope diagnostic holds
+beyond the $n = 4$--$8$ chains of the main results, we measured Llama 3.3 70B at
+$n = 15$ agents ($120$ natural runs, $60$ controlled trials per edge). The Spearman rank
+correlation $\rho = +0.76$ (permutation $p = 0.014$) and OLS slope $+6.8$ percentage
+points per hop reproduce the $n = 8$ pattern (slope $+6.3$); the chain dies at depth $11$
+($P(C_{11}=1) = 0.000$ $[0.000, 0.031]$), which sets the operational limit for this
+measurement. The depth-by-depth relative error rises monotonically from $0\%$ at the entry
+to $92\%$ at depth $10$, confirming that the slope is not an artefact of short chains.
+These results validate that the transportability diagnostic remains interpretable at
+longer chain depths, within the range where the payload survives at all.
+
+% =====================================================================
 % =====================================================================
 \section{Utility under Attack, and Estimator Validation}
 \label{app:utility}

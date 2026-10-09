@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1791541672.19537 "e:/NCKH/Contagion/paper/supplementary.tex" "supplementary.pdf" "supplementary" 1791541673.94956 0
+["pdflatex"] 1791543390.66159 "e:/NCKH/Contagion/paper/supplementary.tex" "supplementary.pdf" "supplementary" 1791543392.56173 0
   "C:/Users/ASUS/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1790592165 195305 37f765246b3c456718999cd8698f42eb ""
   "C:/Users/ASUS/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1790592280 13333003 6f74b29cab212c39108e07f9f9661672 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4-t1-4.enc" 1557958141 7693 0f2dce6d313c82989ec3a67fc24df2a0 ""
@@ -217,10 +217,10 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/xstring/xstring.sty" 1693735632 123 a302f2c651a95033260db60e51527ae8 ""
   "aamas.cls" 1784725464 122209 65113db2770441df189925e574f1dbe2 ""
   "by.pdf" 1791037787 5004 83a9f153ab784a9a9bdbcca40fe5bcc3 ""
-  "e:/NCKH/Contagion/paper/supplementary.tex" 1791541617 68082 d1d187777fee8742b5a8564f6e3a6088 ""
-  "supplementary.aux" 1791541673 20840 ac4adc54cd0a75eaa3e891cc24b945af "pdflatex"
-  "supplementary.out" 1791541673 5154 6b1d181f45923a88ccf34b4a1f61a76a "pdflatex"
-  "supplementary.tex" 1791541617 68082 d1d187777fee8742b5a8564f6e3a6088 ""
+  "e:/NCKH/Contagion/paper/supplementary.tex" 1791543216 70981 dbd4a3e3dd627efeabaa9b429c9275d6 ""
+  "supplementary.aux" 1791543392 21350 6966d93e4d13954d1b089c8761b35b39 "pdflatex"
+  "supplementary.out" 1791543392 5548 2657a1574c8aa30c51c72a62c4d0e695 "pdflatex"
+  "supplementary.tex" 1791543216 70981 dbd4a3e3dd627efeabaa9b429c9275d6 ""
   (generated)
   "supplementary.aux"
   "supplementary.log"
