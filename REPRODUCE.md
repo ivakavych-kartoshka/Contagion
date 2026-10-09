@@ -1,88 +1,91 @@
-# REPRODUCE.md — tái lập mọi con số trong paper
+# REPRODUCE.md — regenerating every number in the paper
 
-> **Cách nộp (AAMAS 2027).** Quy định: *"Supplementary material should be submitted as a
-> single zip file and should not exceed 25MB"* và *"you must ensure that your
-> supplementary material does not compromise the anonymity of your submission"*.
-> Vì vậy bundle này **được nộp trực tiếp dưới dạng `supplementary_material.zip`**
-> (sinh bằng `python scripts/make_supplementary_zip.py --write`; hiện **2.3 MB** / 306
-> file, giới hạn 25 MB). Link ẩn danh dưới đây chỉ là **kênh phụ** để reviewer xem
-> nhanh trên web; **nguồn chính thức là file zip** đính kèm bài nộp.
+> **How this is submitted (AAMAS 2027).** The instructions say: *"Supplementary material
+> should be submitted as a single zip file and should not exceed 25MB"* and *"you must
+> ensure that your supplementary material does not compromise the anonymity of your
+> submission"*. The bundle is therefore **submitted directly as
+> `supplementary_material.zip`** (built with `python scripts/make_supplementary_zip.py
+> --write`; currently 2.5 MB, 331 files, limit 25 MB). The anonymous link below is only
+> a **secondary channel** for reviewers who want to browse on the web; **the official
+> source is the zip** attached to the submission.
 >
-> **Artifact ẩn danh (kênh phụ):** <https://anonymous.4open.science/r/Contagion-F4B8/>
-> · License: **MIT** cho code, **CC-BY-4.0** cho dữ liệu đo.
-> · Inventory machine-readable: [`artifacts/MANIFEST.json`](artifacts/MANIFEST.json)
-> — một dòng cho mỗi cell (model, script sinh, ngày, ASR, protocol), sinh bằng
+> **Anonymous artifact (secondary):** <https://anonymous.4open.science/r/Contagion-F4B8/>
+> · License: **MIT** for code, **CC-BY-4.0** for the measurement data.
+> · Machine-readable inventory: [`artifacts/MANIFEST.json`](artifacts/MANIFEST.json)
+> — one row per cell (model, generating script, date, ASR, protocol), built with
 > `python scripts/build_manifest.py`.
 >
-> **Sau khi được nhận:** quy định yêu cầu supplementary *"openly available in archival
-> form"* (Zenodo/GitHub) và **phải được trích trong camera-ready** — tức link trên
-> cần được thay bằng link công khai (bỏ ẩn danh) ở bản camera-ready.
+> **If the paper is accepted:** the instructions require the supplementary material to be
+> *"openly available in archival form"* (Zenodo/GitHub) and to be **cited in the
+> camera-ready**, so the anonymous link must be replaced by a public one.
 >
-> Mục đích: người ngoài (reviewer, artifact chair) chạy lại **từng bảng và từng
-> hình** của bản thảo. Mọi lệnh dưới đây chạy từ **gốc repo** (thư mục chứa
-> `REPRODUCE.md` và `contagion/`); các đường dẫn đều tương đối nên không phụ thuộc
-> ổ đĩa hay tên máy.
+> **Purpose.** An outside reader (reviewer, artifact chair) should be able to regenerate
+> **every table and figure** in the paper. All commands below run from the **repository
+> root** (the directory holding `REPRODUCE.md` and `contagion/`); every path is relative,
+> so nothing depends on drive letters or machine names.
 >
-> **Nguyên tắc:** không có số nào trong paper được nhập tay. Mọi bảng/hình đều
-> sinh từ `experiments/results/*/results.json` + `report.md`, và các file đó do
-> script trong `scripts/` ghi ra.
+> **Principle:** no number in the paper was typed by hand. Every table and figure comes
+> from `experiments/results/*/results.json` plus `report.md`, and those files are written
+> by the scripts in `scripts/`.
 >
-> **Hai giới hạn đã biết** (nói trước để không mất thời gian truy):
-> 1. Cờ protocol fixed/fresh **không** được lưu trong `results.json`; nó chỉ nằm ở
->    lệnh chạy (§B1/B2 dưới đây). Vì vậy cột `protocol` trong MANIFEST ghi
->    `not recorded`.
-> 2. R₀ trong bảng topology **không** tái lập được từ các file per-cell đã lưu
->    (xem `experiments/results/r0_intervals/report.md`); đây là lý do bài không in
->    interval cho R₀.
+> **Two known limits** (stated up front so nobody wastes time chasing them):
+> 1. The fixed/fresh protocol flag is **not** stored in `results.json`; it survives only
+>    in the collection commands (§B1/B2 below). That is why the `protocol` column of
+>    MANIFEST reads `not recorded`.
+> 2. $R_0$ in the topology table is **not** reconstructible from the archived per-cell
+>    files (see `experiments/results/r0_intervals/report.md`); that is why the paper
+>    prints no interval for it.
 
 ---
 
-## 0. Kiểm tra môi trường (không tốn API)
+## 0. Environment check (no API cost)
 
 ```powershell
-python -m pytest tests -q                 # phải: 78 passed
-python scripts\validate_methods.py        # → experiments/results/validation/
-python scripts\make_figures.py --strict   # → figures/ + kiểm tra đè chữ
-python scripts\check_figures.py           # 6 phép kiểm tra sâu cho figures
-python scripts\threshold_analysis.py      # → percolation + placement (0 API)
+python -m pytest tests -q                 # expect: 78 passed
+python scripts\validate_methods.py        # -> experiments/results/validation/
+python scripts\make_figures.py --strict   # -> figures/ + text-collision check
+python scripts\check_figures.py           # 6 deeper figure checks
+python scripts\threshold_analysis.py      # -> percolation + placement (0 API)
 ```
 
-Nếu `pytest` xanh và `make_figures --strict` báo **0 va chạm**, môi trường đúng.
+If `pytest` is green and `make_figures --strict` reports **0 collisions**, the
+environment is correct.
 
 ---
 
-## 1. Bảng nào sinh từ đâu
+## 1. Which table comes from where
 
-| Bảng trong paper | Script sinh ra | Chi phí |
+| Table in the paper | Generating script | Cost |
 |---|---|---|
-| **B1** cross-model (5 model) | `replicate_frontier.py --only-chain-none --fresh-artifact` cho từng model | ~25 phút/model |
-| **B2** transportability | `replicate_frontier.py ... --fresh-artifact` (có `survival_natural`) | như trên |
-| **B3** artefact-policy ablation | chạy B2 **có** và **không** `--fresh-artifact` | ×2 |
-| **B4** obfuscation × redaction | `replicate_frontier.py --only-obfuscation --n-obf 30` | ~25 phút |
-| **B5** topology (chain/star/tree n=7) | `replicate_frontier.py --topology {chain,star,tree} --num-agents 7` | ~20 phút/cell |
-| **B6** utility §7 | `utility_real.py` (3 defense × 2 model) | ~35 phút/defense |
-| **B7** depth curve (3 model) | `depth_curve.py`; thống kê hình dạng bằng `depth_trend.py` | ~1–2 giờ/model |
-| **B8** estimator validation | `validate_methods.py` | ~1 phút |
-| **χ² / φ theo temperature** | `sensitivity.py --temps 0.7` | ~20 phút/model |
-| **F1–F2** figures (paper dùng 2) | `make_figures.py` | ~1 phút |
-| **Bảng percolation/placement** | `threshold_analysis.py` | 0 (tính từ `s` đã đo) |
+| **B1** cross-model (5 models) | `replicate_frontier.py --only-chain-none --fresh-artifact` per model | ~25 min/model |
+| **B2** transportability | `replicate_frontier.py ... --fresh-artifact` (needs `survival_natural`) | as above |
+| **B3** artefact-policy ablation | run B2 **with** and **without** `--fresh-artifact` | ×2 |
+| **B4** obfuscation × redaction | `replicate_frontier.py --only-obfuscation --n-obf 30` | ~25 min |
+| **B5** topology (chain/star/tree n=7) | `replicate_frontier.py --topology {chain,star,tree} --num-agents 7` | ~20 min/cell |
+| **B6** utility (App. G) | `utility_real.py` (3 defences × 2 models) | ~35 min/defence |
+| **B7** depth curve (3 models) | `depth_curve.py`; shape statistics via `depth_trend.py` | ~1–2 h/model |
+| **B8** estimator validation | `validate_methods.py` | ~1 min |
+| **χ² / φ by temperature** | `sensitivity.py --temps 0.7` | ~20 min/model |
+| **F1–F2** figures (2 used in the paper) | `make_figures.py` | ~1 min |
+| **Percolation/placement table** | `threshold_analysis.py` | 0 (computed from measured `s`) |
 
 ---
 
-## 2. Lệnh chính xác theo từng model
+## 2. Exact commands per model
 
-`<MODEL>` nhận các giá trị đã dùng trong paper:
+`<MODEL>` takes the values used in the paper:
 
 ```
-us.meta.llama3-3-70b-instruct-v1:0     # Llama 3.3 70B   (BẮT BUỘC tiền tố us.)
-deepseek.v3.2                          # DeepSeek V3.2   (không cần tiền tố)
-us.anthropic.claude-sonnet-4-5-20250929-v1:0   # Claude 4.5 (BẮT BUỘC us.)
-amazon.nova-pro-v1:0                   # Nova Pro        (không cần tiền tố)
+us.meta.llama3-3-70b-instruct-v1:0     # Llama 3.3 70B   (the `us.` prefix is REQUIRED)
+deepseek.v3.2                          # DeepSeek V3.2   (no prefix)
+us.anthropic.claude-sonnet-4-5-20250929-v1:0   # Claude 4.5 (the `us.` prefix is REQUIRED)
+amazon.nova-pro-v1:0                   # Nova Pro        (no prefix)
 ```
 
-> ⚠️ Trên Bedrock, model thuộc Anthropic và Meta **phải** dùng inference-profile
-> (`us.`); thiếu tiền tố sẽ báo `ValidationException ... on-demand isn't supported`.
-> Đây là lỗi ta đã gặp thật khi chạy Llama.
+> ⚠️ On Bedrock, Anthropic and Meta models **must** be addressed through their
+> inference profile (`us.`); omitting the prefix raises
+> `ValidationException ... on-demand isn't supported`. We hit this error for real while
+> running Llama.
 
 ### 2.1 Cross-model + transportability (B1, B2)
 
@@ -92,14 +95,14 @@ python scripts\replicate_frontier.py --backend bedrock --model <MODEL> `
   --fresh-artifact --out experiments\results\frontier_<slug>
 ```
 
-`--fresh-artifact` là **bắt buộc** cho mọi claim compositional: nó rút output
-compromised mới cho từng trial thay vì dùng lại một mẫu (xem E25 trong
+`--fresh-artifact` is **mandatory** for every compositional claim: it draws a new
+compromised output for each trial instead of reusing one artefact (see E25 in
 `EXPERIMENT_LOG.md`).
 
-### 2.2 Ablation artefact cố định vs fresh (B3)
+### 2.2 Fixed vs fresh artefact ablation (B3)
 
-Chạy lại §2.1 **bỏ** `--fresh-artifact`. Chênh lệch giữa hai lần chạy là nội dung
-của B3 — và là bằng chứng cho việc ta tự rút lại một claim.
+Re-run §2.1 **without** `--fresh-artifact`. The difference between the two runs is the
+content of B3, and it is the evidence behind a claim we retract ourselves.
 
 ### 2.3 Obfuscation × redaction (B4)
 
@@ -120,7 +123,7 @@ foreach ($t in "chain","star","tree") {
 }
 ```
 
-### 2.5 Utility §7 (B6)
+### 2.5 Utility (B6)
 
 ```powershell
 python scripts\utility_real.py --backend bedrock --model <MODEL> `
@@ -128,13 +131,13 @@ python scripts\utility_real.py --backend bedrock --model <MODEL> `
   --defenses none,paraphrase,redact --out experiments\results\utility_<slug>
 ```
 
-`utility_real.py` ghi `results.json` **tăng dần sau mỗi defense**, và
-`outputs.jsonl` chứa **raw final output** của mọi trial. Nhờ vậy:
-- job chết giữa chừng **không mất** các ô đã xong;
-- chấm lại §7 **không cần gọi LLM**:
+`utility_real.py` writes `results.json` **incrementally after each defence**, and
+`outputs.jsonl` holds the **raw final output** of every trial. Two consequences:
+- a job that dies midway **loses none** of the finished cells;
+- re-scoring the utility table needs **no LLM call**:
   `python scripts\utility_from_outputs.py`
 
-### 2.6 Depth curve (B7) — nguồn của hình headline
+### 2.6 Depth curve (B7) — source of the headline figure
 
 ```powershell
 python scripts\depth_curve.py --backend bedrock --model <MODEL> `
@@ -142,16 +145,17 @@ python scripts\depth_curve.py --backend bedrock --model <MODEL> `
   --out experiments\results\depth_curve_<slug>
 ```
 
-Model local (không tốn API):
+Local model (no API cost):
+
 ```powershell
 $env:OPENAI_BASE_URL="http://localhost:11434/v1"; $env:OPENAI_API_KEY="EMPTY"
 python scripts\depth_curve.py --backend openai --model qwen2.5:7b `
   --num-agents 7 --trials 60 --per-edge 25 --out experiments\results\depth_curve_qwen
 ```
 
-Chọn `--num-agents` theo `s̄` của model: nếu `s̄ ≈ 0.7` thì chuỗi 14 hop tắt hẳn
-(`0.7^14 ≈ 0.007`) và đường cong vô nghĩa ở cuối. Llama (s̄ cao) dùng n=15;
-DeepSeek/qwen dùng n=7–8.
+Choose `--num-agents` from the model's $\bar s$: with $\bar s \approx 0.7$ a 14-hop
+chain is dead ($0.7^{14} \approx 0.007$) and the tail of the curve is meaningless.
+Llama (high $\bar s$) uses n=15; DeepSeek and qwen use n=7–8.
 
 ### 2.7 Sensitivity / overdispersion
 
@@ -161,8 +165,8 @@ python scripts\sensitivity.py --backend bedrock --model <MODEL> `
   --out experiments\results\sensitivity_<slug>
 ```
 
-Biến thể **dùng cho χ² trong §5.10**: chỉ **một** temperature (φ và χ² phải tính
-*trong* một temperature — gộp temperature làm φ phồng lên vô nghĩa):
+The variant **used for the χ² in the main paper**: **one** temperature only (φ and χ²
+must be computed *within* a temperature — pooling temperatures inflates φ meaninglessly):
 
 ```powershell
 python scripts\sensitivity.py --backend bedrock `
@@ -171,7 +175,7 @@ python scripts\sensitivity.py --backend bedrock `
   --out experiments\results\sensitivity_llama_t07
 ```
 
-### 2.8 Kiểm định judge (nếu đổi model hoặc đổi target)
+### 2.8 Judge check (only if you change the model or the target)
 
 ```powershell
 python scripts\judge_calibration_probe.py --model <local-model> --n 12
@@ -179,58 +183,61 @@ python scripts\judge_calibration_probe.py --model <local-model> --n 12
 
 ---
 
-## 3. Sinh lại toàn bộ bảng/hình từ kết quả đã có (0 API)
+## 3. Regenerating every table and figure from stored results (0 API)
 
 ```powershell
-python scripts\make_figures.py --strict     # hình dùng trong paper + kiểm đè chữ
-python scripts\markov_formal_all.py         # bảng kiểm định composition
-python scripts\threshold_analysis.py        # percolation, ρ(M), placement
+python scripts\make_figures.py --strict     # paper figures + text-collision check
+python scripts\markov_formal_all.py         # composition test table
+python scripts\threshold_analysis.py        # percolation, rho(M), placement
 python scripts\isolation_validity.py        # s^controlled vs s^natural
-python scripts\utility_from_outputs.py      # chấm lại §7 từ raw output
+python scripts\utility_from_outputs.py      # re-score utility from raw outputs
 python scripts\depth_trend.py --dirs depth_curve_llama depth_curve_qwen depth_curve_deepseek
-python scripts\cyclic_design_rule.py        # quy tắc thiết kế ρ = sqrt(Σ a_j·c_j) (0 API)
-python scripts\scale_report.py              # quy mô: số trial, lượt gọi model, giờ máy
-python scripts\audit_numbers.py --md        # → AUDIT_TABLE.md (number audit + claim lint)
-python scripts\check_results_complete.py    # mọi thư mục kết quả có hoàn chỉnh không
+python scripts\cyclic_design_rule.py        # rho = sqrt(sum a_j c_j) (0 API)
+python scripts\cyclic_markov_exact.py --dirs cyclic_llama cyclic_deepseek cyclic_qwen
+python scripts\scale_report.py              # scale: trials, model calls, machine hours
+python scripts\audit_numbers.py --md        # -> AUDIT_TABLE.md (number audit + claim lint)
+python scripts\check_results_complete.py    # are all result directories complete?
 python scripts\check_paper.py paper\contagion_aamas2027.tex --bib paper\refs.bib
-python scripts\check_figures.py             # 6 phép kiểm tra hình (0 API)
-python scripts\appendix_stats.py            # BH (Phụ lục A) + cluster CI (Phụ lục B)
+python scripts\check_figures.py             # 6 figure checks (0 API)
+python scripts\appendix_stats.py            # BH (App. A) + cluster CI (App. B)
 ```
 
-> ✅ **`appendix_stats.py` nay ĐỌC THẬT dữ liệu cho cả hai phụ lục (đã sửa P1/P2/P3).**
-> Phụ lục A (BH) đọc `p_value` trực tiếp: Llama từ `frontier_llama3-3-70b_iso`,
-> DeepSeek từ `frontier_deepseek_fresh`, Nova từ `frontier_nova-pro/results.json`,
-> qwen từ `markov_formal/table.json`. BH chạy trên **giao thức mặc định fresh-artefact**
-> nên chỉ Llama reject (`p=0.0002`); ô DeepSeek dùng `p=0.63` (fresh) — **không** còn
-> dùng `p=0.0030` (fixed, đã rút lại ở §5.3), nên không còn mâu thuẫn nội tại. Phụ lục B
-> đọc thật từ `sensitivity_llama/results.json` và **khớp hoàn toàn** (29/120,
-> Wilson [0.174,0.326], cluster [0.167,0.317], nới 0,99×).
+> ✅ **`appendix_stats.py` now reads real data for both appendices.** Appendix A (BH)
+> reads `p_value` directly: Llama from `frontier_llama3-3-70b_iso`, DeepSeek from
+> `frontier_deepseek_fresh`, Nova from `frontier_nova-pro/results.json`, qwen from
+> `markov_formal/table.json`. BH runs on the **default fresh-artefact protocol**, so only
+> Llama rejects (`p = 0.0002`); the DeepSeek cell uses `p = 0.63` (fresh) rather than the
+> retracted `p = 0.0030` (fixed), so there is no internal contradiction. Appendix B reads
+> from `sensitivity_llama/results.json` and matches exactly (29/120, Wilson
+> [0.174, 0.326], cluster [0.167, 0.317], widening 0.99×).
 
-### 3.1 CHỐT nguồn cho các hàng Llama chain-none (giải quyết P1)
+### 3.1 Which Llama chain-none run backs which table
 
-Có **hai** replicate Llama chain-none được TRÍCH trong bài, và một replicate thừa
-đã được dọn khỏi phạm vi audit/figure:
+There are **two** cited Llama chain-none replicates, plus one surplus replicate that was
+removed from the audit and figure scope:
 
-| Thư mục | ASR | cạnh yếu a1→a2 | ∏s | Δ | Bài dùng ở đâu |
+| Directory | ASR | weak edge a1→a2 | product | Δ | Where the paper uses it |
 |---|---|---|---|---|---|
-| `frontier_llama3-3-70b_iso` | **0.850** | **0.233** | 0.233 | **+0.617** | hàng **fresh †** của `tab:cross`/`tab:transport`/`tab:ablation`; rank-1 REJECT của `tab:bh` (Phụ lục A). **Là dir duy nhất có `survival_natural`** ⇒ bắt buộc cho B2 transportability. |
-| `frontier_llama3-3-70b` | 0.800 | 0.167 | 0.167 | +0.633 | hàng **fixed**-artefact của `tab:ablation` (bằng chứng ta tự rút lại một claim). |
-| ~~`frontier_llama3-3-70b_fresh`~~ → `_unused_frontier_llama3-3-70b_fresh_replicate2` | 0.925 | 0.300 | 0.300 | +0.625 | **KHÔNG trích trong bài.** Là replicate fresh thứ hai; đã đổi tên với tiền tố `_` để cả `make_figures.py` và `audit_numbers.py` **bỏ qua** (cả hai skip dir bắt đầu bằng `_`). Giữ lại làm bằng chứng độ vững: cả hai replicate fresh đều cho Δ dương lớn (0.617 và 0.625) ⇒ kết luận super-Markov của Llama **không đổi**. |
+| `frontier_llama3-3-70b_iso` | **0.850** | **0.233** | 0.233 | **+0.617** | the **fresh †** row of `tab:cross` / `tab:transport` / `tab:ablation`; the rank-1 REJECT of `tab:bh` (App. A). **The only directory with `survival_natural`** ⇒ required for B2 transportability. |
+| `frontier_llama3-3-70b` | 0.800 | 0.167 | 0.167 | +0.633 | the **fixed**-artefact row of `tab:ablation` (evidence that we retract a claim ourselves). |
+| ~~`frontier_llama3-3-70b_fresh`~~ → `_unused_frontier_llama3-3-70b_fresh_replicate2` | 0.925 | 0.300 | 0.300 | +0.625 | **NOT cited in the paper.** Second fresh replicate; renamed with a `_` prefix so that both `make_figures.py` and `audit_numbers.py` **skip it** (both skip directories starting with `_`). Kept as robustness evidence: both fresh replicates give a large positive Δ (0.617 and 0.625), so Llama's super-Markov conclusion is unchanged. |
 
-> ⚠️ **Tên `_iso` là do lịch sử (isolated-protocol run), nhưng nội dung của nó là
-> fresh-artefact** (đã bật `per_edge_fresh_artifact` và có `survival_natural`). Vì đổi
-> tên thư mục sẽ phải sửa nhiều tham chiếu trong repo, ta **giữ tên `_iso`** và ghi rõ
-> ý nghĩa ở đây thay vì rename. `audit_numbers.py` giờ chỉ in `frontier_llama3-3-70b`
-> (0.800, fixed) và `frontier_llama3-3-70b_iso` (0.850, fresh) — **khớp đúng bài**;
-> con số nhiễu 0.925/0.300 không còn xuất hiện trong bảng audit.
+> ⚠️ **The name `_iso` is historical** (the run began as an isolated-protocol run), but
+> its content is fresh-artefact (`per_edge_fresh_artifact` was on and it has
+> `survival_natural`). Renaming the directory would touch many references in the repo, so
+> we keep the name and document its meaning here instead. `audit_numbers.py` now prints
+> only `frontier_llama3-3-70b` (0.800, fixed) and `frontier_llama3-3-70b_iso` (0.850,
+> fresh), which matches the paper; the noisy 0.925/0.300 value no longer appears in the
+> audit table. See also [`artifacts/PROVENANCE_llama_fresh.md`](artifacts/PROVENANCE_llama_fresh.md).
 
-`depth_trend.py` là script sinh **cột ρ và slope** của Table trong §5.7: nó tính
-Spearman hạng giữa depth và sai số tương đối, độ dốc OLS, và **loại tường minh**
-các điểm degenerate (`P(C_i=1)=0` ⇒ sai số không xác định) rồi in ra số điểm bị loại.
+`depth_trend.py` produces the ρ and slope columns of the depth table: it computes the
+Spearman rank correlation between depth and relative error, the OLS slope, and
+**explicitly drops** degenerate points ($P(C_i{=}1) = 0$ makes the relative error
+undefined), printing how many were dropped.
 
 ---
 
-## 4. Biên dịch paper
+## 4. Compiling the paper
 
 ```powershell
 cd paper
@@ -241,63 +248,71 @@ $mk = "$env:LOCALAPPDATA\Programs\MiKTeX\miktex\bin\x64"
 & "$mk\pdflatex.exe" -interaction=nonstopmode contagion_aamas2027.tex
 ```
 
-Đếm trang **nội dung** (giới hạn 8; tài liệu tham khảo được thêm trang):
-`paper/check_pages.py` **không tồn tại** — dùng một trong hai cách đã kiểm chứng:
+Counting **content** pages (limit 8; references are additional pages). There is no
+`paper/check_pages.py`; use one of the two verified methods:
 
 ```powershell
-# (a) số trang của một mục bất kỳ, đọc trực tiếp từ .aux:
+# (a) page of any labelled item, read straight from the .aux:
 Select-String -Path contagion_aamas2027.aux -Pattern 'newlabel\{sec:limits\}'
-# (b) nội dung kết thúc ở trang nào: tạm đặt \label{zzendcontent} ngay TRƯỚC
-#     \bibliographystyle, dựng lại 1 lần, đọc .aux, rồi xoá label đi.
-# (c) trang 9 chỉ được chứa tài liệu tham khảo — giải mã PDF bằng Ghostscript
-#     kèm trong MiKTeX (KHÔNG cần cài thêm gì):
+# (b) where content ends: temporarily place \label{zzendcontent} immediately BEFORE
+#     \bibliographystyle, rebuild once, read the .aux, then delete the label.
+# (c) page 9 must contain references only - decode with the Ghostscript shipped in
+#     MiKTeX (nothing extra to install):
 & "$mk\mgs.exe" -q -dNOPAUSE -dBATCH -dFirstPage=9 -dLastPage=9 `
   -sDEVICE=txtwrite "-sOutputFile=pg9.txt" contagion_aamas2027.pdf
-Select-String -Path pg9.txt -Pattern 'Conclusion'   # phải KHÔNG khớp
+Select-String -Path pg9.txt -Pattern 'Conclusion'   # must NOT match
 ```
 
-Cần có trong `paper/`: `aamas.cls`, `by.pdf`/`by.eps`,
-`ACM-Reference-Format.bst` (đi kèm gói template AAMAS-2027).
+`paper/` must contain `aamas.cls`, `by.pdf`/`by.eps`, and
+`ACM-Reference-Format.bst` (all shipped with the AAMAS 2027 template package). The
+figures used in the paper must be copied into `paper/` from
+`experiments/results/figures/`; `make_figures.py` writes to the latter, so a missing
+figure produces a `File ... not found` error at compile time.
 
-**Kiểm tra sạch:** `^!` trong `.log` = 0, `Overfull \hbox` = 0,
-`Citation ... undefined` = 0, số trang nội dung ≤ 8.
+**Clean-build checklist:** `^!` in the `.log` = 0, `Overfull \hbox` = 0,
+`Citation ... undefined` = 0, content pages ≤ 8.
 
 ---
 
-## 5. Seed, tham số, và những gì cố định
+## 5. Seeds, parameters, and what is fixed
 
-| Tham số | Giá trị | Ghi chú |
+| Parameter | Value | Note |
 |---|---|---|
-| seed | 7 (mặc định trong script) | `sensitivity.py` quét seed 1–6 |
-| temperature | 0.7 | sensitivity quét thêm 0.0 và 1.0 |
-| `tau_asv` | 0.9 | cố định; Task B dùng nhánh ASV-only |
-| `tau_mr` | 0.6 | chỉ áp cho Task Family A |
-| target (Task B) | `BANANA-77` | `extra["target_b"]` |
-| `force_retries` | 3 | số lần thử ép output compromised |
-| benign contexts | 3 chuỗi, xoay vòng theo trial | `extra["benign_contexts"]` |
-| model snapshot | Bedrock us-east-1, chụp 09/2026 | Llama `us.meta.llama3-3-70b-instruct-v1:0`, DeepSeek `deepseek.v3.2`, Claude `us.anthropic.claude-sonnet-4-5-20250929-v1:0`, Nova `amazon.nova-pro-v1:0`; qwen2.5:7b local |
+| seed | 7 (script default) | `sensitivity.py` sweeps seeds 1–6 |
+| temperature | 0.7 | sensitivity additionally sweeps 0.0 and 1.0 |
+| `tau_asv` | 0.9 | fixed; Task Family B uses the ASV-only branch |
+| `tau_mr` | 0.6 | applies to Task Family A only |
+| target (Family B) | `BANANA-77` | `extra["target_b"]` |
+| `force_retries` | 3 | attempts to force a compromised output |
+| benign contexts | 3 strings, rotated per trial | `extra["benign_contexts"]` |
+| model snapshot | Bedrock us-east-1, captured 09/2026 | Llama `us.meta.llama3-3-70b-instruct-v1:0`, DeepSeek `deepseek.v3.2`, Claude `us.anthropic.claude-sonnet-4-5-20250929-v1:0`, Nova `amazon.nova-pro-v1:0`; qwen2.5:7b local |
 
-> **Ghi seed + snapshot mỗi ô headline:** mọi ô dùng seed 7 / temp 0.7 trừ khi nêu
-> khác; id model + region ở trên là bản chụp dùng cho toàn bộ số trong bài (per C6
-> của review — để reviewer tái lập model hosted).
+> **Seed and snapshot for every headline cell:** all cells use seed 7 / temp 0.7 unless
+> stated otherwise; the model ids and region above are the snapshot behind every number
+> in the paper, so that a reviewer can reconstruct the hosted models.
 
 ---
 
-## 6. Cảnh báo trung thực khi tái lập
+## 6. Honest warnings when reproducing
 
-1. **Sampling**: cùng cấu hình chạy lại cho số **khác** (ví dụ DeepSeek chain-none
-   cho ASR 0.375 / 0.400 / 0.475 ở ba lần chạy, n=40). Đây là lý do paper báo
-   **MDE** chứ không chỉ verdict — đừng kỳ vọng trùng khít.
-2. **`--fresh-artifact`**: không có nó, `∏sᵢ` có thể lệch và tạo vi phạm
-   composition **giả** ở cả hai hướng (E25/E26). Mọi claim compositional phải có nó.
-3. **API key Bedrock hết hạn** giữa phiên là chuyện đã xảy ra (E29). Khi đó
-   `scripts/bedrock_key_diag.py` cho biết loại key, còn sống không, và key có bị
-   dán lặp ở chỗ khác trên máy không.
-4. **`experiments/results/` bị gitignore**: muốn chia sẻ artifact phải copy ra
-   ngoài hoặc bỏ dòng ignore.
-5. **Điểm degenerate trong depth curve**: khi `P(C_i=1) = 0` thì sai số tương đối
-   *không xác định* (chia cho 0). `depth_trend.py` **loại** các điểm đó và in ra số
-   điểm bị loại (Llama n=15: bỏ 4 điểm cuối vì chain chết ở depth 11). Nếu gán
-   chúng bằng 100% thì đường cong "đẹp" hơn thực tế — đó là cách tự lừa cần tránh.
-6. **φ phải tính trong MỘT temperature**. Gộp temperature (0.0/0.7/1.0) cho
-   φ = 2.93 — con số đó đo yếu tố hệ thống, không đo overdispersion.
+1. **Sampling.** Re-running the same configuration gives different numbers: DeepSeek
+   chain-none gave ASR 0.375 / 0.400 / 0.475 across three runs at n=40. That is why the
+   paper reports the **MDE** rather than only a verdict — do not expect an exact match.
+   Table 4 of the paper likewise reports a second payload (`MANGO-42`) from
+   `experiments/results/frontier_llama_mango` and
+   `experiments/results/content_form_llama_mango`.
+2. **`--fresh-artifact`.** Without it, the product of per-edge estimates can drift and
+   manufacture a composition violation in **either** direction (E25/E26). Every
+   compositional claim needs it.
+3. **Bedrock API keys expire** mid-session — this happened (E29). When it does,
+   `scripts/bedrock_key_diag.py` reports the key type, whether it is still alive, and
+   whether the same key is pasted somewhere else on the machine.
+4. **`experiments/results/` is gitignored**, so sharing the artifact requires copying it
+   out or dropping the ignore line.
+5. **Degenerate points in the depth curve.** When $P(C_i{=}1) = 0$ the relative error is
+   *undefined* (division by zero). `depth_trend.py` **drops** those points and prints how
+   many it dropped (Llama n=15: the last four depths, because the chain dies at depth
+   11). Scoring them as 100% would make the curve look better than it is — that is the
+   self-deception to avoid.
+6. **φ must be computed within one temperature.** Pooling temperatures (0.0/0.7/1.0)
+   gives φ = 2.93, and that number measures a systematic factor, not overdispersion.
