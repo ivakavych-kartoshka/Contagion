@@ -292,8 +292,58 @@ redact & split-word & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
 \section{Theory Assumptions: Independence, Correlation, and $R_0$}
 \label{app:theory-assumptions}
 
-This appendix clarifies the theoretical assumptions invoked in Section 3.8 of the
-main paper.
+This appendix states in full the five assumptions that the main paper compresses into a
+pointer in Section~3.8, so that a reader can check each one against the code.
+
+\paragraph{Independence and Eq.~(3).} The product-of-complements form
+$1-\prod_{u\to v}(1 - s_{u\to v}\Pr[u])$ assumes that, conditional on upstream states,
+the events by which different parents contribute reachability to $v$ are independent
+(equivalently, parent-reach events are conditionally independent given graph
+structure). A sufficient condition for the identity to hold exactly is that the
+upstream paths from entry to different parents do not induce correlation affecting
+$v$'s reachability (e.g.\ the relevant ancestors are disjoint, or the parent-reach
+events factor appropriately). When parents share common ancestors their reachability
+paths overlap, the events become correlated, and the product-of-complements is an
+approximation rather than an exact identity; a path-based formulation with
+inclusion--exclusion, or explicit correlation terms, is then required. We do not claim
+the identity for arbitrary DAGs with shared ancestors without such adjustment, and our
+composition, transport and percolation claims are restricted to the feed-forward graph
+classes we evaluate (chains, star/tree-like topologies with a single entry).
+Appendix~\ref{app:reconvergent} tests the shared-ancestor case directly.
+
+\paragraph{Reproduction number $R_0$.} We report the empirical reproduction number
+$R_0$ as a \emph{descriptive, finite-horizon amplification statistic} for the finite
+acyclic graphs we evaluate, operationally defined as the mean number of downstream
+neighbours newly compromised per compromised agent-instance, with generation
+convention, denominator (compromised agent-instances), time horizon (finite run length)
+and scope (acyclic graph class) all specified. For finite feed-forward networks the
+standard next-generation mean-offspring matrix is strictly triangular and hence
+nilpotent with spectral radius $\rho(M) = 0$; this is a structural property of
+acyclicity, not an empirical safety threshold. We therefore never treat $\rho(M) < 1$
+as a safety criterion and do not read $R_0$ in that asymptotic sense. Its numerator and
+denominator are not recoverable from the archived per-cell files, which is why the main
+paper prints it without an interval.
+
+\paragraph{Parallel paths and defence placement.} Defence-placement claims are limited
+to the graph classes we tested. Effectiveness depends on whether a hardened node lies
+on \emph{all} $s$--$t$ paths (i.e.\ on a minimal vertex or edge cut) rather than on
+``being on some path''. Where parallel or edge-disjoint paths to the target exist,
+hardening a node on one path cannot block the others, and we do not assume uniform
+effectiveness across parallel paths. Where paths are unique, effects are path-specific.
+
+\paragraph{Transportability.} The equality $\scite{i} \stackrel{?}{=} \snat{i}$---the
+transportability of isolated per-edge estimates to in-chain propagation---is treated as
+an empirical hypothesis checked separately for each graph class and model, never as a
+general theorem. Generalising beyond the evaluated graph classes should be done
+cautiously, and the main paper reports intervals and equivalence tests rather than
+reading a non-rejection as agreement.
+
+\paragraph{Outcomes and judge.} Our primary outcome is \emph{textual propagation} of
+the target (presence of target string or code fragments) as measured by ASV, which is
+deterministic. Distinguishing instruction \emph{adoption or compliance} from mere
+textual propagation requires additional independent validation; we do not conflate
+these levels in any main claim, and the judge's scope and failure modes are itemised in
+Appendix~\ref{app:judge-validation}.
 
 \paragraph{Product-of-complements and correlation.} The percolation recurrence
 \[
@@ -640,6 +690,51 @@ These results validate that the transportability diagnostic remains interpretabl
 longer chain depths, within the range where the payload survives at all.
 
 % =====================================================================
+\section{Related Work: Defences and Contagion Models, in Full}
+\label{app:related-supplement}
+
+The main paper compresses two literatures into a pointer. This appendix carries them in
+full, because the citations are what a reader follows to check whether our framing is
+fair.
+
+\paragraph{Defences.} Adaptive attacks against single-agent injection defences break
+eight defences at $>50\%$ ASR, including paraphrasing, using token-level
+optimisation~\cite{Zhan2025Adaptive}; our negative result on semantic paraphrasing
+inside a chain is consistent with that finding. Structured queries~\cite{StrUQ2025},
+encoding~\cite{Hines2024CAMLIS}, and removing the agent's authority to act on untrusted
+text~\cite{Debenedetti2026CaMeL} instead constrain how such content reaches the model.
+Our attacker uses \emph{natural-language structural obfuscation} (splitting or spacing a
+literal target), not white-box token optimisation, which is the weaker attacker of the
+two and therefore the more conservative choice for a measurement study.
+
+\paragraph{Contagion and thresholds in networks.} Treating propagation as contagion over
+a graph is classical, beginning with the SIR formulation~\cite{KermackMcKendrick1927}.
+Threshold models make an individual's adoption a function of how many neighbours have
+already adopted~\cite{Granovetter1978,Watts2002}; epidemic models supply the
+complementary criterion that spread is subcritical when the spectral radius of the
+next-generation matrix falls below one, a threshold that can vanish on heavy-tailed
+topologies~\cite{PastorSatorras2001,Newman2002,KeelingEames2005}; small-world
+structure~\cite{WattsStrogatz1998} makes cascades tractable, and robustness to node
+failure follows from the error-tolerance literature~\cite{Albert2000ErrorTolerance}.
+Controlled experiments show that \emph{complex} contagions---requiring several
+concurrent exposures---spread more slowly and reach fewer nodes~\cite{Centola2010}: the
+network-level reason to expect per-edge survival, not per-agent susceptibility, to
+govern reach. Seeding nodes to maximise reachability is NP-hard in
+general~\cite{Kempe2003}, so we do not search for optimal seeds; we compute reachability
+with the one-pass recurrence of Eq.~(3) under the independence assumptions of
+Appendix~\ref{app:theory-assumptions}, and whether that recurrence is exact on a given
+feed-forward graph is an empirical question we take up in
+Appendix~\ref{app:reconvergent}. This is the lens recent theory work on multiplex Markov
+contagion in agent swarms adopts~\cite{SwarmMarkov2026}. Our results sharpen where the
+analogy fails for LLM agent networks: for strictly acyclic feed-forward graphs the
+standard linearized next-generation matrix is nilpotent ($\rho(M) = 0 < 1$) as a
+structural property of acyclicity rather than an empirical safety guarantee
+(Appendix~\ref{app:cyclic}); the empirical reproduction number can be below one while
+reachability stays high; and the per-hop rates such an analysis consumes do not
+transport from isolated measurement, as the transportability results in the main paper
+show.
+
+% =====================================================================
 % =====================================================================
 \section{Utility under Attack, and Estimator Validation}
 \label{app:utility}
@@ -932,9 +1027,9 @@ in-chain per-edge survival $\snats{i}$.}
 \midrule
 \multicolumn{5}{l}{\textit{Llama 3.3 70B (hosted), 40 natural runs per ordering}}\\
 1 & planner    & $1.000$ & worker     & $1.000$ \\
-2 & worker     & $0.825$ & planner    & $0.700$ \\
-3 & reviewer   & $0.970$ & aggregator & $1.000$ \\
-4 & aggregator & $0.688$ & aggregator & $0.929$ \\
+2 & worker     & $0.975$ & planner    & $0.575$ \\
+3 & reviewer   & $1.000$ & aggregator & $1.000$ \\
+4 & aggregator & $0.692$ & aggregator & $0.957$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -959,8 +1054,8 @@ variable the profile follows.}
 qwen2.5:7b (local) & by position & 4 & $0.186$ \\
                    & by role     & 3 & $0.151$ \\
 \midrule
-Llama 3.3 70B      & by position & 4 & $\mathbf{0.099}$ \\
-                   & by role     & 3 & $0.263$ \\
+Llama 3.3 70B      & by position & 4 & $0.166$ \\
+                   & by role     & 3 & $\mathbf{0.039}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -970,28 +1065,28 @@ the result. On qwen the readings are close ($0.186$ versus $0.151$, a difference
 $0.035$ on a $[0,1]$ scale), and they are not directly comparable in count: the position
 reading uses every shared depth, whereas the role reading can only use roles occurring in
 both orderings, and the duplicated role at the tail of a five-agent cycle reduces it to
-three pairs. On Llama the same control separates them: the depth profile moves by
-$0.099$ when the labels are permuted, against $0.263$ when the same role is followed
-across orderings, a gap of $0.163$ that is twice the per-edge standard error. So on the
-larger model survival tracks \emph{depth} and the role label adds little, whereas on the
-smaller local model the two are indistinguishable at this sample size.
+three pairs. On Llama the permutation was \texttt{reviewer, worker, planner, aggregator,
+aggregator} against the default cycle, and there the same control separates the two:
+following a role across orderings moves survival by $0.039$, whereas comparing the
+$k$-th deepest edge moves it by $0.166$---a gap of $0.127$, well outside the per-edge
+standard error of $0.07$--$0.08$. So on Llama survival tracks the \emph{role label} and
+the depth adds little, while on qwen the two are indistinguishable at this sample size.
 
 Two consequences follow, and the main paper is written to respect both. First, the
 profile is \emph{not} invariant to the role labels on either model, so the assignment
-cannot be ignored. Second, the direction of the role-versus-position attribution
-\emph{reverses across models}---role-edged on qwen, position-edged on Llama---which is
-the same cross-model reversal we report for the raw per-edge ordering. We therefore read
-the role profile of the main paper (its Fig.~2) as a profile under one fixed assignment
-(planner, worker, reviewer, aggregator) rather than as a role effect, and we do not use
-it to rank roles.
+cannot be ignored. Second, the role attribution is not a universal property: it is a
+near-tie on qwen and a clear role effect on Llama, and it depends on which permutation
+is applied. We therefore read the role profile of the main paper (its Fig.~2) as a
+profile under one fixed assignment (planner, worker, reviewer, aggregator) rather than
+as a role effect, and we do not use it to rank roles.
 
-Two limits remain. At $n = 40$ runs per ordering the per-edge standard error is roughly
-$0.07$--$0.08$, so the qwen tie is a genuine non-separation rather than a demonstration
-of equality, and a larger set of permutations would be needed to bound a role effect
-even if one exists. And the two models differ in more than size---one is hosted and one
-local---so we cannot attribute the reversal to scale alone; what the control establishes
-is that the attribution is not a stable property of the measurement, which is why the
-main paper declines to make one.
+Three limits remain. At $n = 40$ runs per ordering the per-edge standard error is about
+$0.07$--$0.08$, so the qwen tie is a non-separation rather than a demonstration of
+equality. Each model was permuted once, so the gap we report is conditioned on that one
+relabelling and is not an estimate of a role effect size. And the two models differ in
+more than scale---one hosted, one local---so nothing here licenses a claim about model
+size; what the control establishes is that the attribution is not a stable property of
+the measurement, which is why the main paper declines to make one.
 
 % =====================================================================
 \section{Disclosure of AI-Assisted Technologies}
@@ -1224,5 +1319,11 @@ profile---carry family-wise control within their own family at $q = 0.05$
 (Appendix~\ref{app:mult}), and every test stated in the paper is covered by that
 accounting rather than left uncorrected. The intervals we report use Wilson bounds,
 with a cluster bootstrap where trials repeat within contexts or runs.
+
+%%% Các mục được trích trong phụ lục (bảng "Related Work in Full") nằm trong cùng
+%%% refs.bib với bài chính. Số thứ tự ở đây độc lập với bài chính vì đây là tài liệu
+%%% riêng; ban tổ chức yêu cầu supplementary là một zip, không yêu cầu dùng chung số.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
 
 \end{document}

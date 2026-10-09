@@ -163,18 +163,38 @@ nc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_
 7grukw.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/liberti
 ne/lbtn_oexx6f.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips
 /libertine/lbtn_naooyc.enc} <./by.pdf>]
-Underfull \vbox (badness 5091) has occurred while \output is active [2.2]
-[3.3]
+Underfull \vbox (badness 5091) has occurred while \output is active
+
+Class aamas Warning: A possible image without description on input line 270.
+
+[2.2]
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\t1zi4.fd)
-[4.4{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4
--t1-4.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertin
-e/lbtn_fygcup.enc}] [5.5]
-Underfull \vbox (badness 10000) has occurred while \output is active [6.6 <./fi
-g2_per_role_survival.png>] [7.7{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fon
-ts/enc/dvips/libertine/lbtn_ki75ao.enc}] Excluding 'acks' comment. [8.8 <./fig4
-_obfuscation_heatmap.png>] (contagion_aamas2027.bbl
+Underfull \vbox (badness 6001) has occurred while \output is active [3.3{C:/Use
+rs/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4-t1-4.enc} 
+<./fig1_framework.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active [4.4{C:/Us
+ers/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_fygcup.en
+c}] [5.5] [6.6{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libe
+rtine/lbtn_ki75ao.enc} <./fig2_per_role_survival.png>] [7.7 <./fig4_obfuscation
+_heatmap.png>] Excluding 'acks' comment. [8.8] (contagion_aamas2027.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active
 Underfull \vbox (badness 10000) has occurred while \output is active [9.9])
+
+Class aamas Warning: Some images may lack descriptions.
+(aamas)              ACM is committed to complying with the upcoming US ADA htt
+ps://accessiblyapp.com/accessibility-compliance/ada/ and European Accessibility
+ Act (EAA) https://accessiblyapp.com/accessibility-compliance/eaa/ regulations 
+by actively working to ensure our publications and application services are acc
+essible to individuals with disabilities, adhering to the WCAG guidelines to pr
+ovide a seamless experience for all users, and regularly reviewing our accessib
+ility practices to maintain compliance with evolving standards. 
+(aamas)              To this end, we strongly encourage our authors to provide 
+alternative text and captions for images and multimedia content. It is also imp
+ortant to optimize color contrast for the visually impaired. Taking these impor
+tant steps when creating your papers will ensure that the widest possible audie
+nce can ingest your work..
+
+
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
 f)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def)
@@ -200,5 +220,5 @@ pData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI7.pfb><C:/Users/ASU
 S/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/AS
 US/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/
 ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on contagion_aamas2027.pdf (10 pages, 815894 bytes).
+Output written on contagion_aamas2027.pdf (10 pages, 904422 bytes).
 Transcript written on contagion_aamas2027.log.

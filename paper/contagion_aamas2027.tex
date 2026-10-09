@@ -255,6 +255,20 @@ result.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig1_framework.png}
+  \caption{The two protocols. \textbf{(a)} A hop-wise run: the attacker payload
+  compromises the entry by construction ($C_0=1$) and each receiver $a_i$ is judged by
+  the same deterministic rule, so per-edge survival $s_i$ is a conditional probability
+  rather than a whole-chain outcome. Natural runs leave the chain to forward on its own;
+  controlled per-edge runs force $C_{src}=1$ and feed the source's own output to a fresh
+  receiver, which is what makes the isolated estimate comparable with the in-chain one.
+  \textbf{(b)} Every utility measurement is paired, so the cost of a defence is read
+  against the same network with a clean input rather than assumed.}
+  \label{fig:framework}
+\end{figure*}
+
 \section{Related Work and Positioning}
 
 \paragraph{Single-agent indirect injection.}
@@ -317,40 +331,16 @@ conditional survival; and Huang et al.~\cite{Huang2025Resilience} inject a fault
 read aggregate task performance, whereas we condition on one compromised node. None
 reports per-edge survival with intervals, or whether it transports.
 
-\paragraph{Defences.}
-Adaptive attacks against single-agent injection defences break eight defences at
-$>50\%$ ASR, including paraphrasing, using token-level
-optimisation~\cite{Zhan2025Adaptive}; our negative result on semantic paraphrasing
-inside a chain is consistent with that finding. Structured
-queries~\cite{StrUQ2025}, encoding~\cite{Hines2024CAMLIS}, and removing the
-agent's authority to act on untrusted text~\cite{Debenedetti2026CaMeL} instead
-constrain how such content reaches the model. Our attacker instead uses
-\emph{natural-language structural obfuscation} (splitting or spacing a literal
-target), not white-box token optimisation.
-
-\paragraph{Contagion and thresholds in networks.}
-Treating propagation as contagion over a graph is classical, beginning with the
-SIR formulation~\cite{KermackMcKendrick1927}.
-Threshold models make an individual's adoption a function of how many neighbours
-have already adopted~\cite{Granovetter1978,Watts2002}; epidemic models supply the
-complementary criterion that spread is subcritical when the spectral radius of the
-next-generation matrix falls below one, a threshold that can vanish on heavy-tailed
-topologies~\cite{PastorSatorras2001,Newman2002,KeelingEames2005}; small-world
-structure~\cite{WattsStrogatz1998} makes cascades tractable, and robustness to node
-failure follows from the error-tolerance literature~\cite{Albert2000ErrorTolerance}. Controlled
-experiments show that \emph{complex} contagions---requiring several concurrent
-exposures---spread more slowly and reach fewer nodes~\cite{Centola2010}: the
-network-level reason to expect per-edge survival, not per-agent susceptibility, to
-govern reach. Seeding nodes to maximise
-reachability is NP-hard in general~\cite{Kempe2003}, so we do not search for optimal
-seeds; we compute reachability with the one-pass recurrence of
-Eq.~\eqref{eq:percolation} under the independence assumptions stated in
-Section~\ref{sec:theory}, and whether that recurrence is exact on a given
-feed-forward graph is an empirical question we return to in
-Section~\ref{sec:threshold}. This is the lens recent theory work on multiplex Markov contagion
-in agent swarms adopts~\cite{SwarmMarkov2026}. Our results sharpen where the
-analogy fails for LLM agent networks: for strictly acyclic feed-forward graphs the standard linearized next-generation matrix is nilpotent ($\rho(M)=0<1$) as a structural property of acyclicity rather than an empirical safety guarantee (Section~\ref{sec:threshold}); the empirical reproduction number can be below one while reachability stays high; and the per-hop
-rates such an analysis consumes do not transport from isolated measurement (the transportability depends on graph structure and role/context as discussed in Section~\ref{sec:theory}).
+\paragraph{Defences, and contagion models.} Two further literatures bound our claims and
+are developed in \suppref{app:related-supplement}: adaptive attacks against
+single-agent injection defences~\cite{Zhan2025Adaptive} (which our negative result on
+semantic paraphrasing is consistent with), the structured-query and
+authority-removal defences~\cite{StrUQ2025,Hines2024CAMLIS,Debenedetti2026CaMeL}, and
+the classical contagion and threshold literature~\cite{KermackMcKendrick1927,
+Granovetter1978,Watts2002,PastorSatorras2001,Newman2002,KeelingEames2005,
+WattsStrogatz1998,Albert2000ErrorTolerance,Centola2010,Kempe2003,SwarmMarkov2026} from
+which we borrow the vocabulary while showing where the analogy fails for LLM agent
+networks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -358,17 +348,15 @@ rates such an analysis consumes do not transport from isolated measurement (the 
 \subsection{Scope and assumptions}
 \label{sec:theory}
 
-We clarify the scope of our theoretical claims.
-
-\paragraph{Independence and Eq.~\eqref{eq:percolation}.} The product-of-complements form $1-\prod_{u\to v}(1 - s_{u\to v}\Pr[u])$ assumes that, conditional on upstream states, the events by which different parents contribute reachability to $v$ are independent (equivalently, parent-reach events are conditionally independent given graph structure). A sufficient condition for this identity to hold exactly is that the upstream paths from entry to different parents do not induce correlation that affects $v$'s reachability (e.g. the relevant ancestors are disjoint or the parent-reach events factor appropriately). When parents share common ancestors (and thus their reachability paths overlap), these events become correlated and the product-of-complements is an approximation rather than an exact identity; in that case a path-based formulation with inclusion--exclusion (or explicit correlation terms) is required. We do not claim the identity holds for arbitrary DAGs with shared ancestors without such adjustment. Our claims about composition/transport and percolation are restricted to the feed-forward graph classes evaluated in this study (chains, star/tree-like topologies with a single entry), not to all general networks or to arbitrary DAGs. Throughout, we state assumptions explicitly rather than asserting the identity ``in general''.
-
-\paragraph{Reproduction number $R_0$.} We report the empirical reproduction number $R_0$ as a \emph{descriptive, finite-horizon amplification statistic} for the finite acyclic graphs we evaluate. We operationally define $R_0$ as the mean number of downstream neighbours newly compromised per compromised agent-instance, with generation convention, denominator (compromised agent-instances), time horizon (finite run length), and scope (acyclic graph class) specified. For finite feed-forward (strictly acyclic) networks, the standard next-generation mean-offspring matrix is strictly triangular and hence nilpotent with spectral radius $\rho(M)=0$; this is a structural property of acyclicity, not an empirical safety threshold. Accordingly, we do not treat $\rho(M)<1$ as a safety criterion here and avoid interpreting $R_0$ in that asymptotic threshold sense; its role is descriptive/heuristic for the evaluated finite setting.
-
-\paragraph{Parallel paths and defence placement.} Defence placement claims are limited to the graph classes we tested. Effectiveness depends on whether a hardened node lies on all $s$-$t$ paths (i.e. on a \emph{minimal vertex/edge cut}) rather than on ``being on any path''. When there exist parallel or edge-disjoint paths to the target, hardening a node on only one path cannot block the others; we do not assume uniform effectiveness across parallel paths. Where paths are unique, effects are path-specific.
-
-\paragraph{Transportability.} The equality $\scite{i} \stackrel{?}{=} \snat{i}$ (transportability of isolated per-edge estimates to in-chain propagation) is treated as an empirical hypothesis to be checked for each graph class and model, not as a general theorem. Findings generalising beyond the evaluated graph classes (chains, star/tree-like feed-forward topologies with the specified structure) should be made cautiously.
-
-\paragraph{Outcomes and judge.} Our primary outcome is \emph{textual propagation} of the target (presence of target string/code fragments) as measured by ASV (deterministic). Distinguishing instruction \emph{adoption/compliance} from mere textual propagation requires additional validation; we do not conflate these levels in the main claims and note judge scope in the evaluation.
+We clarify the scope of our theoretical claims. The five assumptions behind
+Eq.~\eqref{eq:percolation}, the $R_0$ definition, the defence-placement argument, the
+transportability hypothesis and the outcome level are stated in full, with their
+counterexamples, in \suppref{app:theory-assumptions}. In brief: the product-of-complements
+form is exact only when parent-reach events are conditionally independent; $R_0$ is a
+descriptive finite-horizon statistic and never a safety threshold; defence placement
+follows minimal cut sets rather than ``any path''; transportability is an empirical
+hypothesis per graph class and model; and our outcome is textual propagation, not
+adjudicated task harm.
 
 
 \section{Framework: Measuring Propagation}
@@ -976,6 +964,26 @@ fifteen agents, cells of $30$--$40$ (MDE $\approx 0.26$), two defence families--
 the utility metric is a contamination proxy rather than a correctness oracle. Protocol
 sensitivity, the mixed artefact protocol of Table~\ref{tab:cross}, and the scope of the
 judge are itemised in \suppref{app:judge-validation} and \suppref{app:limits}.
+
+\subsection{What changes for a practitioner}
+
+A concrete pipeline makes the difference between the prescriptions and an aggregate
+score. Take a planner $\to$ worker $\to$ reviewer $\to$ aggregator wiring in the style of
+MetaGPT's software-company pattern, with one content filter to place. A single
+end-to-end ASR distorts the decision three ways, all readable from the numbers above.
+\emph{First}, if the team benchmarks the worker role in isolation it obtains the Llama
+weak-edge value $0.233$, composes it, and concludes the attack dies early---whereas the
+measured chain reaches its target in $0.850$ of runs, because inside the network that
+same edge survives at $0.875$. The depth-error slope flags exactly this kind of
+non-transport before deployment. \emph{Second}, placement: on a chain every interior
+node lies on the single entry--target path, so filtering the reviewer is as effective as
+filtering the worker, but on a fan-in star a hardened branch node is useless while the
+centre is decisive---and an aggregate ASR cannot tell those apart. \emph{Third},
+$R_0$: the seven-agent chain has $R_0 = 0.821$ and the star $0.420$, both
+``subcritical'', yet the target is reached in $0.450$ and $0.725$ of runs, so trusting
+$R_0 < 1$ would licence skipping the filter on the star, the topology where the attack
+arrives most often. A worked version of all three, with the arithmetic, is in
+\suppref{app:discussion}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

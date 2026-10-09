@@ -1,0 +1,226 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{15}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Albert et~al\mbox{.}(2000)]%
+        {Albert2000ErrorTolerance}
+\bibfield{author}{\bibinfo{person}{R{\'e}ka Albert}, \bibinfo{person}{Hawoong
+  Jeong}, {and} \bibinfo{person}{Albert-L{\'a}szl{\'o} Barab{\'a}s}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Error and attack tolerance of complex networks}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{406},
+  \bibinfo{number}{6794} (\bibinfo{year}{2000}), \bibinfo{pages}{378--382}.
+\newblock
+\href{https://doi.org/10.1038/35019019}{doi:\nolinkurl{10.1038/35019019}}
+
+
+\bibitem[Centola(2010)]%
+        {Centola2010}
+\bibfield{author}{\bibinfo{person}{Damon Centola}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{The Spread of Behavior in an Online Social Network
+  Experiment}.
+\newblock \bibinfo{journal}{\emph{Science}} \bibinfo{volume}{329},
+  \bibinfo{number}{5996} (\bibinfo{year}{2010}), \bibinfo{pages}{1194--1197}.
+\newblock
+\href{https://doi.org/10.1126/science.1185231}{doi:\nolinkurl{10.1126/science.1185231}}
+
+
+\bibitem[Chen et~al\mbox{.}(2025)]%
+        {StrUQ2025}
+\bibfield{author}{\bibinfo{person}{Sizhe Chen}, \bibinfo{person}{Julien Piet},
+  \bibinfo{person}{Chawin Sitawarin}, {and} \bibinfo{person}{David Wagner}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{StruQ}: Defending Against Prompt Injection with
+  Structured Queries}. In \bibinfo{booktitle}{\emph{34th USENIX Security
+  Symposium (USENIX Security 25)}}. \bibinfo{publisher}{USENIX Association}.
+\newblock
+
+
+\bibitem[Debenedetti et~al\mbox{.}(2026)]%
+        {Debenedetti2026CaMeL}
+\bibfield{author}{\bibinfo{person}{Edoardo Debenedetti}, \bibinfo{person}{Ilia
+  Shumailov}, \bibinfo{person}{Tianqi Fan}, \bibinfo{person}{Jamie Hayes},
+  \bibinfo{person}{Nicholas Carlini}, \bibinfo{person}{Daniel Fabian},
+  \bibinfo{person}{Christoph Kern}, \bibinfo{person}{Chongyang Shi},
+  \bibinfo{person}{Andreas Terzis}, {and} \bibinfo{person}{Florian
+  Tram{\`e}r}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Defeating Prompt Injections by Design}. In
+  \bibinfo{booktitle}{\emph{2026 IEEE Conference on Secure and Trustworthy
+  Machine Learning (SaTML)}}. \bibinfo{pages}{587--618}.
+\newblock
+\href{https://doi.org/10.1109/satml68715.2026.00040}{doi:\nolinkurl{10.1109/satml68715.2026.00040}}
+
+
+\bibitem[Granovetter(1978)]%
+        {Granovetter1978}
+\bibfield{author}{\bibinfo{person}{Mark Granovetter}.}
+  \bibinfo{year}{1978}\natexlab{}.
+\newblock \showarticletitle{Threshold Models of Collective Behavior}.
+\newblock \bibinfo{journal}{\emph{Amer. J. Sociology}} \bibinfo{volume}{83},
+  \bibinfo{number}{6} (\bibinfo{year}{1978}), \bibinfo{pages}{1420--1443}.
+\newblock
+\href{https://doi.org/10.1086/226707}{doi:\nolinkurl{10.1086/226707}}
+
+
+\bibitem[Hines et~al\mbox{.}(2024)]%
+        {Hines2024CAMLIS}
+\bibfield{author}{\bibinfo{person}{Keegan Hines}, \bibinfo{person}{Gary Lopez},
+  \bibinfo{person}{Matthew Hall}, \bibinfo{person}{Federico Zarfati},
+  \bibinfo{person}{Yonatan Zunger}, {and} \bibinfo{person}{Emre Kiciman}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{Defending Against Indirect Prompt Injection Attacks
+  With Spotlighting}. In \bibinfo{booktitle}{\emph{Conference on Applied
+  Machine Learning in Information Security (CAMLIS 2024)}}
+  \emph{(\bibinfo{series}{CEUR Workshop Proceedings},
+  Vol.~\bibinfo{volume}{3920})}. \bibinfo{pages}{48--62}.
+\newblock
+
+
+\bibitem[Keeling and Eames(2005)]%
+        {KeelingEames2005}
+\bibfield{author}{\bibinfo{person}{Matt~J. Keeling} {and}
+  \bibinfo{person}{Ken~T. Eames}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Networks and epidemic models}.
+\newblock \bibinfo{journal}{\emph{Journal of the Royal Society Interface}}
+  \bibinfo{volume}{2}, \bibinfo{number}{4} (\bibinfo{year}{2005}),
+  \bibinfo{pages}{295--307}.
+\newblock
+\href{https://doi.org/10.1098/rsif.2005.0051}{doi:\nolinkurl{10.1098/rsif.2005.0051}}
+
+
+\bibitem[Kempe et~al\mbox{.}(2003)]%
+        {Kempe2003}
+\bibfield{author}{\bibinfo{person}{David Kempe}, \bibinfo{person}{Jon
+  Kleinberg}, {and} \bibinfo{person}{{\'{E}}va Tardos}.}
+  \bibinfo{year}{2003}\natexlab{}.
+\newblock \showarticletitle{Maximizing the Spread of Influence through a Social
+  Network}. In \bibinfo{booktitle}{\emph{Proceedings of the Ninth {ACM}
+  {SIGKDD} International Conference on Knowledge Discovery and Data Mining}}.
+  \bibinfo{publisher}{ACM}, \bibinfo{pages}{137--146}.
+\newblock
+\href{https://doi.org/10.1145/956750.956769}{doi:\nolinkurl{10.1145/956750.956769}}
+
+
+\bibitem[Kermack and McKendrick(1927)]%
+        {KermackMcKendrick1927}
+\bibfield{author}{\bibinfo{person}{William~Ogilvy Kermack} {and}
+  \bibinfo{person}{A.~G. McKendrick}.} \bibinfo{year}{1927}\natexlab{}.
+\newblock \showarticletitle{A contribution to the mathematical theory of
+  epidemics}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the Royal Society of London.
+  Series A, Containing Papers of a Mathematical and Physical Character}}
+  \bibinfo{volume}{115}, \bibinfo{number}{772} (\bibinfo{year}{1927}),
+  \bibinfo{pages}{700--721}.
+\newblock
+\href{https://doi.org/10.1098/rspa.1927.0118}{doi:\nolinkurl{10.1098/rspa.1927.0118}}
+
+
+\bibitem[Le et~al\mbox{.}(2026)]%
+        {SwarmMarkov2026}
+\bibfield{author}{\bibinfo{person}{Tran~Duc Le}, \bibinfo{person}{Truong~Duy
+  Dinh}, \bibinfo{person}{Thi Le~Quyen Nguyen}, {and}
+  \bibinfo{person}{Cong~Danh Nguyen}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Cross-layer contagion of prompt injections in
+  multi-agent swarms: a multiplex microscopic {Markov} chain approach}.
+\newblock \bibinfo{journal}{\emph{Cybersecurity}} \bibinfo{volume}{9},
+  \bibinfo{number}{1} (\bibinfo{year}{2026}).
+\newblock
+\href{https://doi.org/10.1186/s42400-026-00628-w}{doi:\nolinkurl{10.1186/s42400-026-00628-w}}
+
+
+\bibitem[Newman(2002)]%
+        {Newman2002}
+\bibfield{author}{\bibinfo{person}{M.~E.~J. Newman}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{Spread of epidemic disease on networks}.
+\newblock \bibinfo{journal}{\emph{Physical Review E}} \bibinfo{volume}{66},
+  \bibinfo{number}{1} (\bibinfo{year}{2002}), \bibinfo{pages}{016128}.
+\newblock
+\href{https://doi.org/10.1103/PhysRevE.66.016128}{doi:\nolinkurl{10.1103/PhysRevE.66.016128}}
+
+
+\bibitem[Pastor-Satorras and Vespignani(2001)]%
+        {PastorSatorras2001}
+\bibfield{author}{\bibinfo{person}{Romualdo Pastor-Satorras} {and}
+  \bibinfo{person}{Alessandro Vespignani}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Epidemic Spreading in Scale-Free Networks}.
+\newblock \bibinfo{journal}{\emph{Physical Review Letters}}
+  \bibinfo{volume}{86}, \bibinfo{number}{14} (\bibinfo{year}{2001}),
+  \bibinfo{pages}{3200--3203}.
+\newblock
+\href{https://doi.org/10.1103/PhysRevLett.86.3200}{doi:\nolinkurl{10.1103/PhysRevLett.86.3200}}
+
+
+\bibitem[Watts(2002)]%
+        {Watts2002}
+\bibfield{author}{\bibinfo{person}{Duncan~J. Watts}.}
+  \bibinfo{year}{2002}\natexlab{}.
+\newblock \showarticletitle{A simple model of global cascades on random
+  networks}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the National Academy of
+  Sciences}} \bibinfo{volume}{99}, \bibinfo{number}{9} (\bibinfo{year}{2002}),
+  \bibinfo{pages}{5766--5771}.
+\newblock
+\href{https://doi.org/10.1073/pnas.082090499}{doi:\nolinkurl{10.1073/pnas.082090499}}
+
+
+\bibitem[Watts and Strogatz(1998)]%
+        {WattsStrogatz1998}
+\bibfield{author}{\bibinfo{person}{Duncan~J. Watts} {and}
+  \bibinfo{person}{Steven~H. Strogatz}.} \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Collective dynamics of `small-world' networks}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{393},
+  \bibinfo{number}{6684} (\bibinfo{year}{1998}), \bibinfo{pages}{440--442}.
+\newblock
+\href{https://doi.org/10.1038/30918}{doi:\nolinkurl{10.1038/30918}}
+
+
+\bibitem[Zhan et~al\mbox{.}(2025)]%
+        {Zhan2025Adaptive}
+\bibfield{author}{\bibinfo{person}{Qiusi Zhan}, \bibinfo{person}{Richard Fang},
+  \bibinfo{person}{Henil~Shalin Panchal}, {and} \bibinfo{person}{Daniel Kang}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Adaptive Attacks Break Defenses Against Indirect
+  Prompt Injection Attacks on {LLM} Agents}. In
+  \bibinfo{booktitle}{\emph{Findings of the Association for Computational
+  Linguistics: NAACL 2025}}. \bibinfo{pages}{7116--7132}.
+\newblock
+\href{https://doi.org/10.18653/v1/2025.findings-naacl.395}{doi:\nolinkurl{10.18653/v1/2025.findings-naacl.395}}
+
+
+\end{thebibliography}
