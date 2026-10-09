@@ -191,68 +191,53 @@ Overfull \hbox (1.66612pt too wide) in paragraph at lines 219--230
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-Overfull \hbox (1.65533pt too wide) in paragraph at lines 307--318
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) is re-compromised by its own work-ers' re-p
-orts in $\OT1/LinuxLibertineT-TLF/m/n/9 (-20) 0\OML/nxlmi/m/it/9 :\OT1/LinuxLib
-ertineT-TLF/m/n/9 (-20) 725$ $\LMS/ntxsy/m/n/9 »\OT1/LinuxLibertineT-TLF/m/n/9 
-(-20) 0\OML/nxlmi/m/it/9 :\OT1/LinuxLibertineT-TLF/m/n/9 (-20) 572\OML/nxlmi/m/
-it/9 ; \OT1/LinuxLibertineT-TLF/m/n/9 (-20) 0\OML/nxlmi/m/it/9 :\OT1/LinuxLiber
-tineT-TLF/m/n/9 (-20) 839\LMS/ntxsy/m/n/9 ¼$
 [2.2]
-Overfull \hbox (10.3392pt too wide) in paragraph at lines 352--361
+Overfull \hbox (10.3392pt too wide) in paragraph at lines 394--403
  [][] 
 [3.3{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn
 _fygcup.enc}]
-Overfull \hbox (6.14447pt too wide) in paragraph at lines 454--464
+Overfull \hbox (6.14447pt too wide) in paragraph at lines 496--506
  [][] 
 [4.4] [5.5{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertin
 e/lbtn_ki75ao.enc}]
-Overfull \hbox (3.54837pt too wide) in paragraph at lines 694--701
+Overfull \hbox (3.54837pt too wide) in paragraph at lines 736--743
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Code, per-cell out-puts, tests and of-fli
 ne re-analysis (Ap-pen-dices A--
 
-Underfull \hbox (badness 1112) in paragraph at lines 721--721
+Underfull \hbox (badness 1112) in paragraph at lines 763--763
 \T1/LinuxLibertineT-TLF/b/n/9 (+20) agent chain, no de-fence, 40 nat-u-ral runs
  per or-der-ing,
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Overfull \hbox (7.8536pt too wide) in paragraph at lines 788--791
+[6.6]
+Overfull \hbox (7.8536pt too wide) in paragraph at lines 830--833
  []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Tool and ver-sion.[] \T1/LinuxLibertine
 T-TLF/b/n/9 (-20) DeepSeek V4.1 Flash\T1/LinuxLibertineT-TLF/m/n/9 (-20) , used
  in-ter-ac-tively through
-[6.6]
-Underfull \hbox (badness 10000) in paragraph at lines 856--856
-[]\T1/LinuxLibertineT-TLF/b/n/9 (+20) Table 12: |Re-con-ver-gent DAG (\T1/zi4/b
+
+Underfull \hbox (badness 10000) in paragraph at lines 898--898
+[]\T1/LinuxLibertineT-TLF/b/n/9 (+20) Table 13: |Re-con-ver-gent DAG (\T1/zi4/b
 /n/9 a0$\LMS/ntxsy/m/n/9 !$\T1/zi4/b/n/9 a1$\LMS/ntxsy/m/n/9 !$\T1/LinuxLiberti
 neT-TLF/b/n/9 (+20) {\T1/zi4/b/n/9 a2\T1/LinuxLibertineT-TLF/b/n/9 (+20) ,\T1/z
 i4/b/n/9 a3\T1/LinuxLibertineT-TLF/b/n/9 (+20) }$\LMS/ntxsy/m/n/9 !$\T1/zi4/b/n
 /9 a4\T1/LinuxLibertineT-TLF/b/n/9 (+20) ,
 
-Underfull \hbox (badness 3219) in paragraph at lines 856--856
+Underfull \hbox (badness 3219) in paragraph at lines 898--898
 \T1/zi4/b/n/9 qwen2.5:7b\T1/LinuxLibertineT-TLF/b/n/9 (+20) , 40 nat-u-ral runs
 , 30 re-plays per arm and
 
-Underfull \hbox (badness 2875) in paragraph at lines 856--856
+Underfull \hbox (badness 2875) in paragraph at lines 898--898
 \T1/LinuxLibertineT-TLF/b/n/9 (+20) edge). Top: per-edge in-chain ver-sus iso-l
 ated sur-vival.
 
-Underfull \hbox (badness 2088) in paragraph at lines 856--856
+Underfull \hbox (badness 2088) in paragraph at lines 898--898
 \T1/LinuxLibertineT-TLF/b/n/9 (+20) chain prod-uct, un-der the per-co-la-tion r
 e-cur-rence from
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Underfull \vbox (badness 2698) has occurred while \output is active [7.7]
-Overfull \hbox (3.34462pt too wide) in paragraph at lines 940--950
+[7.7]
+Overfull \hbox (3.34462pt too wide) in paragraph at lines 982--992
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) cell re-sult files that are in-cluded: per-
 cell sum-maries (\T1/zi4/m/n/9 results.json\T1/LinuxLibertineT-TLF/m/n/9 (-20) 
 ),
 
-Overfull \hbox (27.91849pt too wide) in paragraph at lines 982--988
+Overfull \hbox (27.91849pt too wide) in paragraph at lines 1024--1030
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) F4B8/$[], with the machine-readable in-ven-
 tory at \T1/zi4/m/n/9 artifacts/MANIFEST.json
 
@@ -262,11 +247,13 @@ Class aamas Warning: CCS concepts are mandatory for papers over two pages.
 Package balance Warning: You have called \balance in second column
 (balance)                Columns might not be balanced.
 
-
+[8.8]
+Overfull \vbox (16.5pt too high) has occurred while \output is active
+Overfull \vbox (18.624pt too high) has occurred while \output is active
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
 f)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def)
- [8.8] (supplementary.aux) )
+ [9.9] (supplementary.aux) )
 (\end occurred when \ifx on line 17 was incomplete)
 (see the transcript file for additional information)<C:/Users/ASUS/AppData/Loca
 l/Programs/MiKTeX/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb><C:/Users
@@ -288,5 +275,5 @@ s/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb><C:/U
 sers/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/
 Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C
 :/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on supplementary.pdf (8 pages, 675415 bytes).
+Output written on supplementary.pdf (9 pages, 679196 bytes).
 Transcript written on supplementary.log.

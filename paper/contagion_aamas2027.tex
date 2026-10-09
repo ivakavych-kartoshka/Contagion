@@ -933,17 +933,16 @@ marginals but not from in-chain ones (\suppref{app:reconvergent}).
 \label{sec:cyclic}
 
 Section~\ref{sec:threshold} shows the threshold criterion vacuous for acyclic graphs
-and informative only once the interaction graph contains a cycle. We test that second
-half on a manager-with-reporting-workers pattern: the spectral radius reduces to
-$\rho(M) = \sqrt{\sum_j a_j c_j}$, yielding \emph{opposite} mean-field predictions
-borne out by measurement---the Llama and DeepSeek loops are supercritical
-($\sum_j a_jc_j = 1.800$ and $1.018$) while qwen's decays ($0.578$;
-\suppref{app:cyclic}). We report this as a mean-field prediction on three loops rather than a
-design rule: the sum counts expected two-step paths, whereas the manager is
-re-compromised at most once per round, so the exact finite-state prediction is
-$1 - \prod_j (1 - a_j c_j) < 1$ even above criticality, and the $1.018$ loop sits close
-enough to it that its verdict should be read with the measured dynamics rather than
-from the point estimate.
+and informative only once the interaction graph contains a cycle. On a
+manager-with-reporting-workers pattern the spectral radius reduces to
+$\rho(M) = \sqrt{\sum_j a_j c_j}$, whose sign separates the models---Llama and DeepSeek
+are supercritical ($1.800$, $1.018$), qwen decays ($0.578$; \suppref{app:cyclic})---but
+we read the criterion as directional only: the exact finite chain built from the same
+measured rates \emph{fails} to reproduce the per-round manager rates, by $+0.289$,
+$-0.239$ and $-0.602$ on the last round of each loop, with the error's sign differing
+across models. The diagnostic is the one the content-form ablation reaches for the
+chain---a binary per-round state is not sufficient---so we report the loop as a
+mean-field prediction our finite-state formulation falsifies, not as a design rule.
 
 \subsection{Utility, power and multiplicity}
 \label{sec:utility}

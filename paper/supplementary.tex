@@ -304,17 +304,59 @@ qwen2.5:7b    & $0.578$ & $0.760$ & $0.000$ & subcritical \\
 \end{tabular}
 \end{table}
 
-The measured dynamics follow. On Llama the recurrent manager is re-compromised by
-its own workers' reports in $0.725$ $[0.572, 0.839]$ of runs and does not die out:
-at round five it is still compromised in $0.700$ of runs with the workers near
-saturation ($0.925$, $0.975$), as $\rho > 1$ predicts; extending the same loop to
-eight rounds leaves it endemic (manager $0.583$, workers $0.900$). DeepSeek, whose
-$\sum_j a_jc_j = 1.018$ sits just above criticality, behaves the same way over eight
-rounds---the manager settles at $0.567$ with workers at $0.767$ and $0.700$ rather
-than decaying---so the recurrent verdict is not a single-model artefact. On qwen the
-same loop decays: the manager's re-compromise rate falls from $0.775$
-$[0.625, 0.877]$ to $0.650$ and the workers plateau ($0.475$, $0.525$). One
-criterion, opposite predictions, all borne out.
+The measured dynamics follow in \emph{direction}: on Llama the recurrent manager is
+re-compromised by its own workers' reports in $0.725$ $[0.572, 0.839]$ of runs and does
+not die out---at round five it is still compromised in $0.700$ of runs with the workers
+near saturation ($0.925$, $0.975$); extending the loop to eight rounds leaves it endemic
+(manager $0.583$, workers $0.900$). DeepSeek, whose $\sum_j a_jc_j = 1.018$ sits just
+above criticality, behaves the same way---the manager settles at $0.567$ with workers at
+$0.767$ and $0.700$ rather than decaying---so the recurrent verdict is not a
+single-model artefact. On qwen the same loop decays: the manager's re-compromise rate
+falls from $0.775$ $[0.625, 0.877]$ to $0.650$ and the workers plateau ($0.475$,
+$0.525$).
+
+\paragraph{The exact finite chain does not reproduce those rates.} The mean-field
+comparison above says only which side of criticality a loop is on, and we do not read it
+as a model of the per-round process. Building the exact finite chain instead---with
+$w$ workers, the manager compromised by at least one returning report, and workers able
+to be compromised only through the manager---gives
+$m_{k+1} = 1 - \prod_j (1 - a_j c_j m_k)$, which is strictly below one at every round
+even when $\sum_j a_jc_j > 1$. Table~\ref{tab:cyclic-markov} compares that prediction
+with the observed manager rate round by round.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Exact finite-state chain versus the observed manager compromise rate per
+round. Prediction uses the measured $a_j$ (worker compromised given manager) and $c_j$
+(manager re-compromised given worker) of the same run, under independence across
+workers. $w = 2$ for all three loops.}
+\vspace{4pt}
+\label{tab:cyclic-markov}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccc}
+\toprule
+\textit{model} & \textit{$\sum a_jc_j$} & \textit{rounds} & \textit{predicted (last)}
+& \textit{observed (last)} & \textit{gap} \\
+\midrule
+Llama 3.3 70B & $1.800$ & $5$ & $0.989$ & $0.700$ & $+0.289$ \\
+DeepSeek V3.2 & $1.018$ & $8$ & $0.327$ & $0.567$ & $-0.239$ \\
+qwen2.5:7b    & $0.578$ & $5$ & $0.048$ & $0.650$ & $-0.602$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The gaps are far outside sampling error (at $n = 40$--$60$ the standard error of an
+observed rate is $\approx 0.06$--$0.08$), and their \emph{sign} differs by model, so the
+discrepancy is not a uniform bias that a single correction would absorb. The
+diagnostic is visible in the round-by-round data: after Llama's manager falls to
+$0.725$, its workers remain at $0.925$ and $0.975$ where the memoryless chain puts them
+at the manager's own rate, and on DeepSeek the workers are compromised \emph{more} often
+inside the loop ($0.767$) than their isolated per-edge rate ($0.650$) implies. Both
+patterns say that a binary per-round state is not sufficient here either---the same
+conclusion the content-form ablation reaches for the chain---so we report the loop as a
+directional mean-field prediction and state explicitly that the finite-chain
+formulation, as written, is falsified by our measurements rather than supported by them.
 
 Two caveats. First, $\rho$ is computed from \emph{isolated} survivals that
 Sections~5.2--5.7 of the main paper show to be unreliable; the Llama and
