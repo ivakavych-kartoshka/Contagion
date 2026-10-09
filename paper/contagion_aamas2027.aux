@@ -15,20 +15,29 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Why the standard summary statistic is not enough.}{1}{section*.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{What we build.}{1}{section*.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Findings, stated as prescriptions.}{1}{section*.7}\protected@file@percent }
 \citation{Perez2022PromptInjection}
 \citation{Zhan2024InjecAgent}
 \citation{Yao2023ReAct}
 \citation{Debenedetti2024AgentDojo}
 \citation{Zhang2025ASB}
-\citation{Schick2023Toolformer,Shinn2023Reflexion}
-\citation{Liu2024AgentBench,Jimenez2024SWEBench,Andriushchenko2025AgentHarm}
+\citation{Schick2023Toolformer,Yao2023ReAct}
+\citation{Liu2024AgentBench,Jimenez2024SWEBench}
+\citation{Andriushchenko2025AgentHarm}
 \citation{LiuGong2024}
 \citation{Greshake2023}
 \citation{Lee2025Infection}
 \citation{An2026ACIARena}
 \citation{Cemri2025MAST}
 \citation{CII2026}
+\citation{Gu2024AgentSmith}
+\citation{Yu2025NetSafe}
+\citation{Wang2025GSafeguard}
+\citation{Huang2025Resilience}
+\@writefile{toc}{\contentsline {paragraph}{Findings, stated as prescriptions.}{2}{section*.7}\protected@file@percent }
+\newlabel{sec:intro-prescriptions}{{1}{2}{Findings, stated as prescriptions}{section*.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work and Positioning}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Single-agent indirect injection.}{2}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Propagation across agents, and the closest prior work.}{2}{section*.9}\protected@file@percent }
 \citation{Zhan2025Adaptive}
 \citation{StrUQ2025}
 \citation{Hines2024CAMLIS}
@@ -41,96 +50,87 @@
 \citation{Centola2010}
 \citation{Kempe2003}
 \citation{SwarmMarkov2026}
+\@writefile{toc}{\contentsline {paragraph}{Defences.}{3}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contagion and thresholds in networks.}{3}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Scope and assumptions}{3}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:theory}{{2.1}{3}{Scope and assumptions}{subsection.2.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Independence and Eq.\nonbreakingspace \eqref  {eq:percolation}.}{3}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Reproduction number $R_0$.}{3}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Parallel paths and defence placement.}{3}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Transportability.}{3}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Outcomes and judge.}{3}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Framework: Measuring Propagation}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Network and threat model}{3}{subsection.3.1}\protected@file@percent }
 \citation{Zhan2024InjecAgent}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work and Positioning}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Single-agent indirect injection.}{2}{section*.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Propagation across agents, and the closest prior work.}{2}{section*.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defences.}{2}{section*.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Contagion and thresholds in networks.}{2}{section*.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Framework: Measuring Propagation}{2}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Network and threat model}{2}{subsection.3.1}\protected@file@percent }
 \citation{LiuGong2024}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Task families}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:setup-families}{{3.2}{4}{Task families}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Compromise judgment}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:judge}{{3.3}{4}{Compromise judgment}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Two independent protocols}{4}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}What the composition question actually is}{4}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:identity}{{3.5}{4}{What the composition question actually is}{subsection.3.5}{}}
+\newlabel{eq:identity}{{1}{4}{What the composition question actually is}{equation.1}{}}
+\newlabel{eq:transport}{{2}{4}{What the composition question actually is}{equation.2}{}}
 \citation{Wilson1927}
 \citation{Brown2001}
 \citation{Efron1979}
 \citation{BH1995}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Task families}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Compromise judgment}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Two independent protocols}{3}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}What the composition question actually is}{3}{subsection.3.5}\protected@file@percent }
-\newlabel{sec:identity}{{3.5}{3}{What the composition question actually is}{subsection.3.5}{}}
-\newlabel{eq:identity}{{1}{3}{What the composition question actually is}{equation.1}{}}
-\newlabel{eq:transport}{{2}{3}{What the composition question actually is}{equation.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Reproduction number and utility}{3}{subsection.3.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Estimators}{3}{subsection.3.7}\protected@file@percent }
 \citation{PastorSatorras2001}
-\citation{Hong2023MetaGPT,Wu2024AutoGen,Du2024MultiagentDebate}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Reproduction number and utility}{5}{subsection.3.6}\protected@file@percent }
+\newlabel{sec:r0}{{3.6}{5}{Reproduction number and utility}{subsection.3.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Estimators}{5}{subsection.3.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Percolation on a feed-forward network, and why $R_0$ is not a safety criterion}{5}{subsection.3.8}\protected@file@percent }
+\newlabel{sec:threshold}{{3.8}{5}{Percolation on a feed-forward network, and why \texorpdfstring {$R_0$}{R0} is not a safety criterion}{subsection.3.8}{}}
+\newlabel{eq:percolation}{{3}{5}{Percolation on a feed-forward network, and why \texorpdfstring {$R_0$}{R0} is not a safety criterion}{equation.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{5}{section.4}\protected@file@percent }
+\newlabel{sec:setup}{{4}{5}{Experimental Setup}{section.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Models.}{5}{section*.17}\protected@file@percent }
+\citation{Hong2023MetaGPT,Wu2024AutoGen}
 \citation{Zhan2025Adaptive,StrUQ2025}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Percolation on a feed-forward network, and why $R_0$ is not a safety criterion}{4}{subsection.3.8}\protected@file@percent }
-\newlabel{sec:threshold}{{3.8}{4}{Percolation on a feed-forward network, and why \texorpdfstring {$R_0$}{R0} is not a safety criterion}{subsection.3.8}{}}
-\newlabel{eq:percolation}{{3}{4}{Percolation on a feed-forward network, and why \texorpdfstring {$R_0$}{R0} is not a safety criterion}{equation.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{4}{section.4}\protected@file@percent }
-\newlabel{sec:setup}{{4}{4}{Experimental Setup}{section.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Models.}{4}{section*.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Agent roles and network wiring.}{4}{section*.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Cells.}{4}{section*.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defences.}{4}{section*.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Estimator validation.}{4}{section*.16}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials per edge. $\bar  s$ is the mean controlled per-edge survival; per-edge order follows the chain. Rows marked $\dagger $ used the fresh-artefact protocol (Section\nonbreakingspace \ref {sec:ablation}).}}{5}{table.caption.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Agent roles and network wiring.}{6}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Cells.}{6}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Defences.}{6}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Estimator validation.}{6}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{6}{section.5}\protected@file@percent }
+\newlabel{sec:results}{{5}{6}{Results}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Per-hop survival varies sharply by position, and susceptibility does not track scale}{6}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:role-position}{{5.1}{6}{Per-hop survival varies sharply by position, and susceptibility does not track scale}{subsection.5.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials per edge. $\bar  s$ is the mean controlled per-edge survival; per-edge order follows the chain. $\dagger $ marks the two rows re-run under the fresh-artefact protocol; the other three predate that policy and use fixed artefacts, so they are protocol-specific (Section\nonbreakingspace \ref {sec:ablation}).}}{6}{table.caption.22}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:cross}{{1}{5}{Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials per edge. $\bar s$ is the mean controlled per-edge survival; per-edge order follows the chain. Rows marked $\dagger $ used the fresh-artefact protocol (Section~\ref {sec:ablation})}{table.caption.17}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged.}}{5}{figure.caption.18}\protected@file@percent }
-\newlabel{fig:role}{{1}{5}{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge). The worker-position edge is an order of magnitude below the reviewer-position edge, and a defence that collapses survival in one chain can leave another essentially unchanged}{figure.caption.18}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{5}{section.5}\protected@file@percent }
-\newlabel{sec:results}{{5}{5}{Results}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Per-hop survival is role-dependent, and susceptibility does not track capability}{5}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The isolated per-hop rate does not transport to the chain}{5}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:transport}{{5.2}{5}{The isolated per-hop rate does not transport to the chain}{subsection.5.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Transportability of the isolated per-hop estimate, per edge and per model; 40 natural runs and 30 controlled trials per edge. \emph  {ratio} is $\ensuremath  {s^{\mathrm  {nat}}}/\ensuremath  {s^{\mathrm  {ctrl}}}$: values near one mean the isolated estimate transports. The final row is measured independently on natural runs and must equal $\DOTSI \prodop \slimits@ $ of the in-chain column.}}{5}{table.caption.19}\protected@file@percent }
-\newlabel{tab:transport}{{2}{5}{Transportability of the isolated per-hop estimate, per edge and per model; 40 natural runs and 30 controlled trials per edge. \emph {ratio} is $\snats /\scites $: values near one mean the isolated estimate transports. The final row is measured independently on natural runs and must equal $\prod $ of the in-chain column}{table.caption.19}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Artefact-policy ablation: controlled per-edge estimates $\ensuremath  {s^{\mathrm  {ctrl}}}$ under a fixed artefact versus a fresh artefact per trial (Llama 3.3 70B and DeepSeek V3.2, chain, 40 natural runs, 30 controlled trials per edge). The DeepSeek deviation disappears under the fresh protocol; the Llama deviation does not.}}{5}{table.caption.20}\protected@file@percent }
-\newlabel{tab:ablation}{{3}{5}{Artefact-policy ablation: controlled per-edge estimates $\scites $ under a fixed artefact versus a fresh artefact per trial (Llama 3.3 70B and DeepSeek V3.2, chain, 40 natural runs, 30 controlled trials per edge). The DeepSeek deviation disappears under the fresh protocol; the Llama deviation does not}{table.caption.20}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Protocol sensitivity: a significant result that did not replicate}{5}{subsection.5.3}\protected@file@percent }
-\newlabel{sec:ablation}{{5.3}{5}{Protocol sensitivity: a significant result that did not replicate}{subsection.5.3}{}}
+\newlabel{tab:cross}{{1}{6}{Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials per edge. $\bar s$ is the mean controlled per-edge survival; per-edge order follows the chain. $\dagger $ marks the two rows re-run under the fresh-artefact protocol; the other three predate that policy and use fixed artefacts, so they are protocol-specific (Section~\ref {sec:ablation})}{table.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-hop survival by receiving role (five-agent chain, Family\nonbreakingspace A, $n = 30$ per edge, Wilson intervals). Under no defence the worker-position edge survives at $0.133$ against $0.867$ at the reviewer position---six-fold spread within one model and attack (a family we do not use for headline rates, Section\nonbreakingspace \ref {sec:setup-families})---whereas semantic paraphrase drives every edge to $0.000$.}}{6}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:role}{{1}{6}{Per-hop survival by receiving role (five-agent chain, Family~A, $n = 30$ per edge, Wilson intervals). Under no defence the worker-position edge survives at $0.133$ against $0.867$ at the reviewer position---six-fold spread within one model and attack (a family we do not use for headline rates, Section~\ref {sec:setup-families})---whereas semantic paraphrase drives every edge to $0.000$}{figure.caption.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The isolated per-hop rate does not transport to the chain}{6}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:transport}{{5.2}{6}{The isolated per-hop rate does not transport to the chain}{subsection.5.2}{}}
 \citation{Zhan2025Adaptive}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Content-form ablation (Llama 3.3 70B, chain of $n = 4$ agents; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference is attributable to payload form alone.}}{6}{table.caption.21}\protected@file@percent }
-\newlabel{tab:form}{{4}{6}{Content-form ablation (Llama 3.3 70B, chain of $n = 4$ agents; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference is attributable to payload form alone}{table.caption.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Why isolation fails: the form of the payload}{6}{subsection.5.4}\protected@file@percent }
-\newlabel{sec:contentform}{{5.4}{6}{Why isolation fails: the form of the payload}{subsection.5.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Defence: redaction blocks literal attacks, and the bypass depends on headroom}{6}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:defence}{{5.5}{6}{Defence: redaction blocks literal attacks, and the bypass depends on headroom}{subsection.5.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Single-hop compromise rate by defence and attack form, one panel per model ($n = 30$ per cell for Claude 4.5, $n = 8$ for DeepSeek, $n = 16$ for qwen; we do not interpret small differences in the $n = 8$ cells). \texttt  {none}$\cdot $split and \texttt  {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise.}}{6}{figure.caption.22}\protected@file@percent }
-\newlabel{fig:obf}{{2}{6}{Single-hop compromise rate by defence and attack form, one panel per model ($n = 30$ per cell for Claude 4.5, $n = 8$ for DeepSeek, $n = 16$ for qwen; we do not interpret small differences in the $n = 8$ cells). \texttt {none}$\cdot $split and \texttt {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise}{figure.caption.22}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology changes the spread of survival, not just the amount}{6}{subsection.5.6}\protected@file@percent }
-\newlabel{sec:topology}{{5.6}{6}{Topology changes the spread of survival, not just the amount}{subsection.5.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Topology at matched agent count (Llama 3.3 70B, $n = 7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome.}}{7}{table.caption.23}\protected@file@percent }
-\newlabel{tab:topo}{{5}{7}{Topology at matched agent count (Llama 3.3 70B, $n = 7$ agents, no defence, 40 natural runs, 30 controlled trials per edge). The three topologies have similar mean per-hop survival but differ substantially in outcome}{table.caption.23}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Shape of the depth profile: relative error of the isolated product, $|\DOTSI \prodop \slimits@ _i \ensuremath  {s^{\mathrm  {ctrl}}_{i}} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry. \emph  {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph  {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined.}}{7}{table.caption.24}\protected@file@percent }
-\newlabel{tab:depth}{{6}{7}{Shape of the depth profile: relative error of the isolated product, $|\prod _i \scite {i} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry. \emph {range} is min--max over informative depths; $\rho $ is Spearman's rank correlation between depth and error, \emph {slope} its OLS trend in percentage points per hop. On Llama the chain dies at depth $11$, so the last four depths are undefined}{table.caption.24}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}The shape of the depth profile is a diagnostic}{7}{subsection.5.7}\protected@file@percent }
-\newlabel{sec:depth}{{5.7}{7}{The shape of the depth profile is a diagnostic}{subsection.5.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Utility under attack, 20 paired clean/attack runs. Retention $= U_{\mathrm  {attack}}/U_{\mathrm  {clean}}$; $\Delta U$ is the clean--attack gap.}}{7}{table.caption.25}\protected@file@percent }
-\newlabel{tab:utility}{{7}{7}{Utility under attack, 20 paired clean/attack runs. Retention $= U_{\mathrm {attack}}/U_{\mathrm {clean}}$; $\Delta U$ is the clean--attack gap}{table.caption.25}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Recurrence makes the threshold non-vacuous}{7}{subsection.5.8}\protected@file@percent }
-\newlabel{sec:cyclic}{{5.8}{7}{Recurrence makes the threshold non-vacuous}{subsection.5.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Utility under attack}{7}{subsection.5.9}\protected@file@percent }
-\newlabel{sec:utility}{{5.9}{7}{Utility under attack}{subsection.5.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Estimator validation}{7}{subsection.5.10}\protected@file@percent }
-\newlabel{sec:validation}{{5.10}{7}{Estimator validation}{subsection.5.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{7}{section.6}\protected@file@percent }
-\newlabel{sec:discussion}{{6}{7}{Discussion}{section.6}{}}
-\citation{StrUQ2025}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Transportability of the isolated per-hop estimate, per edge and per model; 40 natural runs and 30 controlled trials per edge. \emph  {ratio} is $\ensuremath  {s^{\mathrm  {nat}}}/\ensuremath  {s^{\mathrm  {ctrl}}}$: values near one mean the isolated estimate transports. The final row is measured independently on natural runs and must equal $\DOTSI \prodop \slimits@ $ of the in-chain column.}}{7}{table.caption.24}\protected@file@percent }
+\newlabel{tab:transport}{{2}{7}{Transportability of the isolated per-hop estimate, per edge and per model; 40 natural runs and 30 controlled trials per edge. \emph {ratio} is $\snats /\scites $: values near one mean the isolated estimate transports. The final row is measured independently on natural runs and must equal $\prod $ of the in-chain column}{table.caption.24}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Artefact-policy ablation: controlled per-edge estimates $\ensuremath  {s^{\mathrm  {ctrl}}}$ under a fixed artefact versus a fresh artefact per trial (Llama 3.3 70B and DeepSeek V3.2, chain, 40 natural runs, 30 controlled trials per edge). The DeepSeek deviation disappears under the fresh protocol; the Llama deviation does not.}}{7}{table.caption.25}\protected@file@percent }
+\newlabel{tab:ablation}{{3}{7}{Artefact-policy ablation: controlled per-edge estimates $\scites $ under a fixed artefact versus a fresh artefact per trial (Llama 3.3 70B and DeepSeek V3.2, chain, 40 natural runs, 30 controlled trials per edge). The DeepSeek deviation disappears under the fresh protocol; the Llama deviation does not}{table.caption.25}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Protocol sensitivity: a significant result that did not replicate}{7}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:ablation}{{5.3}{7}{Protocol sensitivity: a significant result that did not replicate}{subsection.5.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Content-form ablation (Llama 3.3 70B, chain of $n = 4$ agents; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference is attributable to payload form alone.}}{7}{table.caption.26}\protected@file@percent }
+\newlabel{tab:form}{{4}{7}{Content-form ablation (Llama 3.3 70B, chain of $n = 4$ agents; 40 natural runs, 30 replays per arm and edge). Both replay arms use the same receivers, assignments and judge, so the difference is attributable to payload form alone}{table.caption.26}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Why isolation fails: the form of the payload}{7}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:contentform}{{5.4}{7}{Why isolation fails: the form of the payload}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Defence: redaction blocks literal attacks, and the bypass depends on headroom}{7}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:defence}{{5.5}{7}{Defence: redaction blocks literal attacks, and the bypass depends on headroom}{subsection.5.5}{}}
 \bibstyle{ACM-Reference-Format}
 \bibdata{refs}
 \bibcite{CII2026}{{1}{2026}{{Abdellah and Aziz}}{{}}}
-\@writefile{toc}{\contentsline {paragraph}{Composition is safe once transportability is checked.}{8}{section*.26}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Defence evaluation requires headroom.}{8}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Graph structure decides placement, not per-hop survival.}{8}{section*.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Scope.}{8}{section*.29}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Limitations and Threats to Validity}{8}{section.7}\protected@file@percent }
-\newlabel{sec:limits}{{7}{8}{Limitations and Threats to Validity}{section.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{8}{section.8}\protected@file@percent }
-\newlabel{sec:conclusion}{{8}{8}{Conclusion}{section.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Single-hop compromise rate by defence and attack form, one panel per model ($n = 30$ per cell for Claude 4.5, $n = 8$ for DeepSeek, $n = 16$ for qwen; we do not interpret small differences in the $n = 8$ cells). \texttt  {none}$\cdot $split and \texttt  {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise.}}{8}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:obf}{{2}{8}{Single-hop compromise rate by defence and attack form, one panel per model ($n = 30$ per cell for Claude 4.5, $n = 8$ for DeepSeek, $n = 16$ for qwen; we do not interpret small differences in the $n = 8$ cells). \texttt {none}$\cdot $split and \texttt {redact}$\cdot $split measure the same quantity by construction, so the gap between them gauges our own noise}{figure.caption.27}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Topology and depth}{8}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:topology}{{5.6}{8}{Topology and depth}{subsection.5.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Recurrence makes the threshold non-vacuous}{8}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:cyclic}{{5.7}{8}{Recurrence makes the threshold non-vacuous}{subsection.5.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Utility, power and multiplicity}{8}{subsection.5.8}\protected@file@percent }
+\newlabel{sec:utility}{{5.8}{8}{Utility, power and multiplicity}{subsection.5.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Limitations and Threats to Validity}{8}{section.6}\protected@file@percent }
+\newlabel{sec:limits}{{6}{8}{Limitations and Threats to Validity}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{8}{section.7}\protected@file@percent }
+\newlabel{sec:conclusion}{{7}{8}{Conclusion}{section.7}{}}
 \bibcite{Albert2000ErrorTolerance}{{2}{2000}{{Albert et~al\mbox  {.}}}{{}}}
 \bibcite{An2026ACIARena}{{3}{2026}{{An et~al\mbox  {.}}}{{}}}
 \bibcite{Andriushchenko2025AgentHarm}{{4}{2025}{{Andriushchenko et~al\mbox  {.}}}{{}}}
@@ -142,33 +142,36 @@
 \bibcite{Chen2024AgentVerse}{{10}{2024}{{Chen et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2026CaMeL}{{11}{2026}{{Debenedetti et~al\mbox  {.}}}{{}}}
 \bibcite{Debenedetti2024AgentDojo}{{12}{2024}{{Debenedetti et~al\mbox  {.}}}{{}}}
-\bibcite{Du2024MultiagentDebate}{{13}{2024}{{Du et~al\mbox  {.}}}{{}}}
-\bibcite{Efron1979}{{14}{1979}{{Efron}}{{}}}
-\bibcite{Granovetter1978}{{15}{1978}{{Granovetter}}{{}}}
-\bibcite{Greshake2023}{{16}{2023}{{Greshake et~al\mbox  {.}}}{{}}}
+\bibcite{Efron1979}{{13}{1979}{{Efron}}{{}}}
+\bibcite{Granovetter1978}{{14}{1978}{{Granovetter}}{{}}}
+\bibcite{Greshake2023}{{15}{2023}{{Greshake et~al\mbox  {.}}}{{}}}
+\bibcite{Gu2024AgentSmith}{{16}{2024}{{Gu et~al\mbox  {.}}}{{}}}
 \bibcite{Hines2024CAMLIS}{{17}{2024}{{Hines et~al\mbox  {.}}}{{}}}
 \bibcite{Hong2023MetaGPT}{{18}{2024}{{Hong et~al\mbox  {.}}}{{}}}
-\bibcite{Jimenez2024SWEBench}{{19}{2024}{{Jimenez et~al\mbox  {.}}}{{}}}
-\bibcite{KeelingEames2005}{{20}{2005}{{Keeling and Eames}}{{}}}
-\bibcite{Kempe2003}{{21}{2003}{{Kempe et~al\mbox  {.}}}{{}}}
-\bibcite{KermackMcKendrick1927}{{22}{1927}{{Kermack and McKendrick}}{{}}}
-\bibcite{SwarmMarkov2026}{{23}{2026}{{Le et~al\mbox  {.}}}{{}}}
-\bibcite{Lee2025Infection}{{24}{2026}{{Lee et~al\mbox  {.}}}{{}}}
-\bibcite{Liu2024AgentBench}{{25}{2024b}{{Liu et~al\mbox  {.}}}{{}}}
-\bibcite{LiuGong2024}{{26}{2024a}{{Liu et~al\mbox  {.}}}{{}}}
-\bibcite{Newman2002}{{27}{2002}{{Newman}}{{}}}
-\bibcite{PastorSatorras2001}{{28}{2001}{{Pastor-Satorras and Vespignani}}{{}}}
-\bibcite{Perez2022PromptInjection}{{29}{2022}{{P{\'{e}}rez and Ribeiro}}{{}}}
-\bibcite{Schick2023Toolformer}{{30}{2023}{{Schick et~al\mbox  {.}}}{{}}}
-\bibcite{Shinn2023Reflexion}{{31}{2023}{{Shinn et~al\mbox  {.}}}{{}}}
-\bibcite{Watts2002}{{32}{2002}{{Watts}}{{}}}
-\bibcite{WattsStrogatz1998}{{33}{1998}{{Watts and Strogatz}}{{}}}
-\bibcite{Wilson1927}{{34}{1927}{{Wilson}}{{}}}
-\bibcite{Wu2024AutoGen}{{35}{2024}{{Wu et~al\mbox  {.}}}{{}}}
-\bibcite{Yao2023ReAct}{{36}{2023}{{Yao et~al\mbox  {.}}}{{}}}
-\bibcite{Zhan2025Adaptive}{{37}{2025}{{Zhan et~al\mbox  {.}}}{{}}}
-\bibcite{Zhan2024InjecAgent}{{38}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
-\bibcite{Zhang2025ASB}{{39}{2025}{{Zhang et~al\mbox  {.}}}{{}}}
+\bibcite{Huang2025Resilience}{{19}{2025}{{Huang et~al\mbox  {.}}}{{}}}
+\bibcite{Jimenez2024SWEBench}{{20}{2024}{{Jimenez et~al\mbox  {.}}}{{}}}
+\bibcite{KeelingEames2005}{{21}{2005}{{Keeling and Eames}}{{}}}
+\bibcite{Kempe2003}{{22}{2003}{{Kempe et~al\mbox  {.}}}{{}}}
+\bibcite{KermackMcKendrick1927}{{23}{1927}{{Kermack and McKendrick}}{{}}}
+\bibcite{SwarmMarkov2026}{{24}{2026}{{Le et~al\mbox  {.}}}{{}}}
+\bibcite{Lee2025Infection}{{25}{2026}{{Lee et~al\mbox  {.}}}{{}}}
+\bibcite{Liu2024AgentBench}{{26}{2024b}{{Liu et~al\mbox  {.}}}{{}}}
+\bibcite{LiuGong2024}{{27}{2024a}{{Liu et~al\mbox  {.}}}{{}}}
+\bibcite{Newman2002}{{28}{2002}{{Newman}}{{}}}
+\bibcite{PastorSatorras2001}{{29}{2001}{{Pastor-Satorras and Vespignani}}{{}}}
+\bibcite{Perez2022PromptInjection}{{30}{2022}{{P{\'{e}}rez and Ribeiro}}{{}}}
+\bibcite{Schick2023Toolformer}{{31}{2023}{{Schick et~al\mbox  {.}}}{{}}}
+\bibcite{Wang2025GSafeguard}{{32}{2025}{{Wang et~al\mbox  {.}}}{{}}}
+\bibcite{Watts2002}{{33}{2002}{{Watts}}{{}}}
+\bibcite{WattsStrogatz1998}{{34}{1998}{{Watts and Strogatz}}{{}}}
+\bibcite{Wilson1927}{{35}{1927}{{Wilson}}{{}}}
+\bibcite{Wu2024AutoGen}{{36}{2024}{{Wu et~al\mbox  {.}}}{{}}}
+\bibcite{Yao2023ReAct}{{37}{2023}{{Yao et~al\mbox  {.}}}{{}}}
+\bibcite{Yu2025NetSafe}{{38}{2025}{{Yu et~al\mbox  {.}}}{{}}}
+\bibcite{Zhan2025Adaptive}{{39}{2025}{{Zhan et~al\mbox  {.}}}{{}}}
+\@writefile{toc}{\contentsline {section}{References}{9}{section*.29}\protected@file@percent }
+\bibcite{Zhan2024InjecAgent}{{40}{2024}{{Zhan et~al\mbox  {.}}}{{}}}
+\bibcite{Zhang2025ASB}{{41}{2025}{{Zhang et~al\mbox  {.}}}{{}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{4.185pt}
@@ -176,6 +179,5 @@
 \newlabel{tocindent3}{0pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\@writefile{toc}{\contentsline {section}{References}{9}{section*.33}\protected@file@percent }
-\newlabel{TotPages}{{9}{9}{}{page.9}{}}
-\gdef \@abspage@last{9}
+\newlabel{TotPages}{{10}{10}{}{page.10}{}}
+\gdef \@abspage@last{10}

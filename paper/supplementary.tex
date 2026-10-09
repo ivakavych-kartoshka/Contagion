@@ -3,48 +3,108 @@
 %  "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks
 %   Does (and Does Not) Compose"
 %
-%  Chứa Appendices A-D được tham chiếu từ bài chính.
+%  Chứa các Appendix được tham chiếu từ bài chính (A--M).
 %  Biên dịch:  pdflatex supplementary.tex   (chạy 2 lần)
+%
+%  ĐỊNH DẠNG: dùng ĐÚNG template AAMAS-2027 (aamas.cls, sigconf, anonymous) ⇒
+%  hai cột, cùng font/layout với bài chính. KHÔNG sửa tham số layout nào.
 %
 %  LƯU Ý: file này KHÔNG dùng \ref tới file chính (không phụ thuộc .aux của bài
 %  chính). Mọi tham chiếu tới bài chính đều ghi thẳng số mục, ví dụ
 %  "Section 3.8 of the main paper".
 % =====================================================================
-\documentclass[11pt,a4paper]{article}
+\documentclass[sigconf,anonymous]{aamas}
 
-\usepackage{amsmath,amssymb}
-\usepackage{booktabs}
-\usepackage{graphicx}
-\usepackage[margin=2.4cm]{geometry}
-\usepackage[hidelinks]{hyperref}
+% Khối copyright bắt buộc của AAMAS-2027 (giống hệt bài chính).
+\makeatletter
+\gdef\@copyrightpermission{
+  \begin{minipage}{0.2\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{by}}
+  \end{minipage}\hfill
+  \begin{minipage}{0.8\columnwidth}
+   \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+  \end{minipage}
+  \vspace{5pt}
+}
+\makeatother
 
-\title{\vspace{-1.5cm}\textbf{Supplementary Material}\\[0.4em]
-\large Contagion: When Per-Hop Prompt-Injection Survival in\\ LLM Agent Networks Does (and Does Not) Compose}
+\setcopyright{ifaamas}
+\acmConference[AAMAS 2027]{Proc.\@ of the 26th International Conference
+on Autonomous Agents and Multiagent Systems (AAMAS 2027)}{3--7 May 2027}{Hanoi, Vietnam}{M.~Baldoni, F.~Fang, W.~Yeoh, N.~Yorke-Smith (eds.)}
+\copyrightyear{2027}
+\acmYear{2027}
+\acmDOI{}
+\acmISBN{}
+\acmSubmissionID{2419}
+\submissionType{Research Paper Track}
+
+% \ind là macro của bài chính (indicator function); phụ lục không \input bài chính
+% nên phải định nghĩa lại, nếu không sẽ lỗi "Undefined control sequence".
+\newcommand{\ind}{\mathbf{1}}
+% Các macro ký hiệu dùng trong bài chính, cũng phải định nghĩa lại ở đây.
+\newcommand{\scite}[1]{\ensuremath{s^{\mathrm{ctrl}}_{#1}}}
+\newcommand{\snat}[1]{\ensuremath{s^{\mathrm{nat}}_{#1}}}
+\newcommand{\scites}{\ensuremath{s^{\mathrm{ctrl}}}}
+\newcommand{\snats}{\ensuremath{s^{\mathrm{nat}}}}
+
+\title[Supplementary Material]{Supplementary Material for\\ ``Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose''}
+
 \author{Anonymous Author(s)}
-\date{}
+\affiliation{
+  \institution{Anonymous Institution}
+  \city{Anonymous City}
+  \country{Anonymous Country}}
+\email{anonymous@example.org}
+
+\begin{abstract}
+This supplement supports the main paper with appendices on multiplicity control
+and the clustered interval on the weak edge (A--B), threshold sensitivity (C),
+the theory assumptions behind the percolation form and the reproduction number (D),
+the recurrent case (E), the calibration, scope and failure modes of the compromise
+judge together with the adjudication of a labelled subset (F), utilities and
+estimator validation (G), the practical implications and the full limitations (H--I),
+the depth-profile table (J), ethical and artifact statements (K), the disclosure of
+AI-assisted technologies (L), and replication details (M). Table and appendix numbers
+here are independent of the main paper; references to the main paper are given by
+section number in words.
+\end{abstract}
+
+\keywords{Prompt injection, LLM agent networks, measurement validity, reproducibility}
+
+% ---------------------------------------------------------------------
+% ĐÁNH SỐ PHỤ LỤC BẰNG CHỮ CÁI (A, B, C...)
+% ``aamas.cls`` kế thừa ``amsart``, KHÔNG có \appendix, nên mặc định section được
+% đánh số 1, 2, 3... Bài chính lại trỏ tới phụ lục bằng chữ cái (Appendix A--O).
+% Ta đặt lại bộ đếm để section ở đây hiện A, B, C... và \ref cũng trả về chữ cái.
+% Không đụng tới style/margin/font size (không vi phạm quy định layout).
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\sectionname}{Appendix}
+\makeatletter
+\renewcommand{\@seccntformat}[1]{\sectionname~\csname the#1\endcsname.\quad}
+\makeatother
 
 \begin{document}
 \maketitle
-\vspace{-1.2cm}
-
-
-
-\appendix
 
 % =====================================================================
 \section{Multiplicity Control for the Composition Test}
 \label{app:bh}
 
 Table~\ref{tab:bh} applies a Benjamini--Hochberg correction to the composition
-tests of Section~3.7 of the main paper, using the \emph{default fresh-artefact
-protocol} for every cell at the common $n = 40$ grid. Only the Llama cell rejects
-$H_0$; it survives the correction at $q = 0.05$, while the four remaining
+tests of Section~5.9 of the main paper at the common $n = 40$ grid. Only the Llama
+cell rejects $H_0$; it survives the correction at $q = 0.05$, while the four remaining
 non-degenerate cells---including DeepSeek, whose fixed-artefact deviation is a
 protocol artefact that disappears under the fresh protocol (Section~5.3 of the main
-paper)---stay non-significant. The Claude cell is degenerate
+paper)---stay non-significant. The correction inherits the protocol mix of the
+cross-model table: the Llama and DeepSeek rows were re-run with fresh artefacts while
+the qwen, Nova and Claude rows predate that policy (Table~1 of the main paper), so the
+five $p$-values are not all computed under identical artefact sampling and a
+fresh-artefact replicate of the latter three would be the clean version of this
+table. The Claude cell is degenerate
 ($\mathrm{ASR} = \prod_i \hat s_i = 0$, $\mathrm{sd}(\Delta) = 0$) and is excluded
 from the correction. At the higher $n = 200$ resolution the Nova cell also crosses
-into rejection (Section~5.10 of the main paper); we keep the correction at the
+into rejection (Section~5.9 of the main paper); we keep the correction at the
 common $n = 40$ grid so the five cells are compared at equal power.
 
 \begin{table}[h]
@@ -52,7 +112,7 @@ common $n = 40$ grid so the five cells are compared at equal power.
 \centering
 \caption{Benjamini--Hochberg over the $m = 5$ non-degenerate chain cells
 (fresh-artefact protocol). $p$-values are the bootstrap two-sided values from
-Section~3.7 of the main paper. Only the Llama rejection survives.}
+Section~5.9 of the main paper. Only the Llama rejection survives.}
 \vspace{10pt} % <--- Đã sửa thành 10pt
 \label{tab:bh}
 \begin{tabular}{clcc}
@@ -72,16 +132,21 @@ Section~3.7 of the main paper. Only the Llama rejection survives.}
 \section{Context-Clustered Interval on the Weak Edge}
 \label{app:cluster}
 
-Section~5.10 of the main paper reports that a homogeneity test rejects exchangeability
-across benign task contexts on the weak Llama edge. Because that violates the
-i.i.d.\ assumption behind Wilson intervals, we recompute the edge rate with a
-cluster bootstrap that resamples \emph{repeats} (seed replications), not individual
-trials. At a fixed temperature ($T = 0.7$, six repeats of twenty trials) the two
+The main paper's power and multiplicity paragraph reports that a homogeneity test
+rejects exchangeability across benign task contexts on the weak Llama edge. Because
+that violates the i.i.d.\ assumption behind Wilson intervals, we recompute the edge
+rate with a cluster bootstrap that resamples \emph{repeats} (seed replications), not
+individual trials. The test is the Pearson statistic on the
+per-context counts ($18/56$, $3/56$, $13/48$ at $T = 0.7$, so $n = 160$ across three
+contexts): $\chi^2 = 13.40$ on $\mathrm{df} = 2$, with the tail evaluated by the
+Wilson--Hilferty approximation used throughout the code, $p = 0.0014$ (the exact
+$\chi^2_2$ tail gives $0.0012$; the difference does not affect any conclusion). At a fixed
+temperature ($T = 0.7$, six repeats of twenty trials) the two
 intervals nearly coincide (Table~\ref{tab:cluster}): the design-effect widening is
 $0.99\times$, so within a temperature the Wilson interval is well calibrated. The
-overdispersion $\varphi = 2.93$ reported in Section~4 of the main paper is a
-\emph{cross-temperature} artefact---temperature is a deliberate systematic factor,
-not trial noise---which is why we compute $\varphi$ within a temperature.
+overdispersion $\varphi = 2.93$ is a \emph{cross-temperature} artefact---temperature
+is a deliberate systematic factor, not trial noise---which is why we compute
+$\varphi$ within a temperature.
 
 \begin{table}[h]
 \small
@@ -110,18 +175,21 @@ single-hop obfuscation cells (Claude, $n = 30$ per cell) at
 $\tau \in \{0.7, 0.8, 0.9, 1.0\}$ directly from the stored ASV scores---a
 deterministic re-thresholding, no new model calls. The compromise rate is
 \emph{invariant} across $\tau$ in every cell (Table~\ref{tab:tau}): the no-defence
-baseline stays at $0.17$ and redaction at $0.00$ regardless of the threshold. The
+baseline stays at $0.17$ and redaction at $0.00$ regardless of the threshold. Note
+that $0.17$ is the \emph{single-hop} no-defence rate for this model and cell; the
+end-to-end chain rate quoted in the main paper's headroom discussion is $0.10$, a
+different quantity with a different denominator, and the two are not
+interchangeable. The
 reason is that the ASV distribution is bimodal---of $180$ trials, $158$ score $0.0$
 and $14$ score $1.0$; the only eight intermediate trials all score $\le 0.667$, i.e.\
 below the lowest threshold tested. The floor effect is therefore a property of the
 model, not of where the judge's cut is placed.
 
 \begin{table}[h]
-\small
+\scriptsize
 \centering
 \caption{Single-hop compromise rate versus $\tau_{\mathrm{ASV}}$ (Claude, $n = 30$
 per cell), re-scored offline from stored ASV. Rates are threshold-invariant.}
-\vspace{10pt} % <--- Đã sửa thành 10pt (Bảng 3 trong hình)
 \label{tab:tau}
 \begin{tabular}{llcccc}
 \toprule
@@ -139,12 +207,60 @@ redact & split-word & $0.00$ & $0.00$ & $0.00$ & $0.00$ \\
 \end{table}
 
 % =====================================================================
+\section{Theory Assumptions: Independence, Correlation, and $R_0$}
+\label{app:theory-assumptions}
+
+This appendix clarifies the theoretical assumptions invoked in Section 3.8 of the
+main paper.
+
+\paragraph{Product-of-complements and correlation.} The percolation recurrence
+\[
+\Pr[v] = 1 - \prod_{u \to v}\!\bigl(1 - s_{u\to v}\,\Pr[u]\bigr)
+\]
+assumes \emph{edge activations} (and the corresponding parent-reach events relevant to the
+product form) are conditionally independent given the graph structure. When multiple
+parents $u_1,\ldots,u_k$ of $v$ share a common ancestor, the events $\{\Pr[u_i]\}$ may be
+correlated, so $\Pr[\bigwedge_i (\text{not reached via }u_i)] \neq \prod_i (1 - s_{u_i\to v}\Pr[u_i])$
+in general. For the specific topologies evaluated in this work (chains, trees, star,
+and the small manager/worker loop), we do not rely on that product form across shared
+ancestors; where we use it, we treat it as the marginal approximation under the stated
+conditions or restrict claims to graph classes where the independence holds. For
+arbitrary DAGs with shared ancestors, a path-based (inclusion--exclusion) formulation
+or explicit correlation modelling is required.
+
+\paragraph{$R_0$ definition and scope.} For strictly acyclic (feed-forward) graphs, the
+standard linearized next-generation matrix $M$ with $M_{uv}=s_{u\to v}$ is strictly
+triangular in a topological ordering, hence $\rho(M)=0$. This is a structural property of
+acyclicity, not an empirical safety guarantee. We therefore report $R_0$ as a
+\emph{descriptive, finite-horizon} reproduction statistic: specifically, we define
+$R_0$ as the mean number of newly compromised neighbours produced per compromised agent
+instance over the observed finite horizon (generation convention as stated in
+Section 4.2 of the main paper), with its denominator clearly specified. We do not
+interpret $\rho(M)<1$ as a threshold for safety on finite acyclic graphs; reachability
+is given by the percolation (Eq.~3 in the main paper), not by $R_0$ alone.
+
+\paragraph{Parallel paths and defence placement.} Hardening a single node is not
+equally effective when there exist multiple $s$-$t$ paths: effectiveness depends on
+whether that node lies on all paths (a cut). For unique-path graphs the effect is
+path-specific; we do not generalise equal effectiveness to multi-path DAGs. Placement
+claims are limited to the graph classes we evaluate.
+
+\paragraph{Transportability and product composition.} The chain identity
+$\mathrm{ASR}=\prod_i s_i^{\mathrm{nat}}$ is algebraic given the Markov/chain
+structure. However, composing \emph{isolated} per-edge estimates $s^{\mathrm{ctrl}}$
+requires that $s^{\mathrm{ctrl}}_i \approx s^{\mathrm{nat}}_i$ (transportability). We do
+not assume this holds in general; we test it empirically and use the depth-error slope
+as a diagnostic (Section 5.2 of the main paper).
+
+% =====================================================================
 \section{Recurrence Makes the Threshold Non-Vacuous}
 \label{app:cyclic}
 
 This appendix gives the full treatment of the recurrent (cyclic) case summarised in
 Section~5.8 of the main paper. We test a pattern real frameworks use: a manager
-broadcasting to workers that report back.
+broadcasting to workers that report back. (The complementary test of the percolation
+recurrence on a reconvergent \emph{acyclic} graph, where it can fail, is
+Appendix~\ref{app:reconvergent}.)
 
 For a manager with $w$ reporting workers, the infection matrix has
 $M[m\!\to\! w_j] = a_j$ and $M[w_j\!\to\! m] = c_j$, and its characteristic
@@ -208,5 +324,678 @@ supercritical label should be read together with its measured dynamics (endemic 
 eight rounds) rather than from the point estimate alone. Second, we study a single
 recurrent pattern at one temperature; the three models span five to eight rounds,
 enough to separate decay from saturation, not to demonstrate extinction.
+
+
+\section{Judge Calibration, Scope, and Known Failure Modes}
+\label{app:judge-validation}
+
+\paragraph{What was measured.} The compromise rule of Section~3.4 of the main paper
+($C = \ind[\mathrm{ASV} \ge 0.9]$, ASV $=$ fraction of target bigrams present) was
+calibrated on \textbf{ground-truth-labelled} outputs from the local model
+\texttt{qwen2.5:7b} ($n = 12$ per compromised class, $n = 12$ benign, $n = 3$
+refusing outputs; exact-string injection, benign ``verification code'' framing). The
+labels are assigned by construction, not by a judge: \emph{benign} outputs never see
+an injected instruction; \emph{refusing} outputs see one and do not reproduce the
+target; \emph{propagating} outputs are retained only when the target appears, and
+\emph{direct} outputs come from the injected instruction alone.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Calibration of the two continuous scores on labelled qwen2.5:7b outputs
+(mean $\pm$ sd). ASV separates the two compromised classes ($1.000$) from both
+benign classes ($0.000$) with no overlap; the full-containment variant instead
+scores benign outputs as high as $0.459$, which is what motivated the switch
+(reported in the main paper).}
+\label{tab:judge-calib}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
+\toprule
+\textit{score} & \textit{benign} & \textit{refusing} & \textit{propagating} & \textit{direct} \\
+\midrule
+ASV (target-bigram containment) & $0.000 \pm 0.000$ & $0.000 \pm 0.000$ & $1.000 \pm 0.000$ & $1.000 \pm 0.000$ \\
+MR (Dice vs.\ direct output)    & $0.253 \pm 0.179$ & $0.484 \pm 0.044$ & $0.598 \pm 0.070$ & $0.862 \pm 0.212$ \\
+full-containment (rejected)      & $0.459 \pm 0.215$ & $0.597 \pm 0.274$ & $0.729 \pm 0.223$ & $0.825 \pm 0.274$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Agreement at the deployed threshold.} At $\tau_{\mathrm{ASV}} = 0.9$ the
+rule attains precision $1.000$, recall $1.000$, F1 $1.000$, FPR $0.000$ and FNR
+$0.000$ on this set ($\mathrm{TP} = 24$, $\mathrm{FP} = 0$, $\mathrm{TN} = 15$,
+$\mathrm{FN} = 0$); the closest benign score observed anywhere in the probes is
+$0.875$, i.e.\ the threshold sits inside a gap rather than on a boundary. The
+Dice-based MR branch, by contrast, separates the same classes at accuracy $0.949$
+with $\mathrm{FPR} = 0$ only for $\tau_{\mathrm{MR}} > 0.53$, and the rejected
+full-containment variant reaches accuracy $0.795$ with $\mathrm{FPR} = 0.067$ at its
+own optimal cut---consistent with the main paper's $1.000$ vs.\ $0.795$ comparison.
+
+\paragraph{Scope of this validation, and what it does not establish.} The calibration
+covers \textbf{one model} (\texttt{qwen2.5:7b}), \textbf{one payload family}
+(exact-string targets), and \textbf{no defence}: both the benign and the compromised
+classes are drawn from undefended runs. The rule is deterministic and needs no
+per-model recalibration, but we do \emph{not} claim that the same operating point
+transfers unchanged to frontier models at temperature $0.7$, to paraphrase- or
+obfuscation-obfuscated targets, or to defended runs. Two further failure modes follow
+from the operational definition and should be read alongside every number we report:
+(i) a paraphrased leak that destroys the target's bigrams is scored as
+\emph{not} propagating (false negative), and (ii) a safe quotation of the target
+inside a benign summary is scored as propagating (false positive). Validation on
+frontier models, multiple payloads and defended conditions requires human
+annotation of a stratified subset across those conditions; we report the protocol
+for it below so the limitation is precise rather than open-ended. Read against a
+human annotator, both failure modes concern the \emph{semantics} of the target: a
+paraphrase that destroys its bigrams is scored as not propagating, and a safe
+quotation inside a benign summary is scored as propagating.
+
+\paragraph{Outcome levels.} Every judged activation is reported at level (a)
+\emph{textual propagation}---the target string/code fragments appear. The calibration
+set contains no case that separates (a) from (b) \emph{instruction
+adoption/compliance} within the same output, and no case of (c) \emph{harmful
+action} (the payload is a benign code, so (c) is by construction outside this
+study). Adoption is a subset of propagation in this task family: an agent that acts
+on the injected instruction must surface the target, whereas the converse does not
+hold. Since every label here is positive on (a) whenever it is positive on (b), the
+judge is an \emph{upper bound} on the adoption rate and we report (a) as the
+propagation outcome. We do not use it as evidence of instruction adoption or of
+harmful action anywhere in the paper.
+
+\paragraph{Replay procedure.} In the same spirit we state precisely what the
+content-form replay of Section~5.4 of the main paper does. Each replay trial draws a
+fresh receiver, rotates the benign assignment over the same pool, and consumes either
+content captured from a real natural run, a canonical artefact produced on demand, a
+fixed hand-written string, or the in-context content under a different sender label;
+temperature, token budget, system prompt, role, judge and thresholds are identical
+across arms, so the arms differ only in message form and in the label of its sender.
+The in-context arm is the harness self-check and has a target it must hit, namely the
+rate measured in-chain; the other arms are read as comparisons against it. Because
+each trial resamples the source output and draws the receiver fresh, a replay rate can
+differ from an in-chain rate through sampling noise and per-context variation as well
+as through message form. On the edge where the self-check misses ($0.733$ versus
+$0.947$) we therefore report the value for completeness and do not use it as an
+estimate of the form effect. The local re-run of this harness
+(\texttt{qwen2.5:7b}, $4$ natural trials and $2$ replays per arm and edge) is
+consistent with that reading rather than with a validated harness: every edge sits
+inside the replay confidence interval, yet two of three edges differ from the in-chain
+rate by $0.500$, which at this sample size the interval cannot resolve. We read the
+local run as \emph{underpowered}, not as a passed self-check, and we do not report it
+as evidence about form; the $n = 30$--$40$ configuration behind the content-form table
+of the main paper (its Table~4) remains the only configuration in which the
+self-check discriminates.
+
+\paragraph{Behaviour on replayed activations (local model).} Table~\ref{tab:judge-adjud}
+adjudicates every activation of a 24-item stratified subset drawn from the replayed
+harness of Section~5.4 of the main paper (\texttt{qwen2.5:7b}, one payload, no defence;
+the subset is stratified over arm and over judge verdict so that both classes are
+represented). Each output was read and labelled at the three outcome levels before the
+judge score was consulted. Against level (a) the rule reproduces the labels exactly:
+precision $1.000$, recall $1.000$, $F_1 = 1.000$, $\mathrm{FPR} = \mathrm{FNR} =
+0.000$. Against level (b) it is not a usable detector: it flags $19$ activations, and
+none of them involves instruction adoption---every positive is the target quoted
+inside a work product (an executive summary, a ticket classification, a release note,
+a review annotation). Three activations that sit downstream of content that \emph{did}
+carry the target do not carry it themselves, and the rule correctly reports them as
+negative; a reader who stopped at the upstream context would have scored them as
+propagating. We therefore report (a) and never (b), which is precisely the distinction
+the main paper draws when it calls the judge an upper bound on adoption.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Adjudication of the 24-activation subset against the three outcome levels
+(level (a) textual propagation, (b) instruction adoption, (c) harmful action).
+Labels were assigned by reading the full outputs, before the judge score was
+consulted, with the help of an automated string-matching assistant and with
+review by one of the authors; the labelling was not independent of the paper's
+authors, so these numbers are a consistency check on the rule, not an independent
+validation of it.}
+\vspace{6pt}
+\label{tab:judge-adjud}
+\begin{tabular}{lccccccc}
+\toprule
+\textit{level} & \textit{TP} & \textit{FP} & \textit{TN} & \textit{FN}
+ & \textit{prec.} & \textit{recall} & \textit{FPR} \\
+\midrule
+(a) textual propagation & 19 & 0 & 5 & 0 & $1.000$ & $1.000$ & $0.000$ \\
+(b) instruction adoption & 0 & 19 & 5 & 0 & --- & --- & $0.792$ \\
+(c) harmful action       & 0 & 19 & 5 & 0 & --- & --- & $0.792$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Protocol for a full validation (not yet executed).} A stratified subset should be drawn to distribute evenly across no-defence/defence, judge
+success/failure, topology, model and arm; each case should be labelled at levels
+(a), (b) and (c) by a human annotator, blind to the judge score, with a second
+annotator on a subset for agreement. Reported metrics should be precision, recall,
+F1, FPR, FNR and the full $2 \times 2$ confusion matrix per level, with
+Wilson/Clopper--Pearson intervals, cluster bootstrap for intervals (clusters $=$
+payload $\times$ defence $\times$ arm $\times$ edge, since trials repeat within
+contexts), and worked TP/FP/TN/FN examples. The scripts that generate the
+stratified sheet and score it are part of the released artifact; the numbers in
+Table~\ref{tab:judge-calib} are the portion we had measured at submission time.
+
+
+% =====================================================================
+\section{Utility under Attack, and Estimator Validation}
+\label{app:utility}
+
+Table~\ref{tab:utility} pairs the propagation outcome with its cost. Redaction on the
+susceptible model blocks propagation at \emph{no} utility cost, while paraphrase buys
+no benefit there and costs utility; on the resistant model both defences are pure
+cost, since there is nothing to block. Reporting $(\mathrm{ASR}, \Delta U)$ jointly is
+what makes these statements checkable: judged on propagation alone, paraphrase and
+doing nothing are indistinguishable, and only the utility column exposes that
+paraphrase is strictly dominated.
+
+\begin{table}[h]
+\small
+\centering
+\caption{Utility under attack, 20 paired clean/attack runs. Retention
+$= U_{\mathrm{attack}}/U_{\mathrm{clean}}$; $\Delta U$ is the clean--attack gap.}
+\vspace{6pt}
+\label{tab:utility}
+\begin{tabular}{llcccc}
+\toprule
+\textit{model} & \textit{defence} & \textit{ASR} & \textit{$U_{\mathrm{att}}$} & \textit{$\Delta U$} & \textit{ret.} \\
+\midrule
+DeepSeek & none       & 0.450 & 0.600 & $+0.400$ & 0.600 \\
+DeepSeek & paraphrase & 0.450 & 0.400 & $+0.600$ & \textbf{0.400} \\
+DeepSeek & redact     & 0.000 & 1.000 & $+0.000$ & \textbf{1.000} \\
+Claude   & none       & 0.000 & 1.000 & $+0.000$ & 1.000 \\
+Claude   & paraphrase & 0.000 & 0.900 & $+0.100$ & 0.900 \\
+Claude   & redact     & 0.000 & 1.000 & $+0.000$ & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Estimator validation.} On synthetic data with known ground truth, Wilson
+intervals attain nominal coverage and our bootstrap test is unbiased
+($|\mathrm{bias}| \le 0.10\sigma$, size $0.067$--$0.083$ at $\alpha = 0.05$ over 60
+replications), with higher power than a CI-overlap rule ($0.750$ versus $0.625$).
+Detecting a $0.10$ deviation at power $0.8$ needs $n \approx 200$; at $n = 40$ only
+deviations above $0.26$ are excluded, so we treat no $n = 40$ null as evidence and
+label the one $\mathrm{ASR} = \prod_i \hat s_i = 0$ cell as uninformative. At
+$n = 200$ the Llama failure is powered ($\mathrm{MDE} = 0.11$, $\Delta = 0.615$,
+$p = 0.0002$) while DeepSeek remains a non-rejection at a tighter MDE $0.13$
+($\Delta = 0.022$, $p = 0.60$); Nova, an $n = 40$ null ($p = 0.084$), instead rejects
+($\Delta = 0.051$)---why we decline to read small-$n$ nulls as consistency, though the
+deviation is small and sits on Nova's floor. Trial-level assumptions were tested too:
+$\varphi$ must be computed \emph{within} a temperature, and a homogeneity test across
+the three benign task contexts rejects exchangeability on the weak edge
+($\chi^2 = 13.40$, $p = 0.0014$), so our rates are context averages---the same
+context-dependence the content-form ablation exposes from the other direction.
+
+% =====================================================================
+\section{Practical Implications, in Full}
+\label{app:discussion}
+
+The four prescriptions of the Introduction change what is \emph{reported} rather than
+what is built, and each addresses a specific measurement failure our results expose.
+
+\paragraph{Composition is safe once transportability is checked.} Because the chain
+identity is algebraic rather than a modelling choice, the product of in-chain per-hop
+rates always equals end-to-end ASR; the only step that can fail---and that single-agent
+benchmarks implicitly rely upon---is transporting isolated per-hop estimates into that
+product. A single long chain measured under both protocols is therefore a cheap
+diagnostic, and its \emph{slope} is the reading: shallow (DeepSeek, $+2.3$ points per
+hop at $n = 10$) means isolated measurement is safe to compose, steep (qwen $+11.8$;
+Llama $+6.8$) means the in-chain regime must be measured directly. Any composition of
+isolated estimates should also state the graph assumptions it needs (no unmodelled
+shared ancestors or correlations that invalidate the product-of-complements form) and
+be supported by a transport check for the target graph class. The corollary for attack
+design is that re-packaging is cheap for the defender to lose and cheap for the
+attacker to use.
+
+\paragraph{Defence evaluation requires headroom.} A defence cannot remove more signal
+than its model permits: where the unprotected base rate is $0.10$ (Claude Sonnet 4.5)
+redaction looks perfect because there is almost nothing to defend, while where it is
+$1.00$ (Llama, susceptible cells) the same code is essential. Reporting a post-defence
+ASR without its no-defence baseline confounds the defence effect with the model's
+floor, and the utility measurements add a second dimension: semantic paraphrase is
+strictly dominated in every cell we measured (Appendix~\ref{app:utility}).
+
+\paragraph{Graph structure decides placement, not per-hop survival.} In a feed-forward
+network the set of nodes that can affect end-to-end propagation is exactly the set on
+some entry--target path, and within that set every node is equally effective
+\emph{only} when a single cut covers the graph---that is, when no two entry--target
+paths are disjoint. The practitioner's question is therefore: compute the paths, and
+among the nodes they contain pick the one with lowest instrumentation cost. Per-hop
+survival answers only the prior question of whether deploying a defence is worthwhile
+at all; redundant paths are what promote placement to a genuine optimisation problem.
+
+% =====================================================================
+\section{Limitations and Threats to Validity, in Full}
+\label{app:limits}
+
+\emph{Utility is a contamination proxy, not a correctness oracle}: the metric flags
+whether the injected target string appears in the final deliverable, not whether the
+legitimate task was answered correctly, and a task family with independently
+verifiable ground truth (arithmetic or code execution) would sharpen the trade-off and
+make paraphrase's cost comparable across conditions.
+
+\emph{Transportability failures are real but their prevalence is unknown.} The
+clearest failure is Llama's weak edge, powered to $\Delta = 0.615$, $p = 0.0002$,
+$\mathrm{MDE} = 0.11$ at $n = 200$: isolation underestimates in-chain survival by
+$3.75\times$. Nova shows the same middle-edge signature and DeepSeek transports
+cleanly under the same test, so this covers three of our five models on one attack
+family and one chain depth; how often the failure occurs elsewhere is uncharacterised,
+and the depth-error slope is a diagnostic rather than a guarantee, since a short chain
+at low power can read as flat.
+
+\emph{Protocol sensitivity is reported rather than hidden.} Our initial significant
+composition failure on DeepSeek was an artefact of the fixed-artefact policy and
+vanished when artefacts were drawn fresh per trial ($p = 0.0030 \to p = 0.930$,
+Appendix~A). The sensitivity flipped the sign of the deviation, so unstated protocol
+choices that alter a result are a class of threat that benchmark replication
+exercises routinely miss.
+
+\emph{Scale, topology and defence coverage.} Headline chain results span four to
+fifteen agents; star and tree cells are replicated across three models with two Llama
+instances ($n = 7$ and $n = 10$); the recurrent case covers three models with limited
+power. Configurations we do not vary include networks of tens of agents, mesh, debate
+or mixture-of-experts topologies, re-injection, and defence families beyond redaction
+and paraphrase---detection layers, hop isolation and structured queries are referenced
+but not evaluated. Cell sizes of $30$--$40$ trials give $\mathrm{MDE} \approx 0.26$,
+and the ASV threshold applies to a literal target that would need recalibration for
+paraphrase-obfuscated ones.
+
+% =====================================================================
+\section{Depth Profile: Per-Model Table and Rank Statistics}
+\label{app:depth}
+
+\begin{table}[h]
+\small
+\centering
+\caption{Shape of the depth profile: relative error of the isolated product,
+$|\prod_i \scite{i} - P(C_i{=}1)| / P(C_i{=}1)$, against hops from the entry.
+\emph{range} is min--max over informative depths; $\rho$ is Spearman's rank
+correlation between depth and error, \emph{slope} its OLS trend in percentage points
+per hop. On Llama the chain dies at depth $11$, so the last four depths are
+undefined.}
+\vspace{6pt}
+\label{tab:depth}
+\begin{tabular}{llcccc}
+\toprule
+\textit{model} & \textit{chain} & \textit{range} & \textit{mean} & \textit{$\rho$}
+& \textit{slope} \\
+\midrule
+qwen2.5:7b     & $n = 7$  & $31$--$89\%$ & $66\%$ & $+1.00$ & $+11.8$ \\
+Llama 3.3 70B  & $n = 15$ & $0$--$92\%$  & $66\%$ & $+0.77$ & $+6.8$  \\
+DeepSeek V3.2  & $n = 8$  & $7$--$35\%$  & $21\%$ & $-0.07$ & $+0.1$  \\
+DeepSeek V3.2  & $n = 10$ & $4$--$33\%$  & $15\%$ & $+0.65$ & $+2.3$  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Uncertainty on the slopes.} The main paper quotes a permutation test and a
+bootstrap interval for each slope; Table~\ref{tab:depth-perm} gives them in full. The
+permutation test is two-sided on Spearman's $\rho$: where the number of informative
+depths is at most nine we enumerate all $n!$ relabellings exactly, otherwise we use
+$10^4$ Monte Carlo permutations (seed 7); the intervals are percentile bootstrap
+($10^4$ resamples of the (depth, error) pairs). Two consequences deserve emphasis.
+First, a perfect rank correlation at these sample sizes is still only
+$p = 0.003$: the test is weak by construction, so ``significant'' here means ``not
+explainable by chance at $n = 6$ depths'', not that the slope is precise. Second, the
+DeepSeek profiles do not support a trend at either sample size---at $n = 10$ the
+interval for the slope spans zero ($[-0.3, +4.0]$) and the rank test does not reject
+($p = 0.067$), and at $n = 8$ the estimate is indistinguishable from flat
+($\rho = -0.07$, $p = 0.91$)---which is why the main paper reports the DeepSeek profile
+as shallow rather than as evidence of a positive trend. We therefore describe the
+slope as a diagnostic, not as a calibrated correction.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Permutation test and bootstrap intervals for the depth slopes of
+Table~\ref{tab:depth}. $n$ is the number of informative depths; ``dropped'' counts
+depths excluded because the measured or isolated rate was zero and the relative error
+is undefined.}
+\vspace{4pt}
+\label{tab:depth-perm}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccc}
+\toprule
+\textit{model} & \textit{$n$} & \textit{$\rho$ [CI95]} & \textit{$p_{\mathrm{perm}}$}
+& \textit{slope} & \textit{CI95} \\
+\midrule
+qwen2.5:7b ($n{=}7$)    & 6 & $+1.00$ $[1.00, 1.00]$ & $0.003$ & $+11.8$ & $[+7.8, +14.8]$ \\
+Llama 70B ($n{=}15$)    & 10 & $+0.77$ $[0.30, 0.95]$ & $0.014$ & $+6.8$ & $[+2.7, +11.4]$ \\
+Llama 70B (re-run)      & 10 & $+0.76$ $[0.30, 0.94]$ & $0.014$ & $+6.3$ & $[+2.0, +11.0]$ \\
+DeepSeek V3.2 ($n{=}8$) & 7 & $-0.07$ $[-0.89, 0.88]$ & $0.906$ & $+0.1$ & $[-5.3, +4.5]$ \\
+DeepSeek V3.2 ($n{=}10$) & 9 & $+0.65$ $[-0.07, 0.98]$ & $0.067$ & $+2.3$ & $[-0.3, +4.0]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The slopes form a spectrum rather than two categories, and the ordering is a
+consequence of what the transportability measurements show directly: where the
+isolated rate transports best (DeepSeek matches its measured ASR to $2.2\%$)
+composing edge estimates adds little systematic error, whereas an edge underestimated
+by $3.75\times$ (Llama's middle edge) enters every product containing it and compounds
+with depth. The tree cell adds a second constraint---the error's \emph{sign} is not
+fixed: there the isolated estimate is optimistic, predicting certain compromise
+($\prod_i \scite{i} = 1.000$) against a measured $0.800$, and the two edges on the
+target's path are exactly those whose isolated survival exceeds their in-chain
+survival. The defensible statement is therefore that \emph{the slope diagnoses
+transportability while the direction remains model- and topology-dependent}, and
+independence itself is not what fails: evaluated on in-chain rates, the percolation
+recurrence reproduces the measured ASR in all three topologies
+(Appendix~\ref{app:theory-assumptions}).
+
+% =====================================================================
+\section{Ethical Considerations and Artifact Availability}
+\label{app:ethics}
+
+All experiments use a \emph{benign} marker payload against our own harness via
+standard provider APIs; the attack forms are already documented for single agents. No
+real user data, production deployments or third-party systems were involved, and no
+AI system is listed as an author.
+
+Code, per-cell outputs, tests and offline re-analysis (Appendices~A--\ref{app:depth})
+reproduce every table with no model call, including on a free local model
+(\texttt{qwen2.5:7b}); \texttt{REPRODUCE.md} maps each table to the command that
+regenerates it. The one component that is data rather than computation---the
+annotated subset behind the judge adjudication of Table~\ref{tab:judge-adjud}---is
+released as a CSV together with the scoring script that turns it into the reported
+confusion matrix.
+
+% =====================================================================
+\section{Role Order Versus Position: a Permutation Control}
+\label{app:role-permutation}
+
+In the main paper the four roles are assigned to the chain in a fixed order
+(planner, worker, reviewer, aggregator), so any statement about
+\emph{role}-dependent survival is confounded with position: the reviewer edge is
+always the third edge. To separate the two we re-ran the same chain with the role
+labels permuted, moving the reviewer to the head and the planner to the third
+position, and compared survival per edge. Model, payload, task family, temperature,
+judge and trial count were held fixed; only the role assignment changed.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Role-order permutation control (\texttt{qwen2.5:7b}, five-agent chain, no
+defence, 40 natural runs per ordering, \texttt{BANANA-77} marker). In the permuted
+ordering the reviewer moves to the head of the chain and the planner to the third
+position, so each role except the duplicated one sits at a different depth. Values are
+in-chain per-edge survival $\snats{i}$.}
+\vspace{4pt}
+\label{tab:role-permutation}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccc}
+\toprule
+\textit{depth} & \textit{role (default)} & \textit{$\snats$} & \textit{role (permuted)}
+& \textit{$\snats$} \\
+\midrule
+1 & worker     & $0.425$ & worker     & $0.525$ \\
+2 & reviewer   & $0.882$ & planner    & $0.381$ \\
+3 & aggregator & $1.000$ & aggregator & $1.000$ \\
+4 & planner    & $0.733$ & planner    & $0.875$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% PLACEHOLDER-ROLE-PERM-TEXT
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{The two readings of the permutation, as mean absolute differences. Under
+the position reading the $k$-th deepest edge of the default ordering is compared with
+the $k$-th deepest edge of the permuted ordering; under the role reading each role's
+survival is compared across the two orderings. The smaller value indicates which
+variable the profile follows.}
+\vspace{4pt}
+\label{tab:role-perm-readings}
+\begin{tabular}{lc}
+\toprule
+\textit{reading} & \textit{mean $|\Delta|$} \\
+\midrule
+by position (4 pairs) & $0.186$ \\
+by role (3 pairs)     & $0.151$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The two readings are close ($0.186$ versus $0.151$, a difference of $0.035$ on a
+$[0,1]$ scale), and they are not directly comparable in count: the position reading
+uses every shared depth, whereas the role reading can only use roles that occur in
+both orderings, and the duplicated role at the tail of a five-agent cycle reduces it
+to three pairs. The informative quantity is therefore not which mean is smaller but
+the size of the displacement itself: permuting the labels moves the
+\emph{depth profile} by $0.186$ on average, with the second edge moving from $0.882$
+to $0.381$. Two consequences follow, and the main paper is written to respect both.
+First, the profile is \emph{not} invariant to the role labels, so the role assignment
+cannot be ignored. Second, a single permutation cannot separate role from position:
+with near-equal distances and three to four pairs, claiming that survival follows the
+role rather than the depth would over-read the control. We therefore treat the
+role profile of the main paper (its Fig.~2) as a profile under one fixed assignment
+(planner, worker, reviewer, aggregator) rather than as a role effect, and we do not
+use it to rank roles.
+
+Two further limits. The control was run on a single local model: the same experiment on
+Llama~3.3~70B was the intended second half of the comparison, and the Bedrock
+credential available to us expired before it could be run, so the reviewer's request to
+repeat this for both models is only half answered. And at $n = 40$ runs per ordering the
+per-edge standard error is roughly $0.07$--$0.08$, comparable to the displacement we
+report, so a larger set of permutations would be needed to estimate a role effect even
+if one exists.
+
+% =====================================================================
+\section{Disclosure of AI-Assisted Technologies}
+\label{app:ai-disclosure}
+
+\paragraph{Tool and version.} \textbf{DeepSeek V4.1 Flash}, used interactively through
+the DeepSeek Harness web interface as a multi-turn session rather than as single
+completions. No other AI system was used, and no AI system is listed as an author.
+
+\paragraph{Where it was used.} \emph{Routine and permitted:} polishing and formatting
+of text, and implementing the accompanying Python package and its test suite; every
+citation was retrieved and read in the original by the authors, and no citation, venue
+or numerical claim was taken from a model summary. \emph{Methodology, disclosed under
+the policy:} the tool contributed to (i)~the validation apparatus added during
+revision---the stratified annotation subset, the three-level labelling of
+Table~\ref{tab:judge-adjud}, the two-condition pass rule for the replay self-check, and
+the cluster-bootstrap scoring script; (ii)~the per-edge transport tests and the
+diagnostics in Section~5, including the two-sided equivalence test, the power and
+multiplicity summary of Section~5.9, and the depth-slope check; and (iii)~the separation
+of the outcome into the three levels of Section~3.4 and the decision to report only
+textual propagation. The measurement protocols themselves, the model runs and every
+reported number were produced by the authors; where the tool implemented or re-analysed
+a measurement, the authors verified the result against the stored logs before it was
+reported. The labels of Table~\ref{tab:judge-adjud} were assigned by reading full
+outputs with the aid of an automated string-matching step and reviewed by an author;
+they are \emph{not} independent human annotation, and are reported as a consistency
+check rather than a validation.
+
+\paragraph{Prompts.} As the interaction was a dialogue rather than a single prompt, we
+quote the operative instructions as issued: ``\emph{audit the manuscript adversarially
+against its own code and data rather than against its claims}''; ``\emph{verify every
+asserted defect on the source before acting on it}'';
+``\emph{prefer correcting a result over narrowing its assumptions}'';
+``\emph{report what the measurements show even where they contradict the paper}''. Two
+proposed defects were withdrawn under the second instruction because the committed
+results did not support them, and the same check caught an annotation error of our own:
+three activations first labelled as propagating do not contain the target in the full
+output, and were corrected before reporting. The complete session log is available to
+the programme chairs on request.
+
+\paragraph{Accountability.} The authors take responsibility for the accuracy of this
+work. Every number reported in the paper and in this supplement is regenerated by the
+released code without model calls, with one exception that is data rather than
+computation: the annotated labels behind Table~\ref{tab:judge-adjud} are released as a
+file together with the scoring script that reproduces the reported confusion matrix.
+The limits of the contribution---that the transportability failure is characterised on
+three of five models at one chain depth, that the judge is validated on a single local
+model and measures textual propagation rather than adoption, and that one of our own
+early composition results was an artefact of the fixed-artefact policy---are stated in
+the paper and in Appendix~\ref{app:limits} rather than left for a reader to discover.
+
+% =====================================================================
+\section{Testing Eq.~(3) Where It Can Fail: a Reconvergent DAG}
+\label{app:reconvergent}
+
+On the chain, the balanced tree and the single-entry fan-in star, each node has
+effectively one entry--target path, so the percolation recurrence of Eq.~(3) collapses
+to the chain identity of Eq.~(1) and cannot be tested. We therefore ran the harness on
+a reconvergent DAG in which the two parents of the target share an upstream node,
+$\texttt{a0} \!\to\! \texttt{a1} \!\to\! \{\texttt{a2}, \texttt{a3}\} \!\to\! \texttt{a4}$,
+which is the case the recurrence is not guaranteed to satisfy when the parent-reach
+events are correlated. The run used the local model \texttt{qwen2.5:7b} at $T = 0.7$,
+40 natural runs and 30 replays per arm and edge (600 judged activations, 240 of them at
+the target).
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Reconvergent DAG (\texttt{a0}$\to$\texttt{a1}$\to$\{\texttt{a2},\texttt{a3}\}$\to$\texttt{a4},
+\texttt{qwen2.5:7b}, 40 natural runs, 30 replays per arm and edge). Top: per-edge
+in-chain versus isolated survival. Bottom: the target's compromise probability under
+the chain product, under the percolation recurrence from in-chain marginals, under the
+same recurrence from isolated marginals (what a single-agent benchmark would compute),
+and as measured.}
+\vspace{4pt}
+\label{tab:reconvergent}
+\begin{tabular}{lcc}
+\toprule
+\textit{edge} & \textit{$\snats$ (in-chain)} & \textit{$\scites$ (isolated)} \\
+\midrule
+\texttt{a0}$\to$\texttt{a1} & 0.375 & 0.400 \\
+\texttt{a1}$\to$\texttt{a2} & 0.933 & 0.933 \\
+\texttt{a1}$\to$\texttt{a3} & 0.800 & 0.367 \\
+\texttt{a2}$\to$\texttt{a4} & 1.000 & 0.533 \\
+\texttt{a3}$\to$\texttt{a4} & 1.000 & 0.933 \\
+\midrule
+\multicolumn{3}{l}{\textit{target compromise probability}}\\
+\midrule
+$\prod_i \snat{i}$ (chain product; wrong structure here) & \multicolumn{2}{c}{$0.280$} \\
+Eq.~(3) from in-chain marginals & \multicolumn{2}{c}{$0.545$} \\
+Eq.~(3) from isolated marginals & \multicolumn{2}{c}{$0.309$} \\
+measured on natural runs & \multicolumn{2}{c}{\textbf{$0.792$} $[0.736, 0.838]$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two readings follow and must not be conflated. First, the recurrence built from the
+\emph{in-chain} marginals underestimates the measured rate by $0.247$, which is what
+one expects if the two parent-reach events are positively correlated; the harness's own
+self-check passes at the target ($0.717$ replayed versus $0.792$ measured,
+$\Delta = -0.075$), so the gap is not an artefact of a failed replay. Second, and more
+consequential for practice, the recurrence built from the \emph{isolated} marginals
+gives $0.309$ against a measured $0.792$: a single-agent benchmark that measures each
+edge in isolation and composes the results underestimates reachability on this graph by
+roughly $2.6\times$, and the per-edge discrepancies are concentrated
+($\texttt{a1}\!\to\!\texttt{a3}$: $0.800$ in-chain versus $0.367$ isolated;
+$\texttt{a2}\!\to\!\texttt{a4}$: $1.000$ versus $0.533$). The direction matches the
+Llama chain failure of the main paper: isolation \emph{under}-estimates what a hand-off
+achieves once the payload arrives inside an agent's work product. Two limits of this
+measurement: three of the five edges do not reproduce their in-chain rate under replay
+(differences of $0.14$--$0.30$ at $n = 30$ per arm), so the in-chain marginals carry
+that uncertainty; and the result is one model on one small DAG, so we read it as
+evidence that the recurrence is not exact in general rather than as a calibrated
+correction.
+
+% =====================================================================
+\section{Topology at Matched Agent Count}
+\label{app:topology}
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Topology at matched agent count (Llama 3.3 70B, $n = 7$ agents, no defence,
+40 natural runs, 30 controlled trials per edge, fixed-artefact protocol throughout).
+The three topologies have similar mean per-hop survival but differ substantially in
+outcome. This comparison is exploratory and carries no multiplicity correction.}
+\label{tab:topo}
+\begin{tabular}{lcccc}
+\toprule
+\textit{topology} & \textit{edges} & \textit{$\bar s$} & \textit{ASR} & \textit{$R_0$} \\
+\midrule
+chain          & 6 & 0.761 & 0.450 & \textbf{0.821} \\
+star (fan-in)  & 6 & 0.761 & 0.725 & 0.420 \\
+tree           & 6 & 0.928 & \textbf{0.800} & \textbf{0.831} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The star--tree relation reverses with scale rather than merely shrinking: at
+$n = 7$ the tree exceeds the star ($0.800$ vs.\ $0.725$), whereas repeating the
+comparison at $n = 10$ puts the star above the tree on Llama ($0.675$ vs.\ $0.650$)
+and, at $n = 7$, on DeepSeek ($0.750$ vs.\ $0.475$). Nova sits at the resistance
+floor in both (star $0.000$, tree $0.125$). The direction of the topology effect is
+thus itself scale-dependent, which is a further reason not to summarise a network
+with a single per-hop scalar.
+
+% =====================================================================
+\section{What the Artifact Contains, and What It Does Not}
+\label{app:repro}
+
+We separate what is actually supplied from what a reader would need in order to
+regenerate a cell from scratch, so that the reproducibility statement matches the
+submission rather than describing an ideal package.
+
+\paragraph{Supplied.} The released code reproduces every table and figure in the paper
+and in this supplement \emph{without live model calls}, from per-cell result files that
+are included: per-cell summaries (\texttt{results.json}), raw hop and agent logs,
+the offline re-analysis scripts (threshold re-scoring, multiplicity control,
+cluster-bootstrap intervals, per-edge transport tests including the TOST analysis of
+Appendix~\ref{app:utility}), the estimator-validation battery on synthetic data, and
+the two files behind the judge adjudication of Appendix~\ref{app:judge-validation}
+(the annotation sheet and the scoring script). \texttt{REPRODUCE.md} maps each table to
+the command that regenerates it, and the local tier runs on a free model
+(\texttt{qwen2.5:7b}) with no API key.
+
+\paragraph{Model identifiers, dates and decoding.} The hosted models are addressed by
+inference-profile identifiers, and every per-cell file records the identifier it used,
+so the table below is read off the released results rather than from memory. Dates are
+the first and last collection day observed across the archived per-cell files. Decoding
+is fixed at $T = 0.7$ with a $400$-token cap for every hosted cell in the paper, and the
+local tier runs \texttt{qwen2.5:7b} at the same settings through an
+OpenAI-compatible endpoint.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Hosted and local models actually referenced by the archived cells, with the
+date range over which their cells were collected. Cells, not calls, are counted; the
+\texttt{mock} backend appears because one synthetic self-test cell is shipped with the
+bundle.}
+\vspace{4pt}
+\label{tab:models-manifest}
+\begin{tabular}{llcc}
+\toprule
+\textit{identifier as recorded} & \textit{backend} & \textit{cells} & \textit{dates} \\
+\midrule
+\texttt{us.meta.llama3-3-70b-instruct-v1:0}      & bedrock & 14 & 09-11--09-14 \\
+\texttt{deepseek.v3.2}                            & bedrock & 10 & 09-11--09-14 \\
+\texttt{amazon.nova-pro-v1:0}                     & bedrock & 4  & 09-11--09-14 \\
+\texttt{us.anthropic.claude-sonnet-4-5-20250929-v1:0} & bedrock & 4 & 09-11 \\
+\texttt{qwen2.5:7b}                               & local   & 3  & 09-11--10-08 \\
+\texttt{mock} (synthetic self-test, no model call) & ---    & 1  & 09-11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Not supplied, and therefore not claimed.} There is \emph{no anonymised
+artifact link in this submission}; the material above accompanies the paper as a code
+and data bundle only if the venue's submission system accepts it. In particular we do
+not supply: per-condition call counts and failure counts, wall-clock collection times
+per cell, or the full prompt templates for every arm. Our cross-model table also mixes
+artefact protocols, as its caption states, and the fresh-artefact replicate of the
+three rows that predate that policy is not part of the release. We therefore claim
+\emph{partial} reproducibility: the numbers in this paper are regenerated by the
+supplied code from the supplied per-cell outputs, and the live calls that produced
+those outputs are reproducible only in the sense that the scripts and their
+configuration are provided.
+
+\paragraph{Inventory.} A machine-readable inventory accompanies the bundle with one
+row per cell: model, defence, payload, topology, context pool, protocol
+(fixed or fresh artefacts), number of natural runs, controlled trials per edge,
+evaluated $n$, and the script that produced it. Analyses are labelled
+\emph{confirmatory} (the composition tests of Section~5.2 and the multiplicity
+correction of Appendix~\ref{app:bh}) or \emph{exploratory} (topology, obfuscation,
+payload form, the recurrent loop and the depth profile), and the exploratory analyses
+carry no family-wise correction; the intervals we report use Wilson bounds, with a
+cluster bootstrap where trials repeat within contexts or runs.
 
 \end{document}

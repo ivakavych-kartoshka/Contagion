@@ -1,19 +1,7 @@
-This is BibTeX, Version 0.99e
-Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+This is BibTeX, Version 0.99e (MiKTeX 25.12)
 The top-level auxiliary file: contagion_aamas2027.aux
-Reallocating 'name_of_file' (item size: 1) to 21 items.
 The style file: ACM-Reference-Format.bst
-Reallocating 'name_of_file' (item size: 1) to 5 items.
-Reallocating 'singl_function' (item size: 4) to 100 items.
-Reallocating 'singl_function' (item size: 4) to 100 items.
-Reallocating 'wiz_functions' (item size: 4) to 6000 items.
 Database file #1: refs.bib
-Reallocating 'singl_function' (item size: 4) to 100 items.
-Reallocating 'wiz_functions' (item size: 4) to 9000 items.
-Reallocating 'glb_str_end' (item size: 4) to 20 items.
-Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
-Reallocating 'global_strs' (item size: 1) to 4000000 items.
-Reallocating 'singl_function' (item size: 4) to 100 items.
 Warning--empty publisher in Andriushchenko2025AgentHarm
 Warning--empty address in Andriushchenko2025AgentHarm
 Warning--empty address in Cemri2025MAST
@@ -56,45 +44,4 @@ Warning--empty address in Zhan2025Adaptive
 Warning--empty publisher in Zhang2025ASB
 Warning--empty address in Zhang2025ASB
 Warning--page numbers missing in both pages and numpages fields in Zhang2025ASB
-You've used 41 entries,
-            6273 wiz_defined-function locations,
-            1826 strings with 29881 characters,
-and the built_in function-call counts, 55888 in all, are:
-= -- 6702
-> -- 2330
-< -- 0
-+ -- 817
-- -- 821
-* -- 4414
-:= -- 5588
-add.period$ -- 200
-call.type$ -- 41
-change.case$ -- 411
-chr.to.int$ -- 40
-cite$ -- 83
-duplicate$ -- 4726
-empty$ -- 3291
-format.name$ -- 960
-if$ -- 13367
-int.to.chr$ -- 3
-int.to.str$ -- 1
-missing$ -- 190
-newline$ -- 382
-num.names$ -- 286
-pop$ -- 1980
-preamble$ -- 1
-purify$ -- 737
-quote$ -- 0
-skip$ -- 1752
-stack$ -- 0
-substring$ -- 4072
-swap$ -- 515
-text.length$ -- 0
-text.prefix$ -- 0
-top$ -- 0
-type$ -- 1014
-warning$ -- 42
-while$ -- 269
-width$ -- 0
-write$ -- 853
 (There were 42 warnings)

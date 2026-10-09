@@ -306,7 +306,8 @@ class Runner:
         """
         # Bước 1-3: graph, agents, attack strategy
         graph = build_graph(
-            self.config.topology, self.config.num_agents, seed=self.rng.randrange(0, 10**6)
+            self.config.topology, self.config.num_agents,
+            seed=self.rng.randrange(0, 10**6), role_order=self._role_order(),
         )
         agents = self._build_agents(graph)
         strategy = self._build_attack()
@@ -510,6 +511,7 @@ class Runner:
             self.config.topology,
             self.config.num_agents,
             seed=self.rng.randrange(0, 10**6),
+            role_order=self._role_order(),
         )
         agents = self._build_agents(graph)
         strategy = self._build_attack()
@@ -610,10 +612,22 @@ class Runner:
         n = self.config.utility_trials or self.config.trials
         return [self._run_workflow_trial(t, attack=attack) for t in range(n)]
 
+    def _role_order(self):
+        """Thứ tự role tuỳ chọn từ ``config.extra['role_order']`` (R2 W3/Q2).
+
+        None → hành vi cũ (chu kỳ planner→worker→reviewer→aggregator). Khi được
+        đặt, cùng một chain sẽ chạy với thứ tự role đảo/hoán vị để tách **role**
+        khỏi **vị trí (depth)** — hai thứ vốn bị confound khi role luôn gán theo
+        cùng một thứ tự.
+        """
+        ro = self.config.extra.get("role_order")
+        return list(ro) if ro else None
+
     def _run_workflow_trial(self, trial_id: int, attack: bool) -> PropagationPath:
         """MỘT workflow trial (all-forward) cho utility protocol."""
         graph = build_graph(
-            self.config.topology, self.config.num_agents, seed=self.rng.randrange(0, 10**6)
+            self.config.topology, self.config.num_agents,
+            seed=self.rng.randrange(0, 10**6), role_order=self._role_order(),
         )
         agents = self._build_agents(graph)
         strategy = self._build_attack()
