@@ -1,7 +1,7 @@
 # DANH SÁCH VIỆC CẦN LÀM — AAMAS 2027, Submission 2419
 ## "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose"
 
-> **Cập nhật:** 2026-10-09, sau khi key Bedrock mới hoạt động (fingerprint `6e4bb06507`).
+> **Cập nhật:** 2026-10-09 (kiểm tra lại 17:20 — Nhóm 1 đã cập nhật trạng thái thực tế), sau khi key Bedrock mới hoạt động (fingerprint `6e4bb06507`).
 > **Trạng thái nộp hiện tại:** main PDF 10 trang = content 1–8 + References từ trang 9;
 > phụ lục 8 trang; `supplementary_material.zip` 2.2 MB / 308 file; 0 undefined ref.
 >
@@ -15,13 +15,13 @@
 | # | Việc | Nguồn | Trạng thái | Ghi chú |
 |---|---|---|---|---|
 | 1.1 | **Markov chain hữu hạn cho loop** | **R1 Q3** major | ✅ **XONG** | `scripts/cyclic_markov_exact.py` → `experiments/results/cyclic_markov_exact/report.md`. **Kết quả: model KHÔNG khớp** (qwen lệch 0.602) ⇒ worker có memory. Xem §1.1 dưới |
-| 1.2 | Viết kết quả 1.1 vào phụ lục + 1 câu main | R1 Q3 | ❌ chưa | Cần làm — nội dung đã có, chỉ cần đưa vào `.tex` |
-| 1.3 | **Worked example** cho AutoGen/MetaGPT | **R4 Q1** | ❌ chưa | ~45 phút |
-| 1.4 | **Verify 3 tham chiếu 2026** ([1], [23], [24]) | R4 W5 | ❌ chưa | ~30 phút, cần tra web |
-| 1.5 | **Family-wise correction** cho topology/obf/loop | **R3 W6** | ❌ chưa | ~1 giờ, từ số đã lưu |
-| 1.6 | **Điền 1 chỗ trống** trong `REBUTTAL.md` dòng 153 | — | ❌ chưa | chờ B1 |
-| 1.7 | **Ghép qwen fresh (0.375/0.733) vào Table 1** | R3 Q1 | ❌ chưa | **đổi headline** — cần bạn quyết |
-| 1.8 | **Mở rộng estimator validation** (nhiều replication hơn) | R3 W5 | ❌ chưa | ~1 giờ, synthetic nên 0 API |
+| 1.2 | Viết kết quả 1.1 vào phụ lục + 1 câu main | R1 Q3 | ✅ **XONG** | `supplementary.tex` §app:cyclic (dòng 400–441): bảng `tab:cyclic-markov` + 3 kết luận. Main §5.8 (dòng 940–946): 1 câu tóm tắt "fails to reproduce... by +0.289, −0.239 and −0.602". |
+| 1.3 | **Worked example** cho AutoGen/MetaGPT | **R4 Q1** | ✅ **XONG** | `supplementary.tex` dòng 690–720: `\paragraph{Worked example: an AutoGen/MetaGPT-style pipeline.}` — 3 prescription với số cụ thể (Llama 0.850 vs dự đoán 0.233, R₀ star/chain, filter placement). |
+| 1.4 | **Verify 3 tham chiếu 2026** ([1], [23], [24]) | R4 W5 | ✅ **XONG** | `refs.bib` dòng 7–8: "ĐÃ ĐỐI CHIẾU TOÀN BỘ + chốt ngày xuất bản cho 3 mục 2026 từ Crossref/nhà xuất bản chính thức" (lần 3, 2026-10-09). |
+| 1.5 | **Family-wise correction** cho topology/obf/loop | **R3 W6** | ✅ **XONG** | `supplementary.tex` §B "Family-Wise Control Extended to the Remaining Families" (dòng 132) + `scripts/familywise_extended.py`. BH control q=0.05, mọi family giữ ít nhất 1 rejection. |
+| 1.6 | **Điền 1 chỗ trống** trong `REBUTTAL.md` dòng 153 | — | ❌ chưa | `review/REBUTTAL.md` dòng 153 vẫn còn `[điền sau khi chạy]` — chờ kết quả payload thứ 2 (mục 2.1) |
+| 1.7 | **Ghép qwen fresh (0.375/0.733) vào Table 1** | R3 Q1 | ❌ chưa | **cần bạn quyết định** — Table 1 hiện: `qwen2.5:7b & 0.300 & 0.611` (số cũ fixed-artefact). Fresh results có tại `experiments/results/frontier_qwen_fresh/report.md` (ASR=0.375, surv=0.733, Markov consistent). Nếu ghép vào phải thêm `†` và đổi caption. |
+| 1.8 | **Mở rộng estimator validation** (nhiều replication hơn) | R3 W5 | ❌ chưa | `supplementary.tex` dòng 637: hiện chỉ 60 replication. Cần chạy thêm synthetic (không cần API). |
 | 1.9 | **Rà nhất quán toàn bài** lần cuối | — | ❌ chưa | ~1 giờ |
 
 ### §1.1 Kết quả Markov chain (đã có, cần đưa vào bài)
