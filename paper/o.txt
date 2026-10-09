@@ -154,24 +154,25 @@ mt-tlf.fd)
 inet-tlf.fd)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg)
-[1.1{C:/Users/ASUS/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/A
-SUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{C:
-/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_76gpa5
-.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbt
-n_nh77jq.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/liber
-tine/lbtn_7grukw.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvi
-ps/libertine/lbtn_oexx6f.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts
-/enc/dvips/libertine/lbtn_naooyc.enc} <./by.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active [1.1{C:/Us
+ers/ASUS/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/ASUS/AppDat
+a/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{C:/Users/ASU
+S/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{C:/U
+sers/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_nh77jq.e
+nc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_
+7grukw.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/liberti
+ne/lbtn_oexx6f.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips
+/libertine/lbtn_naooyc.enc} <./by.pdf>]
 Underfull \vbox (badness 5091) has occurred while \output is active [2.2]
 [3.3]
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/inconsolata\t1zi4.fd)
 [4.4{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4
 -t1-4.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertin
-e/lbtn_fygcup.enc}]
-Underfull \vbox (badness 10000) has occurred while \output is active [5.5]
-[6.6 <./fig2_per_role_survival.png>] [7.7{C:/Users/ASUS/AppData/Local/Programs/
-MiKTeX/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}] Excluding 'acks' comment.
-(contagion_aamas2027.bbl [8.8 <./fig4_obfuscation_heatmap.png>]
+e/lbtn_fygcup.enc}] [5.5]
+Underfull \vbox (badness 10000) has occurred while \output is active [6.6 <./fi
+g2_per_role_survival.png>] [7.7{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fon
+ts/enc/dvips/libertine/lbtn_ki75ao.enc}] Excluding 'acks' comment. [8.8 <./fig4
+_obfuscation_heatmap.png>] (contagion_aamas2027.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active
 Underfull \vbox (badness 10000) has occurred while \output is active [9.9])
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
@@ -199,5 +200,5 @@ pData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI7.pfb><C:/Users/ASU
 S/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/AS
 US/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/
 ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on contagion_aamas2027.pdf (10 pages, 813620 bytes).
+Output written on contagion_aamas2027.pdf (10 pages, 813093 bytes).
 Transcript written on contagion_aamas2027.log.

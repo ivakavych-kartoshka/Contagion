@@ -247,10 +247,14 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Underfull \vbox (badness 2698) has occurred while \output is active [7.7]
-Overfull \hbox (3.34462pt too wide) in paragraph at lines 937--947
+Overfull \hbox (3.34462pt too wide) in paragraph at lines 940--950
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) cell re-sult files that are in-cluded: per-
 cell sum-maries (\T1/zi4/m/n/9 results.json\T1/LinuxLibertineT-TLF/m/n/9 (-20) 
 ),
+
+Overfull \hbox (27.91849pt too wide) in paragraph at lines 982--988
+\T1/LinuxLibertineT-TLF/m/n/9 (-20) F4B8/$[], with the machine-readable in-ven-
+tory at \T1/zi4/m/n/9 artifacts/MANIFEST.json
 
 Class aamas Warning: CCS concepts are mandatory for papers over two pages.
 
@@ -284,5 +288,5 @@ s/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb><C:/U
 sers/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/
 Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C
 :/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on supplementary.pdf (8 pages, 672797 bytes).
+Output written on supplementary.pdf (8 pages, 675415 bytes).
 Transcript written on supplementary.log.

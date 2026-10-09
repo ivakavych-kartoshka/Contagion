@@ -1,18 +1,34 @@
 # Contagion
 
-**Contagion: An Epidemiology of Prompt-Injection Propagation in LLM Agent Networks**
+**Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose**
 
-Mô hình dịch tễ học về sự lan truyền *Indirect Prompt Injection* trong mạng lưới tác tử LLM
-(LLM multi-agent network). Framework cung cấp:
+> **Artifact ẩn danh:** <https://anonymous.4open.science/r/Contagion-F4B8/>
+> · **License:** MIT (code), CC-BY-4.0 (dữ liệu đo)
+> · **Inventory:** [`artifacts/MANIFEST.json`](artifacts/MANIFEST.json) — một dòng mỗi cell
+> · **Tái lập:** [`REPRODUCE.md`](REPRODUCE.md) map từng bảng/hình → lệnh chạy
+
+Nghiên cứu **đo lường** sự lan truyền *Indirect Prompt Injection* trong mạng lưới tác tử
+LLM (LLM multi-agent network), với câu hỏi trung tâm: **ước lượng survival đo trên một
+cạnh, cách ly, có transport được sang chuỗi thật không?**
+
+Framework cung cấp:
 
 - một **multi-agent testbed** mô phỏng một *agent organization* (emulated),
 - các **topology** có thể cấu hình (chain / star / tree),
-- các **attack variants** (static / adaptive / re-injection),
-- các **defense mechanisms** (paraphrase / delimiter / detection / hop-isolation),
-- bộ **metrics** định lượng sự lan truyền theo lý thuyết dịch tễ học.
+- **attack variants**: payload tĩnh, cùng cơ chế re-injection của harness,
+- **defence mechanisms**: `none`, **redaction** (DLP xoá literal target) và
+  **semantic paraphrase**,
+- bộ **metrics**: survival per-hop có điều kiện, ASR, R₀, cùng interval và
+  kiểm định (Wilson, bootstrap, TOST, permutation).
+
+> ⚠️ **Phạm vi đã chạy trong bài nộp.** Trong repo có sẵn code cho attacker *adaptive*
+> và cho các defence *delimiter / detection / hop-isolation*, nhưng **các kết quả trong
+> bài chỉ dùng attacker tĩnh (non-adaptive) và hai defence `redaction` + `paraphrase`.**
+> Đừng đọc các module còn lại như thể chúng đã được đánh giá.
 
 Đây là *benchmark & measurement framework* nghiên cứu, **không phải** một security guarantee.
-`R0 < 1` chỉ là *proof obligation*, không đồng nghĩa với network "secure".
+`R0 < 1` không đồng nghĩa với network "secure" — bài nộp cho thấy trên đồ thị acyclic
+ngưỡng này **được thoả một cách tầm thường** và vì vậy không chứng nhận được gì.
 
 ---
 
@@ -91,7 +107,10 @@ Chạy một cấu hình:
 .\.venv\Scripts\python scripts\run_experiment.py experiments\configs\chain_static_nodefense.yaml
 ```
 
-Sweep toàn bộ matrix (chain/star/tree × 3/5/10 agents × static/adaptive × none/paraphrase/delimiter):
+Sweep toàn bộ matrix (chain/star/tree × 3/5/10 agents × static/adaptive ×
+none/paraphrase/delimiter) — **script có sẵn, nhưng sweep đầy đủ này KHÔNG phải nguồn
+của các số trong bài nộp** (bài chỉ dùng attacker tĩnh và `redaction` + `paraphrase`;
+xem cảnh báo phạm vi ở đầu file):
 
 ```powershell
 .\.venv\Scripts\python scripts\sweep.py --out experiments/results/sweep

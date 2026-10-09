@@ -1,16 +1,55 @@
 # HƯỚNG DẪN FIX THEO REVIEW AAMAS 2027 (Submission Id 2419)
 
-> ## ⚡ VIỆC CÒN LẠI — cập nhật 2026-10-09 (A, B, C, D đều XONG)
+> ## ⚡ VIỆC CÒN LẠI — cập nhật 2026-10-09 (cuối)
 >
-> | # | Việc | Trạng thái |
-> |---|---|---|
-> | **A** | Sửa **Fig. 2 + Fig. 4** cho đọc được | ✅ **XONG** |
-> | **B** | **Permutation p-value** cho depth slope (R1 W7, R3 W1) | ✅ **XONG** |
-> | **C** | **Role-permutation test** (R2 W3/Q2) | ✅ **XONG** (qwen; Llama bị chặn) |
-> | **D** | Citation **[13] debate**, **[31] Reflexion** | ✅ **XONG** |
+> ### 🟢 ĐÃ XONG toàn bộ 4 việc A–D + phần lớn nhóm "không cần LLM"
+> | Việc | Trạng thái |
+> |---|---|
+> | A. Fig. 2 + Fig. 4 đọc được ở cỡ in | ✅ |
+> | B. Permutation p-value + bootstrap CI cho depth slope (Appendix J) | ✅ |
+> | C. Role-permutation control (Appendix L) — **đã hạ claim role → position** | ✅ (qwen; Llama ⛔) |
+> | D. Citation [13], [31] sửa | ✅ |
+> | #3 Range ASR + R₀ (tree 0.800/0.831) | ✅ |
+> | #5 Caveat capability → "scale"; hạ verdict "resistant" của Claude | ✅ |
+> | #4 C₀=1 (đã có sẵn, đã xác minh) | ✅ |
+> | #2 R₀ interval — điều tra: **KHÔNG tái lập được**, đã sửa §3.6 cho trung thực | ✅ (giải pháp trung thực) |
+> | #6 Artifact link + manifest + model ID/ngày + README/REPRODUCE | ✅ (phần push do bạn) |
+> | #7 Framing feed-forward (R4 W2) | ✅ (dạng footnote) |
+> | **1.8 `review/REBUTTAL.md`** trả lời 20 câu R1–R4 | ✅ **MỚI** |
 >
-> **Không còn việc nào làm được nếu không có key Bedrock mới.** Danh sách đầy đủ
-> các việc bị chặn ở mục ⛔ bên dưới.
+> ### 📄 REBUTTAL.md — dùng ngay
+> Đã soạn đầy đủ 4 reviewer + 3 câu metareview, mỗi câu có **số liệu thật từ artifact**
+> và nhãn trạng thái (✅ đã sửa / 🟡 một phần / ⛔ không làm được + lý do).
+> **3 chỗ cần bạn điền** (đánh dấu `[điền sau khi chạy]`):
+> 1. R2 W2 — kết quả đa payload trên model local (nếu bạn chạy `--payloads`).
+> 2. R4 Q4 — kết luận có sống sót với payload thứ 2 không.
+> 3. Nếu không chạy được: sửa thành "chưa làm được trong thời gian review".
+>
+> ### ⚠️ MỘT CHỖ CHƯA ĐẸP (đã cố hết mức, nói thẳng)
+> Page 8 **tràn đúng 1 dòng** sang trang 9 (mục [3] của bibliography nằm ở đáy trang 8;
+> References vẫn bắt đầu trang 9). Content vẫn là **8 trang**. Tôi đã cắt/nén ở ~12 chỗ
+> (§3.6, §5.1, §5.4, §5.6, §5.7, Limitations, Conclusion, Abstract, caption Table 1,
+> 2 footnote) — vòng lặp cắt/nén không hội tụ thêm được. Nếu bạn muốn sạch tuyệt đối,
+> cắt **1 trong 2 footnote** (link artifact hoặc scope feed-forward) là đủ.
+>
+> ### ⛔ BỊ CHẶN — cần key Bedrock mới
+> Content-form Claude/Nova (R2 Q1) · đa payload Llama (R2 W2) · role-permutation **Llama**
+> (R2 Q2) · context-level >3 contexts (R3 Q5) · Markov chain trên Llama (R1 Q3) ·
+> kiểm mô hình 2 trạng thái tái tạo 0.875 (R1 Q4) · Nova/Claude fresh-artefact (R3 Q1).
+>
+> ### ⛔ CẦN NGƯỜI THẬT (metareview xếp #1)
+> Nhãn adoption/compliance độc lập ≥100 activation, blind với judge, ≥1 frontier model.
+> **Không có đường tắt trung thực** — đã ghi đúng như vậy trong REBUTTAL §1.1.
+>
+> ### 🟡 KHÔNG KHUYẾN NGHỊ LÀM
+> **Mô hình hai trạng thái (form × compromise)** (R1 W2/Q4): R1 chỉ ra fit trên chính
+> Table 4 thì *"yields ŝ^n at by construction"* — rất dễ ra kết quả tautological. Chỉ
+> làm nếu có API + thiết kế mới để tránh tautology.
+>
+> ### 📊 TRẠNG THÁI BUILD CUỐI
+> main: **10 trang** (content 1–8, References bắt đầu trang 9) · supp: **8 trang**,
+> phụ lục A–P · **0 undefined reference** · **0 lỗi LaTeX** · bibliography 41 mục ·
+> `artifacts/MANIFEST.json` 104 cell · `review/REBUTTAL.md` đầy đủ.
 >
 > ### ✅ Việc C — kết quả và HỆ QUẢ QUAN TRỌNG CHO BÀI
 > qwen2.5:7b, 5 agent, `BANANA-77`, 40 natural runs mỗi thứ tự:
@@ -69,6 +108,32 @@
 > main: **10 trang = content 1–8 + References 9–10** ✅ đúng luật
 > ($\le 8$ trang content) · supp: **8 trang**, 2 cột, phụ lục A–P tự đánh chữ cái ·
 > **0 undefined reference** · **0 lỗi LaTeX** · bibliography 41 mục.
+>
+> ### 🔗 ARTIFACT (R3 W7/Q4) — đã nối
+> - Link ẩn danh: **https://anonymous.4open.science/r/Contagion-F4B8/**
+> - License: **MIT** (code) + **CC-BY-4.0** (dữ liệu)
+> - Đã đưa vào: **footnote ở Conclusion** bài chính (cuối trang 8) + mục *"Where the
+>   bundle is"* trong Appendix P.
+> - `artifacts/MANIFEST.json` (**104 cell**, sinh bằng `scripts/build_manifest.py`)
+>   + `REPRODUCE.md` đã cập nhật link, license, và hai giới hạn đã biết.
+> - `README.md` đã sửa: tiêu đề khớp bài nộp, thêm link/license, và **cảnh báo phạm vi**
+>   (repo có code cho adaptive attacker + delimiter/detection/hop-isolation nhưng
+>   **bài chỉ chạy attacker tĩnh + redaction/paraphrase**).
+>
+> ⚠️ **Bạn phải tự kiểm 2 điều** (tôi không xác minh được từ ngoài — trang
+> anonymous.4open.science render bằng JS nên tôi chỉ thấy HTTP 200):
+> 1. Repo đã có **`artifacts/MANIFEST.json`** và **`REPRODUCE.md`** bản mới chưa
+>    (2 file tôi vừa sửa ở máy local — cần push).
+> 2. Repo **không chứa** các file nội bộ: `EXPERIMENT_LOG.md`, `DECISION_MEMO.md`,
+>    `PAPER_DRAFT.md`, `PAPER_TEXT.md`, `REVIEWS_AAMAS2027.md`, `_*.py`. Chúng chứa
+>    ghi chú nội bộ và bản nháp — không nên public.
+>
+> ### ⚠️ MỘT ĐÁNH ĐỔI MỚI CẦN BẠN BIẾT
+> Để vừa link artifact **và** vừa 8 trang, mục `\section*{Ethics and Artifact
+> Availability}` **đã bị bỏ**; link + câu "benign marker payload, no real user data"
+> giờ nằm trong **footnote ở Conclusion**. Nội dung không mất, nhưng nó **không còn
+> là mục riêng có tiêu đề** — R2 W7 yêu cầu dual-use vào main Ethical Considerations.
+> Nếu bạn muốn có mục riêng, phải cắt thêm ~4 dòng ở chỗ khác (nói tôi biết).
 
 ---
 

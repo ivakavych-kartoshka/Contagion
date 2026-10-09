@@ -160,6 +160,13 @@ def main() -> int:
             "where_to_look": "REPRODUCE.md §B1/B2 (lệnh chạy có --fresh-artifact)",
             "affected_claim": "cột † của Table 1 trong bài chính",
         },
+        "artifact": {
+            "anonymous_repository": "https://anonymous.4open.science/r/Contagion-F4B8/",
+            "license_code": "MIT",
+            "license_data": "CC-BY-4.0",
+            "paper_statement": ("footnote trong phần Conclusion của bài chính; "
+                                "phụ lục P nêu chi tiết"),
+        },
         "decoding_default": {"temperature": 0.7, "max_tokens": 400},
         "n_cells": len(cells),
         "cells": cells,

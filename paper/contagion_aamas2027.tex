@@ -90,8 +90,8 @@ to aggregator. Every hand-off is a trust boundary, and a prompt injection that
 propagates to one agent can be carried forward as that agent forwards its output.
 Existing benchmarks measure one agent over one hop; they cannot quantify whether a
 compromise survives transfer, how far it travels, or where to intervene. We present
-\emph{Contagion}, a measurement study of propagation in feed-forward agent networks
-(chains, star/tree-like topologies). Two protocols---a \emph{controlled per-edge}
+\emph{Contagion}, a measurement study of propagation in feed-forward agent networks.
+Two protocols---a \emph{controlled per-edge}
 protocol estimating conditional survival $s_i = \Pr[C_i{=}1 \mid C_{i-1}{=}1]$, and a
 \emph{natural-run} protocol measuring end-to-end ASR and $R_0$---separate what holds
 by definition from what we measure: $\mathrm{ASR}=\prod_i s_i^{\mathrm{nat}}$ is an
@@ -493,15 +493,11 @@ what we test.
 We define $R_0$ operationally in observed counts rather than as an eigenvalue: with
 $\mathcal{C}$ the compromised agent-instances of a natural run and $n(c)$ the number of
 neighbours that $c$'s forwarded message newly compromises,
-$R_0 = |\mathcal{C}|^{-1}\sum_{c\in\mathcal{C}} n(c)$ (unit of analysis the
-agent-instance; denominator the compromised instances, not trials; generation
-convention one round, counted at node level). On a chain $n(c)\le 1$, so $R_0\le 1$
-holds by construction rather than by measurement, which is why
-Section~\ref{sec:threshold} treats it as descriptive. It is reported next to
-$\mathrm{ASR}$, which carries the interval, since the two diverge
-(Section~\ref{sec:topology}); we attach no interval to $R_0$ because its numerator and
-denominator are not recoverable from the archived per-cell files, and the
-regular-topology target $d\cdot\bar s$ is a consistency check, not an identity.
+$R_0 = |\mathcal{C}|^{-1}\sum_{c\in\mathcal{C}} n(c)$, one round counted at node level.
+On a chain $n(c)\le 1$, so $R_0\le 1$ holds by construction rather than by measurement,
+which is why Section~\ref{sec:threshold} treats it as descriptive. It is reported next
+to $\mathrm{ASR}$, which carries the interval; we attach none to $R_0$ itself
+(\suppref{app:topology}).
 Because a network can achieve
 $\mathrm{ASR} = 0$ by refusing to work, we also measure the paired legitimate-task
 performance $\Delta U = U_{\mathrm{clean}} - U_{\mathrm{attack}}$ and
@@ -669,24 +665,21 @@ Table~\ref{tab:cross} reports the per-model chain headline. Two facts stand out.
 First, per-hop survival varies several-fold \emph{across positions within a single
 model and attack} (Fig.~\ref{fig:role}): on a five-agent chain the worker-position edge
 survives $0.133$ while the reviewer-position edge survives $0.867$, so a scalar $s$ per
-model is unjustified. Roles are assigned in a fixed order, so this profile confounds
-role with depth and we report it without ranking roles
-(\suppref{app:role-permutation}).
-Second, susceptibility does not
-follow \emph{scale}: the two frontier commercial models sit at the bottom of the panel
-and a $70$B open-weight model at the top, but this is a negative association over five
-uncontrolled points rather than a capability finding. Both facts
-point the same
-way: a single end-to-end number per model discards \emph{where} in the network the
-attack was stopped.
+model is unjustified. Roles are assigned in a fixed order, so the profile confounds role
+with depth and we report it without ranking roles (\suppref{app:role-permutation}).
+Second, susceptibility does not follow \emph{scale}: the frontier commercial models sit
+at the bottom of the panel and a $70$B open-weight model at the top, but this is a
+negative association over five uncontrolled points rather than a capability finding. A
+single end-to-end number per model discards \emph{where} in the network the attack was
+stopped.
 
 \begin{table}[t]
 \small
 \caption{Chain, no defence, Task Family B; 40 natural runs and 30 controlled trials
 per edge. $\bar s$ is the mean controlled per-edge survival; per-edge order follows
 the chain. $\dagger$ marks the two rows re-run under the fresh-artefact protocol; the
-other three predate that policy and use fixed artefacts, so they are
-protocol-specific (Section~\ref{sec:ablation}).}
+other three use fixed artefacts and are protocol-specific
+(Section~\ref{sec:ablation}).}
 \label{tab:cross}
 \begin{tabular}{lccc}
 \toprule
@@ -900,32 +893,27 @@ $d\cdot\bar s$ (within $5\%$). A topology also decides how much role heterogenei
 network averages over---chain survival spans $0.27$--$1.00$ across receiver roles while
 all six star edges are worker-to-aggregator and nearly homogeneous---and the
 star--tree relation itself \emph{reverses with scale} (star above tree on DeepSeek and
-on a second Llama instance at $n = 10$, tree above star at $n = 7$). The per-topology
+on a second Llama instance at $n = 10$, tree above star at $n = 7$); the per-topology
 table is in the supplementary material.
 
 The relative error of the isolated product grows with depth at a model-specific rate,
 and that rate---not the error at any single depth---is the usable diagnostic. Across
-models the slopes form a \emph{spectrum} rather than two
-categories: $+11.8$ points per hop on qwen2.5:7b (Spearman $\rho = +1.00$,
-permutation $p = 0.003$ over its six depths, 95\% bootstrap interval $[+7.8, +14.8]$),
-$+6.8$ on Llama 3.3 70B ($\rho = +0.77$, $p = 0.014$, reproduced at higher power)
-before its chain dies at
-depth $11$, and $+2.3$ on DeepSeek V3.2 at $n = 10$ ($\rho = +0.65$, $p = 0.067$)---a
-slope whose interval spans zero, so we do not read it as a trend; its flatness at
-$n = 8$ ($\rho = -0.07$, $p = 0.91$) is a reminder that a short low-power chain can
-read as flat at all. The ordering follows from what Section~\ref{sec:transport} measures
-directly: where the isolated rate transports best (DeepSeek matches its measured ASR
-to $2.2\%$) composing edge estimates adds little systematic error, whereas an edge
-under-estimated by $3.75\times$ (Llama's middle edge) enters every product containing
-it and compounds with depth. The profile's \emph{slope} therefore diagnoses
+models the slopes form a \emph{spectrum} rather than two categories: $+11.8$ points per
+hop on qwen2.5:7b (Spearman $\rho = +1.00$, permutation $p = 0.003$, bootstrap interval
+$[+7.8, +14.8]$), $+6.8$ on Llama 3.3 70B ($\rho = +0.77$, $p = 0.014$) before its
+chain dies at depth $11$, and $+2.3$ on DeepSeek V3.2 at $n = 10$ ($\rho = +0.65$,
+$p = 0.067$)---a slope whose interval spans zero, so we do not read it as a trend. The
+ordering follows from what Section~\ref{sec:transport} measures directly: where the
+isolated rate transports best (DeepSeek matches its measured ASR to $2.2\%$) composing
+edge estimates adds little systematic error, whereas an edge under-estimated by
+$3.75\times$ (Llama's middle edge) compounds with depth. The slope therefore diagnoses
 transportability while its \emph{direction} stays model- and topology-dependent.
 Independence is not what fails here: evaluated on in-chain rates,
 Eq.~\eqref{eq:percolation} reproduces the measured ASR in all three topologies, which
-is expected rather than informative, since each of these graphs has effectively one
-entry--target path and the recurrence collapses to the chain identity; on a
-reconvergent DAG, where the two can differ, it underestimates reachability by
-$2.6\times$ when built from isolated marginals but not from in-chain ones
-(\suppref{app:reconvergent}).
+is expected rather than informative, since each has effectively one entry--target path
+and the recurrence collapses to the chain identity; on a reconvergent DAG, where the two
+can differ, it underestimates reachability by $2.6\times$ when built from isolated
+marginals but not from in-chain ones (\suppref{app:reconvergent}).
 
 \subsection{Recurrence makes the threshold non-vacuous}
 \label{sec:cyclic}
@@ -977,12 +965,13 @@ judge are itemised in \suppref{app:judge-validation} and \suppref{app:limits}.
 \label{sec:conclusion}
 
 A compromise's reach is a property of the graph, the roles travelled and the form in
-which the payload is re-packaged at each hand-off: composition holds for rates measured
-\emph{in the chain}, isolated estimates need not transport, and payload form is a
-first-order mechanism ($0.067$ bare versus $0.967$ embedded). The epidemic threshold is
-identically satisfied on any acyclic graph, so reachability comes from
-Eq.~\eqref{eq:percolation} rather than $R_0$, and defence efficacy is unidentifiable
-without a matched baseline.
+which the payload is re-packaged at each hand-off: composition holds in-chain, isolated
+estimates need not transport, and payload form is a first-order mechanism ($0.067$ bare
+versus $0.967$ embedded). On acyclic graphs the epidemic threshold is satisfied
+identically, so reachability comes from Eq.~\eqref{eq:percolation} rather than $R_0$.
+The dynamics we measure are feed-forward---each agent forwards once per run---so what we
+quantify is per-hand-off survival composed along paths rather than repeated spreading
+within a run; the only recurrent setting is the three-agent loop.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1000,6 +989,15 @@ without a matched baseline.
 
 %%% The next two lines define, first, the bibliography style to be
 %%% applied, and, second, the bibliography file to be used.
+
+%%% Ép bibliography bắt đầu ở TRANG MỚI. Quy định AAMAS 2027: bài "must be at most
+%%% eight (8) pages long, with any number of ADDITIONAL PAGES containing bibliographic
+%%% references". Nếu không ép, vài mục đầu của danh mục rơi xuống đáy trang 8 và như
+%%% vậy phần *content* trông như tràn sang trang 8. \clearpage chỉ ngắt trang, KHÔNG
+%%% đụng tới style file hay bất kỳ tham số layout nào (margin, font, spacing) — nên
+%%% không vi phạm điều khoản "do not modify the style files or any of the layout
+%%% parameters".
+\clearpage
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

@@ -1,12 +1,39 @@
 # REPRODUCE.md — tái lập mọi con số trong paper
 
+> **Cách nộp (AAMAS 2027).** Quy định: *"Supplementary material should be submitted as a
+> single zip file and should not exceed 25MB"* và *"you must ensure that your
+> supplementary material does not compromise the anonymity of your submission"*.
+> Vì vậy bundle này **được nộp trực tiếp dưới dạng `supplementary_material.zip`**
+> (sinh bằng `python scripts/make_supplementary_zip.py --write`; hiện **2.3 MB** / 306
+> file, giới hạn 25 MB). Link ẩn danh dưới đây chỉ là **kênh phụ** để reviewer xem
+> nhanh trên web; **nguồn chính thức là file zip** đính kèm bài nộp.
+>
+> **Artifact ẩn danh (kênh phụ):** <https://anonymous.4open.science/r/Contagion-F4B8/>
+> · License: **MIT** cho code, **CC-BY-4.0** cho dữ liệu đo.
+> · Inventory machine-readable: [`artifacts/MANIFEST.json`](artifacts/MANIFEST.json)
+> — một dòng cho mỗi cell (model, script sinh, ngày, ASR, protocol), sinh bằng
+> `python scripts/build_manifest.py`.
+>
+> **Sau khi được nhận:** quy định yêu cầu supplementary *"openly available in archival
+> form"* (Zenodo/GitHub) và **phải được trích trong camera-ready** — tức link trên
+> cần được thay bằng link công khai (bỏ ẩn danh) ở bản camera-ready.
+>
 > Mục đích: người ngoài (reviewer, artifact chair) chạy lại **từng bảng và từng
-> hình** của bản thảo. Mọi lệnh dưới đây chạy từ gốc repo
-> (`E:\NCKH\Contagion`).
+> hình** của bản thảo. Mọi lệnh dưới đây chạy từ **gốc repo** (thư mục chứa
+> `REPRODUCE.md` và `contagion/`); các đường dẫn đều tương đối nên không phụ thuộc
+> ổ đĩa hay tên máy.
 >
 > **Nguyên tắc:** không có số nào trong paper được nhập tay. Mọi bảng/hình đều
 > sinh từ `experiments/results/*/results.json` + `report.md`, và các file đó do
 > script trong `scripts/` ghi ra.
+>
+> **Hai giới hạn đã biết** (nói trước để không mất thời gian truy):
+> 1. Cờ protocol fixed/fresh **không** được lưu trong `results.json`; nó chỉ nằm ở
+>    lệnh chạy (§B1/B2 dưới đây). Vì vậy cột `protocol` trong MANIFEST ghi
+>    `not recorded`.
+> 2. R₀ trong bảng topology **không** tái lập được từ các file per-cell đã lưu
+>    (xem `experiments/results/r0_intervals/report.md`); đây là lý do bài không in
+>    interval cho R₀.
 
 ---
 
