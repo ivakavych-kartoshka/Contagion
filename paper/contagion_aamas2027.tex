@@ -100,14 +100,15 @@ identity for chains (the product telescopes), so the question is
 diagnoses. \textbf{(i)}~Isolated per-hop measurement does not transport on one model and edge
 ($3.75\times$ under-estimate, $p=0.0002$ at $n=200$) and is not distinguishable from
 transport on another; we report intervals and equivalence tests rather than reading
-nulls as agreement, and we state the independence/shared-ancestor assumptions under
-which the product-of-complements form is exact. \textbf{(ii)}~Payload \emph{form} is a
+nulls as agreement. \textbf{(ii)}~Payload \emph{form} is a
 first-order mechanism: the same target survives at $0.067$ arriving as a bare assertion
 and at $0.967$ embedded in a work product. \textbf{(iii)}~For finite acyclic graphs the
 standard linearised next-generation matrix is strictly triangular ($\rho(M)=0$) as a
 structural property of acyclicity rather than an empirical safety guarantee; we
 therefore treat $R_0$ as a \emph{descriptive, finite-horizon} statistic (defined in
-observed counts) and report $R_0<1$ alongside ASR of $0.45$--$0.80$. \textbf{(iv)}~Defence placement is structural (paths and cut sets) rather than uniform across parallel paths; our primary outcome is \emph{textual propagation} (ASV), not instruction adoption.
+observed counts) and report it next to the reachability it is often confused with:
+across the seven-agent topologies ASR spans $0.45$--$0.80$ while $R_0$ spans
+$0.42$--$0.83$, and their ordering reverses. \textbf{(iv)}~Defence placement is structural (paths and cut sets) rather than uniform across parallel paths; our primary outcome is \emph{textual propagation} (ASV), not instruction adoption.
 \end{abstract}
 
 %%% Use this command to specify a few keywords describing your work.
@@ -496,9 +497,12 @@ $R_0 = |\mathcal{C}|^{-1}\sum_{c\in\mathcal{C}} n(c)$ (unit of analysis the
 agent-instance; denominator the compromised instances, not trials; generation
 convention one round, counted at node level). On a chain $n(c)\le 1$, so $R_0\le 1$
 holds by construction rather than by measurement, which is why
-Section~\ref{sec:threshold} treats it as descriptive. We report it with a Wilson
-interval alongside its regular-topology target $d\cdot\bar s$ ($d$ = mean out-degree)
-as a consistency check, not an identity. Because a network can achieve
+Section~\ref{sec:threshold} treats it as descriptive. It is reported next to
+$\mathrm{ASR}$, which carries the interval, since the two diverge
+(Section~\ref{sec:topology}); we attach no interval to $R_0$ because its numerator and
+denominator are not recoverable from the archived per-cell files, and the
+regular-topology target $d\cdot\bar s$ is a consistency check, not an identity.
+Because a network can achieve
 $\mathrm{ASR} = 0$ by refusing to work, we also measure the paired legitimate-task
 performance $\Delta U = U_{\mathrm{clean}} - U_{\mathrm{attack}}$ and
 $\mathrm{Retention} = U_{\mathrm{attack}}/U_{\mathrm{clean}}$, running each
@@ -658,7 +662,7 @@ calls are made.
 \section{Results}
 \label{sec:results}
 
-\subsection{Per-hop survival varies sharply by position, and susceptibility does not track capability}
+\subsection{Per-hop survival varies sharply by position, and susceptibility does not track scale}
 \label{sec:role-position}
 
 Table~\ref{tab:cross} reports the per-model chain headline. Two facts stand out.
@@ -666,12 +670,13 @@ First, per-hop survival varies several-fold \emph{across positions within a sing
 model and attack} (Fig.~\ref{fig:role}): on a five-agent chain the worker-position edge
 survives $0.133$ while the reviewer-position edge survives $0.867$, so a scalar $s$ per
 model is unjustified. Roles are assigned in a fixed order, so this profile confounds
-role with depth; permuting the labels moves it without separating the two, so we report
-it without ranking roles (\suppref{app:role-permutation}).
+role with depth and we report it without ranking roles
+(\suppref{app:role-permutation}).
 Second, susceptibility does not
-follow capability: the two frontier commercial models sit at the bottom of the panel
-and a $70$B open-weight model at the top, so ASR does not follow model scale, and the
-five models yield four qualitatively different outcomes. Both facts point the same
+follow \emph{scale}: the two frontier commercial models sit at the bottom of the panel
+and a $70$B open-weight model at the top, but this is a negative association over five
+uncontrolled points rather than a capability finding. Both facts
+point the same
 way: a single end-to-end number per model discards \emph{where} in the network the
 attack was stopped.
 
@@ -861,7 +866,9 @@ utility where $\mathrm{ASR}$ is already $0.000$. This matches prior single-agent
 findings that paraphrasing is breakable~\cite{Zhan2025Adaptive}.
 
 Both verdicts cover two defences against a static, non-adaptive attacker, and the
-small panels serve only the within-model contrast.
+small panels serve only the within-model contrast. The frontier model's floor is
+measured on the bare and plain forms---the least effective ones we test
+(Table~\ref{tab:form})---so we do not claim general resistance.
 
 \begin{figure}[t]
   \centering
@@ -970,13 +977,12 @@ judge are itemised in \suppref{app:judge-validation} and \suppref{app:limits}.
 \label{sec:conclusion}
 
 A compromise's reach is a property of the graph, the roles travelled and the form in
-which the payload is re-packaged at each hand-off: composition holds when the rates are
-measured \emph{in the chain}, and transporting isolated estimates---diagnosed by the
-depth-error slope---is the failure mode single-agent benchmarks assume away. Payload
-form is a first-order mechanism ($0.067$ bare versus $0.967$ embedded); the epidemic
-threshold is identically satisfied on any acyclic graph, so reachability comes from
-Eq.~\eqref{eq:percolation} rather than $R_0$; and defence efficacy is unidentifiable
-without a matched baseline, with placement set by graph structure.
+which the payload is re-packaged at each hand-off: composition holds for rates measured
+\emph{in the chain}, isolated estimates need not transport, and payload form is a
+first-order mechanism ($0.067$ bare versus $0.967$ embedded). The epidemic threshold is
+identically satisfied on any acyclic graph, so reachability comes from
+Eq.~\eqref{eq:percolation} rather than $R_0$, and defence efficacy is unidentifiable
+without a matched baseline.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

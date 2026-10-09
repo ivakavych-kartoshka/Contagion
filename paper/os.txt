@@ -255,7 +255,10 @@ cell sum-maries (\T1/zi4/m/n/9 results.json\T1/LinuxLibertineT-TLF/m/n/9 (-20)
 Class aamas Warning: CCS concepts are mandatory for papers over two pages.
 
 
-Overfull \vbox (1.792pt too high) has occurred while \output is active
+Package balance Warning: You have called \balance in second column
+(balance)                Columns might not be balanced.
+
+
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
 f)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-utf8.def)
@@ -281,5 +284,5 @@ s/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb><C:/U
 sers/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/
 Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C
 :/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on supplementary.pdf (8 pages, 668728 bytes).
+Output written on supplementary.pdf (8 pages, 672797 bytes).
 Transcript written on supplementary.log.
