@@ -1,5 +1,32 @@
 # HƯỚNG DẪN FIX THEO REVIEW AAMAS 2027 (Submission Id 2419)
 
+> ## ⚡ VIỆC CÒN LẠI — chỉ 4 việc, cập nhật 2026-10-08
+>
+> | # | Việc còn lại | Chặn bởi | Ai làm | Thời gian |
+> |---|---|---|---|---|
+> | **A** | Sửa **Fig. 2** cho đọc được (R2 format check) | không | bạn hoặc tôi (sửa `make_figures.py`) | ~30 phút |
+> | **B** | **Permutation p-value** cho depth slope §5.7 (R1 W7, R3 W1) | không | tôi làm được (0 API) | ~40 phút |
+> | **C** | **Role-permutation test** (R2 W3/Q2) | cần thêm cờ đảo role trong `engine.py` | tôi viết code, bạn chạy qwen local | ~2 giờ (code) + 1 giờ (chạy) |
+> | **D** | Hai citation còn sót: **[13] debate** (không phải orchestration framework), **[31] Reflexion** (không chứng minh "tool calls prompted or learned") | không | tôi sửa 2 câu | ~15 phút |
+>
+> ### ⛔ BỊ CHẶN — cần key Bedrock mới (không làm được gì lúc này)
+> - **Nova + Claude chạy lại fresh-artefact** (R3 Q1) — key đã hết hạn.
+> - **Content-form trên Claude/Nova** (R2 Q1), **payload thứ 2 trên Llama** (R2 W2, R4 Q4) — cùng lý do (script `--marker` đã sẵn sàng, chỉ cần key).
+> - **Nhãn adoption độc lập ≥100 activation** (R2 Q3 — việc metareview xếp #1 về mức độ thuyết phục) — cần frontier model + người gán thật; **không có đường tắt trung thực**.
+>
+> ### 🟡 ĐÃ CHẤP NHẬN ĐÁNH ĐỔI (nói rõ để bạn biết)
+> - **Câu dual-use** và **header Ethics riêng** đã bị cắt khỏi bài chính khi nén về 8 trang; hiện chỉ còn 2 câu trong Conclusion + Appendix K. R2 yêu cầu đưa vào main → **đáp ứng một phần**.
+> - **3 hàng qwen/Nova/Claude trong Table 1** vẫn là fixed-artefact (qwen đã có bản fresh riêng nhưng chưa ghép vào bảng — xem việc **E** bên dưới).
+> - **11 cảnh báo** trong `transport_tests/report.md` về "k không nguyên": muốn Fisher exact chính xác phải chạy lại cell với `--per-edge = --trials` (0 API sau đó).
+>
+> ### 📌 Việc tùy chọn nếu còn thời gian
+> - **E**: ghép số `frontier_qwen_fresh` (ASR 0.375, s̄ 0.733) vào Table 1 hàng qwen — **thay đổi headline**, cần bạn quyết.
+> - **F**: soạn `review/REBUTTAL.md` trả lời 20 câu hỏi R1–R4 (không phụ thuộc API).
+> - **G**: tính CI cho R₀ (Table 5) — cần chạy lại cell có lưu paths.
+
+---
+
+
 > **Nguồn:** `review.md` — 4 review (R1 3/7 · R2 4/7 · R3 5/7 · R4 3/7) + metareview.
 > **Quyết định metareview:** *Reject, invite to Findings of AAMAS.*
 > **Chẩn đoán của metareview:** bài **không** hỏng ở mức "không cứu được"; nó hỏng ở
@@ -16,39 +43,53 @@
 
 ---
 
-## 0. Bảng tổng hợp: 25 việc, xếp theo "điểm/công"
+## 0. Bảng tổng hợp: 25 việc + TRẠNG THÁI (cập nhật 2026-10-08)
 
-| # | Việc | Nguồn | Tier | Chi phí |
-|---|---|---|---|---|
-| 1 | Điền AI-disclosure (tool, version, prompts) | R3 policy, metareview | 0 | 10 phút |
-| 2 | Sửa mọi cross-reference chết (§3.7→§5.9, §4→§5.9, Supp §5.10/§4.2/§3.4) | R3 W4, R4 W3 | 0 | 30 phút |
-| 3 | Đưa kết quả n=200 + BH + homogeneity vào bài chính | R3 W4, metareview | 0 | 1 giờ |
-| 4 | Reconcile 0.10 vs 0.17 (floor) + ghi rõ đếm gì | R2 W6, R3 Q1 | 0 | 20 phút |
-| 5 | Bảng 1: ghi rõ protocol từng hàng († có/không) | R3 W3 | 0 | 20 phút |
-| 6 | §5.6: ghi rõ số nào star, số nào tree | R3 W3 | 0 | 15 phút |
-| 7 | Sửa câu trích [21] (Kempe = NP-hard, không phải "exact on DAGs") | R1 W3, R4 W5 | 0 | 15 phút |
-| 8 | Bỏ Eq. (1) khỏi danh sách "results" ở Abstract; đổi "holds empirically" → "by construction" | R1 W1, W-suggest | 0 | 30 phút |
-| 9 | Interval cho Table 2 + Table 5, và nhãn R₀ "with Wilson interval" | R3 W1, W6, R4 W7 | 0 | 45 phút (script có sẵn) |
-| 10 | Đổi "agrees within resolution" thành TOST/equivalence | R3 W1, metareview | 0 | 30 phút (script có sẵn) |
-| 11 | Soften cyclic "design rule" → mean-field + 3 điểm dữ liệu | R1 W5, metareview | 0 | 20 phút |
-| 12 | R₀: nêu công thức + denominator + generation convention trong main text | R1 W4, Q1 | 0 | 30 phút |
-| 13 | Nêu rõ C₀=1 enforce thế nào trong natural runs | R2 detail, R3 Q1 | 0 | 15 phút |
-| 14 | Fig. 2 cho đọc được; đổi keyword bỏ "Epidemic threshold" | R2 policy, R4 W6 | 0 | 30 phút |
-| 15 | Sửa citation [6] DasGupta, [2] Barabási, [4,19,25], [13], [31], [26] | R4 W5 | 0 | 45 phút |
-| 16 | Thêm related work: Agent Smith, NetSafe, G-Safeguard, Huang | R4 W4 | 0 | 45 phút |
-| 17 | Rewrite Supp §13 (reproducibility) thành "artifact chứa gì" | R3 W7 | 0 | 30 phút |
-| 18 | Label confirmatory vs exploratory cho từng analysis | R3 W6 | 0 | 20 phút |
-| 19 | Ethical: đưa câu dual-use vào main text | R2 ethics | 0 | 10 phút |
-| 20 | **Test Eq. (3) trên DAG reconvergent** | R1 Q2, metareview #2 | 1 | 0 API (local) — script có sẵn |
-| 21 | Permutation p-value cho depth slope (§5.7) | R1 W7, R3 W1 | 1 | 0 API |
-| 22 | Role-permutation test (role vs position) | R2 W3, Q2 | 1 | local qwen |
-| 23 | Content-form trên Claude + Nova (embedded vs bare) | R2 Q1 | 2 | API |
-| 24 | Payload thứ 2 + action-style payload có tool call | R2 W2, R4 Q4 | 2 | API |
-| 25 | Nhãn adoption độc lập ≥100 activation, frontier model | R2 Q3, metareview #1 | 2 | API + người gán |
+> **Tóm tắt nhanh:** **18/25 XONG**, **4 việc còn lại làm được**, **3 việc bị chặn
+> vì key Bedrock đã hết hạn**. Trạng thái build hiện tại: bài chính **10 trang =
+> content 1–8 + References 9–10** ✅ đúng luật; phụ lục **7 trang, 2 cột, phụ lục
+> đánh chữ cái A–O** ✅; **0 undefined reference**; **0 overfull cột**.
 
-**Ba việc metareview nói sẽ đổi ý họ nhất:** #25 (nhãn adoption độc lập), #20 (test
-Eq. (3) + cut-set trên DAG reconvergent, hoặc hạ claim xuống "illustrative"), và #2/#4/#5
-(reconcile số liệu + cross-reference). Trong đó **#20 và #2/#4/#5 làm được ngay**.
+| # | Việc | Nguồn | Tier | Trạng thái | Ghi chú |
+|---|---|---|---|---|---|
+| 1 | Điền AI-disclosure (tool, version, prompts) | R3 policy, metareview | 0 | ✅ **XONG** | `DeepSeek V4.1 Flash` + prompts nguyên văn, Appendix L |
+| 2 | Sửa mọi cross-reference chết | R3 W4, R4 W3 | 0 | ✅ **XONG** | 0 undefined; không còn §5.10/§4.2/§3.7 |
+| 3 | Đưa n=200 + BH + homogeneity vào bài chính | R3 W4, metareview | 0 | ✅ **XONG** | §5.8 (MDE 0.11, BH m=5, χ²=13.40) |
+| 4 | Reconcile 0.10 vs 0.17 (floor) | R2 W6, R3 Q1 | 0 | ✅ **XONG** | main nói rõ "single-hop cell is 0.17"; phụ lục có note |
+| 5 | Bảng 1: protocol từng hàng | R3 W3 | 0 | ✅ **XONG** | † = fresh; 3 hàng "predate that policy" |
+| 6 | §5.6: số nào star, số nào tree | R3 W3 | 0 | ✅ **XONG** | nói rõ đảo chiều theo scale + số cụ thể |
+| 7 | Sửa câu trích [21] (Kempe) | R1 W3, R4 W5 | 0 | ✅ **XONG** | bỏ "linear-time on acyclic" |
+| 8 | Eq. (1) bỏ khỏi "results" | R1 W1 | 0 | ✅ **XONG** | bỏ "holds empirically"/"as it must" |
+| 9 | Interval + TOST cho bảng transport | R3 W1, W6 | 0 | ✅ **XONG** | `transport_tests.py`; đã áp vào §5.2 |
+| 10 | "agrees within resolution" → equivalence | R3 W1 | 0 | ✅ **XONG** | TOST fail 2/3 cạnh ở n=40 |
+| 11 | Soften cyclic "design rule" | R1 W5 | 0 | ✅ **XONG** | "mean-field prediction" + công thức finite-state |
+| 12 | R₀: công thức + denominator | R1 W4, Q1 | 0 | ✅ **XONG** | công thức inline §3.5 |
+| 13 | C₀=1 enforce thế nào | R2 detail, R3 Q1 | 0 | ✅ **XONG** | "injected directly... no run is discarded" |
+| 14a | Keyword bỏ "Epidemic threshold" | R4 W6 | 0 | ✅ **XONG** | thay bằng "Measurement validity" |
+| 14b | **Fig. 2 cho đọc được** | R2 format | 0 | ❌ **CHƯA** | cần sửa `make_figures.py` (font/số ô) |
+| 15 | Sửa citation ([6] DasGupta, [26] adapt) | R4 W5 | 0 | 🟡 **MỘT PHẦN** | [6]→Anirban ✅, [26] "adapt" ✅; **còn [13] debate, [31] Reflexion** |
+| 16 | Thêm related work: Agent Smith, NetSafe, G-Safeguard, Huang | R4 W4 | 0 | ✅ **XONG** | 4 entry verify từ PMLR/ACL + 2 câu positioning |
+| 17 | Supp §13 → "artifact chứa gì" | R3 W7 | 0 | ✅ **XONG** | Appendix O, có "Not supplied, and therefore not claimed" |
+| 18 | Confirmatory vs exploratory | R3 W6 | 0 | ✅ **XONG** | cuối Appendix O |
+| 19a | Ethics/Artifact statement trong main | R2 ethics | 0 | 🟡 **MỘT PHẦN** | còn 2 câu trong Conclusion; **header riêng đã bị cắt** để vừa 8 trang |
+| 19b | **Câu dual-use vào main text** | R2 ethics | 0 | ❌ **CHƯA** | hiện chỉ ở phụ lục Appendix K + bản ghi chú |
+| 20 | **Test Eq. (3) trên DAG reconvergent** | R1 Q2, metareview #2 | 1 | ✅ **XONG** | `dag_reconv_qwen_n40`, Appendix M, §5.6 |
+| 20b | Chạy lại qwen với fresh-artefact | R3 Q1 | 1 | ✅ **XONG** | `frontier_qwen_fresh`: ASR 0.300→**0.375**, s̄ 0.611→**0.733** |
+| 21 | **Permutation p-value cho depth slope** | R1 W7, R3 W1 | 1 | ❌ **CHƯA** | 0 API, làm được |
+| 22 | **Role-permutation test** | R2 W3, Q2 | 1 | ❌ **CHƯA** | cần thêm cờ đảo role trong engine; local qwen |
+| 23 | Content-form trên Claude + Nova | R2 Q1 | 2 | ⛔ **CHẶN** | key Bedrock hết hạn |
+| 24 | Payload thứ 2 + action-style payload | R2 W2, R4 Q4 | 2 | ⛔ **CHẶN** | cần API; script `--marker` đã có sẵn |
+| 25 | Nhãn adoption độc lập ≥100 activation, frontier | R2 Q3, metareview #1 | 2 | ⛔ **CHẶN** | cần API + người gán thật |
+| 26 | Nova/Claude chạy lại fresh-artefact | R3 Q1 | 2 | ⛔ **CHẶN** | key Bedrock hết hạn |
+
+**Ba việc metareview nói sẽ đổi ý họ nhất — tình trạng:**
+1. **#25 nhãn adoption độc lập** → ⛔ chặn (cần API + người gán). *Không có đường tắt
+   trung thực.*
+2. **#20 test Eq. (3) trên DAG reconvergent** → ✅ **XONG**, và kết quả **mạnh hơn dự
+   kiến**: Eq. (3) dựng từ margin **cách ly** cho 0.309 trong khi số đo là **0.792**
+   (lệch **+0.483**; cấp cạnh lệch tới **2.18×**) ⇒ transport failure tái xuất hiện
+   trên topology reconvergent, cùng dấu với Llama.
+3. **#2/#4/#5 reconcile số liệu + cross-reference** → ✅ **XONG**.
 
 ---
 

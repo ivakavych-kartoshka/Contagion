@@ -121,7 +121,7 @@ Special comment 'acks'
 net-tlf.fd))
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\\' on input line 74.
+(hyperref)                removing `\\' on input line 87.
 
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/preprint\balance.sty)
 Excluding comment 'screenonly' Include comment 'printonly'
@@ -157,7 +157,7 @@ mt-tlf.fd)
 inet-tlf.fd)
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\\' on input line 75.
+(hyperref)                removing `\\' on input line 88.
 
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg)
@@ -173,18 +173,18 @@ ps/libertine/lbtn_oexx6f.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts
 eX/fonts/enc/dvips/inconsolata/i4-t1-4.enc} <./by.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 197.
+(hyperref)                removing `math shift' on input line 210.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 197.
+(hyperref)                removing `subscript' on input line 210.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 197.
+(hyperref)                removing `math shift' on input line 210.
 
 
-Overfull \hbox (1.66612pt too wide) in paragraph at lines 206--217
+Overfull \hbox (1.66612pt too wide) in paragraph at lines 219--230
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) assumes \T1/LinuxLibertineT-TLF/m/it/9 (-20
 ) edge ac-ti-va-tions \T1/LinuxLibertineT-TLF/m/n/9 (-20) (and the cor-re-spond
 -ing parent-reach events
@@ -192,7 +192,7 @@ Overfull \hbox (1.66612pt too wide) in paragraph at lines 206--217
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Overfull \hbox (1.65533pt too wide) in paragraph at lines 294--305
+Overfull \hbox (1.65533pt too wide) in paragraph at lines 307--318
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) is re-compromised by its own work-ers' re-p
 orts in $\OT1/LinuxLibertineT-TLF/m/n/9 (-20) 0\OML/nxlmi/m/it/9 :\OT1/LinuxLib
 ertineT-TLF/m/n/9 (-20) 725$ $\LMS/ntxsy/m/n/9 »\OT1/LinuxLibertineT-TLF/m/n/9 
@@ -200,18 +200,18 @@ ertineT-TLF/m/n/9 (-20) 725$ $\LMS/ntxsy/m/n/9 »\OT1/LinuxLibertineT-TLF/m/n/9
 it/9 ; \OT1/LinuxLibertineT-TLF/m/n/9 (-20) 0\OML/nxlmi/m/it/9 :\OT1/LinuxLiber
 tineT-TLF/m/n/9 (-20) 839\LMS/ntxsy/m/n/9 ¼$
 [2.2]
-Overfull \hbox (10.3392pt too wide) in paragraph at lines 339--348
+Overfull \hbox (10.3392pt too wide) in paragraph at lines 352--361
  [][] 
 [3.3{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn
 _fygcup.enc}]
-Overfull \hbox (6.14447pt too wide) in paragraph at lines 441--451
+Overfull \hbox (6.14447pt too wide) in paragraph at lines 454--464
  [][] 
 [4.4]
-Overfull \hbox (3.54837pt too wide) in paragraph at lines 641--648
+Overfull \hbox (3.54837pt too wide) in paragraph at lines 654--661
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Code, per-cell out-puts, tests and of-fli
 ne re-analysis (Ap-pen-dices A--
 
-Overfull \hbox (7.8536pt too wide) in paragraph at lines 653--656
+Overfull \hbox (7.8536pt too wide) in paragraph at lines 666--669
  []\T1/LinuxLibertineT-TLF/m/it/9 (-20) Tool and ver-sion.[] \T1/LinuxLibertine
 T-TLF/b/n/9 (-20) DeepSeek V4.1 Flash\T1/LinuxLibertineT-TLF/m/n/9 (-20) , used
  in-ter-ac-tively through
@@ -222,7 +222,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [6.6]
-Overfull \hbox (3.34462pt too wide) in paragraph at lines 802--812
+Overfull \hbox (3.34462pt too wide) in paragraph at lines 815--825
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) cell re-sult files that are in-cluded: per-
 cell sum-maries (\T1/zi4/m/n/9 results.json\T1/LinuxLibertineT-TLF/m/n/9 (-20) 
 ),
@@ -259,5 +259,5 @@ s/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI.pfb><C:/U
 sers/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/
 Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C
 :/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on supplementary.pdf (7 pages, 650209 bytes).
+Output written on supplementary.pdf (7 pages, 650330 bytes).
 Transcript written on supplementary.log.

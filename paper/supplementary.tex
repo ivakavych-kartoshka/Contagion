@@ -71,6 +71,19 @@ section number in words.
 
 \keywords{Prompt injection, LLM agent networks, measurement validity, reproducibility}
 
+% ---------------------------------------------------------------------
+% ĐÁNH SỐ PHỤ LỤC BẰNG CHỮ CÁI (A, B, C...)
+% ``aamas.cls`` kế thừa ``amsart``, KHÔNG có \appendix, nên mặc định section được
+% đánh số 1, 2, 3... Bài chính lại trỏ tới phụ lục bằng chữ cái (Appendix A--O).
+% Ta đặt lại bộ đếm để section ở đây hiện A, B, C... và \ref cũng trả về chữ cái.
+% Không đụng tới style/margin/font size (không vi phạm quy định layout).
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\sectionname}{Appendix}
+\makeatletter
+\renewcommand{\@seccntformat}[1]{\sectionname~\csname the#1\endcsname.\quad}
+\makeatother
+
 \begin{document}
 \maketitle
 
