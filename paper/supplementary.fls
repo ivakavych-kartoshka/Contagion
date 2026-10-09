@@ -215,6 +215,8 @@ INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\libertine\t1linuxlib
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\libertine\t1linuxlibertinet-tlf.fd
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\libertine\t1linuxlibertinet-tlf.fd
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\libertine\LinLibertineT-tlf-t1.tfm
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\tools\array.sty
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\tools\array.sty
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\preprint\balance.sty
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\preprint\balance.sty
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
@@ -578,6 +580,8 @@ INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\libertine\Lin
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\vf\public\libertine\LinLibertineTBI-tlf-t1.vf
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\libertine\LinLibertineTBI-tlf-t1--base.tfm
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\libertine\lbtn_ki75ao.enc
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\vf\public\libertine\LinLibertineTZ-tlf-ot1.vf
+INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\libertine\LinLibertineTZ-tlf-ot1--base.tfm
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\inconsolata\t1-zi4r-4.tfm
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\inconsolata\t1-zi4r-4.tfm
 INPUT C:\Users\ASUS\AppData\Local\Programs\MiKTeX\fonts\tfm\public\inconsolata\t1-zi4r-4.tfm

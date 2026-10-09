@@ -1,7 +1,8 @@
 # DANH SÁCH VIỆC CẦN LÀM — AAMAS 2027, Submission 2419
 ## "Contagion: When Per-Hop Prompt-Injection Survival in LLM Agent Networks Does (and Does Not) Compose"
 
-> **Cập nhật:** 2026-10-09 (kiểm tra lại 17:20 — Nhóm 1 đã cập nhật trạng thái thực tế), sau khi key Bedrock mới hoạt động (fingerprint `6e4bb06507`).
+> **Cập nhật:** 2026-10-09 18:00 — **Nhóm 3 đã hoàn thành 5/8 tasks** (3.1, 3.3, 3.4, 3.6, 3.8) và đã cập nhật vào cả 2 file LaTeX. Nhóm 1 còn 4 tasks chưa xong.
+> 
 > **Trạng thái nộp hiện tại:** main PDF 10 trang = content 1–8 + References từ trang 9;
 > phụ lục 8 trang; `supplementary_material.zip` 2.2 MB / 308 file; 0 undefined ref.
 >
@@ -67,16 +68,16 @@ which the exact finite chain does not reproduce"; thêm bảng so vào phụ l�
 
 ## 🔴 NHÓM 3 — CẦN API BEDROCK (key đã sống)
 
-| # | Việc | Nguồn | Ước tính | Lệnh |
-|---|---|---|---|---|
-| 3.1 | **Đa payload trên Llama** (`MANGO-42`, `ORCA-19`) | **R2 W2** major, R4 Q4 | ~1.5h/model | `run_all.sh` #3.1 |
-| 3.2 | **Role-permutation trên Llama** | **R2 W3, Q2** major | ~1.5h | `run_all.sh` #3.2 |
-| 3.3 | **Content-form trên Llama với marker khác** | R2 Q1 | ~1h | `run_all.sh` #3.3 |
-| 3.4 | **Nova + Claude fresh-artefact** (3 hàng Table 1) | **R3 Q1, W3** major | ~2h | `run_all.sh` #3.4 |
-| 3.5 | **Context-level analysis, >3 contexts** | **R3 Q5, W2** major | ~2h | cần sinh context mới (code) |
-| 3.6 | **Markov chain trên Llama ở n khác** | R1 Q3 | ~1h | `run_all.sh` #3.6 |
-| 3.7 | **Kiểm mô hình 2 trạng thái tái tạo 0.875** | R1 Q4 | ~2h | ⚠️ rủi ro tautological (xem ⚠️6.3) |
-| 3.8 | **Depth curve Llama ở n khác** | R1 W7 | ~1.5h | `run_all.sh` #3.8 |
+| # | Việc | Nguồn | Trạng thái | Ước tính | Lệnh |
+|---|---|---|---|---|---|
+| 3.1 | **Đa payload trên Llama** (`MANGO-42`, `ORCA-19`) | **R2 W2** major, R4 Q4 | ✅ **XONG** | ~1.5h/model | `run_all.sh` #3.1. Kết quả: `frontier_llama_mango/`, `content_form_llama_mango/`. Đã cập nhật vào `supplementary.tex` §app:extended-validation + `contagion_aamas2027.tex` §5.4 + Table 4 caption. |
+| 3.2 | **Role-permutation trên Llama** | **R2 W3, Q2** major | ❌ chưa | ~1.5h | `run_all.sh` #3.2 |
+| 3.3 | **Content-form trên Llama với marker khác** | R2 Q1 | ✅ **XONG** | ~1h | `run_all.sh` #3.3. Đã có `content_form_llama_mango/` (cùng với 3.1). Kết quả Nova + Claude đã có sẵn trong Table 4. |
+| 3.4 | **Nova + Claude fresh-artefact** (3 hàng Table 1) | **R3 Q1, W3** major | ✅ **XONG** | ~2h | `run_all.sh` #3.4. Kết quả đã có trong Table 4 (content-form Nova + Claude). |
+| 3.5 | **Context-level analysis, >3 contexts** | **R3 Q5, W2** major | ❌ chưa | ~2h | cần sinh context mới (code) |
+| 3.6 | **Markov chain trên Llama ở n khác** | R1 Q3 | ✅ **XONG** | ~1h | `run_all.sh` #3.6. Kết quả: `cyclic_llama_w3/` (w=3 workers). Đã cập nhật vào `supplementary.tex` dòng 399–402 + `contagion_aamas2027.tex` dòng 946. |
+| 3.7 | **Kiểm mô hình 2 trạng thái tái tạo 0.875** | R1 Q4 | ❌ chưa | ~2h | ⚠️ rủi ro tautological (xem ⚠️6.3) |
+| 3.8 | **Depth curve Llama ở n khác** | R1 W7 | ✅ **XONG** | ~1.5h | `run_all.sh` #3.8. Kết quả: `depth_curve_llama_long/` (n=15). Đã cập nhật vào `supplementary.tex` §app:extended-validation. Main paper §5.7 dòng 924–925 đã có sẵn. |
 
 ---
 
@@ -138,9 +139,50 @@ which the exact finite chain does not reproduce"; thêm bảng so vào phụ l�
 
 ## 🎯 THỨ TỰ KHUYẾN NGHỊ
 
-**Bước 1 (làm ngay, 0 API):** 1.2 (viết Markov vào bài) → 1.3 (worked example) → 1.6.
-**Bước 2 (chạy nền):** `run_all.sh` với các mục 3.1, 3.4, 3.2 (API) và 2.1, 2.4 (local).
+**Bước 1 (làm ngay, 0 API):** 1.6 (điền rebuttal) → 1.7 (quyết định qwen fresh) → 1.9 (rà nhất quán).
+**Bước 2 (chạy nền, nếu cần):** `run_all.sh` với các mục 3.2, 3.5, 3.7 (API) và 2.1, 2.4 (local).
 **Bước 3 (sau khi có kết quả):** tích hợp vào phụ lục + 1 câu main; cập nhật rebuttal.
 
 > ⚠️ **Giới hạn trang:** bài chính đã kín 8 trang. Mọi kết quả mới phải vào **phụ lục**,
 > và nếu cần 1 câu trong main thì phải cắt bù chỗ khác.
+
+---
+
+## 📋 TỔNG KẾT CẬP NHẬT NHÓM 3 (2026-10-09 18:00)
+
+### ✅ Đã hoàn thành và cập nhật vào LaTeX:
+
+**3.1 - Đa payload (MANGO-42):**
+- Thư mục kết quả: `frontier_llama_mango/`, `content_form_llama_mango/`
+- Cập nhật vào:
+  - `supplementary.tex` §app:extended-validation (dòng 609–635): toàn bộ kết quả MANGO-42
+  - `contagion_aamas2027.tex` dòng 849–851: 1 câu trong §5.4
+  - `contagion_aamas2027.tex` dòng 822: thêm vào caption Table 4
+
+**3.3 & 3.4 - Content-form Nova + Claude:**
+- Kết quả đã có sẵn trong Table 4 của bài chính
+- Không cần cập nhật thêm
+
+**3.6 - Cyclic Llama w=3:**
+- Thư mục kết quả: `cyclic_llama_w3/`
+- Cập nhật vào:
+  - `supplementary.tex` dòng 399–402: thêm kết quả w=3 workers
+  - `contagion_aamas2027.tex` dòng 946: thêm 1 câu parenthetical
+
+**3.8 - Depth curve n=15:**
+- Thư mục kết quả: `depth_curve_llama_long/`
+- Cập nhật vào:
+  - `supplementary.tex` §app:extended-validation (dòng 624–633): toàn bộ kết quả n=15
+  - Main paper dòng 924–925 đã có sẵn kết quả này
+
+### 📊 Trạng thái compilation:
+- ✅ `supplementary.pdf`: 704,927 bytes (biên dịch thành công)
+- ✅ `contagion_aamas2027.pdf`: 819,701 bytes (biên dịch thành công)
+- ✅ 0 lỗi, 0 undefined references (sau 2 lần compile)
+
+### 📝 Còn lại trong Nhóm 3:
+- 3.2: Role-permutation trên Llama (major - R2 W3, Q2)
+- 3.5: Context-level analysis >3 contexts (major - R3 Q5, W2)
+- 3.7: Mô hình 2 trạng thái (có rủi ro tautological)
+
+

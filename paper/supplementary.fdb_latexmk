@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1791543390.66159 "e:/NCKH/Contagion/paper/supplementary.tex" "supplementary.pdf" "supplementary" 1791543392.56173 0
+["pdflatex"] 1791544053.86406 "e:/NCKH/Contagion/paper/supplementary.tex" "supplementary.pdf" "supplementary" 1791544055.7727 0
   "C:/Users/ASUS/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1790592165 195305 37f765246b3c456718999cd8698f42eb ""
   "C:/Users/ASUS/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1790592280 13333003 6f74b29cab212c39108e07f9f9661672 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/inconsolata/i4-t1-4.enc" 1557958141 7693 0f2dce6d313c82989ec3a67fc24df2a0 ""
@@ -208,6 +208,7 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/upzd.fd" 1585253778 153 b2a94082cb802f90d3daf6dd0c7188a0 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/refcount/refcount.sty" 1576433952 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
+  "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/tools/array.sty" 1761901070 15651 9d7c62df82cb29a555c00550babfe364 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/totpages/totpages.sty" 1127570246 7911 b07e668265cf485332abe582e7ed306e ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/trimspaces/trimspaces.sty" 1253169183 1380 971a51b00a14503ddf754cab24c3f209 ""
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/upquote/upquote.sty" 1335534756 1088 517e01cde97c1c0baf72e69d43aa5a2e ""
@@ -217,10 +218,10 @@
   "C:/Users/ASUS/AppData/Local/Programs/MiKTeX/tex/latex/xstring/xstring.sty" 1693735632 123 a302f2c651a95033260db60e51527ae8 ""
   "aamas.cls" 1784725464 122209 65113db2770441df189925e574f1dbe2 ""
   "by.pdf" 1791037787 5004 83a9f153ab784a9a9bdbcca40fe5bcc3 ""
-  "e:/NCKH/Contagion/paper/supplementary.tex" 1791543216 70981 dbd4a3e3dd627efeabaa9b429c9275d6 ""
-  "supplementary.aux" 1791543392 21350 6966d93e4d13954d1b089c8761b35b39 "pdflatex"
-  "supplementary.out" 1791543392 5548 2657a1574c8aa30c51c72a62c4d0e695 "pdflatex"
-  "supplementary.tex" 1791543216 70981 dbd4a3e3dd627efeabaa9b429c9275d6 ""
+  "e:/NCKH/Contagion/paper/supplementary.tex" 1791544021 72011 a4e7d1bdcd2661f87a74b8a7a0b48102 ""
+  "supplementary.aux" 1791544055 21352 2b9679b049bce12e96d151b640f5ca44 "pdflatex"
+  "supplementary.out" 1791544055 5548 2657a1574c8aa30c51c72a62c4d0e695 "pdflatex"
+  "supplementary.tex" 1791544021 72011 a4e7d1bdcd2661f87a74b8a7a0b48102 ""
   (generated)
   "supplementary.aux"
   "supplementary.log"
