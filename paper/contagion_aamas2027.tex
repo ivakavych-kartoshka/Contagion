@@ -968,10 +968,18 @@ A compromise's reach is a property of the graph, the roles travelled and the for
 which the payload is re-packaged at each hand-off: composition holds in-chain, isolated
 estimates need not transport, and payload form is a first-order mechanism ($0.067$ bare
 versus $0.967$ embedded). On acyclic graphs the epidemic threshold is satisfied
-identically, so reachability comes from Eq.~\eqref{eq:percolation} rather than $R_0$.
-The dynamics we measure are feed-forward---each agent forwards once per run---so what we
-quantify is per-hand-off survival composed along paths rather than repeated spreading
-within a run; the only recurrent setting is the three-agent loop.
+identically, so reachability comes from Eq.~\eqref{eq:percolation} rather than $R_0$, and
+the dynamics we measure are feed-forward: the only recurrent setting is the three-agent
+loop.
+
+\section*{Ethics and Artifact Availability}
+\paragraph{Dual use.} The mechanism is available to attackers as well as defenders, and
+our findings serve payload choice as much as defence choice. We judge the defensive
+reading more actionable---the results say \emph{measure the hand-off you will actually
+run, with an undefended baseline}---and we release no adaptive attacker, action payload
+or tool-calling exploit: the payload is a benign marker and the agents are tool-less.
+Code, per-cell outputs and a manifest accompany the submission as supplementary material,
+and \suppref{app:repro} states the provenance gaps we found rather than hiding them.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
