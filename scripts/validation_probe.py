@@ -442,6 +442,7 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
         "force_retries": 3, "benign_contexts": CTX,
         "target_b": payload,
         "per_edge_fresh_artifact": bool(args.fresh_artifact),
+        "role_order": list(getattr(args, "roles", None) or []) or None,
     }
     if backend == "bedrock":
         extra["region"] = args.region
@@ -485,8 +486,11 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
         def _graph_factory(*_a, **_k):
             return build_reconvergent_graph(args.num_agents)
     else:
-        def _graph_factory(_topo, _n, seed=0):
-            return build_graph(_topo, _n, seed=seed)
+        def _graph_factory(_topo, _n, seed=0, **kw):
+            # **kw phải được truyền tiếp: engine gọi build_graph(role_order=...)
+            # khi có --roles; nuốt kwargs ở đây sẽ âm thầm chạy thứ tự role mặc
+            # định và làm hỏng kiểm soát role × vị trí (R2 W3/Q2).
+            return build_graph(_topo, _n, seed=seed, **kw)
 
     # ---- (1) natural runs → nội dung in-context + s^natural -----------------
     # Thứ tự BẮT BUỘC (đã gây bug khi viết bản đầu):
@@ -498,8 +502,34 @@ def run_cell(args, backend: str, model: str, payload: str, defense: str,
     runner = Runner(cfg(trials=args.trials, per_edge=0))
     rec_natural, _old_client = _install_recorder(
         runner, transcript, args.max_calls, f"{payload}|{defense}|natural")
-    _pre_graph = _graph_factory(topo, args.num_agents)
+    _pre_graph = _graph_factory(
+        topo, args.num_agents,
+        **({"role_order": list(args.roles)} if args.roles else {}))
     _pre_agents = runner._build_agents(_pre_graph)
+
+    # ---- CHỐT CHẶN: role_order phải thực sự tới được agent -------------------
+    # Một lần chạy qwen 5-agent tốn ~1 giờ; nếu thứ tự role không được áp dụng
+    # thì cả lần chạy là vô nghĩa. Kiểm tra ngay tại đây và dừng trước khi tốn
+    # thời gian. (Đã có lần suýt lãng phí vì _graph_factory nuốt kwargs.)
+    if args.roles:
+        want = list(args.roles)
+        got = [None] * args.num_agents
+        for aid, ag in _pre_agents.items():
+            try:
+                idx = int(str(aid).split("_")[1])
+            except (IndexError, ValueError):
+                continue
+            if 0 <= idx < len(got):
+                got[idx] = ag.role.value
+        if got != want:
+            print("[x] role_order KHÔNG được áp dụng — dừng trước khi tốn call.")
+            print(f"    mong đợi: {want}")
+            print(f"    thực tế : {got}")
+            print("    (nghĩa là có đường build graph khác không truyền role_order; "
+                  "xem engine.py build_graph(...) trong _run_trial.)")
+            rec_natural.close()
+            return 2
+        print(f"[role_order OK] {got}")
     strategy = runner._build_attack()
     assessor = runner.assessor
     direct_refs = {}
@@ -689,6 +719,13 @@ def main() -> int:
                          "mà Eq. (3) có thể sai vì hai parent share upstream u. "
                          "Dùng để trả lời R1 Q2 / metareview (test Eq. (3) ở chỗ "
                          "nó có thể fail). Cần --num-agents 5.")
+    ap.add_argument("--roles", default=None,
+                    help="R2 W3/Q2 — hoán vị role theo chiều sâu (phân tách bởi dấu "
+                         "phẩy), phải có đúng --num-agents phần tử. VD "
+                         "\"reviewer,worker,planner,aggregator\" đưa reviewer lên "
+                         "đầu chain. Bỏ trống = chu kỳ mặc định "
+                         "planner→worker→reviewer→aggregator. Chạy cả hai rồi so "
+                         "survival per-edge để biết nó bám theo ROLE hay VỊ TRÍ.")
     ap.add_argument("--trials", type=int, default=40, help="natural runs")
     ap.add_argument("--per-edge", type=int, default=20, help="replay mỗi arm/cạnh")
     ap.add_argument("--temperature", type=float, default=0.7)
@@ -729,6 +766,17 @@ def main() -> int:
                           (args.defenses.split(",") if args.defenses
                            else default_defenses) if d.strip())
     args.arms = tuple(a.strip() for a in args.arms.split(",") if a.strip())
+    if args.roles:
+        args.roles = [r.strip().lower() for r in args.roles.split(",") if r.strip()]
+        if args.topology != "chain":
+            print("[x] --roles chỉ hỗ trợ --topology chain.")
+            return 2
+        if len(args.roles) != args.num_agents:
+            print(f"[x] --roles cần đúng {args.num_agents} role (một role mỗi node), "
+                  f"nhận {len(args.roles)}: {args.roles}")
+            return 2
+    else:
+        args.roles = None
     if args.topology == "reconvergent" and args.num_agents != len(
             RECONVERGENT_DAG["vertices"]):
         print(f"[x] --topology reconvergent cần --num-agents "
@@ -763,6 +811,9 @@ def main() -> int:
         "per_edge": args.per_edge, "temperature": args.temperature,
         "max_tokens": args.max_tokens, "seed": args.seed,
         "tau_asv": args.tau_asv, "tau_mr": args.tau_mr,
+        "roles": list(args.roles) if args.roles else None,
+        "role_order": "default cycle (planner→worker→reviewer→aggregator)"
+                      if not args.roles else "permuted",
         "estimated_calls": est, "hard_cap": args.max_calls,
         "out": str(args.out),
         "note": ("call = 1 lần gọi model; natural trials cần ~2×số cạnh "

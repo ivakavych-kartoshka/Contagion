@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import enum
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Optional, Sequence
 
 from ..core import AgentRole, TopologyType
 
@@ -161,22 +161,34 @@ def _role_cycle():
 # GRAPH BUILDERS: hàm tạo topology graph
 # =============================================================================
 
-def build_graph(topology: TopologyType, n: int, seed: int = 0) -> AgentGraph:
+def build_graph(topology: TopologyType, n: int, seed: int = 0,
+                role_order: Optional[Sequence] = None) -> AgentGraph:
     """Factory: tạo AgentGraph theo topology type và số agents.
 
     Args:
         topology : CHAIN, STAR, TREE (mesh/debate chưa hỗ trợ)
         n        : số agents (3-50 trong scope nghiên cứu 1 tháng, 3-10 thực tế)
         seed     : seed cho RNG (hiện tại chưa dùng, để sẵn cho future randomization)
+        role_order : thứ tự role gán cho các node theo chiều sâu (node 0, 1, 2...).
+            Mặc định None → chu kỳ planner→worker→reviewer→aggregator như cũ.
+            Dùng để KIỂM SOÁT confound role × position (R2 W3/Q2): chạy cùng một
+            chain nhưng đảo thứ tự role, rồi xem survival bám theo role hay theo
+            độ sâu. Phải có đúng ``n`` phần tử (AgentRole hoặc tên role).
 
     Returns:
         AgentGraph đã populated nodes + edges
 
     Raises:
-        ValueError nếu topology chưa được implement
+        ValueError nếu topology chưa được implement, hoặc role_order sai độ dài /
+        trùng role.
     """
     if topology == TopologyType.CHAIN:
-        return _chain(n)
+        return _chain(n, role_order=role_order)
+    if role_order is not None:
+        raise ValueError(
+            "role_order hiện chỉ hỗ trợ topology CHAIN (dùng cho kiểm soát "
+            "role × position); star/tree chưa map."
+        )
     if topology == TopologyType.STAR:
         return _star(n)
     if topology == TopologyType.TREE:
@@ -184,10 +196,29 @@ def build_graph(topology: TopologyType, n: int, seed: int = 0) -> AgentGraph:
     raise ValueError(f"Topology not yet supported in one-month scope: {topology}")
 
 
-def _chain(n: int) -> AgentGraph:
+def _normalize_role_order(role_order: Sequence, n: int) -> List[AgentRole]:
+    """Chuyển role_order (AgentRole | str) thành list[AgentRole], kiểm tra hợp lệ.
+
+    Cho phép role **trùng**: chu kỳ mặc định cũng lặp lại khi ``n > 4``
+    (``planner, worker, reviewer, aggregator, planner, ...``), nên cấm trùng sẽ
+    khiến không thể biểu diễn chính cấu hình mặc định bằng ``role_order``.
+    """
+    if len(role_order) != n:
+        raise ValueError(
+            f"role_order phải có đúng {n} phần tử (một role cho mỗi node), "
+            f"nhận được {len(role_order)}."
+        )
+    try:
+        return [r if isinstance(r, AgentRole) else AgentRole(str(r).lower())
+                for r in role_order]
+    except ValueError as exc:
+        raise ValueError(f"role_order chứa role không hợp lệ: {exc}") from exc
+
+
+def _chain(n: int, role_order: Optional[Sequence] = None) -> AgentGraph:
     """Tạo chain topology: agent_0 → agent_1 → agent_2 → ... → agent_{n-1}.
 
-    Cấu trúc:
+    Cấu trúc (mặc định):
         [Planner] → [Worker] → [Reviewer] → [Aggregator] → [Planner] → ...
 
     Mỗi agent (trừ last) có out_degree = 1.
@@ -195,12 +226,20 @@ def _chain(n: int) -> AgentGraph:
 
     P_E2E (end-to-end propagation) trên chain = ∏_{i=0}^{n-2} s_i
     Với s_i ≈ 1 (mock), P_E2E = 1.0.
+
+    ``role_order`` (tuỳ chọn) gán role theo thứ tự cho trước thay vì chu kỳ mặc
+    định — xem :func:`build_graph`.
     """
     g = AgentGraph(topology=TopologyType.CHAIN)
-    r = _role_cycle()
-    for i in range(n):
-        # out_degree = 1 cho tất cả trừ agent cuối (i == n-1 → out_degree = 0)
-        g.add_node(f"agent_{i}", next(r), out_degree=1 if i < n - 1 else 0)
+    if role_order is not None:
+        roles = _normalize_role_order(role_order, n)
+        for i in range(n):
+            g.add_node(f"agent_{i}", roles[i], out_degree=1 if i < n - 1 else 0)
+    else:
+        r = _role_cycle()
+        for i in range(n):
+            # out_degree = 1 cho tất cả trừ agent cuối (i == n-1 → out_degree = 0)
+            g.add_node(f"agent_{i}", next(r), out_degree=1 if i < n - 1 else 0)
     # Chain edges: agent_i → agent_{i+1}
     for i in range(n - 1):
         g.add_edge(f"agent_{i}", f"agent_{i + 1}")

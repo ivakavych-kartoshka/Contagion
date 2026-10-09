@@ -107,7 +107,7 @@ and at $0.967$ embedded in a work product. \textbf{(iii)}~For finite acyclic gra
 standard linearised next-generation matrix is strictly triangular ($\rho(M)=0$) as a
 structural property of acyclicity rather than an empirical safety guarantee; we
 therefore treat $R_0$ as a \emph{descriptive, finite-horizon} statistic (defined in
-observed counts) and report $R_0<1$ alongside ASR of $0.45$--$0.80$. \textbf{(iv)}~Defence placement is structural (paths and cut sets) rather than uniform across parallel paths; we avoid over-generalising beyond the tested topologies, and note our primary outcome is \emph{textual propagation} (ASV) rather than instruction adoption.
+observed counts) and report $R_0<1$ alongside ASR of $0.45$--$0.80$. \textbf{(iv)}~Defence placement is structural (paths and cut sets) rather than uniform across parallel paths; our primary outcome is \emph{textual propagation} (ASV), not instruction adoption.
 \end{abstract}
 
 %%% Use this command to specify a few keywords describing your work.
@@ -138,6 +138,16 @@ Measurement validity, LLM agents, Benchmarks}
 \newcommand{\scites}{\ensuremath{s^{\mathrm{ctrl}}}}
 \newcommand{\snats}{\ensuremath{s^{\mathrm{nat}}}}
 \newcommand{\ind}{\ensuremath{\mathbf{1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tham chiếu chéo sang phụ lục bằng \ref thay vì viết cứng "Appendix X".
+% Lý do: phụ lục đánh chữ cái tự động, nên MỖI lần chèn thêm một \section vào
+% supplementary.tex thì chữ cái phía sau dịch hết; trỏ viết cứng sẽ lặng lẽ sai.
+% Với xr-hyper, \ref{app:...} lấy số từ supplementary.aux ⇒ luôn khớp.
+% (Phải compile supplementary.tex ít nhất một lần trước.)
+\usepackage{xr-hyper}
+\externaldocument[supp:]{supplementary}
+\newcommand{\suppref}[1]{supplementary Appendix~\ref{supp:#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -386,6 +396,7 @@ command; in a pilot this framing was the difference between $0\%$ and
 $60$--$100\%$ compliance.
 
 \subsection{Task families}
+\label{sec:setup-families}
 
 \emph{Family A (marker echo)} asks the agent to emit a secret string; success is
 its presence. This family is useful for instrumentation but saturates---controlled
@@ -419,8 +430,8 @@ hijacked output. For family B we use the ASV branch only ($\tau_{\mathrm{asv}} =
 full-containment MR variant scored high similarity on clean benign outputs and on
 refusing outputs alike---assigning credit precisely to the outputs a defence is
 supposed to produce---whereas the ASV-only rule separates them cleanly
-(calibration accuracy $1.000$ versus $0.795$ on one local model; supplementary
-Appendix~F, Table~5, states the scope of that calibration). Being
+(calibration accuracy $1.000$ versus $0.795$ on one local model;
+\suppref{app:judge-validation}, Table~5, states the scope of that calibration). Being
 deterministic, the rule admits no LLM-judge variance and needs no per-model
 recalibration. We clarify outcome levels: (a) \emph{textual propagation}---the target string/code fragments appear (measured by ASV); (b) \emph{instruction adoption/compliance}---the agent acts in accordance with the injected instruction (not merely quoting); (c) \emph{harmful action}---the agent performs the corresponding harmful action. ASV primarily measures (a). In this paper we report (a) as the main propagation outcome; we do not automatically equate (a) with (b) or (c), and we distinguish these levels in terminology throughout. Targeted validation of a subset (to separate adoption from verbatim transmission/benign references) and the judge's scope and limitations are detailed in the supplementary materials.
 
@@ -647,13 +658,17 @@ calls are made.
 \section{Results}
 \label{sec:results}
 
-\subsection{Per-hop survival is role-dependent, and susceptibility does not track capability}
+\subsection{Per-hop survival varies sharply by position, and susceptibility does not track capability}
+\label{sec:role-position}
 
 Table~\ref{tab:cross} reports the per-model chain headline. Two facts stand out.
-First, per-hop survival varies several-fold \emph{across receiver roles within a
-single model and attack} (Fig.~\ref{fig:role}): on a five-agent chain the
-worker-position edge survives $0.133$ while the reviewer-position edge survives
-$0.867$, so a scalar $s$ per model is unjustified. Second, susceptibility does not
+First, per-hop survival varies several-fold \emph{across positions within a single
+model and attack} (Fig.~\ref{fig:role}): on a five-agent chain the worker-position edge
+survives $0.133$ while the reviewer-position edge survives $0.867$, so a scalar $s$ per
+model is unjustified. Roles are assigned in a fixed order, so this profile confounds
+role with depth; permuting the labels moves it without separating the two, so we report
+it without ranking roles (\suppref{app:role-permutation}).
+Second, susceptibility does not
 follow capability: the two frontier commercial models sit at the bottom of the panel
 and a $70$B open-weight model at the top, so ASR does not follow model scale, and the
 five models yield four qualitatively different outcomes. Both facts point the same
@@ -684,10 +699,12 @@ Claude Sonnet 4.5          & 0.000 & 0.211 & 0.000 / 0.600 / 0.033 \\
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig2_per_role_survival.png}
-  \caption{Per-hop survival by receiving role (five-agent chain, $n = 30$ per edge,
-  Wilson intervals). Under no defence the worker-position edge survives at $0.133$
-  against $0.867$ at the reviewer position---six-fold spread within one model and
-  attack---whereas semantic paraphrase drives every edge in this chain to $0.000$.}
+  \caption{Per-hop survival by receiving role (five-agent chain, Family~A,
+  $n = 30$ per edge, Wilson intervals). Under no defence the worker-position edge
+  survives at $0.133$ against $0.867$ at the reviewer position---six-fold spread
+  within one model and attack (a family we do not use for headline rates,
+  Section~\ref{sec:setup-families})---whereas semantic paraphrase drives every edge
+  to $0.000$.}
   \label{fig:role}
   \Description{Bar chart with error bars showing per-hop survival rates for four
   chain positions under no defence and under paraphrase. Survival at the
@@ -712,7 +729,7 @@ $\prod_i \scite{i} = 0.409$ against
 $\mathrm{ASR} = 0.400$, and $\Delta = -0.009$ ($[-0.225, +0.201]$, $p = 0.930$)---a
 \emph{non-rejection} at $\mathrm{MDE}\approx0.26$ ($n = 40$), and it is \emph{not} equivalence: a TOST with a
 pre-registered margin of $\pm 0.15$ fails on two of the three DeepSeek edges at
-$n = 40$ and passes on all three only at $n = 200$ (supplementary Appendix~G). In both
+$n = 40$ and passes on all three only at $n = 200$ (\suppref{app:utility}). In both
 models Eq.~\eqref{eq:identity} holds by construction, since the in-chain rates are
 defined on the same runs.
 
@@ -816,11 +833,10 @@ assignments and judge, so the difference is attributable to payload form alone.}
 Table~\ref{tab:form} shows that payload form is a first-order determinant of
 per-hop survival. On the middle edge, the same target judged by the same receivers
 under the same assignment survives at $0.967$ embedded in a work product and at
-$0.067$ as a bare assertion---a $14\times$ difference produced entirely by
-packaging, which is the mechanism behind Section~\ref{sec:transport}. The effect is
-not uniform across edges: on the last edge the canonical form is \emph{more} effective
-($1.000$ versus $0.733$) and the self-check misses ($0.733$ versus $0.947$), so we do
-not treat that edge as a clean comparison.
+$0.067$ as a bare assertion---a $14\times$ difference produced entirely by packaging.
+The effect is not uniform across edges: on the last edge the canonical form is
+\emph{more} effective ($1.000$ versus $0.733$) and the self-check misses ($0.733$
+versus $0.947$), so we do not treat that edge as a clean comparison.
 
 \subsection{Defence: redaction blocks literal attacks, and the bypass depends on headroom}
 \label{sec:defence}
@@ -834,7 +850,7 @@ bypassed by ordinary obfuscation. On the resistant frontier model the plain atta
 succeeds only $0.10$ of the time end-to-end (its single-hop cell is $0.17$), so
 redaction's apparent
 perfection is the absence of anything to defend (invariant for
-$\tau_{\mathrm{ASV}} \in \{0.7,0.8,0.9,1.0\}$, supplementary Appendix~C). The same
+$\tau_{\mathrm{ASV}} \in \{0.7,0.8,0.9,1.0\}$, \suppref{app:tau}). The same
 code and defence give opposite verdicts; only the headroom differs.
 
 Semantic paraphrase is worse than useless in our cells: on the model where the
@@ -900,9 +916,9 @@ Independence is not what fails here: evaluated on in-chain rates,
 Eq.~\eqref{eq:percolation} reproduces the measured ASR in all three topologies, which
 is expected rather than informative, since each of these graphs has effectively one
 entry--target path and the recurrence collapses to the chain identity; on a
-reconvergent DAG, where the two can differ, the recurrence built from isolated
-marginals underestimates reachability by $2.6\times$ while the in-chain version does
-not (supplementary Appendix~M).
+reconvergent DAG, where the two can differ, it underestimates reachability by
+$2.6\times$ when built from isolated marginals but not from in-chain ones
+(\suppref{app:reconvergent}).
 
 \subsection{Recurrence makes the threshold non-vacuous}
 \label{sec:cyclic}
@@ -912,8 +928,8 @@ and informative only once the interaction graph contains a cycle. We test that s
 half on a manager-with-reporting-workers pattern: the spectral radius reduces to
 $\rho(M) = \sqrt{\sum_j a_j c_j}$, yielding \emph{opposite} mean-field predictions
 borne out by measurement---the Llama and DeepSeek loops are supercritical
-($\sum_j a_jc_j = 1.800$ and $1.018$) while qwen's decays ($0.578$; supplementary
-Appendix~E). We report this as a mean-field prediction on three loops rather than a
+($\sum_j a_jc_j = 1.800$ and $1.018$) while qwen's decays ($0.578$;
+\suppref{app:cyclic}). We report this as a mean-field prediction on three loops rather than a
 design rule: the sum counts expected two-step paths, whereas the manager is
 re-compromised at most once per round, so the exact finite-state prediction is
 $1 - \prod_j (1 - a_j c_j) < 1$ even above criticality, and the $1.018$ loop sits close
@@ -946,7 +962,7 @@ Our coverage is narrow---one benign payload, a static non-adaptive attacker, fou
 fifteen agents, cells of $30$--$40$ (MDE $\approx 0.26$), two defence families---and
 the utility metric is a contamination proxy rather than a correctness oracle. Protocol
 sensitivity, the mixed artefact protocol of Table~\ref{tab:cross}, and the scope of the
-judge are itemised in supplementary Appendices~F and~I.
+judge are itemised in \suppref{app:judge-validation} and \suppref{app:limits}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -954,16 +970,13 @@ judge are itemised in supplementary Appendices~F and~I.
 \label{sec:conclusion}
 
 A compromise's reach is a property of the graph, the roles travelled and the form in
-which the payload is re-packaged at each hand-off. Composition holds when the rates are
+which the payload is re-packaged at each hand-off: composition holds when the rates are
 measured \emph{in the chain}, and transporting isolated estimates---diagnosed by the
 depth-error slope---is the failure mode single-agent benchmarks assume away. Payload
 form is a first-order mechanism ($0.067$ bare versus $0.967$ embedded); the epidemic
 threshold is identically satisfied on any acyclic graph, so reachability comes from
 Eq.~\eqref{eq:percolation} rather than $R_0$; and defence efficacy is unidentifiable
-without a matched baseline, with placement set by graph structure. The cost of
-adopting all four is one long-chain probe. All experiments use a benign marker payload
-against our own harness with no real user data; code and outputs regenerate every table
-(supplementary material).
+without a matched baseline, with placement set by graph structure.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -700,6 +700,88 @@ released as a CSV together with the scoring script that turns it into the report
 confusion matrix.
 
 % =====================================================================
+\section{Role Order Versus Position: a Permutation Control}
+\label{app:role-permutation}
+
+In the main paper the four roles are assigned to the chain in a fixed order
+(planner, worker, reviewer, aggregator), so any statement about
+\emph{role}-dependent survival is confounded with position: the reviewer edge is
+always the third edge. To separate the two we re-ran the same chain with the role
+labels permuted, moving the reviewer to the head and the planner to the third
+position, and compared survival per edge. Model, payload, task family, temperature,
+judge and trial count were held fixed; only the role assignment changed.
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{Role-order permutation control (\texttt{qwen2.5:7b}, five-agent chain, no
+defence, 40 natural runs per ordering, \texttt{BANANA-77} marker). In the permuted
+ordering the reviewer moves to the head of the chain and the planner to the third
+position, so each role except the duplicated one sits at a different depth. Values are
+in-chain per-edge survival $\snats{i}$.}
+\vspace{4pt}
+\label{tab:role-permutation}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccc}
+\toprule
+\textit{depth} & \textit{role (default)} & \textit{$\snats$} & \textit{role (permuted)}
+& \textit{$\snats$} \\
+\midrule
+1 & worker     & $0.425$ & worker     & $0.525$ \\
+2 & reviewer   & $0.882$ & planner    & $0.381$ \\
+3 & aggregator & $1.000$ & aggregator & $1.000$ \\
+4 & planner    & $0.733$ & planner    & $0.875$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% PLACEHOLDER-ROLE-PERM-TEXT
+
+\begin{table}[h]
+\scriptsize
+\centering
+\caption{The two readings of the permutation, as mean absolute differences. Under
+the position reading the $k$-th deepest edge of the default ordering is compared with
+the $k$-th deepest edge of the permuted ordering; under the role reading each role's
+survival is compared across the two orderings. The smaller value indicates which
+variable the profile follows.}
+\vspace{4pt}
+\label{tab:role-perm-readings}
+\begin{tabular}{lc}
+\toprule
+\textit{reading} & \textit{mean $|\Delta|$} \\
+\midrule
+by position (4 pairs) & $0.186$ \\
+by role (3 pairs)     & $0.151$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The two readings are close ($0.186$ versus $0.151$, a difference of $0.035$ on a
+$[0,1]$ scale), and they are not directly comparable in count: the position reading
+uses every shared depth, whereas the role reading can only use roles that occur in
+both orderings, and the duplicated role at the tail of a five-agent cycle reduces it
+to three pairs. The informative quantity is therefore not which mean is smaller but
+the size of the displacement itself: permuting the labels moves the
+\emph{depth profile} by $0.186$ on average, with the second edge moving from $0.882$
+to $0.381$. Two consequences follow, and the main paper is written to respect both.
+First, the profile is \emph{not} invariant to the role labels, so the role assignment
+cannot be ignored. Second, a single permutation cannot separate role from position:
+with near-equal distances and three to four pairs, claiming that survival follows the
+role rather than the depth would over-read the control. We therefore treat the
+role profile of the main paper (its Fig.~2) as a profile under one fixed assignment
+(planner, worker, reviewer, aggregator) rather than as a role effect, and we do not
+use it to rank roles.
+
+Two further limits. The control was run on a single local model: the same experiment on
+Llama~3.3~70B was the intended second half of the comparison, and the Bedrock
+credential available to us expired before it could be run, so the reviewer's request to
+repeat this for both models is only half answered. And at $n = 40$ runs per ordering the
+per-edge standard error is roughly $0.07$--$0.08$, comparable to the displacement we
+report, so a larger set of permutations would be needed to estimate a role effect even
+if one exists.
+
+% =====================================================================
 \section{Disclosure of AI-Assisted Technologies}
 \label{app:ai-disclosure}
 

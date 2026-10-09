@@ -119,6 +119,7 @@ Excluding comment 'comment') Excluding comment 'CCSXML'
 Special comment 'acks'
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/libertine\t1linuxliberti
 net-tlf.fd))
+(C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\xr-hyper.sty)
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/latex/preprint\balance.sty)
 Excluding comment 'screenonly' Include comment 'printonly'
 Excluding comment 'anonsuppress' Excluding comment 'acks'
@@ -168,11 +169,9 @@ Underfull \vbox (badness 5091) has occurred while \output is active [2.2]
 -t1-4.enc}{C:/Users/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertin
 e/lbtn_fygcup.enc}]
 Underfull \vbox (badness 10000) has occurred while \output is active [5.5]
-[6.6 <./fig2_per_role_survival.png>]
-Underfull \vbox (badness 1052) has occurred while \output is active [7.7{C:/Use
-rs/ASUS/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/libertine/lbtn_ki75ao.enc
-}] Excluding 'acks' comment. (contagion_aamas2027.bbl [8.8 <./fig4_obfuscation_
-heatmap.png>]
+[6.6 <./fig2_per_role_survival.png>] [7.7{C:/Users/ASUS/AppData/Local/Programs/
+MiKTeX/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}] Excluding 'acks' comment.
+(contagion_aamas2027.bbl [8.8 <./fig4_obfuscation_heatmap.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active
 Underfull \vbox (badness 10000) has occurred while \output is active [9.9])
 (C:\Users\ASUS\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\se-pdfdoc.de
@@ -200,5 +199,5 @@ pData/Local/Programs/MiKTeX/fonts/type1/public/newtx/NewTXMI7.pfb><C:/Users/ASU
 S/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txexs.pfb><C:/Users/AS
 US/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txmiaX.pfb><C:/Users/
 ASUS/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx/txsys.pfb>
-Output written on contagion_aamas2027.pdf (10 pages, 811618 bytes).
+Output written on contagion_aamas2027.pdf (10 pages, 813094 bytes).
 Transcript written on contagion_aamas2027.log.

@@ -1,28 +1,74 @@
 # HƯỚNG DẪN FIX THEO REVIEW AAMAS 2027 (Submission Id 2419)
 
-> ## ⚡ VIỆC CÒN LẠI — chỉ 4 việc, cập nhật 2026-10-08
+> ## ⚡ VIỆC CÒN LẠI — cập nhật 2026-10-09 (A, B, C, D đều XONG)
 >
-> | # | Việc còn lại | Chặn bởi | Ai làm | Thời gian |
+> | # | Việc | Trạng thái |
+> |---|---|---|
+> | **A** | Sửa **Fig. 2 + Fig. 4** cho đọc được | ✅ **XONG** |
+> | **B** | **Permutation p-value** cho depth slope (R1 W7, R3 W1) | ✅ **XONG** |
+> | **C** | **Role-permutation test** (R2 W3/Q2) | ✅ **XONG** (qwen; Llama bị chặn) |
+> | **D** | Citation **[13] debate**, **[31] Reflexion** | ✅ **XONG** |
+>
+> **Không còn việc nào làm được nếu không có key Bedrock mới.** Danh sách đầy đủ
+> các việc bị chặn ở mục ⛔ bên dưới.
+>
+> ### ✅ Việc C — kết quả và HỆ QUẢ QUAN TRỌNG CHO BÀI
+> qwen2.5:7b, 5 agent, `BANANA-77`, 40 natural runs mỗi thứ tự:
+>
+> | độ sâu | role (mặc định) | s^nat | role (hoán vị) | s^nat |
 > |---|---|---|---|---|
-> | **A** | Sửa **Fig. 2** cho đọc được (R2 format check) | không | bạn hoặc tôi (sửa `make_figures.py`) | ~30 phút |
-> | **B** | **Permutation p-value** cho depth slope §5.7 (R1 W7, R3 W1) | không | tôi làm được (0 API) | ~40 phút |
-> | **C** | **Role-permutation test** (R2 W3/Q2) | cần thêm cờ đảo role trong `engine.py` | tôi viết code, bạn chạy qwen local | ~2 giờ (code) + 1 giờ (chạy) |
-> | **D** | Hai citation còn sót: **[13] debate** (không phải orchestration framework), **[31] Reflexion** (không chứng minh "tool calls prompted or learned") | không | tôi sửa 2 câu | ~15 phút |
+> | 1 | worker | 0.425 | worker | 0.525 |
+> | 2 | reviewer | **0.882** | planner | **0.381** |
+> | 3 | aggregator | 1.000 | aggregator | 1.000 |
+> | 4 | planner | 0.733 | planner | 0.875 |
 >
-> ### ⛔ BỊ CHẶN — cần key Bedrock mới (không làm được gì lúc này)
-> - **Nova + Claude chạy lại fresh-artefact** (R3 Q1) — key đã hết hạn.
-> - **Content-form trên Claude/Nova** (R2 Q1), **payload thứ 2 trên Llama** (R2 W2, R4 Q4) — cùng lý do (script `--marker` đã sẵn sàng, chỉ cần key).
-> - **Nhãn adoption độc lập ≥100 activation** (R2 Q3 — việc metareview xếp #1 về mức độ thuyết phục) — cần frontier model + người gán thật; **không có đường tắt trung thực**.
+> Đọc theo VỊ TRÍ: mean |Δ| = **0.186** (4 cặp) · đọc theo ROLE: **0.151** (3 cặp).
+> Chênh **0.035 < ngưỡng 0.05** ⇒ **một hoán vị KHÔNG tách được role khỏi vị trí**.
 >
-> ### 🟡 ĐÃ CHẤP NHẬN ĐÁNH ĐỔI (nói rõ để bạn biết)
-> - **Câu dual-use** và **header Ethics riêng** đã bị cắt khỏi bài chính khi nén về 8 trang; hiện chỉ còn 2 câu trong Conclusion + Appendix K. R2 yêu cầu đưa vào main → **đáp ứng một phần**.
-> - **3 hàng qwen/Nova/Claude trong Table 1** vẫn là fixed-artefact (qwen đã có bản fresh riêng nhưng chưa ghép vào bảng — xem việc **E** bên dưới).
-> - **11 cảnh báo** trong `transport_tests/report.md` về "k không nguyên": muốn Fisher exact chính xác phải chạy lại cell với `--per-edge = --trials` (0 API sau đó).
+> ⚠️ **Đã hạ claim trong bài**: tiêu đề §5.1 đổi từ *"Per-hop survival is
+> role-dependent"* → *"varies sharply by position"*, và thêm câu nói rõ profile
+> **confound role với depth**, không xếp hạng role. Đây là thay đổi **trung thực
+> nhưng làm yếu một claim** — bạn nên biết trước khi nộp.
 >
-> ### 📌 Việc tùy chọn nếu còn thời gian
-> - **E**: ghép số `frontier_qwen_fresh` (ASR 0.375, s̄ 0.733) vào Table 1 hàng qwen — **thay đổi headline**, cần bạn quyết.
-> - **F**: soạn `review/REBUTTAL.md` trả lời 20 câu hỏi R1–R4 (không phụ thuộc API).
-> - **G**: tính CI cho R₀ (Table 5) — cần chạy lại cell có lưu paths.
+> ⚠️ **Không so được với Fig. 2 trong bài**: Fig. 2 dùng `rerun_chain_raw.py` với
+> marker `LEAK-TOKEN-7F3A2C`; probe dùng `BANANA-77`.
+>
+> ⚠️ **Llama không chạy được** (key hết hạn) → phần "for Llama and qwen" của R2 Q2
+> chỉ trả lời được một nửa (qwen). Đã ghi rõ giới hạn này trong phụ lục.
+>
+> ### 🔧 ĐÃ SỬA NGUYÊN NHÂN GỐC của lỗi "chữ cái phụ lục dịch"
+> Trước đây bài chính trỏ `Appendix F/G/C/E/N...` bằng **chữ cái viết cứng**; mỗi
+> lần chèn một `\section` vào phụ lục là các trỏ sau **sai lặng lẽ** (đúng loại lỗi
+> R3 W4 đã phàn nàn). Giờ dùng `xr-hyper`:
+> ```latex
+> \usepackage{xr-hyper}
+> \externaldocument[supp:]{supplementary}
+> \newcommand{\suppref}[1]{supplementary Appendix~\ref{supp:#1}}
+> ```
+> nên `\suppref{app:role-permutation}` **tự ra đúng chữ cái**. Đã kiểm chứng: PDF in
+> ra L, G, C, N, E, F, I — khớp bản đồ phụ lục. **Từ giờ không cần sửa tay khi
+> thêm/bớt phụ lục**, chỉ cần compile `supplementary.tex` trước.
+>
+> ### ⛔ BỊ CHẶN — cần key Bedrock mới
+> - **Nova + Claude chạy lại fresh-artefact** (R3 Q1).
+> - **Content-form trên Claude/Nova** (R2 Q1), **payload thứ 2 trên Llama** (R2 W2, R4 Q4).
+> - **Nhãn adoption độc lập ≥100 activation** (R2 Q3 — việc metareview xếp #1) — cần frontier model + người gán thật; **không có đường tắt trung thực**.
+> - **Role-permutation trên Llama** — cùng lý do.
+>
+> ### 🟡 ĐÃ CHẤP NHẬN ĐÁNH ĐỔI
+> - **Câu dual-use** và **header Ethics riêng** đã bị cắt khỏi bài chính khi nén về 8 trang; hiện chỉ còn 2 câu trong Conclusion + Appendix K.
+> - **3 hàng qwen/Nova/Claude trong Table 1** vẫn là fixed-artefact (qwen đã có bản fresh riêng).
+> - **11 cảnh báo "k không nguyên"** trong `transport_tests/report.md` — muốn Fisher exact phải chạy lại cell với `--per-edge = --trials`.
+>
+> ### 📌 Việc tùy chọn
+> - **E**: ghép số `frontier_qwen_fresh` (ASR 0.375, s̄ 0.733) vào Table 1 hàng qwen — đổi headline, cần bạn quyết.
+> - **F**: soạn `review/REBUTTAL.md` trả lời 20 câu hỏi R1–R4.
+> - **G**: tính CI cho R₀ (Table 5).
+>
+> ### ✅ TRẠNG THÁI BUILD
+> main: **10 trang = content 1–8 + References 9–10** ✅ đúng luật
+> ($\le 8$ trang content) · supp: **8 trang**, 2 cột, phụ lục A–P tự đánh chữ cái ·
+> **0 undefined reference** · **0 lỗi LaTeX** · bibliography 41 mục.
 
 ---
 
@@ -75,8 +121,8 @@
 | 19b | **Câu dual-use vào main text** | R2 ethics | 0 | ❌ **CHƯA** | hiện chỉ ở phụ lục Appendix K + bản ghi chú |
 | 20 | **Test Eq. (3) trên DAG reconvergent** | R1 Q2, metareview #2 | 1 | ✅ **XONG** | `dag_reconv_qwen_n40`, Appendix M, §5.6 |
 | 20b | Chạy lại qwen với fresh-artefact | R3 Q1 | 1 | ✅ **XONG** | `frontier_qwen_fresh`: ASR 0.300→**0.375**, s̄ 0.611→**0.733** |
-| 21 | **Permutation p-value cho depth slope** | R1 W7, R3 W1 | 1 | ❌ **CHƯA** | 0 API, làm được |
-| 22 | **Role-permutation test** | R2 W3, Q2 | 1 | ❌ **CHƯA** | cần thêm cờ đảo role trong engine; local qwen |
+| 21 | **Permutation p-value cho depth slope** | R1 W7, R3 W1 | 1 | ✅ **XONG** | `depth_perm_test.py` + bảng Appendix J + 1 câu §5.7 |
+| 22 | **Role-permutation test** | R2 W3, Q2 | 1 | ✅ **XONG** (qwen) | Appendix L; claim "role-dependent" đã hạ xuống "varies by position" |
 | 23 | Content-form trên Claude + Nova | R2 Q1 | 2 | ⛔ **CHẶN** | key Bedrock hết hạn |
 | 24 | Payload thứ 2 + action-style payload | R2 W2, R4 Q4 | 2 | ⛔ **CHẶN** | cần API; script `--marker` đã có sẵn |
 | 25 | Nhãn adoption độc lập ≥100 activation, frontier | R2 Q3, metareview #1 | 2 | ⛔ **CHẶN** | cần API + người gán thật |
